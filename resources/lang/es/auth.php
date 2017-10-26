@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'failed' => 'El usuario y/o la contraseña no son correctos',
+    'failed' => 'El correo electrónico y/o la contraseña no son correctos',
     'throttle' => 'Demasiados intentos de inicio de sesión. Vuelva a intentarlo en :seconds segundos.',
 
 ];

@@ -1786,3 +1786,9 @@ jQuery(function(){
         Codebase.init();
     }
 });
+
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});

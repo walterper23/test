@@ -78,6 +78,13 @@
                                             </div>
                                         </div>
                                     </div>
+                                     @if($errors->has('email'))
+                                        <div class="form-group row">
+                                            <div class="col-12 text-danger text-center">
+                                                {{ $errors->first('email') }}
+                                            </div>
+                                        </div>
+                                    @endif
                                     <div class="form-group row gutters-tiny">
                                         <div class="col-12 mb-10">
                                             <button type="submit" class="btn btn-block btn-hero btn-noborder btn-rounded btn-alt-primary">
