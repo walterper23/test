@@ -51,11 +51,17 @@ class LoginController extends Controller
         ]);
     }
 
+    protected function username(){
+        return 'email';
+    }
+
     protected function credentials(Request $request)
     {
         return [
             'USUA_EMAIL'    => $request->get('email'),
-            'USUA_PASSWORD' => $request->get('password')
+            'USUA_PASSWORD' => $request->get('password'),
+            'USUA_ENABLED'  => 1,
+            'USUA_DELETED'  => 0,
         ];
     }
 

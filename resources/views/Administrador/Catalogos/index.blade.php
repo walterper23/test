@@ -34,7 +34,7 @@
                     <div class="tab-pane active" id="btabs-tipos-documentos" role="tabpanel">
                         <div class="block">
                             <div class="block-content block-content-full">
-                                {{ Auth::user()->USUA_NOMBRE }}
+                                
                                 <!-- DataTables init on table by adding .js-dataTable-full class, functionality initialized in js/pages/be_tables_datatables.js -->
                                 <table class="table table-bordered table-striped table-vcenter table-sm" id="datatable-tipos-documentos">
                                     <thead class="thead-default">
@@ -45,25 +45,6 @@
                                             <th class="text-center">Opciones</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        @foreach($tiposDocumentos as $tipo)
-                                        <tr>
-                                            <td class="font-w600 text-center">{{ $tipo->getCodigo() }}</td>
-                                            <td>{{ $tipo->getNombre() }}</td>
-                                            <td class="text-center d-none d-sm-table-cell">
-                                                <span class="badge badge-primary">Activo</span>
-                                            </td>
-                                            <td class="text-center">
-                                                <button type="button" class="btn btn-sm btn-rounded btn-noborder btn-outline-success" data-toggle="tooltip" title="Modificar">
-                                                    <i class="fa fa-pencil"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-sm btn-rounded btn-noborder btn-outline-danger" data-toggle="tooltip" title="Eliminar">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -81,8 +62,8 @@
 @stop
 
 @push('js-script')
-    {{ Html::script('assets/js/plugins/datatables/jquery.dataTables.min.js') }}
-    {{ Html::script('assets/js/plugins/datatables/dataTables.bootstrap4.min.js') }}
+    {{ Html::script('js/plugins/datatables/jquery.dataTables.min.js') }}
+    {{ Html::script('js/plugins/datatables/dataTables.bootstrap4.min.js') }}
 @endpush
 
 @push('js-custom')
@@ -94,10 +75,22 @@
 
             this.initDataTables = function() {
                 jQuery('#datatable-tipos-documentos').dataTable({
-                    columnDefs: [ { orderable: false, targets: [ 3 ] } ],
-                    pageLength: 1,
-                    lengthMenu: [[1, 2, 3, 4], [1, 2, 3, 4]],
-                    autoWidth: false
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        url : 'administrar/catalogos/tipos-documentos',
+                        type: 'POST'
+                    },
+                    columns: [
+                        { data: 'TIDO_TIPO_DOCUMENTO', name: 'TIDO_TIPO_DOCUMENTO' },
+                        { data: 'TIDO_NOMBRE_TIPO', name: 'TIDO_NOMBRE_TIPO' },
+                        { data: 'TIDO_CREATED_AT', name: 'TIDO_CREATED_AT' },
+                        { data: 'TIDO_ENABLED', name: 'TIDO_ENABLED' },
+                    ],
+                    columnDefs: [ { orderable: false, targets: [3] } ],
+                    pageLength: 100,
+                    lengthMenu: [[10, 20, 50, 100],[10, 20, 50, 100]],
+                    autoWidth: true
                 });
             };
         };

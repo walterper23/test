@@ -16,7 +16,7 @@ Route::group(['middleware'=>'auth'], function(){
 
 		Route::get('/', 'Administrador\CatalogoManagerController@index');
 
-		Route::get('administrar/catalogos', 'Administrador\CatalogoManagerController@index');
+		Route::post('administrar/catalogos/tipos-documentos', 'Administrador\CatalogoManagerController@postData');
 
 	});
 	
