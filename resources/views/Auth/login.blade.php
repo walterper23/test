@@ -64,24 +64,35 @@
                                 {{ Form::open(['method'=>'POST', 'url'=>'login', 'class'=>'js-validation-signin']) }}
                                     <div class="form-group row">
                                         <div class="col-12">
-                                            <div class="form-material floating">
-                                                {{ Form::text('email',old('email'),['id'=>'email','class'=>'form-control']) }}
-                                                {{ Form::label('email','Correo electr&oacute;nico') }}
+                                            <div class="form-material floating open">
+                                                {{ Form::text('username',old('username'),['id'=>'username','class'=>'form-control text-center','autofocus'=>'autofocus']) }}
+                                                {{ Form::label('username','Usuario') }}
                                             </div>
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <div class="col-12">
-                                            <div class="form-material floating">
-                                                {{ Form::password('password',['id'=>'password','class'=>'form-control','value'=>old('password')]) }}
+                                            <div class="form-material floating open">
+                                                {{ Form::password('password',['id'=>'password','class'=>'form-control text-center','value'=>old('password')]) }}
                                                 {{ Form::label('password','Contrase&ntilde;a') }}
                                             </div>
                                         </div>
                                     </div>
-                                     @if($errors->has('email'))
+                                    <div class="form-group row">
+                                        <div class="col-6">
+                                            <div class="custom-controls-stacked">
+                                                <label class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input" id="remember" name="remember">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description">Mantener sesi&oacute;n</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                     @if($errors->has('username'))
                                         <div class="form-group row">
                                             <div class="col-12 text-danger text-center">
-                                                {{ $errors->first('email') }}
+                                                {{ $errors->first('username') }}
                                             </div>
                                         </div>
                                     @endif
