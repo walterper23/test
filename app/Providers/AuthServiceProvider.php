@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Gate;
+use Auth;
+use Illuminate\Support\Facades\Gate as GateContract;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use App\Providers\EloquentCustomUserProvider;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -21,10 +23,13 @@ class AuthServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(GateContract $gate)
     {
-        $this->registerPolicies();
+        $this->registerPolicies($gate);
 
-        //
+        // Binding eloquent.admin to our EloquentAdminUserProvider
+        Auth::provider('eloquent.custom', function($app, array $config) {
+            return new EloquentCustomUserProvider($app['hash'], $config['model']);
+        });
     }
 }

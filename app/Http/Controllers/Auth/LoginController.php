@@ -46,19 +46,19 @@ class LoginController extends Controller
     protected function validateLogin(Request $request)
     {
         $this->validate($request, [
-            'email' => 'required|string',
-            'password' => 'required|string',
+            'username' => 'required|string',
+            'password' => 'required|string|min:6',
         ]);
     }
 
     protected function username(){
-        return 'email';
+        return 'username';
     }
 
     protected function credentials(Request $request)
     {
         return [
-            'USUA_EMAIL'    => $request->get('email'),
+            'USUA_USERNAME' => $request->get('username'),
             'USUA_PASSWORD' => $request->get('password'),
             'USUA_ENABLED'  => 1,
             'USUA_DELETED'  => 0,
@@ -68,7 +68,7 @@ class LoginController extends Controller
     protected function authenticated(Request $request, $user)
     {
         $user->USUA_LAST_LOGIN   = $user->getRecentLogin();
-        $user->USUA_RECENT_LOGIN = \DB::raw('CURRENT_TIMESTAMP');
+        $user->USUA_RECENT_LOGIN = \Carbon\Carbon::now();
         $user->save();
     }
 }

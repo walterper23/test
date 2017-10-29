@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 class BaseController extends Controller{
 
 	public function __construct( $data = [] ){
-        //$this->middleware('auth');
+    
     }
 
     public function setLog( $file = 'log' ){

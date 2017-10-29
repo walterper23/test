@@ -11,21 +11,25 @@ class MUsuario extends Authenticatable{
     public    $timestamps     = false;
 
     protected $fillable = [
-        'USUA_USERNAME', 'USUA_EMAIL'
+        'USUA_NOMBRE', 'USUA_EMAIL'
     ];
 
     protected $hidden = [
         'USUA_PASSWORD', 'USUA_REMEMBER_TOKEN',
     ];
 
+    public function getAuthUsername(){
+        return $this->attributes['USUA_USERNAME'];
+    }    
+
     public function getAuthPassword(){
-    	return $this->attributes['USUA_PASSWORD'];
+        return $this->attributes['USUA_PASSWORD'];
     }
-
-    public function getName(){
-    	return $this->attributes['USUA_NOMBRE'];
+    
+    public function getNombre(){
+        return $this->attributes['USUA_NOMBRE'];
     }
-
+    
     public function getRecentLogin(){
         return $this->attributes['USUA_RECENT_LOGIN'];
     }
@@ -34,6 +38,13 @@ class MUsuario extends Authenticatable{
         return $this->attributes['USUA_LAST_LOGIN'];
     }
 
+    public function getRememberTokenName(){
+        return $this->attributes['USUA_REMEMBER_TOKEN'];
+    }
+
+    public function setRememberToken($value){
+        $this->USUA_REMEMBER_TOKEN = $value;
+    }
     /***** Relationships *****/
 
     public function rol(){
