@@ -66,7 +66,7 @@ return [
 
     'providers' => [
         'users' => [
-            'driver' => 'eloquent',
+            'driver' => 'eloquent.custom',
             'model' => App\Model\MUsuario::class,
         ],
 

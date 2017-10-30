@@ -173,7 +173,7 @@ var Codebase = function() {
         }
 
         // Add 'side-trans-enabled' class to #page-container (enables sidebar and side overlay transition on open/close)
-        // Fixes IE10, IE11 and Edge bug in which animation was excecuted on each page load - really annoying!
+        // Fixes IE10, IE11 and Edge bug in which animation was executed on each page load - really annoying!
         lPage.addClass('side-trans-enabled');
     };
 
@@ -1710,12 +1710,6 @@ var Codebase = function() {
                 case 'content-filter':
                     uiHelperContentFilter();
                     break;
-                case 'appear':
-                    uiHelperAppear();
-                    break;
-                case 'appear-countTo':
-                    uiHelperAppearCountTo();
-                    break;
                 case 'slimscroll':
                     uiHelperSlimscroll();
                     break;
@@ -1784,11 +1778,5 @@ var Codebase = function() {
 jQuery(function(){
     if (typeof angular === 'undefined') {
         Codebase.init();
-    }
-});
-
-$.ajaxSetup({
-    headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
 });

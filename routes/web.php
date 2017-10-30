@@ -1,5 +1,9 @@
 <?php
 
+DB::listen(function($query){
+	//echo "<pre style=\"z-index:500\">{$query->sql}</pre>";
+});
+
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login');
 Route::get('logout', 'Auth\LoginController@logout')->name('logout');
@@ -12,11 +16,16 @@ Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 
 Route::group(['middleware'=>'auth'], function(){
 
-	Route::group(['middleware'=>'onlyAdmin'], function(){
+	Route::get('/', 'Dashboard\DashboardController@index');
+	
+	Route::group(['middleware'=>'auth.admin'], function(){
 
-		Route::get('/', 'Administrador\CatalogoManagerController@index');
+		Route::group(['prefix'=>'panel/admin'], function(){
+			Route::get('/', 'Administrador\CatalogoManagerController@index');
+			Route::get('catalogos', 'Administrador\CatalogoManagerController@index');
+			Route::post('catalogos/tipos-documentos', 'Administrador\CatalogoManagerController@postData');
 
-		Route::post('administrar/catalogos/tipos-documentos', 'Administrador\CatalogoManagerController@postData');
+		});
 
 	});
 	
