@@ -41,8 +41,6 @@
                                         <tr>
                                             <th class="text-center">#</th>
                                             <th class="text-center">Nombre</th>
-                                            <th class="text-center d-none d-sm-table-cell">Status</th>
-                                            <th class="text-center">Opciones</th>
                                         </tr>
                                     </thead>
                                 </table>
@@ -78,16 +76,14 @@
                     processing: true,
                     serverSide: true,
                     ajax: {
-                        url : 'administrar/catalogos/tipos-documentos',
+                        url : '/panel/admin/catalogos/tipos-documentos',
                         type: 'POST'
                     },
                     columns: [
                         { data: 'TIDO_TIPO_DOCUMENTO', name: 'TIDO_TIPO_DOCUMENTO' },
                         { data: 'TIDO_NOMBRE_TIPO', name: 'TIDO_NOMBRE_TIPO' },
-                        { data: 'TIDO_CREATED_AT', name: 'TIDO_CREATED_AT' },
-                        { data: 'TIDO_ENABLED', name: 'TIDO_ENABLED' },
                     ],
-                    columnDefs: [ { orderable: false, targets: [3] } ],
+                    columnDefs: [ { orderable: false, targets: [] } ],
                     pageLength: 100,
                     lengthMenu: [[10, 20, 50, 100],[10, 20, 50, 100]],
                     autoWidth: true

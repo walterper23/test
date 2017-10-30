@@ -16,14 +16,14 @@ Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 
 Route::group(['middleware'=>'auth'], function(){
 
-	Route::get('/', 'DashboardController@index');
+	Route::get('/', 'Dashboard\DashboardController@index');
 	
 	Route::group(['middleware'=>'auth.admin'], function(){
 
 		Route::group(['prefix'=>'panel/admin'], function(){
 			Route::get('/', 'Administrador\CatalogoManagerController@index');
 			Route::get('catalogos', 'Administrador\CatalogoManagerController@index');
-			Route::get('catalogos/tipos-documentos', 'Administrador\CatalogoManagerController@postData');
+			Route::post('catalogos/tipos-documentos', 'Administrador\CatalogoManagerController@postData');
 
 		});
 
