@@ -21,25 +21,23 @@ var OpAuthSignIn = function() {
                 jQuery(e).remove();
             },
             rules: {
-                'email': {
-                    required: true,
-                    email: true,
-                    minlength: 5
+                'username': {
+                    required : true,
+                    minlength: 3
                 },
                 'password': {
-                    required: true,
+                    required : true,
                     minlength: 6
                 }
             },
             messages: {
-                'email': {
-                    required: 'Introduzca su correo electrónico',
-                    email: 'El correo electrónico no es válido',
-                    minlength: 'El correo electrónico no es válido'
+                'username': {
+                    required: 'Introduzca su usuario',
+                    minlength: 'Introduzca mínimo {0} caracteres'
                 },
                 'password': {
                     required: 'Introduzca su contraseña',
-                    minlength: 'Mínimo {0} caracteres'
+                    minlength: 'Introduzca mínimo {0} caracteres'
                 }
             }
         });

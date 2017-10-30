@@ -20,9 +20,9 @@
 
         <!-- Icons -->
         <!-- The following icons can be replaced with your own, they are used by desktop and mobile browsers -->
-        <link rel="shortcut icon" href="/assets/img/favicons/favicon.png">
-        <link rel="icon" type="image/png" sizes="192x192" href="/assets/img/favicons/favicon-192x192.png">
-        <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicons/apple-touch-icon-180x180.png">
+        <link rel="shortcut icon" href="{{ asset('img/favicons/favicon.png') }}">
+        <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('img/favicons/favicon-192x192.png') }}">
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('img/favicons/apple-touch-icon-180x180.png') }}">
         <!-- END Icons -->
         
         <!-- Stylesheets -->
@@ -30,10 +30,8 @@
         @stack('css-style')
 
         <!-- Codebase framework -->
-        {{ Html::style('css/codebase.min.css',['id'=>'css-main']) }}
+        {{ Html::style('css/codebase.css',['id'=>'css-main']) }}
 
-        <!-- You can include a specific file from css/themes/ folder to alter the default color theme of the template. eg: -->
-        <!-- <link rel="stylesheet" id="css-theme" href="assets/css/themes/flat.min.css"> -->
         <!-- END Stylesheets -->
         @stack('css-custom')
 
@@ -99,7 +97,7 @@
                             <!-- User Info -->
                             <div class="content-header-item">
                                 <a class="img-link mr-5" href="be_pages_generic_profile.html">
-                                    <img class="img-avatar img-avatar32" src="assets/img/avatars/avatar15.jpg" alt="">
+                                    {{ Html::image('img/avatars/no-profile.jpg','',['class'=>'img-avatar img-avatar32']) }}
                                 </a>
                                 <a class="align-middle link-effect text-primary-dark font-w600" href="be_pages_generic_profile.html">John Smith</a>
                             </div>
@@ -163,28 +161,28 @@
                                 <ul class="nav-users push">
                                     <li>
                                         <a href="be_pages_generic_profile.html">
-                                            <img class="img-avatar" src="assets/img/avatars/avatar2.jpg" alt="">
+                                            {{ Html::image('img/avatars/no-profile.jpg','',['class'=>'img-avatar']) }}
                                             <i class="fa fa-circle text-success"></i> Danielle Jones
                                             <div class="font-w400 font-size-xs text-muted">Photographer</div>
                                         </a>
                                     </li>
                                     <li>
                                         <a href="be_pages_generic_profile.html">
-                                            <img class="img-avatar" src="assets/img/avatars/avatar10.jpg" alt="">
+                                            {{ Html::image('img/avatars/no-profile.jpg','',['class'=>'img-avatar']) }}
                                             <i class="fa fa-circle text-success"></i> Henry Harrison
                                             <div class="font-w400 font-size-xs text-muted">Web Designer</div>
                                         </a>
                                     </li>
                                     <li>
                                         <a href="be_pages_generic_profile.html">
-                                            <img class="img-avatar" src="assets/img/avatars/avatar2.jpg" alt="">
+                                            {{ Html::image('img/avatars/no-profile.jpg','',['class'=>'img-avatar']) }}
                                             <i class="fa fa-circle text-warning"></i> Melissa Rice
                                             <div class="font-w400 font-size-xs text-muted">UI Designer</div>
                                         </a>
                                     </li>
                                     <li>
                                         <a href="be_pages_generic_profile.html">
-                                            <img class="img-avatar" src="assets/img/avatars/avatar11.jpg" alt="">
+                                            {{ Html::image('img/avatars/no-profile.jpg','',['class'=>'img-avatar']) }}
                                             <i class="fa fa-circle text-danger"></i> Ralph Murray
                                             <div class="font-w400 font-size-xs text-muted">Copywriter</div>
                                         </a>
@@ -431,14 +429,14 @@
                         <div class="content-side content-side-full content-side-user px-10 align-parent">
                             <!-- Visible only in mini mode -->
                             <div class="sidebar-mini-visible-b align-v animated fadeIn">
-                                <img class="img-avatar img-avatar32" src="assets/img/avatars/avatar15.jpg" alt="">
+                                {{ Html::image('img/avatars/no-profile.jpg','',['class'=>'img-avatar img-avatar32']) }}
                             </div>
                             <!-- END Visible only in mini mode -->
 
                             <!-- Visible only in normal mode -->
                             <div class="sidebar-mini-hidden-b text-center">
                                 <a class="img-link" href="be_pages_generic_profile.html">
-                                    <img class="img-avatar" src="assets/img/avatars/avatar15.jpg" alt="">
+                                    {{ Html::image('img/avatars/no-profile.jpg','',['class'=>'img-avatar']) }}
                                 </a>
                                 <ul class="list-inline mt-10">
                                     <li class="list-inline-item">
@@ -674,6 +672,7 @@
         {{ Html::script('js/codebase.js') }}
 
         @stack('js-script')
+
         @stack('js-custom')
 
     </body>
