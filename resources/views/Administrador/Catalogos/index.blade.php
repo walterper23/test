@@ -41,6 +41,7 @@
                                         <tr>
                                             <th class="text-center">#</th>
                                             <th class="text-center">Nombre</th>
+                                            <th class="text-center">Fecha</th>
                                         </tr>
                                     </thead>
                                 </table>
@@ -80,8 +81,9 @@
                         type: 'POST'
                     },
                     columns: [
-                        { data: 'TIDO_TIPO_DOCUMENTO', name: 'TIDO_TIPO_DOCUMENTO' },
-                        { data: 'TIDO_NOMBRE_TIPO', name: 'TIDO_NOMBRE_TIPO' },
+                        { data: 'id', name: 'id' },
+                        { data: 'nombre', name: 'fecha' },
+                        { data: 'fecha', name: 'fecha' },
                     ],
                     columnDefs: [ { orderable: false, targets: [] } ],
                     pageLength: 100,

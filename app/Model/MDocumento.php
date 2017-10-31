@@ -99,12 +99,17 @@ class MDocumento extends Model{
         return $status;
     }
 
+    public function documentoDetalle(){
+        return $this->haOne('App\Model\MDocumentoDetalle','DODE_DOCUMENTO',$this->primaryKey);
+    }
+
     public function status(){
-        return $this->hasOne('App\Model\ModeloStatus', 'STAT_STATUS', 'DOCU_STATUS');
+        return $this->hasOne('App\Model\MStatus', 'STAT_STATUS', 'DOCU_STATUS');
     }
 
     public function municipio(){
-        return $this->hasOne('App\Model\ModeloMunicipio', 'MUNI_MUNICIPIO', 'DOCU_MUNICIPIO');
+        return $this->hasOne('App\Model\MMunicipio', 'MUNI_MUNICIPIO', 'DOCU_MUNICIPIO');
     }
+
 
 }

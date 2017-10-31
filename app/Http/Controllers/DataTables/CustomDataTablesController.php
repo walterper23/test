@@ -10,6 +10,8 @@ class CustomDataTablesController {
 
 	private $instanceTable;
 	private $config;
+	private $whitelistColumns;
+	private $rawColumns;
 
 	private $builder;
 
@@ -17,8 +19,7 @@ class CustomDataTablesController {
 			
 		$this->instanceTable = new DataTables();
 
-		$this->setSourceData($source);
-		$this->setConfig($config)->initConfig();
+		$this->setSourceData($source)->setConfig($config)->initConfig();
 	}
 
 	public function setSourceData( $source ){
@@ -38,9 +39,7 @@ class CustomDataTablesController {
 		}
 
 		if( isset($this->config['columns']) && sizeof($this->config['columns']) > 0 ){
-			foreach($this->config['columns'] as $column){
-
-			}
+			$this->initReadColumns($this->config['columns']);	
 		}else{
 			throw new Exception(' Debe realizar la especificación de al menos una columna ');
 		}
@@ -50,11 +49,70 @@ class CustomDataTablesController {
 		}
 
 		if( isset($this->config['removeColumns']) ){
-			
+			$this->removeColumns($this->config['removeColumns']);
+		}
+
+		$this->setWhiteListColumns()->setRawColumns();
+
+	}
+
+	private function initReadColumns( Array $columns ){
+		foreach($columns as $column){
+
+			$data = $column['data'];
+
+			if( isset($column['transform']) ){
+				$transform = $column['transform'];
+			}else{
+				$transform = '{{$' . $data . '}}'; 
+			}
+
+			$this->instanceTable->editColumn( $data, $transform );
+
+			if( isset($column['config']) )
+				$this->configColumn($data, $column['config']);
+
+			$this->addColumnToWhiteList( $column['data'] );
+
 		}
 	}
 
 
+	private function configColumn( $column, $config ){
+		if( isset($config['raw']) && $config['raw'] == true )
+			$this->rawColumns[] = $column;
+
+		if( isset($config['searchable']) && $config['searchable'] == false )
+			$this->unsearchableColumns[] = $column;
+
+	}
+
+
+	private function addColumnToWhiteList($column){
+		$this->whitelist[] = $column;
+	}
+
+	private function setWhiteListColumns(){
+		if( !is_null($this->whitelist) )
+			$this->instanceTable->whitelist( array_values($this->whitelist) );
+		return $this;
+	}
+
+	private function setRawColumns(){
+		if( !is_null($this->rawColumns) )
+			$this->instanceTable->rawColumns( array_values($this->rawColumns) );
+		return $this;
+	}
+
+	private function removeColumns(Array $columns){
+		foreach($columns as $column){
+			$this->instanceTable->removeColumn( $column );
+		}
+		return $this;
+	}
+
+
+	/********************* B U I L D E R ***********************************/
 	private function initBuilder(){
 		$this->builder = $this->instanceTable->getHtmlBuilder();
 		$this->buildTable();

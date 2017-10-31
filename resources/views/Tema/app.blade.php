@@ -670,6 +670,7 @@
         {{ Html::script('js/core/jquery.countTo.min.js') }}
         {{ Html::script('js/core/js.cookie.min.js') }}
         {{ Html::script('js/codebase.js') }}
+        {{ Html::script('js/app.js') }}
 
         @stack('js-script')
 

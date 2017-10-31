@@ -7,6 +7,7 @@ use App\Http\Controllers\BaseController;
 use App\Http\Controllers\DataTables\CustomDataTablesController;
 
 use App\Model\Catalogo\MTipoDocumento;
+use App\Model\MDocumento;
 
 
 class CatalogoManagerController extends BaseController{
@@ -22,7 +23,7 @@ class CatalogoManagerController extends BaseController{
 
 	private function makeTable(){
 
-		$data = MTipoDocumento::select('TIDO_TIPO_DOCUMENTO AS id','TIDO_NOMBRE_TIPO')->get();
+		$data = MDocumento::with('documentoDetalle')->select('DOCU_DOCUMENTO AS id','DOCU_DESCRIPCION AS nombre', 'DOCU_CREATED_AT AS fecha')->get();
 
 		$config['config'] = [
 			'rowID' => 'id',
@@ -41,47 +42,48 @@ class CatalogoManagerController extends BaseController{
 			array(
 				'label' => '#',
 				'orden' => 1,
-				'data' => 'TIDO_TIPO_DOCUMENTO',
-				'setData' => function($sql){
-					return $sql->id;
-				},
-				'transform' => function(){
-
+				'data' => 'id',
+				'transform' => function($sql){
+					return '<b>' . $sql->id . '</b>';
 				},
 				'config' => [
-					'searc'
+					'raw' => true,
+					'searchable' => true,
 				]
 
 			),
 			array(
 				'label' => 'Nombre',
 				'orden' => 2,
-				'data' => 'TIDO_NOMBRE',
-				'setData' => function($sql){
-					return 'prefix :: ' . $sql->nombre;
+				'data' => 'nombre',
+				'transform' => function($sql){
+					return $sql->nombre;
 				},
-				'transform' => function(){
 
-				}
+			),
+			array(
+				'label' => 'Fecha',
+				'orden' => 3,
+				'data' => 'fecha',
+				'transform' => function($sql){
+					return $sql->fecha;
+				},
+				'config' => [
+					'searchable' => true,
+				]
 
 			),
 		];
 
 
 		$config['addColumns'] = [
-
 			array(
 
 
-
 			)
-
 		];
 
-		$config['removeColumns'] = [
-			'fecha'
-		];
-
+		$config['removeColumns'] = [];
 
 		return new CustomDataTablesController( $data, $config );
 
