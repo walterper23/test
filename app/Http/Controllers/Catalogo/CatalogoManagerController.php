@@ -1,5 +1,6 @@
 <?php
-namespace App\Http\Controllers\Administrador;
+
+namespace App\Http\Controllers\Catalogo;
 
 use Illuminate\Http\Request;
 use App\Http\Requests;
@@ -23,7 +24,7 @@ class CatalogoManagerController extends BaseController{
 
 	private function makeTable(){
 
-		$data = MDocumento::with('documentoDetalle')->select('DOCU_DOCUMENTO AS id','DOCU_DESCRIPCION AS nombre', 'DOCU_CREATED_AT AS fecha')->get();
+		$data = MDocumento::select('DOCU_DOCUMENTO AS id','DOCU_DESCRIPCION AS nombre', 'DOCU_CREATED_AT AS fecha')->get();
 
 		$config['config'] = [
 			'rowID' => 'id',

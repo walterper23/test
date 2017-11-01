@@ -18,12 +18,23 @@ Route::group(['middleware'=>'auth'], function(){
 
 	Route::get('/', 'Dashboard\DashboardController@index');
 	
-	Route::group(['middleware'=>'auth.admin'], function(){
+	Route::group(['prefix'=>'panel/admin','middleware'=>'auth.admin'], function(){
 
-		Route::group(['prefix'=>'panel/admin'], function(){
-			Route::get('/', 'Administrador\CatalogoManagerController@index');
-			Route::get('catalogos', 'Administrador\CatalogoManagerController@index');
-			Route::post('catalogos/tipos-documentos', 'Administrador\CatalogoManagerController@postData');
+			
+		Route::get('/', 'Dashboard/DashboardAdministradorController@index');
+		
+		Route::group(['prefix'=>'catalogos'], function(){
+			
+			Route::get('/', 'Administrador\CatalogoManagerController@postData');
+
+			// Catálogo de tipos de documentos
+			Route::group(['prefix'=>'tipos-documentos','namespace'=>'Catalogo'],function(){
+				Route::get('/',           'TipoDocumentoController@index');
+				Route::post('datatables', 'TipoDocumentoController@postDataTable');
+				Route::get('nuevo',       'TipoDocumentoController@index');
+				Route::post('agregar',    'TipoDocumentoController@index');
+			});
+			
 
 		});
 

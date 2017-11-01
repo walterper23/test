@@ -59,6 +59,7 @@ class CustomDataTablesController {
 	private function initReadColumns( Array $columns ){
 		foreach($columns as $column){
 
+			// set data
 			$data = $column['data'];
 
 			if( isset($column['transform']) ){
@@ -66,17 +67,22 @@ class CustomDataTablesController {
 			}else{
 				$transform = '{{$' . $data . '}}'; 
 			}
+			
+			$orden = null;
+			if( isset($column['orden']) ) $orden = $column['orden'];
 
-			$this->instanceTable->editColumn( $data, $transform );
+			$this->instanceTable->editColumn( $data, $transform, $orden );
 
+
+			// set config
 			if( isset($column['config']) )
 				$this->configColumn($data, $column['config']);
+
 
 			$this->addColumnToWhiteList( $column['data'] );
 
 		}
 	}
-
 
 	private function configColumn( $column, $config ){
 		if( isset($config['raw']) && $config['raw'] == true )
@@ -89,12 +95,12 @@ class CustomDataTablesController {
 
 
 	private function addColumnToWhiteList($column){
-		$this->whitelist[] = $column;
+		$this->whitelistColumns[] = $column;
 	}
 
 	private function setWhiteListColumns(){
-		if( !is_null($this->whitelist) )
-			$this->instanceTable->whitelist( array_values($this->whitelist) );
+		if( !is_null($this->whitelistColumns) )
+			$this->instanceTable->whitelist( array_values($this->whitelistColumns) );
 		return $this;
 	}
 

@@ -178,8 +178,9 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         Collective\Html\HtmlServiceProvider::class,
-        Yajra\DataTables\DataTablesServiceProvider::class,
-        Yajra\DataTables\HtmlServiceProvider::class
+        Chumper\Datatable\DatatableServiceProvider::class,
+        //Yajra\DataTables\DataTablesServiceProvider::class,
+        //Yajra\DataTables\HtmlServiceProvider::class
 
     ],
 
@@ -232,7 +233,8 @@ return [
 
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
-        'DataTables' => Yajra\DataTables\Facades\DataTables::class,
+        //'DataTables' => Yajra\DataTables\Facades\DataTables::class,
+        'DataTable' => Chumper\Datatable\Facades\DatatableFacade::class,
 
     ],
 
