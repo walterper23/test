@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Catalogo;
+namespace App\Http\Controllers\Configuracion\Catalogo;
 
 use Illuminate\Http\Request;
 use App\Http\Requests;
@@ -14,7 +14,7 @@ class TipoDocumentoController extends BaseController{
 
 	public function index(){
 
-		return view('Catalogo.TipoDocumento.indexTipoDocumento');
+		return view('Configuracion.Catalogo.TipoDocumento.indexTipoDocumento');
 	}
 
 	public function manager(Request $request){
@@ -36,19 +36,20 @@ class TipoDocumentoController extends BaseController{
 	 * Description
 	 * @return type
 	 */
-	public function formularioTipoDocumento(){
+	public function formTipoDocumento(){
 		try{
 
 			$data['model'] = new MTipoDocumento;
 
+			$data['url_send_form'] = url('configuracion/catalogos/tipos-documentos/agregar');
 
-			return view()->with($data);
+			return view('Configuracion.Catalogo.TipoDocumento.formTipoDocumento')->with($data);
 		}catch(Exception $error){
 
 		}
 	}
 
-	public function nuevoTipoDocumento(){
+	public function agregarTipoDocumento(){
 		try{
 
 
