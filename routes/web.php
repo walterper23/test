@@ -26,10 +26,33 @@ Route::group(['middleware'=>'auth'], function(){
 			Route::get('/', 'Administrador\CatalogoManagerController@postData');
 			// Catálogo de tipos de documentos
 			Route::group(['prefix'=>'tipos-documentos','namespace'=>'Catalogo'],function(){
-				Route::get('/',           'TipoDocumentoController@index');
-				Route::post('datatables', 'TipoDocumentoController@postDataTable');
-				Route::post('nuevo',      'TipoDocumentoController@formTipoDocumento');
-				Route::post('agregar',    'TipoDocumentoController@agregarTipoDocumento');
+				Route::get('/',                'TipoDocumentoController@index');
+				Route::post('datatables',      'TipoDocumentoController@postDataTable');
+				Route::post('nuevo',           'TipoDocumentoController@formTipoDocumento');
+				Route::post('post-nuevo',      'TipoDocumentoController@postNuevoTipoDocumento');
+				Route::post('editar',          'TipoDocumentoController@editarTipoDocumento');
+				Route::post('post-editar',     'TipoDocumentoController@postEditarTipoDocumento');
+				Route::post('post-desactivar', 'TipoDocumentoController@postDesactivarTipoDocumento');
+			});
+
+			Route::group(['prefix'=>'direcciones','namespace'=>'Catalogo'],function(){
+				Route::get('/',                'DireccionController@index');
+				Route::post('datatables',      'DireccionController@postDataTable');
+				Route::post('nuevo',           'DireccionController@formTipoDocumento');
+				Route::post('post-nuevo',      'DireccionController@postNuevoTipoDocumento');
+				Route::post('editar',          'DireccionController@editarTipoDocumento');
+				Route::post('post-editar',     'DireccionController@postEditarTipoDocumento');
+				Route::post('post-desactivar', 'DireccionController@postDesactivarTipoDocumento');
+			});
+
+			Route::group(['prefix'=>'departamentos','namespace'=>'Catalogo'],function(){
+				Route::get('/',                'DepartamentoController@index');
+				Route::post('datatables',      'DepartamentoController@postDataTable');
+				Route::post('nuevo',           'DepartamentoController@formDepartamento');
+				Route::post('post-nuevo',      'DepartamentoController@postNuevoDepartamento');
+				Route::post('editar',          'DepartamentoController@editarDepartamento');
+				Route::post('post-editar',     'DepartamentoController@postEditarDepartamento');
+				Route::post('post-desactivar', 'DepartamentoController@postDesactivarDepartamento');
 			});
 			
 

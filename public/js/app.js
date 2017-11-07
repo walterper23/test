@@ -2,11 +2,7 @@ var App = new function(){
 
 	this.init = function(){
 		this.configAjaxSetup()
-		block = $('div#btabs-tipos-documentos')
-		var elBlock = (block instanceof jQuery) ? block : jQuery(block);
-		console.log(Codebase.blocks(elBlock, 'state_loading') )
 	}
-
 
 	this.configAjaxSetup = function(){
 		$.ajaxSetup({
@@ -17,7 +13,6 @@ var App = new function(){
 	}
 
 	this.ajaxRequest = function( options ){
-
 		$.ajax({
 			url  : options.url,
 			data : options.data || {},
@@ -27,33 +22,31 @@ var App = new function(){
 			complete : options.complete || function(){},
 			error : options.error || function(){}
 		});
-
 	}
 
 	this.openModal = function( config ){
 
 		id = config.id || 'modal-app'
-		var modal = $('div.modal.fade#' + id )
-		modal = modal.length > 0 ? modal : $('<div/>').addClass('modal fade').attr('id',id).attr('role','dialog')
+		var modal = $('div.modal.fade#modal-' + id )
+		modal = modal.length > 0 ? modal : $('<div/>').addClass('modal fade').attr('id','modal-'+id).attr('role','dialog')
 
 		title = config.title || ''
-		header = config.header != undefined ? config.header : true;
-		footer = config.footer != undefined ? config.footer : true;
+		header = config.header != undefined ? config.header : true
+		footer = config.footer != undefined ? config.footer : true
+		btnCancel = config.btnCancel != undefined ? config.btnCancel : true
+		btnCancelText = config.btnCancelText || 'Cancelar'
+		btnOk = config.btnOk != undefined ? config.btnOk : true
+		btnOkText = config.btnOkText || 'Aceptar'
 		
-		html = `
-			    <div class="modal-dialog" role="document">
+		html = `<div class="modal-dialog">
 	                <div class="modal-content">
 	                	<div class="block block-themed block-transparent mb-0 block-mode-loading" style="min-height:120px;"></div>`
 
-	    //              	<div class="block block-content block-mode-loading" margin-bottom:0px"></div>`
-
 	    if( footer ){
-	        html +=    `<div class="modal-footer">
-	                        <button type="button" class="btn btn-alt-default" data-dismiss="modal">Cerrar</button>
-	                        <button type="button" class="btn btn-alt-primary" data-dismiss="modal">
-	                            <i class="fa fa-check"></i> Aceptar
-	                        </button>
-	                    </div>`
+	        html +=    `<div class="modal-footer">`
+	        if( btnCancel ) html += `<button type="button" class="btn btn-alt-default" data-dismiss="modal" id="btn-cancel">`+btnCancelText+`</button>`
+	        if( btnOk )     html += `<button type="button" class="btn btn-alt-primary" id="btn-ok">`+btnOkText+`</button>`
+	        html +=    `</div>`
 	    }
 	    
 	    html +=     `</div>

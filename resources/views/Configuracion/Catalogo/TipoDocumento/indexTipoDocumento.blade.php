@@ -34,7 +34,7 @@
                     	<div class="block">
                             <div class="block-content block-content-full">
 			                    <div class="col-12">
-				                    <button type="button" class="btn btn-alt-primary" onclick="App.openModal({ title : 'Ricardo', url : '/configuracion/catalogos/tipos-documentos/nuevo' })"><i class="fa fa-plus"></i> Nuevo</button>
+				                    <button type="button" class="btn btn-alt-primary" onclick="App.openModal({ title : 'Ricardo', url : '/configuracion/catalogos/tipos-documentos/nuevo', id : 'form-nuevo-tipo-documento' })"><i class="fa fa-plus"></i> Nuevo</button>
 			                    </div>
 		                        <!-- DataTables init on table by adding .js-dataTable-full class, functionality initialized in js/pages/be_tables_datatables.js -->
 		                        <table class="table table-bordered table-striped table-vcenter table-sm datatable-tipos-documentos">
@@ -78,8 +78,11 @@
 @stop
 
 @push('js-script')
+    {{ Html::script('js/plugins/jquery-validation/jquery.validate.min.js') }}
     {{ Html::script('js/plugins/datatables/jquery.dataTables.min.js') }}
     {{ Html::script('js/plugins/datatables/dataTables.bootstrap4.min.js') }}
+    {{ Html::script('js/app-form.js') }}
+
 @endpush
 
 @push('js-custom')
