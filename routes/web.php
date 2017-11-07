@@ -27,7 +27,7 @@ Route::group(['middleware'=>'auth'], function(){
 			// Catálogo de tipos de documentos
 			Route::group(['prefix'=>'tipos-documentos','namespace'=>'Catalogo'],function(){
 				Route::get('/',                'TipoDocumentoController@index');
-				Route::post('datatables',      'TipoDocumentoController@postDataTable');
+				Route::post('post-data',       'TipoDocumentoController@postDataTable');
 				Route::post('nuevo',           'TipoDocumentoController@formTipoDocumento');
 				Route::post('post-nuevo',      'TipoDocumentoController@postNuevoTipoDocumento');
 				Route::post('editar',          'TipoDocumentoController@editarTipoDocumento');
@@ -37,7 +37,7 @@ Route::group(['middleware'=>'auth'], function(){
 
 			Route::group(['prefix'=>'direcciones','namespace'=>'Catalogo'],function(){
 				Route::get('/',                'DireccionController@index');
-				Route::post('datatables',      'DireccionController@postDataTable');
+				Route::post('post-data',       'DireccionController@postDataTable');
 				Route::post('nuevo',           'DireccionController@formTipoDocumento');
 				Route::post('post-nuevo',      'DireccionController@postNuevoTipoDocumento');
 				Route::post('editar',          'DireccionController@editarTipoDocumento');
@@ -47,7 +47,7 @@ Route::group(['middleware'=>'auth'], function(){
 
 			Route::group(['prefix'=>'departamentos','namespace'=>'Catalogo'],function(){
 				Route::get('/',                'DepartamentoController@index');
-				Route::post('datatables',      'DepartamentoController@postDataTable');
+				Route::post('post-data',       'DepartamentoController@postDataTable');
 				Route::post('nuevo',           'DepartamentoController@formDepartamento');
 				Route::post('post-nuevo',      'DepartamentoController@postNuevoDepartamento');
 				Route::post('editar',          'DepartamentoController@editarDepartamento');
