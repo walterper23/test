@@ -20954,3 +20954,10 @@ div.tagsinput span.tag a:hover {
 .slick-slider.slick-nav-hover:hover .slick-next {
   opacity: 1;
 }
+
+.greca {
+  background-image : url('../img/background/background.png');
+  background-repeat : no-repeat;
+  background-size: 95% 100%;
+  background-position: top right;
+}
