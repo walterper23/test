@@ -9935,9 +9935,9 @@ a.block.block-themed .btn-block-option:focus, .active > a.block.block-themed .bt
 .nav-main .nav-main-heading {
   padding: 24px 18px 6px 18px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
-  opacity: .5;
+  opacity: .95;
 }
 
 .nav-main a {
@@ -9951,7 +9951,7 @@ a.block.block-themed .btn-block-option:focus, .active > a.block.block-themed .bt
 }
 
 .sidebar-inverse #sidebar .nav-main a {
-  color: rgba(234, 236, 238, 0.6);
+  color: #B8B8B8;
 }
 
 .nav-main a > i {
@@ -9970,7 +9970,7 @@ a.block.block-themed .btn-block-option:focus, .active > a.block.block-themed .bt
 }
 
 .nav-main a:hover, .nav-main a:focus, .nav-main a.active {
-  color: #000;
+  color: #0A7EDB;
 }
 
 .sidebar-inverse #sidebar .nav-main a:hover, .sidebar-inverse #sidebar .nav-main a:focus, .sidebar-inverse #sidebar .nav-main a.active {
@@ -9978,7 +9978,7 @@ a.block.block-themed .btn-block-option:focus, .active > a.block.block-themed .bt
 }
 
 .nav-main a:hover > i, .nav-main a:focus > i, .nav-main a.active > i {
-  color: #42a5f5;
+  color: #0A7EDB;
 }
 
 .sidebar-inverse #sidebar .nav-main a:hover > i, .sidebar-inverse #sidebar .nav-main a:focus > i, .sidebar-inverse #sidebar .nav-main a.active > i {
@@ -10039,7 +10039,7 @@ a.block.block-themed .btn-block-option:focus, .active > a.block.block-themed .bt
 .nav-main ul a {
   padding: 5px 8px 5px 0;
   text-transform: none;
-  color: rgba(87, 87, 87, 0.5);
+  color: rgba(87, 87, 87, 1);
 }
 
 .nav-main ul a:focus, .nav-main ul a:hover {

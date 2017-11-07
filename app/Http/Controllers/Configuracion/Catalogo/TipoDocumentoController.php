@@ -16,7 +16,13 @@ class TipoDocumentoController extends BaseController{
 
 	public function index(){
 
-		return view('Configuracion.Catalogo.TipoDocumento.indexTipoDocumento');
+		$data['table'] = Datatable::table()
+					    ->addColumn('#','Nombre','Fecha','Validar','Opciones')       
+					    ->setUrl( url('configuracion/catalogos/tipos-documentos/post-data') )
+					    ->noScript();
+
+
+		return view('Configuracion.Catalogo.TipoDocumento.indexTipoDocumento')->with($data);
 	}
 
 	public function manager(Request $request){
@@ -29,7 +35,25 @@ class TipoDocumentoController extends BaseController{
 
 		return DataTable::collection($data)
 						->showColumns('TIDO_TIPO_DOCUMENTO','TIDO_NOMBRE_TIPO','TIDO_CREATED_AT')
-						->searchColumns('TIDO_NOMBRE_TIPO')
+						->addColumn('Validar',function($query){
+
+							if($query->TIDO_VALIDAR) return '<span class="badge badge-success">Validar</span>';
+							return '<span class="badge badge-info">No validar</span>';
+
+
+						})->addColumn('Opciones',function($query){
+
+								$buttons = '';
+							
+								$buttons .= '<button type="button" class="btn btn-xs btn-circle btn-outline-warning" onclick="hTipoDocumento.disabled('.$query->TIDO_TIPO_DOCUMENTO.')"><i class="fa fa-level-down"></i></button>';
+
+
+								$buttons .= '<button type="button" class="btn btn-xs btn-circle btn-outline-danger" onclick="hTipoDocumento.delete('.$query->TIDO_TIPO_DOCUMENTO.')"><i class="fa fa-trash"></i></button>';
+
+								return $buttons;
+
+						})
+						->searchColumns('TIDO_TIPO_DOCUMENTO','TIDO_NOMBRE_TIPO','TIDO_CREATED_AT')
 						->make();
 
 	}
