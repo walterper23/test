@@ -13,7 +13,7 @@ class DashboardController extends BaseController{
 	}
 
 	public function index(){
-		return view('Administrador.Catalogos.index');
+		return view('Dashboard.index');
 	}
 
 }

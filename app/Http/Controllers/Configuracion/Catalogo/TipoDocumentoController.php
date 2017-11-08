@@ -45,10 +45,10 @@ class TipoDocumentoController extends BaseController{
 
 								$buttons = '';
 							
-								$buttons .= '<button type="button" class="btn btn-xs btn-circle btn-outline-warning" onclick="hTipoDocumento.disabled('.$query->TIDO_TIPO_DOCUMENTO.')"><i class="fa fa-level-down"></i></button>';
+								$buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-warning" onclick="hTipoDocumento.disable('.$query->TIDO_TIPO_DOCUMENTO.')"><i class="fa fa-level-down"></i> Desactivar</button>';
 
 
-								$buttons .= '<button type="button" class="btn btn-xs btn-circle btn-outline-danger" onclick="hTipoDocumento.delete('.$query->TIDO_TIPO_DOCUMENTO.')"><i class="fa fa-trash"></i></button>';
+								$buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hTipoDocumento.delete('.$query->TIDO_TIPO_DOCUMENTO.')"><i class="fa fa-trash"></i> Eliminar</button>';
 
 								return $buttons;
 
