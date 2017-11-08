@@ -66,7 +66,7 @@ return array(
 
             'lengthMenu' => [[10, 20, 50, 100, -1],[10, 20, 50, 100, '- Todo -']],
 
-            'language' => [ 'url' => url('js/plugins/datatables/language/i18n.spanish.lang') ]
+            'language' => [ 'url' => '/js/plugins/datatables/language/i18n.spanish.lang' ]
         ),
 
         /*

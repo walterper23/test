@@ -1,30 +1,27 @@
+'use strict';
+
 var hTipoDocumento = new function(){
 
+	this.edit = function(){
+
+	}
 
 	this.disable = function( id ){
-		AppAlert.success({
+		AppAlert.error({
 			title : 'Desactivando'
 		})
 	}
 
 
 	this.delete = function( id ){
-		AppAlert.confirm({
+		AppAlert.waiting({
 
-
-			preConfirm : function(){
-				return new Promise(function (resolve) {
-                    setTimeout(function () {
-                        resolve();
-                    }, 50);
-                });
-			},
+			enterKey: false,
 			then : function(result){
 				AppAlert.success({
-					timer : 1000
+					
 				})
 			}
-
 		});
 
 	}

@@ -54,8 +54,28 @@ Route::group(['middleware'=>'auth'], function(){
 				Route::post('post-editar',     'DepartamentoController@postEditarDepartamento');
 				Route::post('post-desactivar', 'DepartamentoController@postDesactivarDepartamento');
 			});
-			
 
+			Route::group(['prefix'=>'anexos','namespace'=>'Catalogo'],function(){
+				Route::get('/',                'AnexoController@index');
+				Route::post('post-data',       'AnexoController@postDataTable');
+				Route::post('nuevo',           'AnexoController@formDepartamento');
+				Route::post('post-nuevo',      'AnexoController@postNuevoDepartamento');
+				Route::post('editar',          'AnexoController@editarDepartamento');
+				Route::post('post-editar',     'AnexoController@postEditarDepartamento');
+				Route::post('post-desactivar', 'AnexoController@postDesactivarDepartamento');
+			});
+			
+		});
+
+		Route::group(['prefix'=>'usuarios','namespace'=>'Configuracion\Usuario'], function(){
+			Route::get('/',                'UsuarioController@index');
+			Route::get('nuevo',            'UsuarioController@formTipoDocumento');
+			Route::post('post-data',       'UsuarioController@postDataTable');
+			Route::post('post-nuevo',      'UsuarioController@postNuevoTipoDocumento');
+			Route::post('editar',          'UsuarioController@editarTipoDocumento');
+			Route::post('post-editar',     'UsuarioController@postEditarTipoDocumento');
+			Route::post('post-desactivar', 'UsuarioController@postDesactivarTipoDocumento');
+			
 		});
 
 	});

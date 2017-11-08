@@ -1,38 +1,48 @@
+<?php
+    function activeMenu( $menu ){
+        return (request()->segment(2) == $menu) ? ' class="open"' : '';
+    }
+
+    function activeItemMenu( $item ){
+        return (request()->segment(3) == $item) ? ' class="active"' : '';
+    }
+
+?>
+
 <div class="content-side content-side-full">
     <ul class="nav-main">
-       
         <li class="nav-main-heading"><span class="sidebar-mini-visible">UI</span><span class="sidebar-mini-hidden">Configuraci&oacute;n</span></li>
-        <li class="open">
+        <li{!! activeMenu('catalogos') !!}>
             <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-puzzle"></i><span class="sidebar-mini-hide">Cat&aacute;logos</span></a>
             <ul>
                 <li>
-                    <a href="{{ url('/configuracion/catalogos/direcciones') }}">Direcciones</a>
+                    <a{!! activeItemMenu('direcciones') !!} href="{{ url('/configuracion/catalogos/direcciones') }}">Direcciones</a>
                 </li>
                 <li>
-                    <a href="{{ url('/configuracion/catalogos/departamentos') }}">Departamentos</a>
+                    <a{!! activeItemMenu('departamentos') !!} href="{{ url('/configuracion/catalogos/departamentos') }}">Departamentos</a>
                 </li>
                 <li>
-                    <a href="{{ url('/configuracion/catalogos/tipos-documentos') }}">Tipos de documentos</a>
+                    <a{!! activeItemMenu('tipos-documentos') !!} href="{{ url('/configuracion/catalogos/tipos-documentos') }}">Tipos de documentos</a>
                 </li>
                 <li>
-                    <a href="{{ url('/configuracion/catalogos/anexos') }}">Anexos</a>
+                    <a{!! activeItemMenu('anexos') !!} href="{{ url('/configuracion/catalogos/anexos') }}">Anexos</a>
                 </li>
             </ul>
         </li>
-        <li>
+        <li{!! activeMenu('usuarios') !!}>
             <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-users"></i><span class="sidebar-mini-hidden">Usuarios</span></a>
             <ul>
                 <li>
-                    <a href="{{ url('/configuracion/catalogos/direcciones') }}">Nuevo usuario</a>
+                    <a{!! activeItemMenu('') !!} href="{{ url('/configuracion/usuarios/') }}">Ver usuarios</a>
                 </li>
                 <li>
-                    <a href="{{ url('/configuracion/catalogos/anexos') }}">Ver usuarios</a>
+                    <a{!! activeItemMenu('nuevo') !!} href="{{ url('/configuracion/usuarios/nuevo') }}">Nuevo usuario</a>
                 </li>
                 <li>
-                    <a href="{{ url('/configuracion/catalogos/departamentos') }}">Roles</a>
+                    <a{!! activeItemMenu('roles') !!} href="{{ url('/configuracion/usuarios/roles') }}">Roles</a>
                 </li>
                 <li>
-                    <a href="{{ url('/configuracion/catalogos/tipos-documentos') }}">Permisos</a>
+                    <a{!! activeItemMenu('permisos') !!} href="{{ url('/configuracion/usuarios/permisos') }}">Permisos</a>
                 </li>
             </ul>
         </li>

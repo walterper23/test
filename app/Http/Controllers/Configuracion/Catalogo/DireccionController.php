@@ -12,7 +12,7 @@ use App\Model\Catalogo\MTipoDocumento;
 
 use DataTable;
 
-class TipoDocumentoController extends BaseController{
+class DireccionController extends BaseController{
 
 	public function index(){
 

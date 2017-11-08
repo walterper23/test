@@ -1,12 +1,17 @@
 <script type="text/javascript">
+    'use strict';
     jQuery(document).ready(function(){
         
-        oTable = jQuery('#{!! $id !!}').dataTable(
+        var oTable = jQuery('#{!! $id !!}').dataTable(
             {!! $options !!}
         );
 
-        jQuery('#{!! $id !!} tbody').on( 'click', 'tr', function () {
-	        $(this).toggleClass('alert-info');
-	    });
-    });
+        $('#importbutton').click( function () {
+			$('input:checked', oTable.fnGetNodes()).each(function(){
+				var rowIndex = oTable.fnGetPosition( $(this).closest('tr')[0] );
+				alert(oTable.fnGetData(rowIndex));
+			})
+		})
+
+    })
 </script>
