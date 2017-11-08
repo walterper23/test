@@ -23,16 +23,16 @@
             <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-users"></i><span class="sidebar-mini-hidden">Usuarios</span></a>
             <ul>
                 <li>
-                    <a href="{{ url('/configuracion/catalogos/direcciones') }}">Direcciones</a>
+                    <a href="{{ url('/configuracion/catalogos/direcciones') }}">Nuevo usuario</a>
                 </li>
                 <li>
-                    <a href="{{ url('/configuracion/catalogos/departamentos') }}">Departamentos</a>
+                    <a href="{{ url('/configuracion/catalogos/anexos') }}">Ver usuarios</a>
                 </li>
                 <li>
-                    <a href="{{ url('/configuracion/catalogos/tipos-documentos') }}">Tipos de documentos</a>
+                    <a href="{{ url('/configuracion/catalogos/departamentos') }}">Roles</a>
                 </li>
                 <li>
-                    <a href="{{ url('/configuracion/catalogos/anexos') }}">Anexos</a>
+                    <a href="{{ url('/configuracion/catalogos/tipos-documentos') }}">Permisos</a>
                 </li>
             </ul>
         </li>
