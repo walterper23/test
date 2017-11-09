@@ -16,16 +16,19 @@
             <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-puzzle"></i><span class="sidebar-mini-hide">Cat&aacute;logos</span></a>
             <ul>
                 <li>
-                    <a{!! activeItemMenu('direcciones') !!} href="{{ url('/configuracion/catalogos/direcciones') }}">Direcciones</a>
+                    <a{!! activeItemMenu('anexos') !!} href="{{ url('/configuracion/catalogos/anexos') }}">Anexos</a>
                 </li>
                 <li>
                     <a{!! activeItemMenu('departamentos') !!} href="{{ url('/configuracion/catalogos/departamentos') }}">Departamentos</a>
                 </li>
                 <li>
-                    <a{!! activeItemMenu('tipos-documentos') !!} href="{{ url('/configuracion/catalogos/tipos-documentos') }}">Tipos de documentos</a>
+                    <a{!! activeItemMenu('direcciones') !!} href="{{ url('/configuracion/catalogos/direcciones') }}">Direcciones</a>
                 </li>
                 <li>
-                    <a{!! activeItemMenu('anexos') !!} href="{{ url('/configuracion/catalogos/anexos') }}">Anexos</a>
+                    <a{!! activeItemMenu('puestos') !!} href="{{ url('/configuracion/catalogos/puestos') }}">Puestos</a>
+                </li>
+                <li>
+                    <a{!! activeItemMenu('tipos-documentos') !!} href="{{ url('/configuracion/catalogos/tipos-documentos') }}">Tipos de documentos</a>
                 </li>
             </ul>
         </li>
