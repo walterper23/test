@@ -5,18 +5,20 @@ namespace App\Model;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class MDepartamento extends Model{
+use App\Presenters\MPuestoPresenter;
+
+class MPuesto extends Model{
     
-    protected $table          = 'departamentos';
-    protected $primaryKey     = 'DEPA_DEPARTAMENTO';
+    protected $table          = 'cat_puestos';
+    protected $primaryKey     = 'PUES_PUESTO';
     public    $timestamps     = false;
 
     protected $fillable = [];
 
     protected $hidden = [];
 
-    public function getID(){
-    	return $this->attributes[ $this->primaryKey ];
+    
+    public function presenter(){
+    	return new MPuestoPresenter($this);
     }
-
 }

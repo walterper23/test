@@ -5,6 +5,8 @@ namespace App\Model;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
+use App\Presenters\MDireccionPresenter;
+
 class MDireccion extends Model{
     
     protected $table          = 'direcciones';
@@ -17,10 +19,12 @@ class MDireccion extends Model{
     protected $hidden = [
     ];
 
-    public function getID(){
-    	return $this->attributes[ $this->primaryKey ];
-    }
 
-    
+
+
+
+    public function presenter(){
+    	return new MDireccionPresenter($this);
+    }    
 
 }

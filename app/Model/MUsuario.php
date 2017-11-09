@@ -4,6 +4,8 @@ namespace App\Model;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
+use App\Presenters\MUsuarioPresenter;
+
 class MUsuario extends Authenticatable{
     
     protected $table          = 'usuarios';
@@ -49,5 +51,15 @@ class MUsuario extends Authenticatable{
 
     public function rol(){
     	return $this->hasOne('App\Model\ModeloRol', 'ROLE_ROL', 'USUA_ROL');
+    }
+
+
+
+
+
+
+
+    public function presenter(){
+        return new MUsuarioPresenter($this);
     }
 }

@@ -18,15 +18,16 @@ Route::group(['middleware'=>'auth'], function(){
 
 	Route::get('/', 'Dashboard\DashboardController@index');
 	
-	Route::group(['prefix'=>'configuracion'], function(){
+	Route::group(['prefix'=>'configuracion','namespace'=>'Configuracion'], function(){
 			
 		Route::get('/', 'Dashboard/ConfiguracionController@index');
 		
-		Route::group(['prefix'=>'catalogos','namespace'=>'Configuracion'], function(){
+		Route::group(['prefix'=>'catalogos','namespace'=>'Catalogo'], function(){
+			
 			Route::get('/', 'Administrador\CatalogoManagerController@postData');
-			// Catálogo de tipos de documentos
 
-			Route::group(['prefix'=>'anexos','namespace'=>'Catalogo'],function(){
+			// Catálogo de anexos
+			Route::group(['prefix'=>'anexos'],function(){
 				Route::get('/',                'AnexoController@index');
 				Route::post('post-data',       'AnexoController@postDataTable');
 				Route::post('nuevo',           'AnexoController@formDepartamento');
@@ -36,8 +37,8 @@ Route::group(['middleware'=>'auth'], function(){
 				Route::post('post-desactivar', 'AnexoController@postDesactivarDepartamento');
 			});
 			
-
-			Route::group(['prefix'=>'departamentos','namespace'=>'Catalogo'],function(){
+			// Catálogo de departamentos
+			Route::group(['prefix'=>'departamentos'],function(){
 				Route::get('/',                'DepartamentoController@index');
 				Route::post('post-data',       'DepartamentoController@postDataTable');
 				Route::post('nuevo',           'DepartamentoController@formDepartamento');
@@ -47,27 +48,30 @@ Route::group(['middleware'=>'auth'], function(){
 				Route::post('post-desactivar', 'DepartamentoController@postDesactivarDepartamento');
 			});
 			
-			Route::group(['prefix'=>'direcciones','namespace'=>'Catalogo'],function(){
+			// Catálogo de direcciones
+			Route::group(['prefix'=>'direcciones'],function(){
 				Route::get('/',                'DireccionController@index');
 				Route::post('post-data',       'DireccionController@postDataTable');
-				Route::post('nuevo',           'DireccionController@formTipoDocumento');
-				Route::post('post-nuevo',      'DireccionController@postNuevoTipoDocumento');
-				Route::post('editar',          'DireccionController@editarTipoDocumento');
-				Route::post('post-editar',     'DireccionController@postEditarTipoDocumento');
-				Route::post('post-desactivar', 'DireccionController@postDesactivarTipoDocumento');
+				Route::post('nuevo',           'DireccionController@formDireccion');
+				Route::post('post-nuevo',      'DireccionController@postNuevaDireccion');
+				Route::post('editar',          'DireccionController@editarDireccion');
+				Route::post('post-editar',     'DireccionController@postEditarDireccion');
+				Route::post('post-desactivar', 'DireccionController@postDesactivarDireccion');
 			});
 
-			Route::group(['prefix'=>'puestos','namespace'=>'Catalogo'],function(){
+			// Catálogo de puestos
+			Route::group(['prefix'=>'puestos'],function(){
 				Route::get('/',                'PuestoController@index');
 				Route::post('post-data',       'PuestoController@postDataTable');
-				Route::post('nuevo',           'PuestoController@formTipoDocumento');
-				Route::post('post-nuevo',      'PuestoController@postNuevoTipoDocumento');
-				Route::post('editar',          'PuestoController@editarTipoDocumento');
-				Route::post('post-editar',     'PuestoController@postEditarTipoDocumento');
-				Route::post('post-desactivar', 'PuestoController@postDesactivarTipoDocumento');
+				Route::post('nuevo',           'PuestoController@formPuesto');
+				Route::post('post-nuevo',      'PuestoController@postNuevoPuesto');
+				Route::post('editar',          'PuestoController@editarPuesto');
+				Route::post('post-editar',     'PuestoController@postEditarPuesto');
+				Route::post('post-desactivar', 'PuestoController@postDesactivarPuesto');
 			});
 
-			Route::group(['prefix'=>'tipos-documentos','namespace'=>'Catalogo'],function(){
+			// Catálogo de tipos de documentos
+			Route::group(['prefix'=>'tipos-documentos'],function(){
 				Route::get('/',                'TipoDocumentoController@index');
 				Route::post('post-data',       'TipoDocumentoController@postDataTable');
 				Route::post('nuevo',           'TipoDocumentoController@formTipoDocumento');
@@ -78,14 +82,14 @@ Route::group(['middleware'=>'auth'], function(){
 			});
 		});
 
-		Route::group(['prefix'=>'usuarios','namespace'=>'Configuracion\Usuario'], function(){
+		Route::group(['prefix'=>'usuarios','namespace'=>'Usuario'], function(){
 			Route::get('/',                'UsuarioController@index');
 			Route::get('nuevo',            'UsuarioController@formTipoDocumento');
 			Route::post('post-data',       'UsuarioController@postDataTable');
-			Route::post('post-nuevo',      'UsuarioController@postNuevoTipoDocumento');
-			Route::post('editar',          'UsuarioController@editarTipoDocumento');
-			Route::post('post-editar',     'UsuarioController@postEditarTipoDocumento');
-			Route::post('post-desactivar', 'UsuarioController@postDesactivarTipoDocumento');
+			Route::post('post-nuevo',      'UsuarioController@postNuevoUsuario');
+			Route::post('editar',          'UsuarioController@editarUsuario');
+			Route::post('post-editar',     'UsuarioController@postEditarUsuario');
+			Route::post('post-desactivar', 'UsuarioController@postDesactivarUsuario');
 			
 		});
 

@@ -5,7 +5,9 @@ namespace App\Model;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class ModeloStatus extends Model{
+use App\Presenters\MStatusPresenter;
+
+class MStatus extends Model{
     
     protected $table          = 'status';
     protected $primaryKey     = 'STAT_STATUS';
@@ -21,6 +23,13 @@ class ModeloStatus extends Model{
 
     public function getNombre(){
     	return $this->attributes['STAT_NOMBRE'];
+    }
+
+
+
+
+    public function presenter(){
+        return new MStatusPresenter($this);
     }
 
 }
