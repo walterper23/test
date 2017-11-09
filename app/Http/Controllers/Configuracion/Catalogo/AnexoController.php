@@ -94,7 +94,7 @@ class AnexoController extends BaseController{
 		}
 	}
 
-	public function eliminarAnexo( $id ){
+	public function postEliminarAnexo( $id ){
 		try{
 			$tipoDocumento = MTipoDocumento::findOrFail( $id )->where('TIDO_ENABLED',1)->where('TIDO_DELETED',0)->limit(1)->first();
 
