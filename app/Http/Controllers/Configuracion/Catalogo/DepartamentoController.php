@@ -33,30 +33,8 @@ class DepartamentoController extends BaseController{
 
 		$data = MTipoDocumento::where('TIDO_DELETED',0)->get();
 
-		return DataTable::collection($data)
-						->showColumns('TIDO_TIPO_DOCUMENTO','TIDO_NOMBRE_TIPO','TIDO_CREATED_AT')
-						->addColumn('Validar',function($query){
-
-							if($query->TIDO_VALIDAR) return '<span class="badge badge-success">Validar</span>';
-							return '<span class="badge badge-info">No validar</span>';
-
-
-						})->addColumn('Opciones',function($query){
-
-								$buttons = '';
-							
-								$buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-warning" onclick="hTipoDocumento.disable('.$query->TIDO_TIPO_DOCUMENTO.')"><i class="fa fa-level-down"></i> Desactivar</button>';
-
-
-								$buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hTipoDocumento.delete('.$query->TIDO_TIPO_DOCUMENTO.')"><i class="fa fa-trash"></i> Eliminar</button>';
-								
-								$buttons .= '<input type="checkbox" value="'.$query->TIDO_TIPO_DOCUMENTO.'"> Marcar';
-
-								return $buttons;
-
-						})
-						->searchColumns('TIDO_TIPO_DOCUMENTO','TIDO_NOMBRE_TIPO','TIDO_CREATED_AT')
-						->make();
+		return DataTable::collection($data);
+						
 
 	}
 
@@ -64,23 +42,23 @@ class DepartamentoController extends BaseController{
 	 * Description
 	 * @return type
 	 */
-	public function formTipoDocumento(){
+	public function formDepartamento(){
 		try{
 
-			$data['title'] = 'Nuevo tipo de documento';
+			$data['title'] = 'Nuevo departamento';
 			
-			$data['form_id'] = 'form-nuevo-tipo-documento';
-			$data['url_send_form'] = url('configuracion/catalogos/tipos-documentos/post-nuevo');
+			$data['form_id'] = 'form-departamento';
+			$data['url_send_form'] = url('configuracion/catalogos/departamentos/post-nuevo');
 			
-			$data['model'] = new MTipoDocumento;
+			$data['model'] = new MDepartamento;
 
-			return view('Configuracion.Catalogo.TipoDocumento.formTipoDocumento')->with($data);
+			return view('Configuracion.Catalogo.Departamento.formDepartamento')->with($data);
 		}catch(Exception $error){
 
 		}
 	}
 
-	public function postNuevoTipoDocumento(){
+	public function postNuevoDepartamento(){
 		try{
 			$data = Input::all();
 
@@ -108,7 +86,7 @@ class DepartamentoController extends BaseController{
 		}
 	}
 
-	public function postEditarTipoDocumento(){
+	public function postEditarDepartamento(){
 		try{
 
 
@@ -117,7 +95,7 @@ class DepartamentoController extends BaseController{
 		}
 	}
 
-	public function eliminarTipoDocumento( $id ){
+	public function eliminarDepartamento( $id ){
 		try{
 			$tipoDocumento = MTipoDocumento::findOrFail( $id )->where('TIDO_ENABLED',1)->where('TIDO_DELETED',0)->limit(1)->first();
 
