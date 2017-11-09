@@ -46,7 +46,7 @@ class PuestoController extends BaseController{
 
 			$data['Puesto'] = 'Nuevo Puesto';
 			
-			$data['form-puestp'] = 'form-nuevo-tipo-documento';
+			$data['form-id'] = 'formPuesto';
 			$data['url_send_form'] = url('configuracion/catalogos/puesto/post-nuevo');
 			
 			$data['model'] = new MPuesto;
