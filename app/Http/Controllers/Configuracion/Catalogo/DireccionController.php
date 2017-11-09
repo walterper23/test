@@ -33,7 +33,7 @@ class DireccionController extends BaseController{
 
 		$data = MTipoDocumento::where('TIDO_DELETED',0)->get();
 
-		return DataTable::collection($data)
+		return DataTable::collection($data);
 						
 
 	}
@@ -95,7 +95,7 @@ class DireccionController extends BaseController{
 		}
 	}
 
-	public function eliminarDireccion( $id ){
+	public function postEliminarDireccion( $id ){
 		try{
 			$tipoDocumento = MDireccion::findOrFail( $id )->where('TIDO_ENABLED',1)->where('TIDO_DELETED',0)->limit(1)->first();
 
