@@ -22,7 +22,7 @@
 	                    <button type="button" class="btn btn-alt-primary" id="importbutton"><i class="fa fa-plus"></i> Checar</button>
                     </div>
                     <div class="table-responsive">
-                        {!! $table->render() !!}
+                        {!! $table->table() !!}
                     </div>
                	</div>
 
@@ -45,5 +45,5 @@
 @endpush
 
 @push('js-custom')
-    {!! $table->script() !!}
+    {!! $table->scripts() !!}
 @endpush

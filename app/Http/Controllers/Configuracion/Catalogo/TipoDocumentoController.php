@@ -10,17 +10,18 @@ use Validator;
 
 use App\Model\Catalogo\MTipoDocumento;
 
-use DataTable;
+use Yajra\DataTables\DataTables;
 
 class TipoDocumentoController extends BaseController{
 
-	public function index(){
+	public function index(DataTables $datatables){
 
-		$data['table'] = Datatable::table()
-					    ->addColumn('#','Nombre','Fecha','Validar','Opciones')       
-					    ->setUrl( url('configuracion/catalogos/tipos-documentos/post-data') )
-					    ->noScript();
+		$columns = ['opciones','id','nombre','fecha','validar'];
 
+		$data['table'] = $datatables->getHtmlBuilder()
+							->columns($columns)
+							->parameters(['saveState'=>true])
+							->ajax(['method'=>'POST','url'=>url('configuracion/catalogos/tipos-documentos/post-data')]);
 
 		return view('Configuracion.Catalogo.TipoDocumento.indexTipoDocumento')->with($data);
 	}
@@ -31,9 +32,42 @@ class TipoDocumentoController extends BaseController{
 
 	public function postDataTable(){
 
-		$data = MTipoDocumento::where('TIDO_DELETED',0)->get();
+		$data = MTipoDocumento::selectRaw('TIDO_TIPO_DOCUMENTO as id, TIDO_NOMBRE_TIPO as nombre, TIDO_CREATED_AT as fecha, TIDO_VALIDAR')->where('TIDO_DELETED',0);
 
-		return DataTable::collection($data)
+		return DataTables::of($data)
+						->addColumn('validar', function($query){
+							if($query->TIDO_VALIDAR == 1){
+								return '<span class="badge badge-success">Validar</span>';
+							}
+							return '<span class="badge badge-info">No validar</span>';
+						})
+						->addColumn('opciones',function($query){
+							$buttons = '';
+							
+								$buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-warning" onclick="hTipoDocumento.disable('.$query->TIDO_TIPO_DOCUMENTO.')"><i class="fa fa-level-down"></i></button>';
+
+
+								$buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hTipoDocumento.delete('.$query->TIDO_TIPO_DOCUMENTO.')"><i class="fa fa-trash"></i></button>';
+								
+								$buttons .= '<input type="checkbox" value="'.$query->TIDO_TIPO_DOCUMENTO.'"> Marcar';
+
+								return $buttons;
+						},1)
+						->filterColumn('id', function($query, $keyword){
+							$query->whereRaw("id like ?", ["%{$keyword}%"]);
+						})
+						->filterColumn('nombre', function($query, $keyword){
+							$query->whereRaw("nombre like ?", ["%{$keyword}%"]);
+						})
+						->filterColumn('fecha', function($query, $keyword){
+							$query->whereRaw("fecha like ?", ["%{$keyword}%"]);
+						})
+						->removeColumn('TIDO_VALIDAR')
+						->rawColumns(['validar','opciones'])
+						->make();
+
+		/*
+		return DataTables::collection($data)
 						->showColumns('TIDO_TIPO_DOCUMENTO','TIDO_NOMBRE_TIPO','TIDO_CREATED_AT')
 						->addColumn('Validar',function($query){
 
@@ -43,21 +77,12 @@ class TipoDocumentoController extends BaseController{
 
 						})->addColumn('Opciones',function($query){
 
-								$buttons = '';
-							
-								$buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-warning" onclick="hTipoDocumento.disable('.$query->TIDO_TIPO_DOCUMENTO.')"><i class="fa fa-level-down"></i> Desactivar</button>';
-
-
-								$buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hTipoDocumento.delete('.$query->TIDO_TIPO_DOCUMENTO.')"><i class="fa fa-trash"></i> Eliminar</button>';
 								
-								$buttons .= '<input type="checkbox" value="'.$query->TIDO_TIPO_DOCUMENTO.'"> Marcar';
-
-								return $buttons;
 
 						})
 						->searchColumns('TIDO_TIPO_DOCUMENTO','TIDO_NOMBRE_TIPO','TIDO_CREATED_AT')
 						->make();
-
+		*/
 	}
 
 	/**
