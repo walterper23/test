@@ -5,29 +5,27 @@ namespace App\Presenters;
 class MStatusPresenter extends Presenter{
 
 	public function badge(){
-        $status = '';
-        switch ( $this->getStatusID() ) {
+        switch ( $this->model->getKey() ) {
             case 1:
-                $status = '<span class="uk-badge uk-badge-primary">' . $this->status->getNombre() . '</span>';
+                return '<span class="uk-badge uk-badge-primary">' . $this->model->getNombre() . '</span>';
                 break;
             case 2:
-                $status = '<span class="uk-badge uk-badge-warning">' . $this->status->getNombre() . '</span>';
+                return '<span class="uk-badge uk-badge-warning">' . $this->model->getNombre() . '</span>';
                 break;
             case 3:
-                $status = '<span class="uk-badge uk-badge-warning">' . $this->status->getNombre() . '</span>';
+                return '<span class="uk-badge uk-badge-warning">' . $this->model->getNombre() . '</span>';
                 break;
             case 4:
-                $status = '<span class="uk-badge uk-badge-warning">' . $this->status->getNombre() . '</span>';
+                return '<span class="uk-badge uk-badge-warning">' . $this->model->getNombre() . '</span>';
                 break;
             case 5:
-                $status = '<span class="uk-badge uk-badge-danger">' . $this->status->getNombre() . '</span>';
+                return '<span class="uk-badge uk-badge-danger">' . $this->model->getNombre() . '</span>';
                 break;
             case 6:
-                $status = '<span class="uk-badge uk-badge-success">' . $this->status->getNombre() . '</span>';
+                return '<span class="uk-badge uk-badge-success">' . $this->model->getNombre() . '</span>';
                 break;
             default: break;
         }
-        return $status;
     }
 
 }

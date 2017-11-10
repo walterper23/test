@@ -6,6 +6,7 @@
 
 @push('css-style')
     {{ Html::style('js/plugins/datatables/dataTables.bootstrap4.min.css') }}
+    {{ Html::style('js/plugins/datatables/buttons1.4.2/css/datatables.buttons.bootstrap4.min.css') }}
     {{ Html::style('js/plugins/sweetalert2/sweetalert2.min.css') }}
 @endpush
 
@@ -19,7 +20,7 @@
                    @include('Configuracion.Catalogo.navbarItems')
                     <div class="col-12">
                         <button type="button" class="btn btn-alt-primary" onclick="App.openModal({ title : 'Ricardo', url : '/configuracion/catalogos/tipos-documentos/nuevo', id : 'form-nuevo-tipo-documento' })"><i class="fa fa-plus"></i> Nuevo</button>
-	                    <button type="button" class="btn btn-alt-primary" id="importbutton"><i class="fa fa-plus"></i> Checar</button>
+	                    <!--button type="button" class="btn btn-alt-primary" id="importbutton"><i class="fa fa-plus"></i> Checar</button-->
                     </div>
                     <div class="table-responsive">
                         {!! $table->table() !!}
@@ -37,7 +38,8 @@
     {{ Html::script('js/plugins/jquery-validation/jquery.validate.min.js') }}
     {{ Html::script('js/plugins/datatables/jquery.dataTables.min.js') }}
     {{ Html::script('js/plugins/datatables/dataTables.bootstrap4.min.js') }}
-    {{ Html::script('js/plugins/datatables/dataTables.select.min.js') }}
+    {{ Html::script('js/plugins/datatables/buttons1.4.2/js/dataTables.buttons.bootstrap4.min.js') }}
+    {{ Html::script('js/plugins/datatables/buttons1.4.2/js/dataTables.buttons.server-side.js') }}
     {{ Html::script('js/plugins/sweetalert2/sweetalert2.min.js') }}
     {{ Html::script('js/helpers/tipo_documento.helper.js') }}
     {{ Html::script('js/app-form.js') }}

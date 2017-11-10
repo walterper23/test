@@ -17,15 +17,9 @@ class MStatus extends Model{
 
     protected $hidden = [];
 
-    public function getID(){
-    	return $this->attributes[ $this->primaryKey ];
-    }
-
     public function getNombre(){
     	return $this->attributes['STAT_NOMBRE'];
     }
-
-
 
 
     public function presenter(){

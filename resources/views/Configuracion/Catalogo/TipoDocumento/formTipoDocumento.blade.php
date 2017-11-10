@@ -11,7 +11,7 @@
         <div class="form-group row">
             <label class="col-sm-3 col-form-label" for="nombre">Nombre</label>
             <div class="col-sm-9">
-            	{{ Form::text('nombre',null,['id'=>'nombre','class'=>'form-control','placeholder'=>'Nombre del tipo de documento']) }}
+            	{{ Form::text('nombre',null,['id'=>'nombre','class'=>'form-control','placeholder'=>'Nombre del tipo de documento','autofocus']) }}
             </div>
         </div>
 	{{ Form::close() }}

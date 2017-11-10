@@ -180,7 +180,8 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         Chumper\Datatable\DatatableServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
-        Yajra\DataTables\HtmlServiceProvider::class
+        Yajra\DataTables\HtmlServiceProvider::class,
+        Yajra\DataTables\ButtonsServiceProvider::class,
 
     ],
 

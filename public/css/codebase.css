@@ -192,6 +192,7 @@ a {
   text-decoration: none;
   background-color: transparent;
   -webkit-text-decoration-skip: objects;
+  cursor: pointer;
 }
 
 a:hover {
@@ -305,6 +306,7 @@ html [type="button"],
 [type="reset"],
 [type="submit"] {
   -webkit-appearance: button;
+
 }
 
 button::-moz-focus-inner,
@@ -8916,7 +8918,8 @@ textarea.form-control.form-control-lg, .input-group-lg > textarea.form-control,
   position: relative;
   margin: 0 auto;
   width: 100%;
-  background-color: #fff;
+  /*background-color: #fff;*/
+  background-color: #4a6a82;
 }
 
 .overlay-header {

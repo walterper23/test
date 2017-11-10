@@ -26,6 +26,11 @@ class MTipoDocumento extends Model{
     }
 
 
+    public function hasMany(){
+        
+    }
+
+
     public function presenter(){
         return new MTipoDocumentoPresenter($this);
     }
