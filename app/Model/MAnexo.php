@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 use App\Presenters\MAnexoPresenter;
 
-class MTipoAnexo extends Model{
+class MAnexo extends Model{
     
     protected $table          = 'cat_anexos';
     protected $primaryKey     = 'ANEX_ANEXO';

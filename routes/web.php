@@ -30,12 +30,12 @@ Route::group(['middleware'=>'auth'], function(){
 			Route::group(['prefix'=>'anexos'],function(){
 				Route::get('/',                'AnexoController@index');
 				Route::post('post-data',       'AnexoController@postDataTable');
-				Route::post('nuevo',           'AnexoController@formDepartamento');
-				Route::post('post-nuevo',      'AnexoController@postNuevoDepartamento');
-				Route::post('editar',          'AnexoController@editarDepartamento');
-				Route::post('post-editar',     'AnexoController@postEditarDepartamento');
-				Route::post('post-desactivar', 'AnexoController@postDesactivarDepartamento');
-				Route::post('post-eliminar',   'AnexoController@postEliminarDepartamento');
+				Route::post('nuevo',           'AnexoController@formAnexo');
+				Route::post('post-nuevo',      'AnexoController@postNuevoAnexo');
+				Route::post('editar',          'AnexoController@editarAnexo');
+				Route::post('post-editar',     'AnexoController@postEditarAnexo');
+				Route::post('post-desactivar', 'AnexoController@postDesactivarAnexo');
+				Route::post('post-eliminar',   'AnexoController@postEliminarAnexo');
 			});
 			
 			// Catálogo de departamentos
