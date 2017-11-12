@@ -9,7 +9,7 @@ use App\Presenters\MDepartamentoPresenter;
 
 class MDepartamento extends Model{
     
-    protected $table          = 'departamentos';
+    protected $table          = 'cat_departamentos';
     protected $primaryKey     = 'DEPA_DEPARTAMENTO';
     public    $timestamps     = false;
 
