@@ -35,6 +35,7 @@ Route::group(['middleware'=>'auth'], function(){
 				Route::post('editar',          'AnexoController@editarDepartamento');
 				Route::post('post-editar',     'AnexoController@postEditarDepartamento');
 				Route::post('post-desactivar', 'AnexoController@postDesactivarDepartamento');
+				Route::post('post-eliminar',   'AnexoController@postEliminarDepartamento');
 			});
 			
 			// Catálogo de departamentos
@@ -46,6 +47,7 @@ Route::group(['middleware'=>'auth'], function(){
 				Route::post('editar',          'DepartamentoController@editarDepartamento');
 				Route::post('post-editar',     'DepartamentoController@postEditarDepartamento');
 				Route::post('post-desactivar', 'DepartamentoController@postDesactivarDepartamento');
+				Route::post('post-eliminar',   'DepartamentoController@postEliminarDepartamento');
 			});
 			
 			// Catálogo de direcciones
@@ -57,6 +59,7 @@ Route::group(['middleware'=>'auth'], function(){
 				Route::post('editar',          'DireccionController@editarDireccion');
 				Route::post('post-editar',     'DireccionController@postEditarDireccion');
 				Route::post('post-desactivar', 'DireccionController@postDesactivarDireccion');
+				Route::post('post-eliminar',   'DireccionController@postEliminarDireccion');
 			});
 
 			// Catálogo de puestos
@@ -68,6 +71,7 @@ Route::group(['middleware'=>'auth'], function(){
 				Route::post('editar',          'PuestoController@editarPuesto');
 				Route::post('post-editar',     'PuestoController@postEditarPuesto');
 				Route::post('post-desactivar', 'PuestoController@postDesactivarPuesto');
+				Route::post('post-eliminar',   'PuestoController@postEliminarPuesto');
 			});
 
 			// Catálogo de tipos de documentos
@@ -79,6 +83,7 @@ Route::group(['middleware'=>'auth'], function(){
 				Route::post('editar',          'TipoDocumentoController@editarTipoDocumento');
 				Route::post('post-editar',     'TipoDocumentoController@postEditarTipoDocumento');
 				Route::post('post-desactivar', 'TipoDocumentoController@postDesactivarTipoDocumento');
+				Route::post('post-eliminar',   'TipoDocumentoController@postEliminarTipoDocumento');
 			});
 		});
 
@@ -90,6 +95,7 @@ Route::group(['middleware'=>'auth'], function(){
 			Route::post('editar',          'UsuarioController@editarUsuario');
 			Route::post('post-editar',     'UsuarioController@postEditarUsuario');
 			Route::post('post-desactivar', 'UsuarioController@postDesactivarUsuario');
+			Route::post('post-eliminar',   'UsuarioController@postEliminarUsuario');
 			
 		});
 

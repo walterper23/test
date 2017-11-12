@@ -14,6 +14,9 @@ class PuestoController extends BaseController{
 
 	public function index(){
 
+
+
+		return view('');
 	}
 
 	public function manager(Request $request){
