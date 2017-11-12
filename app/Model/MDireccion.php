@@ -23,6 +23,14 @@ class MDireccion extends Model{
 
 
 
+
+    /** Relationships **/
+
+
+
+    /** ************ **/
+
+
     public function presenter(){
     	return new MDireccionPresenter($this);
     }    

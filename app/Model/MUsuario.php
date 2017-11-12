@@ -47,7 +47,10 @@ class MUsuario extends Authenticatable{
     public function setRememberToken($value){
         $this->USUA_REMEMBER_TOKEN = $value;
     }
-    /***** Relationships *****/
+
+
+    
+    /** Relationships **/
 
     public function rol(){
     	return $this->hasOne('App\Model\ModeloRol', 'ROLE_ROL', 'USUA_ROL');
@@ -55,7 +58,7 @@ class MUsuario extends Authenticatable{
 
 
 
-
+    /** ************ **/
 
 
 

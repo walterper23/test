@@ -26,10 +26,15 @@ class MTipoDocumento extends Model{
     }
 
 
-    public function hasMany(){
-        
+
+    /** Relationships **/
+    public function documentos(){
+        return $this->hasMany('App\Model\MDocumento','DOCU_TIPO_DOCUMENTO',$this->primaryKey);
     }
 
+
+
+    /** ************ **/
 
     public function presenter(){
         return new MTipoDocumentoPresenter($this);

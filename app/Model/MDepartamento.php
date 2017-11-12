@@ -21,6 +21,12 @@ class MDepartamento extends Model{
 
 
 
+    /** Relationships **/
+
+
+    /** ************ **/
+
+
     public function presenter(){
     	return new MDepartamentoPresenter($this);
     }

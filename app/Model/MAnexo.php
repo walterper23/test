@@ -18,8 +18,11 @@ class MTipoAnexo extends Model{
     protected $hidden = [];
 
     
+    /** Relationships **/
 
 
+
+    /** ************ **/
 
 
     public function presenter(){

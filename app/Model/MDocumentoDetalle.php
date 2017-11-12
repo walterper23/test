@@ -17,9 +17,15 @@ class MDocumentoDetalle extends Model{
     protected $hidden = [
     ];
 
+
+
+    /** Relationships **/
+
+
     public function documento(){
         return $this->belongsTo('App\Model\MDocumento','DOCU_DOCUMENTO','DODE_DOCUMENTO');
     }
 
+    /** ************ **/
 
 }

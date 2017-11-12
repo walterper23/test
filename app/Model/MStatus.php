@@ -22,6 +22,18 @@ class MStatus extends Model{
     }
 
 
+
+
+
+
+    /** Relationships **/
+
+    public function documentos(){
+        return $this->hasMany('App\Model\MDocumento','DOCU_STATUS',$this->primaryKey);
+    }
+
+    /** ************ **/
+
     public function presenter(){
         return new MStatusPresenter($this);
     }

@@ -18,6 +18,17 @@ class MPuesto extends Model{
     protected $hidden = [];
 
     
+
+
+
+
+    /** Relationships **/
+
+
+
+    /** ************ **/
+
+
     public function presenter(){
     	return new MPuestoPresenter($this);
     }
