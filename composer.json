@@ -6,7 +6,6 @@
     "type": "project",
     "require": {
         "php": "^7.0",
-        "chumper/datatable": "dev-develop",
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "^5.4.0",
