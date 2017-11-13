@@ -9,7 +9,7 @@ use App\Presenters\MDireccionPresenter;
 
 class MDireccion extends Model{
     
-    protected $table          = 'direcciones';
+    protected $table          = 'cat_direcciones';
     protected $primaryKey     = 'DIRE_DIRECCION';
     public    $timestamps     = false;
 
