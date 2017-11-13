@@ -6,24 +6,29 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Input;
 use App\Http\Controllers\BaseController;
-use Validator;
+use App\DataTables\TiposDocumentosDataTable;
 
 use App\Model\Catalogo\MTipoDocumento;
 
-use Yajra\DataTables\DataTables;
+
+use Validator;
 
 class TipoDocumentoController extends BaseController{
 
-	public function index(DataTables $datatables){
+	public function index(TiposDocumentosDataTable $datatables){
 
-		$columns = ['#','id','nombre','fecha','validar','opciones'];
+		
+
+		/*
+		//$columns = ['#','id','nombre','fecha','validar','opciones'];
 
 		$data['table'] = $datatables->getHtmlBuilder()
 							->columns($columns)	
 							->parameters(['dom' => 'Bfrtip','buttons' => ['reload','export'],'saveState'=>true])
-							->ajax(['method'=>'POST','url'=>url('configuracion/catalogos/tipos-documentos/post-data')]);
+							->ajax();
+		*/
 
-		return view('Configuracion.Catalogo.TipoDocumento.indexTipoDocumento')->with($data);
+		return view('Configuracion.Catalogo.TipoDocumento.indexTipoDocumento')->with('table', $datatables);
 	}
 
 	public function manager(Request $request){
