@@ -2,82 +2,61 @@
 
 namespace App\DataTables;
 
-use App\User;
-use Yajra\DataTables\Services\DataTable;
-use Yajra\DataTables\EloquentDataTable;
+use App\Model\Catalogo\MPuesto;
 
-class PuestosDataTable extends DataTable
-{
-    /**
-     * Build DataTable class.
-     *
-     * @param mixed $query Results from query() method.
-     * @return \Yajra\DataTables\DataTableAbstract
-     */
-    public function dataTable($query)
-    {
-        $dataTable = new EloquentDataTable($query);
-
-        return $dataTable->addColumn('action', 'puestos.action');
+class PuestosDataTable extends CustomDataTable{
+    
+    protected function setSourceData(){
+        $this->sourceData = MPuesto::select(['PUES_PUESTO','PUES_NOMBRE','PUES_CREATED_AT','PUES_ENABLED'])
+                            ->where('PUES_DELETED',0);
     }
 
-    /**
-     * Get query source of dataTable.
-     *
-     * @param \App\User $model
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function query(User $model)
-    {
-        return $model->newQuery()->select($this->getColumns());
-    }
-
-    /**
-     * Optional method if you want to use html builder.
-     *
-     * @return \Yajra\DataTables\Html\Builder
-     */
-    public function html()
-    {
-        return $this->builder()
-                    ->columns($this->getColumns())
-                    ->minifiedAjax()
-                    ->addAction(['width' => '80px'])
-                    ->parameters([
-                        'dom'     => 'Bfrtip',
-                        'order'   => [[0, 'desc']],
-                        'buttons' => [
-                            'create',
-                            'export',
-                            'print',
-                            'reset',
-                            'reload',
-                        ],
-                    ]);
-    }
-
-    /**
-     * Get columns.
-     *
-     * @return array
-     */
-    protected function getColumns()
-    {
+    protected function columnsTable(){
         return [
-            'id',
-            'add your columns',
-            'created_at',
-            'updated_at'
+            [
+                'title'  => '#',
+                'render' => function($query){
+                    return '<div class="custom-controls-stacked">
+                            <label class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="remember" name="remember" value="'.$query->PUES_PUESTO.'">
+                                <span class="custom-control-indicator"></span>
+                            </label>
+                        </div>';
+                },
+                'searchable' => false,
+                'orderable'  => false,
+            ],
+            [
+                'title' => 'Departamento',
+                'render' => function($query){
+                    return 'nombre del departamento';
+                }
+            ],
+            [
+                'title' => 'Opciones',
+                'render' => function($query){
+                    $buttons = '';
+
+                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-primary" onclick="hTipoDocumento.delete('.$query->PUES_PUESTO.')"><i class="fa fa-eye"></i></button>';
+
+                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hTipoDocumento.delete('.$query->PUES_PUESTO.')"><i class="fa fa-pencil"></i></button>';
+                
+                    if($query->PUES_ENABLED == 1){
+                        $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hTipoDocumento.disable('.$query->PUES_PUESTO.')"><i class="fa fa-level-down"></i></button>';
+                    }else{
+                        $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hTipoDocumento.enabled('.$query->PUES_PUESTO.')"><i class="fa fa-level-up"></i></button>';
+                    }
+
+                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hTipoDocumento.delete('.$query->PUES_PUESTO.')"><i class="fa fa-trash"></i></button>';
+                    
+                    return $buttons;
+                }
+            ]
         ];
     }
 
-    /**
-     * Get filename for export.
-     *
-     * @return string
-     */
-    protected function filename()
-    {
-        return 'puestos_' . time();
+    protected function getUrlAjax(){
+        return url('configuracion/catalogos/puestos/post-data');
     }
+
 }

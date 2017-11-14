@@ -1,8 +1,7 @@
-@extends ('tema.app')
+@extends ('Tema.app')
 
 @section('title')
-
-Catalogo:sección-Departamento 
+    Catalogo:sección-Departamento 
 @endsection
 
 @section('content')
@@ -19,21 +18,16 @@ Catalogo:sección-Departamento
 	                    <!--button type="button" class="btn btn-alt-primary" id="importbutton"><i class="fa fa-plus"></i> Checar</button-->
                     </div>
                     <div class="table-responsive">
-                    	{{ $table->table() }}
-
+                    	{{ $table->html() }}
                     </div>
-                   
                	</div>
-
             </div>
             <!-- END Block Tabs Alternative Style -->
         </div>
     </div>
     <!-- END Block Tabs -->
-
-<h1>Erick</h1>
-
 @endsection
+
 @push('js-script')
     {{ Html::script('js/plugins/jquery-validation/jquery.validate.min.js') }}
     {{ Html::script('js/plugins/datatables/jquery.dataTables.min.js') }}
@@ -47,5 +41,5 @@ Catalogo:sección-Departamento
 @endpush
 
 @push('js-custom')
-    {!! $table->scripts() !!}
+    {!! $table->javascript() !!}
 @endpush

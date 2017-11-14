@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "b197f2208ed9530f675226eeeb8d4180",
+    "content-hash": "65e563d8540a500e4bd84c44d8281c5d",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -2238,6 +2238,70 @@
                 "environment"
             ],
             "time": "2016-09-01T10:05:43+00:00"
+        },
+        {
+            "name": "yajra/laravel-acl",
+            "version": "v3.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/yajra/laravel-acl.git",
+                "reference": "67516cbfa0079b84e346b3c181917c32294d0220"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/yajra/laravel-acl/zipball/67516cbfa0079b84e346b3c181917c32294d0220",
+                "reference": "67516cbfa0079b84e346b3c181917c32294d0220",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "~5.3",
+                "illuminate/support": "~5.3",
+                "php": ">=5.6.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*",
+                "scrutinizer/ocular": "~1.1",
+                "squizlabs/php_codesniffer": "~2.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.0-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Yajra\\Acl\\AclServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Yajra\\Acl\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Arjay Angeles",
+                    "email": "aqangeles@gmail.com",
+                    "homepage": "http://yajrabox.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Laravel ACL is a simple role, permission ACL for Laravel Framework.",
+            "homepage": "https://github.com/yajra/laravel-acl",
+            "keywords": [
+                "acl",
+                "laravel",
+                "permissions",
+                "role",
+                "user",
+                "yajra"
+            ],
+            "time": "2017-10-10T01:50:24+00:00"
         },
         {
             "name": "yajra/laravel-datatables-buttons",
