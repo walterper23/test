@@ -40,7 +40,7 @@ class DireccionController extends BaseController{
 
 	public function postDataTable(){
 
-		$data = MDireccion::selectRaw('TIDO_TIPO_DOCUMENTO as id, TIDO_NOMBRE_TIPO as nombre, TIDO_CREATED_AT as fecha, TIDO_VALIDAR, TIDO_ENABLED')->where('TIDO_DELETED',0);
+		$data = MDireccion::selectRaw(' as id, TIDO_NOMBRE_TIPO as nombre, TIDO_CREATED_AT as fecha, TIDO_VALIDAR, TIDO_ENABLED')->where('TIDO_DELETED',0);
 
 		return DataTables::of($data)
 			->addColumn('#', function($query){
