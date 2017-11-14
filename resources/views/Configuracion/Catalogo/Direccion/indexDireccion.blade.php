@@ -1,12 +1,11 @@
-@extends('tema.app')
+@extends('Tema.app')
 
 @section('title')
-SIGESD :: Catalogos -Direcciones
+    SIGESD :: Catalogos -Direcciones
 @endsection
 
 @section('content')
-
-<!-- Block Tabs -->
+    <!-- Block Tabs -->
     <div class="row">
         <div class="col-lg-12">
             <!-- Block Tabs Alternative Style -->
@@ -18,25 +17,15 @@ SIGESD :: Catalogos -Direcciones
 	                    <!--button type="button" class="btn btn-alt-primary" id="importbutton"><i class="fa fa-plus"></i> Checar</button-->
                     </div>
                     <div class="table-responsive">
-                    	{{$table->table()}}
+                    	{{$table->html()}}
                     </div>
-                    
                	</div>
-
             </div>
             <!-- END Block Tabs Alternative Style -->
         </div>
     </div>
     <!-- END Block Tabs -->
-
-
-
-
 @endsection
-
-@push('js-custom')
-{!!$table->scripts()!!}
-@endpush
 
 @push('js-script')
     {{ Html::script('js/plugins/jquery-validation/jquery.validate.min.js') }}
@@ -48,4 +37,8 @@ SIGESD :: Catalogos -Direcciones
     {{ Html::script('js/helpers/tipo_documento.helper.js') }}
     {{ Html::script('js/app-form.js') }}
     {{ Html::script('js/app-alert.js') }}
+@endpush
+
+@push('js-custom')
+    {!! $table->javascript() !!}
 @endpush

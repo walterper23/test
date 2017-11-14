@@ -12,7 +12,8 @@ use App\Http\Controllers\BaseController;
 use App\DataTables\DepartamentosDataTable;
 
 /* Models */
-use App\Model\MDepartamento;
+use App\Model\Catalogo\MDireccion;
+use App\Model\Catalogo\MDepartamento;
 
 class DepartamentoController extends BaseController{
 	
@@ -31,7 +32,7 @@ class DepartamentoController extends BaseController{
 			$data['title']= 'Nuevo Departamento';
 			$data['url_send_form']= '';
 			$data['form_id']='';
-			$data['direcciones']=MDireccion::select('DIRE_DIRECCION','DIRE_NOMBRE')->pluck('DIRE_NOMBRE','DIRE_DIRECCION')->toArray();
+			$data['direcciones'] = MDireccion::select('DIRE_DIRECCION','DIRE_NOMBRE')->pluck('DIRE_NOMBRE','DIRE_DIRECCION')->toArray();
 
 			return view('Configuracion.Catalogo.Departamento.formDepartamento')->with($data);
 

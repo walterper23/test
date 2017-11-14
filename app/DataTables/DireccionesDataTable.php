@@ -2,82 +2,63 @@
 
 namespace App\DataTables;
 
-use App\User;
-use Yajra\DataTables\Services\DataTable;
-use Yajra\DataTables\EloquentDataTable;
+use App\Model\Catalogo\MDireccion;
 
-class DireccionesDataTable extends DataTable
-{
-    /**
-     * Build DataTable class.
-     *
-     * @param mixed $query Results from query() method.
-     * @return \Yajra\DataTables\DataTableAbstract
-     */
-    public function dataTable($query)
-    {
-        $dataTable = new EloquentDataTable($query);
+class DireccionesDataTable extends CustomDataTable{
 
-        return $dataTable->addColumn('action', 'direcciones.action');
+    protected function setSourceData(){
+        $this->sourceData = MDireccion::selectRaw('DIRE_DIRECCION, DIRE_NOMBRE, DIRE_CREATED_AT, DIRE_ENABLED')
+                            ->where('DIRE_DELETED',0)->get();
     }
 
-    /**
-     * Get query source of dataTable.
-     *
-     * @param \App\User $model
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function query(User $model)
-    {
-        return $model->newQuery()->select($this->getColumns());
-    }
-
-    /**
-     * Optional method if you want to use html builder.
-     *
-     * @return \Yajra\DataTables\Html\Builder
-     */
-    public function html()
-    {
-        return $this->builder()
-                    ->columns($this->getColumns())
-                    ->minifiedAjax()
-                    ->addAction(['width' => '80px'])
-                    ->parameters([
-                        'dom'     => 'Bfrtip',
-                        'order'   => [[0, 'desc']],
-                        'buttons' => [
-                            'create',
-                            'export',
-                            'print',
-                            'reset',
-                            'reload',
-                        ],
-                    ]);
-    }
-
-    /**
-     * Get columns.
-     *
-     * @return array
-     */
-    protected function getColumns()
-    {
+    protected function columnsTable(){
         return [
-            'id',
-            'add your columns',
-            'created_at',
-            'updated_at'
+            [
+                'title'  => '#',
+                'render' => function($query){
+                    return '<div class="custom-controls-stacked">
+                            <label class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="remember" name="remember" value="'.$query->DIRE_DIRECCION.'">
+                                <span class="custom-control-indicator"></span>
+                            </label>
+                        </div>';
+                },
+                'searchable' => false,
+                'orderable'  => false,
+            ],
+            [
+                'title' => 'Nombre',
+                'data'  => 'DIRE_NOMBRE'
+            ],
+            [
+                'title' => 'Fecha',
+                'data'  => 'DIRE_CREATED_AT'
+            ],
+            [
+                'title'  => 'Opciones',
+                'render' => function($query){
+                    $buttons = '';
+
+                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-primary" onclick="hTipoDocumento.delete('.$query->DIRE_DIRECCION.')"><i class="fa fa-eye"></i></button>';
+
+                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hTipoDocumento.delete('.$query->DIRE_DIRECCION.')"><i class="fa fa-pencil"></i></button>';
+                
+                    if($query->TIDO_ENABLED == 1){
+                        $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hTipoDocumento.disable('.$query->DIRE_DIRECCION.')"><i class="fa fa-level-down"></i></button>';
+                    }else{
+                        $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hTipoDocumento.enabled('.$query->DIRE_DIRECCION.')"><i class="fa fa-level-up"></i></button>';
+                    }
+
+                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hTipoDocumento.delete('.$query->DIRE_DIRECCION.')"><i class="fa fa-trash"></i></button>';
+                    
+                    return $buttons;
+                }
+            ]
+
         ];
     }
 
-    /**
-     * Get filename for export.
-     *
-     * @return string
-     */
-    protected function filename()
-    {
-        return 'direcciones_' . time();
+    protected function getUrlAjax(){
+        return url('configuracion/catalogos/direcciones/post-data');
     }
 }

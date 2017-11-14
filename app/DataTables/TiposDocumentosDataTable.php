@@ -6,7 +6,6 @@ use App\Model\Catalogo\MTipoDocumento;
 
 class TiposDocumentosDataTable extends CustomDataTable{
 
-
     protected function setSourceData(){
         $this->sourceData = MTipoDocumento::selectRaw('TIDO_TIPO_DOCUMENTO, TIDO_NOMBRE_TIPO, TIDO_CREATED_AT, TIDO_VALIDAR, TIDO_ENABLED')
                             ->where('TIDO_DELETED',0)->get();

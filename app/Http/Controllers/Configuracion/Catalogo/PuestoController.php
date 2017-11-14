@@ -12,7 +12,8 @@ use App\Http\Controllers\BaseController;
 use App\DataTables\PuestosDataTable;
 
 /* Models */
-use App\Model\MAnexo;
+use App\Model\Catalogo\MDepartamento;
+use App\Model\Catalogo\MPuesto;
 
 class PuestoController extends BaseController{
 

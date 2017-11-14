@@ -12,7 +12,7 @@ use App\Http\Controllers\BaseController;
 use App\DataTables\TiposDocumentosDataTable;
 
 /* Models */
-use App\Model\MAnexo;
+use App\Model\Catalogo\MTipoDocumento;
 
 class TipoDocumentoController extends BaseController{
 
