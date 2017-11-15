@@ -13,6 +13,10 @@ class DashboardController extends BaseController{
 	}
 
 	public function index(){
+
+
+		//dd('viene');
+
 		return view('Dashboard.index');
 	}
 

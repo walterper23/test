@@ -3,10 +3,14 @@
 namespace App\Model;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Yajra\Acl\Traits\HasRole;
 
 use App\Presenters\MUsuarioPresenter;
 
+
 class MUsuario extends Authenticatable{
+
+    use HasRole;
     
     protected $table          = 'usuarios';
     protected $primaryKey     = 'USUA_USUARIO';

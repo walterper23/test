@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Model;
+namespace App\Model\Acl;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Yajra\Acl\Models\Role;
 
-class ModeloRol extends Model{
+class MRol extends Role{
     
     protected $table          = 'roles';
     protected $primaryKey     = 'ROLE_ROL';
@@ -24,13 +25,5 @@ class ModeloRol extends Model{
     }
 
 
-
-
-
-
-
-    public function rolesModulosPermisos(){
-        return $this->hasMany('App\Model\ModeloRolModuloPermiso', 'RMPE_ROL', $this->primaryKey);
-    }
 
 }
