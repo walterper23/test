@@ -56,6 +56,9 @@ class MUsuario extends Authenticatable{
     	return $this->hasOne('App\Model\ModeloRol', 'ROLE_ROL', 'USUA_ROL');
     }
 
+    public function usuarioDetalle(){
+        return $this->hasOne('App\Model\MUsuarioDetalle','USDE_USUARIO',$this->primaryKey);
+    }
 
 
     /** ************ **/

@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
 class BaseController extends Controller{
 
 	public function __construct( $data = [] ){

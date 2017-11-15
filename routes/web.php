@@ -17,10 +17,16 @@ Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 Route::group(['middleware'=>'auth'], function(){
 
 	Route::get('/', 'Dashboard\DashboardController@index');
+
+	Route::group(['prefix'=>'perfil','namespace'=>'Dashboard'], function(){
+
+		Route::get('/', 'PerfilController@index');
+
+	});
 	
 	Route::group(['prefix'=>'configuracion','namespace'=>'Configuracion'], function(){
 			
-		Route::get('/', 'Dashboard/ConfiguracionController@index');
+		Route::get('/', 'ConfiguracionController@index');
 		
 		Route::group(['prefix'=>'catalogos','namespace'=>'Catalogo'], function(){
 			
