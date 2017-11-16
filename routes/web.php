@@ -34,7 +34,7 @@ Route::group(['middleware'=>'auth'], function(){
 	Route::group(['prefix'=>'configuracion','namespace'=>'Configuracion'], function(){
 		Route::get('/', 'ConfiguracionController@index');
 		Route::group(['prefix'=>'catalogos','namespace'=>'Catalogo'], function(){
-			Route::get('/', 'Administrador\CatalogoManagerController@postData');
+			Route::get('/', 'CatalogoManagerController@index');
 
 			// Catálogo de anexos
 			Route::group(['prefix'=>'anexos'],function(){

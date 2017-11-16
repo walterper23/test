@@ -44,8 +44,8 @@ var App = new function(){
 
 	    if( footer ){
 	        html +=    `<div class="modal-footer">`
-	        if( btnCancel ) html += `<button type="button" class="btn btn-alt-default" data-dismiss="modal" id="btn-cancel">`+btnCancelText+`</button>`
 	        if( btnOk )     html += `<button type="button" class="btn btn-alt-primary" id="btn-ok">`+btnOkText+`</button>`
+	        if( btnCancel ) html += `<button type="button" class="btn btn-alt-default" data-dismiss="modal" id="btn-cancel">`+btnCancelText+`</button>`
 	        html +=    `</div>`
 	    }
 	    

@@ -7,7 +7,7 @@ use App\Model\Catalogo\MDepartamento;
 class DepartamentosDataTable extends CustomDataTable{
 
     protected function setSourceData(){
-        $this->sourceData = MDepartamento::select(['DEPA_DEPARTAMENTO','DEPA_NOMBRE','DEPA_CREATED_AT','DEPA_ENABLED'])
+        $this->sourceData = MDepartamento::with('direccion')->select(['DEPA_DEPARTAMENTO','DEPA_DIRECCION','DEPA_NOMBRE','DEPA_CREATED_AT','DEPA_ENABLED'])
                             ->where('DEPA_DELETED',0);
     }
 
@@ -25,13 +25,21 @@ class DepartamentosDataTable extends CustomDataTable{
                 }
             ],
             [
+                'title' => 'Nombre',
+                'data' => 'DEPA_NOMBRE'
+            ],
+            [
                 'title' => 'Dirección',
                 'render' => function($query){
-                    return 'Nombre de la direccion';
+                    return $query->direccion->presenter()->link();
                 }
             ],
             [
-                'title' => 'opciones',
+                'title' => 'Fecha',
+                'data'  => 'DEPA_CREATED_AT'
+            ],
+            [
+                'title' => 'Opciones',
                 'render' => function($query){
                     $buttons = '';
 

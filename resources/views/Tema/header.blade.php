@@ -1,7 +1,9 @@
 <div class="content-header">
     <!-- Left Section -->
     <div class="content-header-section">
-        
+        <button type="button" class="btn btn-circle btn-dual-primary" data-toggle="layout" data-action="sidebar_toggle">
+            <i class="fa fa-navicon"></i>
+        </button>
     </div>
     <!-- END Left Section -->
 

@@ -4,10 +4,10 @@ return [
     /**
      * Role class used for ACL.
      */
-    'role'       => \Yajra\Acl\Models\Role::class,
+    'role'       => \App\Model\Acl\MRol::class,
 
     /**
      * Permission class used for ACL.
      */
-    'permission' => \Yajra\Acl\Models\Permission::class,
+    'permission' => \App\Model\Acl\MPermiso::class,
 ];

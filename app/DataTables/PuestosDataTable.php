@@ -7,7 +7,7 @@ use App\Model\Catalogo\MPuesto;
 class PuestosDataTable extends CustomDataTable{
     
     protected function setSourceData(){
-        $this->sourceData = MPuesto::select(['PUES_PUESTO','PUES_NOMBRE','PUES_CREATED_AT','PUES_ENABLED'])
+        $this->sourceData = MPuesto::with('departamento')->select(['PUES_PUESTO','PUES_DEPARTAMENTO','PUES_NOMBRE','PUES_CREATED_AT','PUES_ENABLED'])
                             ->where('PUES_DELETED',0);
     }
 
@@ -27,10 +27,18 @@ class PuestosDataTable extends CustomDataTable{
                 'orderable'  => false,
             ],
             [
+                'title' => 'Nombre',
+                'data' => 'PUES_NOMBRE'
+            ],
+            [
                 'title' => 'Departamento',
                 'render' => function($query){
-                    return 'nombre del departamento';
+                    return $query->departamento->presenter()->link();
                 }
+            ],
+            [
+                'title' => 'Fecha',
+                'data' => 'PUES_CREATED_AT'
             ],
             [
                 'title' => 'Opciones',

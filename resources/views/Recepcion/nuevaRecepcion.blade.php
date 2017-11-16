@@ -4,13 +4,20 @@
 	SIGESD :: Nueva recepción
 @endsection
 
+@section('breadcrumb')
+    <nav class="breadcrumb bg-body-light mb-0">
+        <a class="breadcrumb-item" href="javascript:void(0)"><i class="fa fa-home"></i> Recepci&oacute;n</a>
+        <a class="breadcrumb-item" href="{{ url('recepcion/documentos') }}">Documentos</a>
+        <span class="breadcrumb-item active">Nueva recepci&oacute;n</span>
+    </nav>
+@endsection
+
 @section('content')
-<!-- Block Tabs -->
     <div class="row">
         <div class="col-lg-12">
            <!-- Normal Form -->
-            <div class="block block-themed block-bordered">
-                <div class="block-header bg-flat-dark">
+            <div class="block block-themed">
+                <div class="block-header bg-corporate-dark">
                     <h3 class="block-title">Nueva recepci&oacute;n</h3>
                     <div class="block-options">
                         <button type="button" class="btn-block-option">
@@ -61,17 +68,12 @@
             <!-- END Normal Form -->
         </div>
     </div>
-    <!-- END Block Tabs -->
+
 @endsection
 
 @push('js-script')
     {{ Html::script('js/plugins/jquery-validation/jquery.validate.min.js') }}
-    {{ Html::script('js/plugins/datatables/jquery.dataTables.min.js') }}
-    {{ Html::script('js/plugins/datatables/dataTables.bootstrap4.min.js') }}
-    {{ Html::script('js/plugins/datatables/buttons1.4.2/js/dataTables.buttons.bootstrap4.min.js') }}
-    {{ Html::script('js/plugins/datatables/buttons1.4.2/js/dataTables.buttons.server-side.js') }}
     {{ Html::script('js/plugins/sweetalert2/sweetalert2.min.js') }}
-    {{ Html::script('js/helpers/tipo_documento.helper.js') }}
     {{ Html::script('js/app-form.js') }}
     {{ Html::script('js/app-alert.js') }}
 @endpush

@@ -9,21 +9,21 @@ use Yajra\Acl\Models\Permission;
 class MPermiso extends Permission{
 
     protected $table          = 'acl_permisos';
-    protected $primaryKey     = 'acl_roles';
+    protected $primaryKey     = 'PERM_PERMISO';
     public    $timestamps     = false;
 
     protected $fillable = [];
 
     protected $hidden = [];
 
-    public function getID(){
-    	return $this->attributes[ $this->primaryKey ];
+
+    /* Relationships */
+
+    // @override :: trait HasRole
+    public function roles(){
+        return $this->belongsToMany(config('acl.role'),'acl_roles_acl_permisos','ROPE_PERMISO','ROPE_ROL');
     }
 
-    public function getDefaultRoute(){
-        return $this->attributes['ROLE_DEFAULT_ROUTE'];
-    }
-
-
+    /****************/
 
 }

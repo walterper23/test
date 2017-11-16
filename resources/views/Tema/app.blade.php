@@ -114,6 +114,15 @@
 
             <!-- Main Container -->
             <main id="main-container">
+    
+                <!-- Breadcrumb -->
+                <div class="bg-body-light border-b">
+                    <div class="content py-5 text-center">
+                        @yield('breadcrumb')
+                    </div>
+                </div>
+                <!-- END Breadcrumb -->
+
                 <!-- Page Content -->
                 <div class="content">
                     @yield('content')
@@ -137,8 +146,15 @@
         {{ Html::script('js/codebase.js') }}
         {{ Html::script('js/app.js') }}
 
+        
         @stack('js-script')
 
+        <script type="text/javascript">
+            jQuery.extend( jQuery.fn.dataTable.ext.classes, {
+                sWrapper: "dataTables_wrapper dt-bootstrap4"
+            });
+        </script>
+        
         @stack('js-custom')
 
     </body>

@@ -10,27 +10,42 @@
     {{ Html::style('js/plugins/sweetalert2/sweetalert2.min.css') }}
 @endpush
 
+@section('breadcrumb')
+    <nav class="breadcrumb bg-body-light mb-0">
+        <a class="breadcrumb-item" href="javascript:void(0)"><i class="fa fa-cogs"></i> Configuraci&oacute;n</a>
+        <a class="breadcrumb-item" href="{{ url('configuracion/catalogos') }}">Cat&aacute;logos</a>
+        <span class="breadcrumb-item active">Puestos</span>
+    </nav>
+@endsection
+
 @section('content')
-	<!-- Block Tabs -->
-    <div class="row">
-        <div class="col-lg-12">
-            <!-- Block Tabs Alternative Style -->
-            <div class="block">
-                <div class="block-content block-content-full">
-                   @include('Configuracion.Catalogo.navbarItems')
-                    <div class="col-12">
-                        <button type="button" class="btn btn-alt-primary" onclick="App.openModal({ url : '/configuracion/catalogos/puestos/nuevo', id : 'form-nuevo-puesto' })"><i class="fa fa-plus"></i> Nuevo</button>
-	                    <!--button type="button" class="btn btn-alt-primary" id="importbutton"><i class="fa fa-plus"></i> Checar</button-->
+	<div class="block block-themed">
+        <div class="block-header bg-corporate-dark">
+            <h3 class="block-title"><i class="fa fa-fw fa-users mr-5"></i> Puestos</h3>
+            <div class="block-options">
+                <button type="button" class="btn-block-option" onclick="App.openModal({ url : '/configuracion/catalogos/puestos/nuevo', id : 'form-nuevo-puesto' })">
+                    <i class="fa fa-plus"></i> Nuevo
+                </button>
+                <div class="dropdown">
+                    <button type="button" class="btn-block-option dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cog"></i> Opciones</button>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" href="javascript:void(0)">
+                            <i class="fa fa-fw fa-bell mr-5"></i>News
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="javascript:void(0)">
+                            <i class="fa fa-fw fa-pencil mr-5"></i>Edit Profile
+                        </a>
                     </div>
-                    <div class="table-responsive">
-                        {{ $table->html()  }}
-                    </div>
-               	</div>
+                </div>
             </div>
-            <!-- END Block Tabs Alternative Style -->
         </div>
-    </div>
-    <!-- END Block Tabs -->
+        <div class="block-content block-content-full">
+            <div class="table-responsive">
+                {{ $table->html()  }}
+            </div>
+        </div>
+   	</div>
 @endsection
 
 @push('js-script')
@@ -40,7 +55,7 @@
     {{ Html::script('js/plugins/datatables/buttons1.4.2/js/dataTables.buttons.bootstrap4.min.js') }}
     {{ Html::script('js/plugins/datatables/buttons1.4.2/js/dataTables.buttons.server-side.js') }}
     {{ Html::script('js/plugins/sweetalert2/sweetalert2.min.js') }}
-    {{ Html::script('js/helpers/tipo_documento.helper.js') }}
+    {{ Html::script('js/helpers/puesto.helper.js') }}
     {{ Html::script('js/app-form.js') }}
     {{ Html::script('js/app-alert.js') }}
 @endpush

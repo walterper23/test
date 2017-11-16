@@ -32,7 +32,7 @@ class DepartamentoController extends BaseController{
 			$data['title']= 'Nuevo Departamento';
 			$data['url_send_form']= '';
 			$data['form_id']='';
-			$data['direcciones'] = MDireccion::select('DIRE_DIRECCION','DIRE_NOMBRE')->pluck('DIRE_NOMBRE','DIRE_DIRECCION')->toArray();
+			$data['direcciones'] = [''=>'Seleccione una opción'] + MDireccion::select('DIRE_DIRECCION','DIRE_NOMBRE')->pluck('DIRE_NOMBRE','DIRE_DIRECCION')->toArray();
 
 			return view('Configuracion.Catalogo.Departamento.formDepartamento')->with($data);
 

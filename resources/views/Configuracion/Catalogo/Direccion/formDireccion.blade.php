@@ -14,13 +14,6 @@
             	{{ Form::text('nombre',null,['id'=>'nombre','class'=>'form-control','placeholder'=>'Dirección','autofocus']) }}
             </div>
         </div>
-
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label" for="nombre">practica</label>
-            <div class="col-sm-9">
-            	{{ Form::select('practica',[],null,['id'=>'nombre','class'=>'form-control']) }}
-            </div>
-        </div>
 	{{ Form::close() }}
 </div>
 

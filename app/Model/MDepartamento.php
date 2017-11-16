@@ -23,6 +23,9 @@ class MDepartamento extends Model{
 
     /** Relationships **/
 
+    public function direccion(){
+        return $this->belongsTo('App\Model\Catalogo\MDireccion','DEPA_DIRECCION','DIRE_DIRECCION');
+    }
 
     /** ************ **/
 

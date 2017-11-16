@@ -8,7 +8,7 @@ use Yajra\Acl\Models\Role;
 
 class MRol extends Role{
     
-    protected $table          = 'roles';
+    protected $table          = 'acl_roles';
     protected $primaryKey     = 'ROLE_ROL';
     public    $timestamps     = false;
 
@@ -16,14 +16,25 @@ class MRol extends Role{
 
     protected $hidden = [];
 
-    public function getID(){
-    	return $this->attributes[ $this->primaryKey ];
+
+    /* Relationships */
+
+    public function usuarios(){
+        return $this->belongsToMany(config('auth.providers.users.model'), 'usuarios_acl_roles','USRO_USUARIO','USRO_USUARIO');
+    }
+    /****************/
+
+    
+    /* Overrides methods :: trait HasPermission */
+
+    public function permissions(){
+        return $this->belongsToMany(config('acl.permission'),'acl_roles_acl_permisos','ROPE_ROL','ROPE_PERMISO');
     }
 
-    public function getDefaultRoute(){
-        return $this->attributes['ROLE_DEFAULT_ROUTE'];
+    public function getPermissions(){
+        return $this->permissions->pluck('ROLE_SLUG')->toArray();
     }
 
-
+    /******************************************/
 
 }

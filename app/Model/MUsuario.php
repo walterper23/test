@@ -54,7 +54,7 @@ class MUsuario extends Authenticatable{
 
 
     
-    /** Relationships **/
+    /* Relationships */
 
     public function rol(){
     	return $this->hasOne('App\Model\ModeloRol', 'ROLE_ROL', 'USUA_ROL');
@@ -64,10 +64,7 @@ class MUsuario extends Authenticatable{
         return $this->hasOne('App\Model\MUsuarioDetalle','USDE_USUARIO',$this->primaryKey);
     }
 
-
-    /** ************ **/
-
-
+    /***************/
 
     public function presenter(){
         return new MUsuarioPresenter($this);

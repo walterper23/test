@@ -17,14 +17,11 @@ class MPuesto extends Model{
 
     protected $hidden = [];
 
-    
-
-
-
-
     /** Relationships **/
 
-
+    public function departamento(){
+        return $this->belongsTo('App\Model\Catalogo\MDepartamento','PUES_DEPARTAMENTO','DEPA_DEPARTAMENTO');
+    }
 
     /** ************ **/
 
