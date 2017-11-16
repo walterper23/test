@@ -1,7 +1,7 @@
 @extends('Tema.app')
 
 @section('title')
-	SIGESD :: Catálogo - Anexos
+	SIGESD :: Documentos recepcionados
 @endsection
 
 @push('css-style')
@@ -17,15 +17,14 @@
             <!-- Block Tabs Alternative Style -->
             <div class="block">
                 <div class="block-content block-content-full">
-                   @include('Configuracion.Catalogo.navbarItems')
                     <div class="col-12">
                         <button type="button" class="btn btn-alt-primary" onclick="App.openModal({url : '/configuracion/catalogos/anexos/nuevo', id : 'form-nuevo-formDepartamento' })"><i class="fa fa-plus"></i> Nuevo</button>
 	                    <!--button type="button" class="btn btn-alt-primary" id="importbutton"><i class="fa fa-plus"></i> Checar</button-->
                     </div>                  
                     <div class="table-responsive">
                     	{{$table->html()}}
-               	    </div>
-                </div>
+                    </div>
+               	</div>
             </div>
             <!-- END Block Tabs Alternative Style -->
         </div>

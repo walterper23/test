@@ -26,7 +26,6 @@
                         {!! $table->html() !!}
                     </div>
                	</div>
-
             </div>
             <!-- END Block Tabs Alternative Style -->
         </div>

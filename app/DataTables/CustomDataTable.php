@@ -60,9 +60,7 @@ class CustomDataTable {
 			if( isset($column['render']) ){
 				$config['render'] = $column['render'];
 			}else{
-				$config['render'] = function($query) use ($column){
-					return $query->{$column['data']};
-				};
+				$config['render'] = '{{$'.$column['data'].'}}';
 			}
 
 			$this->addColumn( $config )->pushColumn( $config )->pushRawColumn( $config['name'] );

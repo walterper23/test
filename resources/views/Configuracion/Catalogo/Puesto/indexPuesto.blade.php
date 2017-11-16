@@ -4,6 +4,12 @@
 	SIGESD :: Catálogos - Puestos
 @endsection
 
+@push('css-style')
+    {{ Html::style('js/plugins/datatables/dataTables.bootstrap4.min.css') }}
+    {{ Html::style('js/plugins/datatables/buttons1.4.2/css/datatables.buttons.bootstrap4.min.css') }}
+    {{ Html::style('js/plugins/sweetalert2/sweetalert2.min.css') }}
+@endpush
+
 @section('content')
 	<!-- Block Tabs -->
     <div class="row">
@@ -20,7 +26,6 @@
                         {{ $table->html()  }}
                     </div>
                	</div>
-
             </div>
             <!-- END Block Tabs Alternative Style -->
         </div>

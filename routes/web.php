@@ -19,17 +19,21 @@ Route::group(['middleware'=>'auth'], function(){
 	Route::get('/', 'Dashboard\DashboardController@index');
 
 	Route::group(['prefix'=>'perfil','namespace'=>'Dashboard'], function(){
-
 		Route::get('/', 'PerfilController@index');
-
 	});
+
+	Route::group(['prefix'=>'recepcion'], function(){
+		Route::get('/',  'RecepcionController@index');
+		Route::group(['prefix'=>'documentos'], function(){
+			Route::get('/',          'RecepcionController@index');
+			Route::post('post-data', 'RecepcionController@postDataTable');
+			Route::get('nuevo',      'RecepcionController@nuevaRecepcion');
+		});
+	});	
 	
 	Route::group(['prefix'=>'configuracion','namespace'=>'Configuracion'], function(){
-			
 		Route::get('/', 'ConfiguracionController@index');
-		
 		Route::group(['prefix'=>'catalogos','namespace'=>'Catalogo'], function(){
-			
 			Route::get('/', 'Administrador\CatalogoManagerController@postData');
 
 			// Catálogo de anexos

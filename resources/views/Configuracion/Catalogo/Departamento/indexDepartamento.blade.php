@@ -4,8 +4,13 @@
     Catalogo:sección-Departamento 
 @endsection
 
-@section('content')
+@push('css-style')
+    {{ Html::style('js/plugins/datatables/dataTables.bootstrap4.min.css') }}
+    {{ Html::style('js/plugins/datatables/buttons1.4.2/css/datatables.buttons.bootstrap4.min.css') }}
+    {{ Html::style('js/plugins/sweetalert2/sweetalert2.min.css') }}
+@endpush
 
+@section('content')
 <!-- Block Tabs -->
     <div class="row">
         <div class="col-lg-12">
