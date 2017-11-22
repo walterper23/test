@@ -8,7 +8,7 @@ class TiposDocumentosDataTable extends CustomDataTable{
 
     protected function setSourceData(){
         $this->sourceData = MTipoDocumento::selectRaw('TIDO_TIPO_DOCUMENTO, TIDO_NOMBRE_TIPO, TIDO_CREATED_AT, TIDO_VALIDAR, TIDO_ENABLED')
-                            ->where('TIDO_DELETED',0)->get();
+                            ->where('TIDO_DELETED',0)->orderBy('TIDO_CREATED_AT','DESC')->get();
     }
 
     protected function columnsTable(){
@@ -48,14 +48,12 @@ class TiposDocumentosDataTable extends CustomDataTable{
                 'render' => function($query){
                     $buttons = '';
 
-                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-primary" onclick="hTipoDocumento.delete('.$query->TIDO_TIPO_DOCUMENTO.')"><i class="fa fa-eye"></i></button>';
-
-                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hTipoDocumento.delete('.$query->TIDO_TIPO_DOCUMENTO.')"><i class="fa fa-pencil"></i></button>';
+                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hTipoDocumento.edit('.$query->TIDO_TIPO_DOCUMENTO.')"><i class="fa fa-pencil"></i></button>';
                 
                     if($query->TIDO_ENABLED == 1){
                         $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hTipoDocumento.disable('.$query->TIDO_TIPO_DOCUMENTO.')"><i class="fa fa-level-down"></i></button>';
                     }else{
-                        $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hTipoDocumento.enabled('.$query->TIDO_TIPO_DOCUMENTO.')"><i class="fa fa-level-up"></i></button>';
+                        $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hTipoDocumento.disable('.$query->TIDO_TIPO_DOCUMENTO.')"><i class="fa fa-level-up"></i></button>';
                     }
 
                     $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hTipoDocumento.delete('.$query->TIDO_TIPO_DOCUMENTO.')"><i class="fa fa-trash"></i></button>';

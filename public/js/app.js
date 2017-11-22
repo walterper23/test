@@ -1,10 +1,22 @@
-var App = new function(){
+'use strict';
 
-	this.init = function(){
-		this.configAjaxSetup()
+var App = function(){
+
+	var defaultAjaxRequest = {
+		data     : {},
+		type     : 'POST',
+		before   : function(){},
+		success  : function(){},
+		complete : function(){},
+		error    : function(){},
+		fail     : function(){},
 	}
 
-	this.configAjaxSetup = function(){
+	var init = function(){
+		configAjaxSetup()
+	}
+
+	var configAjaxSetup = function(){
 		$.ajaxSetup({
 		    headers: {
 		        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -12,40 +24,41 @@ var App = new function(){
 		});
 	}
 
-	this.ajaxRequest = function( options ){
-		$.ajax({
+	var ajaxRequest = function( options ){
+		$.ajax($.extend({},defaultAjaxRequest,{
 			url  : options.url,
-			data : options.data || {},
-			type : options.type ||'POST',
-			beforeSend : options.before || function(){},
-			success : options.success || function(){},
-			complete : options.complete || function(){},
-			error : options.error || function(){}
-		});
+			data : options.data,
+			type : options.type,
+			beforeSend : options.before,
+			success : options.success,
+			complete : options.complete,
+			error : options.error,
+			fail : options.fail
+		}));
 	}
 
-	this.openModal = function( config ){
+	var defaultOpenModal = {
+		id : 'modal-app',
+		footer : true,
+		btnOk : true,
+		btnOkText : 'Aceptar',
+		btnCancel : true,
+		btnCancelText : 'Cancelar'
+	}
 
-		id = config.id || 'modal-app'
-		var modal = $('div.modal.fade#modal-' + id )
-		modal = modal.length > 0 ? modal : $('<div/>').addClass('modal fade').attr('id','modal-'+id).attr('role','dialog')
+	var openModal = function( config ){
+		var config = $.extend({},defaultOpenModal,config)
+		var modal = $('#modal-' + config.id )
+		modal = modal.length > 0 ? modal : $('<div/>').addClass('modal fade').attr('id','modal-'+config.id).attr('role','dialog')
 
-		title = config.title || ''
-		header = config.header != undefined ? config.header : true
-		footer = config.footer != undefined ? config.footer : true
-		btnCancel = config.btnCancel != undefined ? config.btnCancel : true
-		btnCancelText = config.btnCancelText || 'Cancelar'
-		btnOk = config.btnOk != undefined ? config.btnOk : true
-		btnOkText = config.btnOkText || 'Aceptar'
-		
-		html = `<div class="modal-dialog">
-	                <div class="modal-content">
-	                	<div class="block block-themed block-transparent mb-0 block-mode-loading" style="min-height:120px;"></div>`
+		var html = `<div class="modal-dialog">
+		                <div class="modal-content">
+		                	<div class="block block-themed block-transparent mb-0 block-mode-loading" style="min-height:120px;"></div>`
 
-	    if( footer ){
+	    if( config.footer ){
 	        html +=    `<div class="modal-footer">`
-	        if( btnOk )     html += `<button type="button" class="btn btn-alt-primary" id="btn-ok">`+btnOkText+`</button>`
-	        if( btnCancel ) html += `<button type="button" class="btn btn-alt-default" data-dismiss="modal" id="btn-cancel">`+btnCancelText+`</button>`
+	        if( config.btnOk )     html += `<button type="button" class="btn btn-alt-primary" id="btn-ok">`+config.btnOkText+`</button>`
+	        if( config.btnCancel ) html += `<button type="button" class="btn btn-alt-default" data="close-modal" id="btn-cancel">`+config.btnCancelText+`</button>`
 	        html +=    `</div>`
 	    }
 	    
@@ -56,9 +69,9 @@ var App = new function(){
 
 		$('body').append(modal)
 
-		this.ajaxRequest({
+		ajaxRequest({
 			url  : config.url,
-			data : config.data || {},
+			data : config.data,
 			before : function(){
 				modal.modal({
 					backdrop: 'static',
@@ -74,6 +87,34 @@ var App = new function(){
 		})
 
 	}
-}
+
+	var reloadTable = function(table){
+		$('#'+table).dataTable().api().ajax.reload();
+	}
+
+	var reloadTables = function(tables){
+		$.each(tables,function(index,value){
+			reloadTable(value)
+		})
+	}
+
+	return {
+        init : function(){
+            init()
+        },
+        ajaxRequest : function(options){
+            ajaxRequest(options)
+        },
+        openModal : function(options){
+            openModal(options)
+        },
+        reloadTable : function(table){
+            reloadTable(table)
+        },
+        reloadTables : function(tables){
+            reloadTables(tables)
+        }
+    }
+}()
 
 App.init()

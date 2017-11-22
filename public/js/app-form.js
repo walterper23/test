@@ -1,6 +1,28 @@
+'use strict';
+
 var AppForm = new function(){
 
+	this.context;
 	this.form;
+
+	this.init = function(){
+		var self = this;
+		this.btnOk = this.context.find('#btn-ok')
+		this.btnCancel = this.context.find('#btn-cancel')
+		this.btnClose = this.context.find('[data="close-modal"]')
+
+		this.formSubmit(this.form)
+
+		this.cloneForm = this.form.clone()
+
+        this.btnOk.on('click', function(e){
+        	self.submit()
+        });
+
+        this.btnClose.on('click', function(e){
+        	self.onClose()
+        })
+	}
 
 	this.submit = function(form){
 		var form = form || this.form
@@ -10,9 +32,10 @@ var AppForm = new function(){
 	this.formSubmit = function( form ){
 		$(form).validate({
 			ignore: [],
-	        errorClass: 'invalid-feedback animated fadeInDown',
+	        errorClass: 'invalid-feedback',
 	        errorElement: 'div',
 	        errorPlacement: function(error, e) {
+	        	console.log(error,e)
 	            $(e).parents('.form-group > div').append(error);
 	        },
 	        highlight: function(e) {
@@ -39,6 +62,24 @@ var AppForm = new function(){
 	this.submitHandler = function( form ){
 		if(!$(form).valid()) return false
 		return true
+	}
+
+	this.onClose = function(){
+		if(	this.cloneForm.serialize() != this.form.serialize() ){
+			AppAlert.confirm({
+				title : 'Guardar cambios',
+				text  : '¿Desea guardar los cambios realizados?',
+				then  : function(){
+					
+				}
+			});
+		}else{
+			this.closeContext()
+		}
+	}
+
+	this.closeContext = function(){
+		this.context.modal('hide')
 	}
 
 }

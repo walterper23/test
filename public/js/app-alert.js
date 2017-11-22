@@ -9,7 +9,8 @@ var AppAlert = function(){
         okBtnText      : 'Aceptar',
         okBtnClass     : 'btn btn-primary',
         cancelBtnText  : 'Cancelar',
-        cancelBtnClass : 'btn btn-default',
+        cancelBtnClass : 'btn btn-default ml-20',
+        btnStyling     : false,
         outClick     : false,
         outEsc       : false,
         enterKey     : true,
@@ -30,8 +31,9 @@ var AppAlert = function(){
             focusConfirm: options.focusConfirm,
             confirmButtonText: options.okBtnText,
             confirmButtonClass: options.okBtnClass,
+            buttonsStyling: options.btnStyling,
             timer: options.timer
-        }).catch(swal.noop)
+        }).then(options.then)
     }
 
     var preConfirm = function( options ){
@@ -46,6 +48,7 @@ var AppAlert = function(){
             confirmButtonClass: options.okBtnClass,
             cancelButtonText: options.cancelBtnText,
             cancelButtonClass: options.cancelBtnClass,
+            buttonsStyling: options.btnStyling,
             preConfirm: options.preConfirm
         }).then(options.then, options.dismiss)
     }
@@ -62,6 +65,7 @@ var AppAlert = function(){
             confirmButtonClass: options.okBtnClass,
             cancelButtonText: options.cancelBtnText,
             cancelButtonClass: options.cancelBtnClass,
+            buttonsStyling: options.btnStyling,
         }).then( options.then, options.dismiss )
 	}
 
@@ -77,6 +81,7 @@ var AppAlert = function(){
             confirmButtonClass: options.okBtnClass,
             cancelButtonText: options.cancelBtnText,
             cancelButtonClass: options.cancelBtnClass,
+            buttonsStyling: options.btnStyling,
             allowOutsideClick: options.outClick,
             allowEscapeKey: options.outEsc,
             allowEnterKey: options.enterKey,
@@ -91,30 +96,70 @@ var AppAlert = function(){
             title : options.title,
             text  : options.text,
             html  : options.html,
-            focusConfirm: options.focusConfirm,  
+            focusConfirm: options.focusConfirm,
+            confirmButtonText: options.okBtnText,
+            confirmButtonClass: options.okBtnClass,
+            buttonsStyling: options.btnStyling,
+            allowOutsideClick: options.outClick,
+            allowEscapeKey: options.outEsc,
+            allowEnterKey: options.enterKey,
+            preConfirm: options.preConfirm
         }).then( options.then )
+    }
+
+    var defaultsNotify = {
+        icon    : '',
+        type    : 'success',
+        url     : '',
+        element : 'body',
+        dismiss         : true,
+        newest_on_top   : false,
+        showProgressbar : false,
+        from    : 'bottom',
+        align   : 'right',
+        offset  : 20,
+        spacing : 10,
+        z_index : 1033,
+        delay   : 3000,
+        timer   : 300,
+
+    }
+
+    var notify = function( options ){
+        $.notify({
+            icon    : options.icon,
+            message : options.message,
+            url     : options.url
+        },
+        {
+            element       : options.element,
+            type          : options.type,
+            allow_dismiss : options.dismiss,
+            placement : {
+                from  : options.from,
+                align : options.align
+            }
+        });
     }
 
     return {
         success : function(options){
-            $.extend(defaults, options)
-            success(defaults)
+            success($.extend({}, defaults, options))
         },
         preConfirm : function(options){
-            $.extend(defaults, options)
-            preConfirm(defaults)
+            preConfirm($.extend({}, defaults, options))
         },
         confirm : function(options){
-            $.extend({}, defaults, options)
-            confirm(defaults)
+            confirm($.extend({}, defaults, options))
         },
         waiting : function(options){
-            $.extend({}, defaults, options)
-            waiting(defaults)
+            waiting($.extend({}, defaults, options))
         },
         error : function(options){
-            $.extend(defaults, options)
-            error(defaults)
+            error($.extend({}, defaults, options))
+        },
+        notify : function(options){
+            notify($.extend({}, defaultsNotify, options))
         }
     }
 

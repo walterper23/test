@@ -44,8 +44,8 @@ Route::group(['middleware'=>'auth'], function(){
 				Route::post('post-nuevo',      'AnexoController@postNuevoAnexo');
 				Route::post('editar',          'AnexoController@editarAnexo');
 				Route::post('post-editar',     'AnexoController@postEditarAnexo');
-				Route::post('post-desactivar', 'AnexoController@postDesactivarAnexo');
-				Route::post('post-eliminar',   'AnexoController@postEliminarAnexo');
+				Route::post('post-desactivar', 'AnexoController@desactivarAnexo');
+				Route::post('post-eliminar',   'AnexoController@eliminarAnexo');
 			});
 			
 			// Catálogo de departamentos
@@ -56,8 +56,8 @@ Route::group(['middleware'=>'auth'], function(){
 				Route::post('post-nuevo',      'DepartamentoController@postNuevoDepartamento');
 				Route::post('editar',          'DepartamentoController@editarDepartamento');
 				Route::post('post-editar',     'DepartamentoController@postEditarDepartamento');
-				Route::post('post-desactivar', 'DepartamentoController@postDesactivarDepartamento');
-				Route::post('post-eliminar',   'DepartamentoController@postEliminarDepartamento');
+				Route::post('post-desactivar', 'DepartamentoController@desactivarDepartamento');
+				Route::post('post-eliminar',   'DepartamentoController@eliminarDepartamento');
 			});
 			
 			// Catálogo de direcciones
@@ -68,8 +68,8 @@ Route::group(['middleware'=>'auth'], function(){
 				Route::post('post-nuevo',      'DireccionController@postNuevaDireccion');
 				Route::post('editar',          'DireccionController@editarDireccion');
 				Route::post('post-editar',     'DireccionController@postEditarDireccion');
-				Route::post('post-desactivar', 'DireccionController@postDesactivarDireccion');
-				Route::post('post-eliminar',   'DireccionController@postEliminarDireccion');
+				Route::post('post-desactivar', 'DireccionController@desactivarDireccion');
+				Route::post('post-eliminar',   'DireccionController@eliminarDireccion');
 			});
 
 			// Catálogo de puestos
@@ -80,8 +80,8 @@ Route::group(['middleware'=>'auth'], function(){
 				Route::post('post-nuevo',      'PuestoController@postNuevoPuesto');
 				Route::post('editar',          'PuestoController@editarPuesto');
 				Route::post('post-editar',     'PuestoController@postEditarPuesto');
-				Route::post('post-desactivar', 'PuestoController@postDesactivarPuesto');
-				Route::post('post-eliminar',   'PuestoController@postEliminarPuesto');
+				Route::post('post-desactivar', 'PuestoController@desactivarPuesto');
+				Route::post('post-eliminar',   'PuestoController@eliminarPuesto');
 			});
 
 			// Catálogo de tipos de documentos
@@ -90,10 +90,10 @@ Route::group(['middleware'=>'auth'], function(){
 				Route::post('post-data',       'TipoDocumentoController@postDataTable');
 				Route::post('nuevo',           'TipoDocumentoController@formTipoDocumento');
 				Route::post('post-nuevo',      'TipoDocumentoController@postNuevoTipoDocumento');
-				Route::post('editar',          'TipoDocumentoController@editarTipoDocumento');
+				Route::post('editar',          'TipoDocumentoController@formEditarTipoDocumento');
 				Route::post('post-editar',     'TipoDocumentoController@postEditarTipoDocumento');
-				Route::post('post-desactivar', 'TipoDocumentoController@postDesactivarTipoDocumento');
-				Route::post('post-eliminar',   'TipoDocumentoController@postEliminarTipoDocumento');
+				Route::post('post-desactivar', 'TipoDocumentoController@desactivarTipoDocumento');
+				Route::post('post-eliminar',   'TipoDocumentoController@eliminarTipoDocumento');
 			});
 		});
 
@@ -104,8 +104,8 @@ Route::group(['middleware'=>'auth'], function(){
 			Route::post('post-nuevo',      'UsuarioController@postNuevoUsuario');
 			Route::post('editar',          'UsuarioController@editarUsuario');
 			Route::post('post-editar',     'UsuarioController@postEditarUsuario');
-			Route::post('post-desactivar', 'UsuarioController@postDesactivarUsuario');
-			Route::post('post-eliminar',   'UsuarioController@postEliminarUsuario');
+			Route::post('post-desactivar', 'UsuarioController@desactivarUsuario');
+			Route::post('post-eliminar',   'UsuarioController@eliminarUsuario');
 			
 		});
 
