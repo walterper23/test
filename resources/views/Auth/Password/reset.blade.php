@@ -26,7 +26,7 @@
 
         <!-- Stylesheets -->
         <!-- Codebase framework -->
-        {{ Html::style('css/codebase.min.css',['id'=>'css-main']) }}
+        {{ Html::style('css/codebase.css',['id'=>'css-main']) }}
     
         <!-- You can include a specific file from css/themes/ folder to alter the default color theme of the template. eg: -->
         <!-- <link rel="stylesheet" id="css-theme" href="assets/css/themes/flat.min.css"> -->
@@ -66,9 +66,9 @@
                                     {{ csrf_field() }}
                                     <div class="form-group row">
                                         <div class="col-12">
-                                            <div class="form-material floating">
-                                                {{ Form::text('email',$email or old('email'),['id'=>'email','class'=>'form-control']) }}
-                                                {{ Form::label('email','Correo electr&oacute;nico') }}
+                                            <div class="form-material floating open">
+                                                {{ Form::text('email',$email or old('email'),['id'=>'email','class'=>'form-control','autofocus']) }}
+                                                {{ Form::label('email','Usuario') }}
                                             </div>
                                             @if ($errors->has('email'))
                                                 <span class="help-block">

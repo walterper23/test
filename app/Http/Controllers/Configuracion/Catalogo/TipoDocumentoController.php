@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Configuracion\Catalogo;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Input;
+use Carbon\Carbon;
 use Validator;
 use Exception;
 
@@ -25,8 +26,9 @@ class TipoDocumentoController extends BaseController{
 
 	public function index(TiposDocumentosDataTable $dataTables){
 
-		$data['table']   = $dataTables;
-		$data['form_id'] = $this->form_id;
+		$data['table']    = $dataTables;
+		$data['form_id']  = $this->form_id;
+		$data['form_url'] = url('configuracion/catalogos/tipos-documentos/nuevo');
 
 		return view('Configuracion.Catalogo.TipoDocumento.indexTipoDocumento')->with($data);
 	}
@@ -62,10 +64,11 @@ class TipoDocumentoController extends BaseController{
 
 			$tipoDocumento = new MTipoDocumento;
 			$tipoDocumento->TIDO_NOMBRE_TIPO = $data['nombre'];
+			$tipoDocumento->TIDO_CREATED_AT  = Carbon::now();
 			$tipoDocumento->save();
 
 			// Lista de tablas que se van a recargar automáticamente
-			$tables = ['dataTableBuilder'];
+			$tables = [['dataTableBuilder',null,true]];
 
 			return response()->json(['status'=>true,'message'=>'El tipo de documento se creó correctamente','tables'=>$tables]);
 		
@@ -109,7 +112,7 @@ class TipoDocumentoController extends BaseController{
 			$tipoDocumento->save();
 
 			// Lista de tablas que se van a recargar automáticamente
-			$tables = ['dataTableBuilder'];
+			$tables = [['dataTableBuilder']];
 
 			return response()->json(['status'=>true,'message'=>'Los cambios se guardaron correctamente','tables'=>$tables]);
 
@@ -143,15 +146,16 @@ class TipoDocumentoController extends BaseController{
 
 	public function eliminarTipoDocumento(){
 		try{
-			$tipoDocumento = MTipoDocumento::where('TIDO_TIPO_DOCUMENTO',Input::get('id') )
-								->where('TIDO_ENABLED',1)->where('TIDO_DELETED',0)->limit(1)->first();
+			$tipoDocumento = MTipoDocumento::where('TIDO_TIPO_DOCUMENTO',Input::get('id'))
+								->where('TIDO_DELETED',0)->limit(1)->first();
 			
-			$tipoDocumento->TIDO_ENABLED = 0;
-			$tipoDocumento->TIDO_DELETED = 1;
+			$tipoDocumento->TIDO_ENABLED    = 0;
+			$tipoDocumento->TIDO_DELETED    = 1;
+			$tipoDocumento->TIDO_DELETED_AT = Carbon::now();
 			$tipoDocumento->save();
 
 			// Lista de tablas que se van a recargar automáticamente
-			$tables = ['dataTableBuilder'];
+			$tables = 'dataTableBuilder';
 
 			return response()->json(['status'=>true,'message'=>'El tipo de documento se eliminó correctamente','tables'=>$tables]);
 		}catch(Exception $error){

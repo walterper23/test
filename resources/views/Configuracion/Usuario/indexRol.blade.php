@@ -1,20 +1,21 @@
 @extends('Tema.app')
 
 @section('title')
-
+	SIGESD :: Roles
 @endsection
 
 @section('breadcrumb')
 	<nav class="breadcrumb bg-body-light mb-0">
         <a class="breadcrumb-item" href="javascript:void(0)"><i class="fa fa-cogs"></i> Configuraci&oacute;n</a>
-        <span class="breadcrumb-item active">Usuarios</span>
+        <a class="breadcrumb-item" href="{{ url('configuracion/usuarios') }}">Usuarios</a>
+        <span class="breadcrumb-item active">Roles</span>
     </nav>
 @endsection
 
 @section('content')
 	<div class="block block-themed">
-        <div class="block-header bg-corporate">
-            <h3 class="block-title"><i class="fa fa-fw fa-users mr-5"></i> Usuarios</h3>
+        <div class="block-header bg-pulse">
+            <h3 class="block-title"><i class="fa fa-fw fa-users mr-5"></i> Roles</h3>
             <div class="block-options">
                 <a href="{{ url('configuracion/usuarios/nuevo') }}" class="btn-block-option">
                     <i class="fa fa-plus"></i> Nuevo

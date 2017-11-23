@@ -19,14 +19,14 @@
 @endsection
 
 @section('content')
-    <div class="block block-themed">
+    <div class="block block-themed block-mode-loading-refresh">
         <div class="block-header bg-corporate-dark">
             <h3 class="block-title"><i class="fa fa-fw fa-files-o mr-5"></i> Tipos de documentos</h3>
             <div class="block-options">
-                <button type="button" class="btn-block-option" onclick="App.openModal({ url : '/configuracion/catalogos/tipos-documentos/nuevo', id : '{{ $form_id }}' })">
+                <button type="button" class="btn-block-option" onclick="hTipoDocumento.new('{{ $form_id }}','{{ $form_url }}')">
                     <i class="fa fa-plus"></i> Nuevo
                 </button>
-                <button type="button" class="btn-block-option" onclick="App.reloadTable('dataTableBuilder')">
+                <button type="button" class="btn-block-option" onclick="hTipoDocumento.reload('dataTableBuilder')">
                     <i class="fa fa-refresh"></i> Actualizar
                 </button>
                 <div class="dropdown">
@@ -57,9 +57,6 @@
     {{ Html::script('js/plugins/datatables/dataTables.bootstrap4.min.js') }}
     {{-- Html::script('js/plugins/datatables/buttons1.4.2/js/dataTables.buttons.bootstrap4.min.js') }}
     {{ Html::script('js/plugins/datatables/buttons1.4.2/js/dataTables.buttons.server-side.js') --}}
-    {{ Html::script('js/plugins/bootstrap-notify/bootstrap-notify.min.js') }}
-    {{ Html::script('js/plugins/sweetalert2/es6-promise.auto.min.js') }}
-    {{ Html::script('js/plugins/sweetalert2/sweetalert2.min.js') }}
     {{ Html::script('js/helpers/tipo_documento.helper.js') }}
     {{ Html::script('js/app-form.js') }}
     {{ Html::script('js/app-alert.js') }}

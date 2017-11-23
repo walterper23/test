@@ -65,7 +65,7 @@
                                     <div class="form-group row">
                                         <div class="col-12">
                                             <div class="form-material floating open">
-                                                {{ Form::text('username',old('username'),['id'=>'username','class'=>'form-control text-center','autofocus'=>'autofocus']) }}
+                                                {{ Form::text('username',old('username'),['id'=>'username','class'=>'form-control text-center','autofocus']) }}
                                                 {{ Form::label('username','Usuario') }}
                                             </div>
                                         </div>
@@ -79,14 +79,11 @@
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <div class="col-6">
-                                            <div class="custom-controls-stacked">
-                                                <label class="custom-control custom-checkbox">
-                                                    <input type="checkbox" class="custom-control-input" id="remember" name="remember">
-                                                    <span class="custom-control-indicator"></span>
-                                                    <span class="custom-control-description">Mantener sesi&oacute;n</span>
-                                                </label>
-                                            </div>
+                                        <div class="col-12">
+                                            <label class="css-control css-control-sm css-control-primary css-switch">
+                                                <input type="checkbox" class="css-control-input" id="remember" name="remember">
+                                                <span class="css-control-indicator"></span> Mantener sesi&oacute;n
+                                            </label>
                                         </div>
                                     </div>
                                      @if($errors->has('username'))

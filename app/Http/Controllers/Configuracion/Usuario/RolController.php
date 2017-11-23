@@ -9,21 +9,20 @@ use Validator;
 
 /* Controllers */
 use App\Http\Controllers\BaseController;
-use App\DataTables\UsuariosDataTable;
+use App\DataTables\RolesDataTable;
 
 /* Models */
 use App\Model\Catalogo\MDepartamento;
 use App\Model\Catalogo\MPuesto;
 
+class RolController extends BaseController{
 
-class UsuarioController extends BaseController{
 
-
-	public function index(UsuariosDataTable $dataTables){
+	public function index(RolesDataTable $dataTables){
 
 		$data['table'] = $dataTables;
 
-		return view('Configuracion.Usuario.indexUsuario')->with($data);
+		return view('Configuracion.Usuario.indexRol')->with($data);
 	}
 
 

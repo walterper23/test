@@ -99,13 +99,37 @@ Route::group(['middleware'=>'auth'], function(){
 
 		Route::group(['prefix'=>'usuarios','namespace'=>'Usuario'], function(){
 			Route::get('/',                'UsuarioController@index');
-			Route::get('nuevo',            'UsuarioController@formTipoDocumento');
+			Route::get('nuevo',            'UsuarioController@formUsuario');
 			Route::post('post-data',       'UsuarioController@postDataTable');
 			Route::post('post-nuevo',      'UsuarioController@postNuevoUsuario');
 			Route::post('editar',          'UsuarioController@editarUsuario');
 			Route::post('post-editar',     'UsuarioController@postEditarUsuario');
 			Route::post('post-desactivar', 'UsuarioController@desactivarUsuario');
 			Route::post('post-eliminar',   'UsuarioController@eliminarUsuario');
+
+
+			Route::group(['prefix'=>'roles'], function(){
+				Route::get('/',                'RolController@index');
+				Route::get('nuevo',            'RolController@formUsuario');
+				Route::post('post-data',       'RolController@postDataTable');
+				Route::post('post-nuevo',      'RolController@postNuevoUsuario');
+				Route::post('editar',          'RolController@editarUsuario');
+				Route::post('post-editar',     'RolController@postEditarUsuario');
+				Route::post('post-desactivar', 'RolController@desactivarUsuario');
+				Route::post('post-eliminar',   'RolController@eliminarUsuario');
+			});
+
+			Route::group(['prefix'=>'permisos'], function(){
+				Route::get('/',                'PermisoController@index');
+				Route::get('nuevo',            'PermisoController@formUsuario');
+				Route::post('post-data',       'PermisoController@postDataTable');
+				Route::post('post-nuevo',      'PermisoController@postNuevoUsuario');
+				Route::post('editar',          'PermisoController@editarUsuario');
+				Route::post('post-editar',     'PermisoController@postEditarUsuario');
+				Route::post('post-desactivar', 'PermisoController@desactivarUsuario');
+				Route::post('post-eliminar',   'PermisoController@eliminarUsuario');
+			});
+
 			
 		});
 

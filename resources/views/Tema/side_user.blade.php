@@ -1,20 +1,20 @@
 <div class="content-side content-side-full content-side-user px-10 align-parent">
     <!-- Visible only in mini mode -->
     <div class="sidebar-mini-visible-b align-v animated fadeIn">
-        {{ Html::image('img/avatars/no-profile.jpg','',['class'=>'img-avatar img-avatar32']) }}
+        {{ $user->presenter()->imgAvatarSmall('img-avatar img-avatar32') }}
     </div>
     <!-- END Visible only in mini mode -->
 
     <!-- Visible only in normal mode -->
     <div class="sidebar-mini-hidden-b text-center">
-        <a class="img-link" href="{{ url('perfil') }}">
-            {{ Html::image('img/avatars/no-profile.jpg','',['class'=>'img-avatar']) }}
+        <a href="{{ url('perfil') }}">
+            {!! $user->presenter()->imgAvatarSmall() !!}
         </a>
         <ul class="list-inline mt-10">
             <li class="list-inline-item">
                 <!-- Layout API, functionality initialized in Codebase() -> uiApiLayout() -->
                 <a class="link-effect text-dual-primary-dark" data-toggle="layout" data-action="sidebar_style_inverse_toggle" href="javascript:void(0)">
-                    {{ $user->usuarioDetalle->presenter()->nombreCompleto() }}
+                    <strong>{{ $user->usuarioDetalle->presenter()->nombreCompleto() }}</strong>
                     <br>
                     {{ $user->getNombre() }}
                 </a>

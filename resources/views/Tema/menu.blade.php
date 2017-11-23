@@ -3,7 +3,7 @@
         return (request()->segment(2) == $menu) ? 'class="open"' : '';
     }
     function activeItemMenu( $item ){
-        return (request()->path() == $item) ? 'class="active"' : '';
+        return request()->is($item) ? 'class="active"' : '';
     }
 ?>
 <div class="content-side content-side-full">
@@ -13,7 +13,7 @@
             <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-puzzle"></i><span class="sidebar-mini-hide">Documentos</span></a>
             <ul>
                 <li>
-                    <a {!! activeItemMenu('recepcion/documentos') !!} href="{{ url('/recepcion/documentos/') }}">Recepcionados</a>
+                    <a {!! activeItemMenu('recepcion/documentos') !!} href="{{ url('/recepcion/documentos') }}">Recepcionados</a>
                 </li>
                 <li>
                     <a {!! activeItemMenu('recepcion/documentos/nuevo') !!} href="{{ url('/recepcion/documentos/nuevo') }}">Nueva recepci&oacute;n</a>
@@ -27,19 +27,19 @@
             <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-puzzle"></i><span class="sidebar-mini-hide">Cat&aacute;logos</span></a>
             <ul>
                 <li>
-                    <a {!! activeItemMenu('configuracion/catalogos/anexos') !!} href="{{ url('/configuracion/catalogos/anexos') }}">Anexos</a>
+                    <a {!! activeItemMenu('configuracion/catalogos/anexos') !!} href="{{ url('configuracion/catalogos/anexos') }}">Anexos</a>
                 </li>
                 <li>
-                    <a {!! activeItemMenu('configuracion/catalogos/departamentos') !!} href="{{ url('/configuracion/catalogos/departamentos') }}">Departamentos</a>
+                    <a {!! activeItemMenu('configuracion/catalogos/departamentos') !!} href="{{ url('configuracion/catalogos/departamentos') }}">Departamentos</a>
                 </li>
                 <li>
-                    <a {!! activeItemMenu('configuracion/catalogos/direcciones') !!} href="{{ url('/configuracion/catalogos/direcciones') }}">Direcciones</a>
+                    <a {!! activeItemMenu('configuracion/catalogos/direcciones') !!} href="{{ url('configuracion/catalogos/direcciones') }}">Direcciones</a>
                 </li>
                 <li>
-                    <a {!! activeItemMenu('configuracion/catalogos/puestos') !!} href="{{ url('/configuracion/catalogos/puestos') }}">Puestos</a>
+                    <a {!! activeItemMenu('configuracion/catalogos/puestos') !!} href="{{ url('configuracion/catalogos/puestos') }}">Puestos</a>
                 </li>
                 <li>
-                    <a {!! activeItemMenu('configuracion/catalogos/tipos-documentos') !!} href="{{ url('/configuracion/catalogos/tipos-documentos') }}">Tipos de documentos</a>
+                    <a {!! activeItemMenu('configuracion/catalogos/tipos-documentos') !!} href="{{ url('configuracion/catalogos/tipos-documentos') }}">Tipos de documentos</a>
                 </li>
             </ul>
         </li>
@@ -47,16 +47,16 @@
             <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-users"></i><span class="sidebar-mini-hidden">Usuarios</span></a>
             <ul>
                 <li>
-                    <a {!! activeItemMenu('usuarios/') !!} href="{{ url('/configuracion/usuarios/') }}">Ver usuarios</a>
+                    <a {!! activeItemMenu('configuracion/usuarios') !!} href="{{ url('configuracion/usuarios') }}">Ver usuarios</a>
                 </li>
                 <li>
-                    <a {!! activeItemMenu('usuarios/nuevo') !!} href="{{ url('/configuracion/usuarios/nuevo') }}">Nuevo usuario</a>
+                    <a {!! activeItemMenu('configuracion/usuarios/nuevo') !!} href="{{ url('configuracion/usuarios/nuevo') }}">Nuevo usuario</a>
                 </li>
                 <li>
-                    <a {!! activeItemMenu('usuarios/roles') !!} href="{{ url('/configuracion/usuarios/roles') }}">Roles</a>
+                    <a {!! activeItemMenu('configuracion/usuarios/roles') !!} href="{{ url('configuracion/usuarios/roles') }}">Roles</a>
                 </li>
                 <li>
-                    <a {!! activeItemMenu('usuarios/permisos') !!} href="{{ url('/configuracion/usuarios/permisos') }}">Permisos</a>
+                    <a {!! activeItemMenu('configuracion/usuarios/permisos') !!} href="{{ url('configuracion/usuarios/permisos') }}">Permisos</a>
                 </li>
             </ul>
         </li>

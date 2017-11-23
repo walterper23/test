@@ -67,7 +67,7 @@ class LoginController extends Controller
 
     protected function authenticated(Request $request, $user)
     {
-        $user->USUA_LAST_LOGIN   = $user->getRecentLogin();
+        $user->USUA_LAST_LOGIN   = is_null($user->getRecentLogin()) ? \Carbon\Carbon::now() : $user->getRecentLogin();
         $user->USUA_RECENT_LOGIN = \Carbon\Carbon::now();
         $user->save();
     }

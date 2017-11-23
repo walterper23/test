@@ -2,7 +2,7 @@
 
 var App = function(){
 
-	var defaultAjaxRequest = {
+	var _defaultAjaxRequest = {
 		data     : {},
 		type     : 'POST',
 		before   : function(){},
@@ -12,11 +12,11 @@ var App = function(){
 		fail     : function(){},
 	}
 
-	var init = function(){
-		configAjaxSetup()
+	var _init = function(){
+		_configAjaxSetup()
 	}
 
-	var configAjaxSetup = function(){
+	var _configAjaxSetup = function(){
 		$.ajaxSetup({
 		    headers: {
 		        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -24,8 +24,8 @@ var App = function(){
 		});
 	}
 
-	var ajaxRequest = function( options ){
-		$.ajax($.extend({},defaultAjaxRequest,{
+	var _ajaxRequest = function( options ){
+		$.ajax($.extend({},_defaultAjaxRequest,{
 			url  : options.url,
 			data : options.data,
 			type : options.type,
@@ -37,7 +37,7 @@ var App = function(){
 		}));
 	}
 
-	var defaultOpenModal = {
+	var _defaultOpenModal = {
 		id : 'modal-app',
 		footer : true,
 		btnOk : true,
@@ -46,7 +46,7 @@ var App = function(){
 		btnCancelText : 'Cancelar'
 	}
 
-	var openModal = function( config ){
+	var _openModal = function( config ){
 		var config = $.extend({},defaultOpenModal,config)
 		var modal = $('#modal-' + config.id )
 		modal = modal.length > 0 ? modal : $('<div/>').addClass('modal fade').attr('id','modal-'+config.id).attr('role','dialog')
@@ -69,7 +69,7 @@ var App = function(){
 
 		$('body').append(modal)
 
-		ajaxRequest({
+		_ajaxRequest({
 			url  : config.url,
 			data : config.data,
 			before : function(){
@@ -88,31 +88,44 @@ var App = function(){
 
 	}
 
-	var reloadTable = function(table){
-		$('#'+table).dataTable().api().ajax.reload();
+	var _reloadTable = function(table, callback, resetPaging){
+		$('#'+table).dataTable().api().ajax.reload(callback, resetPaging);
 	}
 
-	var reloadTables = function(tables){
+	var _reloadTables = function(tables){
 		$.each(tables,function(index,value){
-			reloadTable(value)
+			var callback = value[1] || null
+			var resetPaging = value[2] || false
+			console.log(value[0])
+			reloadTable(value[0],callback,resetPaging)
 		})
+	}
+
+	var _loadScript = function(url, callback){
+		$.getScript({
+			url   : url,
+			cache : true
+		}, callback)
 	}
 
 	return {
         init : function(){
-            init()
+            _init()
         },
         ajaxRequest : function(options){
-            ajaxRequest(options)
+            _ajaxRequest(options)
         },
         openModal : function(options){
-            openModal(options)
+            _openModal(options)
         },
-        reloadTable : function(table){
-            reloadTable(table)
+        reloadTable : function(table, callback = null , resetPaging = false){
+            _reloadTable(table, callback, resetPaging)
         },
         reloadTables : function(tables){
-            reloadTables(tables)
+            _reloadTables(tables)
+        },
+        loadScript : function(url, callback){
+        	_loadScript(url, callback)
         }
     }
 }()

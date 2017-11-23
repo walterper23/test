@@ -26,10 +26,8 @@
 
         <!-- Stylesheets -->
         <!-- Codebase framework -->
-        {{ Html::style('css/codebase.min.css',['id'=>'css-main']) }}
+        {{ Html::style('css/codebase.css',['id'=>'css-main']) }}
     
-        <!-- You can include a specific file from css/themes/ folder to alter the default color theme of the template. eg: -->
-        <!-- <link rel="stylesheet" id="css-theme" href="assets/css/themes/flat.min.css"> -->
         <!-- END Stylesheets -->
     </head>
     <body>
@@ -60,19 +58,17 @@
                         <!-- Reminder Form -->
                         <div class="row justify-content-center px-5">
                             <div class="col-sm-8 col-md-6 col-xl-4">
-                                <!-- jQuery Validation (.js-validation-reminder class is initialized in js/pages/op_auth_reminder.js) -->
-                                <!-- For more examples you can check out https://github.com/jzaefferer/jquery-validation -->
                                 {{ Form::open(['url'=>'/password/email','method'=>'POST','class'=>'js-validation-reminder']) }}
                                     {{ csrf_field() }}
                                     <div class="form-group row">
                                         <div class="col-12">
-                                            <div class="form-material floating">
-                                                {{ Form::text('email',old('email'),['id'=>'email','class'=>'form-control']) }}
-                                                {{ Form::label('email','Correo electr&oacute;nico') }}
+                                            <div class="form-material floating open">
+                                                {{ Form::text('username',old('username'),['id'=>'username','class'=>'form-control','autofocus']) }}
+                                                {{ Form::label('username','Usuario') }}
                                             </div>
-                                            @if ($errors->has('email'))
+                                            @if ($errors->has('username'))
                                                 <span class="help-block">
-                                                    <strong>{{ $errors->first('email') }}</strong>
+                                                    <strong>{{ $errors->first('username') }}</strong>
                                                 </span>
                                             @endif
                                         </div>

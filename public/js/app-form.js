@@ -35,7 +35,6 @@ var AppForm = new function(){
 	        errorClass: 'invalid-feedback',
 	        errorElement: 'div',
 	        errorPlacement: function(error, e) {
-	        	console.log(error,e)
 	            $(e).parents('.form-group > div').append(error);
 	        },
 	        highlight: function(e) {

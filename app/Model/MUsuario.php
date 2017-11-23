@@ -35,6 +35,14 @@ class MUsuario extends Authenticatable{
     public function getNombre(){
         return $this->attributes['USUA_NOMBRE'];
     }
+
+    public function getAvatarSmall(){
+        return $this->attributes['USUA_AVATAR_SMALL'];
+    }
+
+    public function getAvatarFull(){
+        return $this->attributes['USUA_AVATAR_FULL'];
+    }
     
     public function getRecentLogin(){
         return $this->attributes['USUA_RECENT_LOGIN'];

@@ -4,7 +4,7 @@ namespace App\DataTables;
 
 use App\Model\Catalogo\MPuesto;
 
-class UsuariosDataTable extends CustomDataTable{
+class RolesDataTable extends CustomDataTable{
     
     protected function setSourceData(){
         $this->sourceData = MPuesto::with('departamento')->select(['PUES_PUESTO','PUES_DEPARTAMENTO','PUES_NOMBRE','PUES_CREATED_AT','PUES_ENABLED'])

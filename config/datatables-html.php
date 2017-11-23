@@ -19,6 +19,9 @@ return [
 		'buttons'   => ['reload','export'],
 		'saveState' => true,
 		'pageLength' => '100',
+        //'scrollY'=> '300',
+        'deferRender' => true,
+        //'pageResize' => true,
 		'lengthMenu' => [[10, 20, 50, 100, -1],[10, 20, 50, 100, '- Todo -']],
 		'language'  => [
 			'url' => '/js/plugins/datatables/language/i18n.spanish.json'
