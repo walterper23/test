@@ -42,7 +42,7 @@ class DireccionesDataTable extends CustomDataTable{
                         $checked = 'checked=""';
                     }
                     return '<label class="css-control css-control-sm css-control-primary css-switch">
-                                <input type="checkbox" class="css-control-input" '.$checked.' onclick="hDireccion.active('.$query->DIRE_DIRECCION.')"><span class="css-control-indicator"></span>
+                                <input type="checkbox" class="css-control-input" '.$checked.' onclick="hDireccion.active({id:'.$query->DIRE_DIRECCION.'})"><span class="css-control-indicator"></span>
                             </label>';
                 }
             ],
@@ -53,7 +53,7 @@ class DireccionesDataTable extends CustomDataTable{
 
                     $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hDireccion.edit('.$query->DIRE_DIRECCION.')"><i class="fa fa-pencil"></i></button>';
                 
-                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hDireccion.delete('.$query->DIRE_DIRECCION.')"><i class="fa fa-trash"></i></button>';
+                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hDireccion.delete_('.$query->DIRE_DIRECCION.')"><i class="fa fa-trash"></i></button>';
                     
                     return $buttons;
                 }

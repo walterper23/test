@@ -48,7 +48,7 @@ class PuestosDataTable extends CustomDataTable{
                         $checked = 'checked=""';
                     }
                     return '<label class="css-control css-control-sm css-control-primary css-switch">
-                                <input type="checkbox" class="css-control-input" '.$checked.' onclick="hPuesto.active('.$query->PUES_PUESTO.')"><span class="css-control-indicator"></span>
+                                <input type="checkbox" class="css-control-input" '.$checked.' onclick="hPuesto.active({id:'.$query->PUES_PUESTO.'})"><span class="css-control-indicator"></span>
                             </label>';
                 }
             ],
@@ -59,7 +59,7 @@ class PuestosDataTable extends CustomDataTable{
 
                     $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hPuesto.edit('.$query->PUES_PUESTO.')"><i class="fa fa-pencil"></i></button>';
 
-                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hPuesto.delete('.$query->PUES_PUESTO.')"><i class="fa fa-trash"></i></button>';
+                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hPuesto.delete_('.$query->PUES_PUESTO.')"><i class="fa fa-trash"></i></button>';
                     
                     return $buttons;
                 }

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Configuracion\Catalogo;
 
 use Illuminate\Http\Request;
-use App\Http\Requests;
+use App\Http\Requests\ManagerTipoDocumentoRequest;
 use Illuminate\Support\Facades\Input;
 use Carbon\Carbon;
 use Validator;
@@ -33,6 +33,33 @@ class TipoDocumentoController extends BaseController{
 		return view('Configuracion.Catalogo.TipoDocumento.indexTipoDocumento')->with($data);
 	}
 
+	public function manager(ManagerTipoDocumentoRequest $request){
+
+		$action = Input::get('action');
+
+		switch ($action) {
+			case 1: // Nuevo
+				$response = $this->nuevoTipoDocumento();
+				break;
+			case 2: // Editar
+				$response = $this->editarTipoDocumento();
+				break;
+			case 3: // Activar / Desactivar
+				$response = $this->activarTipoDocumento();
+				break;
+			case 4: // Eliminar
+				$response = $this->eliminarTipoDocumento();
+				break;
+			case 5: // Validar tipo de documento
+				$response = $this->validarTipoDocumento();
+				break;
+			default:
+				return response()->json(['message'=>'Petición no válida'],404);
+				break;
+		}
+		return $response;
+	}
+
 	public function postDataTable(TiposDocumentosDataTable $dataTables){
 		return $dataTables->getData();
 	}
@@ -52,7 +79,7 @@ class TipoDocumentoController extends BaseController{
 		}
 	}
 
-	public function postNuevoTipoDocumento(){
+	public function nuevoTipoDocumento(){
 		try{
 			$data = Input::all();
 
@@ -93,7 +120,7 @@ class TipoDocumentoController extends BaseController{
 		}
 	}
 
-	public function postEditarTipoDocumento(){
+	public function editarTipoDocumento(){
 		try{
 			$data = Input::all();
 
@@ -121,7 +148,7 @@ class TipoDocumentoController extends BaseController{
 		}
 	}
 
-	public function desactivarTipoDocumento(){
+	public function activarTipoDocumento(){
 		try{
 			$tipoDocumento = MTipoDocumento::where('TIDO_TIPO_DOCUMENTO',Input::get('id') )
 								->where('TIDO_DELETED',0)->limit(1)->first();
@@ -134,14 +161,11 @@ class TipoDocumentoController extends BaseController{
 				$message = 'El tipo de documento se activó correctamente';
 			}
 			$tipoDocumento->save();
-			$tables = ['dataTableBuilder'];
 
-			return response()->json(['status'=>true,'message'=>$message,'tables'=>$tables]);
+			return response()->json(['status'=>true,'message'=>$message]);
 		}catch(Exception $error){
-			return response()->json(['status'=>false,'message'=>'Ocurrió un error al eliminar el tipo de documento. Error ' . $error->getCode() ]);
+			return response()->json(['status'=>false,'message'=>'Ocurrió un error al guardar los cambios. Error ' . $error->getCode() ]);
 		}
-
-
 	}
 
 	public function eliminarTipoDocumento(){
@@ -162,21 +186,22 @@ class TipoDocumentoController extends BaseController{
 			return response()->json(['status'=>false,'message'=>'Ocurrió un error al eliminar el tipo de documento. Error ' . $error->getMessage() ]);
 		}
 
-
 	}
 
-	public function getRules(){
-		return [
-			'nombre' => 'required|min:1,max:255'
-		];
-	}
+	public function validarTipoDocumento(){
+		try{
+			$tipoDocumento = MTipoDocumento::where('TIDO_TIPO_DOCUMENTO',Input::get('id'))
+								->where('TIDO_DELETED',0)->limit(1)->first();
+			
+			$tipoDocumento->TIDO_VALIDAR = $tipoDocumento->TIDO_VALIDAR * -1 + 1;
+			$tipoDocumento->save();
 
-	public function getMessages(){
-		return [
-			'nombre.required' => 'Introduzca un nombre',
-			'nombre.min'      => 'Mínimo :min caracter',
-			'nombre.max'      => 'Máximo :max caracteres'
-		];
+			return response()->json(['status'=>true,'message'=>'Los cambios se guardaron correctamente']);
+		}catch(Exception $error){
+			return response()->json(['status'=>false,'message'=>'Ocurrió un error al guardar los cambios. Error ' . $error->getMessage() ]);
+		}
+
+
 	}
 
 }

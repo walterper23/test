@@ -46,7 +46,7 @@ class DepartamentosDataTable extends CustomDataTable{
                         $checked = 'checked=""';
                     }
                     return '<label class="css-control css-control-sm css-control-primary css-switch">
-                                <input type="checkbox" class="css-control-input" '.$checked.' onclick="hTipoDocumento.active('.$query->DEPA_DEPARTAMENTO.')"><span class="css-control-indicator"></span>
+                                <input type="checkbox" class="css-control-input" '.$checked.' onclick="hDepartamento.active({id:'.$query->DEPA_DEPARTAMENTO.'})"><span class="css-control-indicator"></span>
                             </label>';
                 }
             ],
@@ -57,7 +57,7 @@ class DepartamentosDataTable extends CustomDataTable{
 
                     $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hDepartamento.edit('.$query->DEPA_DEPARTAMENTO.')"><i class="fa fa-pencil"></i></button>';
                 
-                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hDepartamento.delete('.$query->DEPA_DEPARTAMENTO.')"><i class="fa fa-trash"></i></button>';
+                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hDepartamento.delete_('.$query->DEPA_DEPARTAMENTO.')"><i class="fa fa-trash"></i></button>';
                     
                     return $buttons;
                 }

@@ -41,7 +41,7 @@ class AnexosDataTable extends CustomDataTable{
                         $checked = 'checked=""';
                     }
                     return '<label class="css-control css-control-sm css-control-primary css-switch">
-                                <input type="checkbox" class="css-control-input" '.$checked.' onclick="hAnexo.active('.$query->ANEX_ANEXO.')"><span class="css-control-indicator"></span>
+                                <input type="checkbox" class="css-control-input" '.$checked.' onclick="hAnexo.active({id:'.$query->ANEX_ANEXO.'})"><span class="css-control-indicator"></span>
                             </label>';
                 }
             ],
@@ -52,7 +52,7 @@ class AnexosDataTable extends CustomDataTable{
 
                     $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hAnexo.edit('.$query->ANEX_ANEXO.')"><i class="fa fa-pencil"></i></button>';
                 
-                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hTipoDocumento.delete('.$query->ANEX_ANEXO.')"><i class="fa fa-trash"></i></button>';
+                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hAnexo.delete_('.$query->ANEX_ANEXO.')"><i class="fa fa-trash"></i></button>';
                     
                     return $buttons;
                 }

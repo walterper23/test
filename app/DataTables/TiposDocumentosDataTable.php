@@ -42,7 +42,7 @@ class TiposDocumentosDataTable extends CustomDataTable{
                         $checked = 'checked=""';
                     }
                     return '<label class="css-control css-control-sm css-control-success css-switch">
-                                <input type="checkbox" class="css-control-input" '.$checked.' onclick="hTipoDocumento.validate('.$query->TIDO_TIPO_DOCUMENTO.')"><span class="css-control-indicator"></span>
+                                <input type="checkbox" class="css-control-input" '.$checked.' onclick="hTipoDocumento.validate_('.$query->TIDO_TIPO_DOCUMENTO.')"><span class="css-control-indicator"></span>
                             </label>';
                 }
             ],
@@ -54,7 +54,7 @@ class TiposDocumentosDataTable extends CustomDataTable{
                         $checked = 'checked=""';
                     }
                     return '<label class="css-control css-control-sm css-control-primary css-switch">
-                                <input type="checkbox" class="css-control-input" '.$checked.' onclick="hTipoDocumento.active('.$query->TIDO_TIPO_DOCUMENTO.')"><span class="css-control-indicator"></span>
+                                <input type="checkbox" class="css-control-input" '.$checked.' onclick="hTipoDocumento.active({id:'.$query->TIDO_TIPO_DOCUMENTO.'})"><span class="css-control-indicator"></span>
                             </label>';
                 }
             ],
@@ -63,9 +63,9 @@ class TiposDocumentosDataTable extends CustomDataTable{
                 'render' => function($query){
                     $buttons = '';
 
-                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hTipoDocumento.edit('.$query->TIDO_TIPO_DOCUMENTO.')"><i class="fa fa-pencil"></i></button>';
+                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hTipoDocumento.edit_('.$query->TIDO_TIPO_DOCUMENTO.')"><i class="fa fa-pencil"></i></button>';
                 
-                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hTipoDocumento.delete('.$query->TIDO_TIPO_DOCUMENTO.')"><i class="fa fa-trash"></i></button>';
+                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hTipoDocumento.delete_('.$query->TIDO_TIPO_DOCUMENTO.')"><i class="fa fa-trash"></i></button>';
                     
                     return $buttons;
                 }

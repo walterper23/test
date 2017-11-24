@@ -5,61 +5,22 @@ var hTipoDocumento;
 App.loadScript('/js/helpers/helper.js', function(){
 	hTipoDocumento = $.extend({}, Helper, function(){
 		return {
-			disable : function( id ){
-				App.ajaxRequest({
-					url : '/configuracion/catalogos/tipos-documentos/post-desactivar',
-					data : { id },
-					success : function(data){
-						if(data.status){
-
-							if(data.tables != undefined){
-								App.reloadTables(data.tables)
-							}
-							
-							AppAlert.notify({
-								message : data.message
-							})
-						}else{
-							AppAlert.notify({
-								type : 'error',
-								message : data.message
-							})
-						}
-					}
-				});
+			manager : function(){
+				return '/configuracion/catalogos/tipos-documentos/manager'
 			},
 
-			delete : function( id ){
-				AppAlert.waiting({
-					title : 'Eliminar tipo de documento',
-					text  : 'La eliminación no se podrá deshacer',
-					enterKey: false,
-					then : function(){
-						App.ajaxRequest({
-							url : '/configuracion/catalogos/tipos-documentos/post-eliminar',
-							data : { id },
-							success : function(data){
-								if(data.status){
+			delete_ : function(id){
+				this.delete({
+					id, title : 'Eliminar tipo de documento'
+				})
+			},
 
-									if(data.tables != undefined){
-										App.reloadTable(data.tables)
-									}
-
-									AppAlert.notify({
-										message : data.message
-									})
-								}else{
-									AppAlert.notify({
-										type : 'error',
-										message : data.message
-									})
-								}
-							}
-						});
-					}
-				});
+			validate_ : function(id){
+				this.active({
+					data : { action : 5, id }
+				})
 			}
+
 		}
 	}())
-	console.log(hTipoDocumento)
 })
