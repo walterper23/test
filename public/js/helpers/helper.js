@@ -13,8 +13,12 @@ var Helper = function(){
 		App.openModal({ url, id })
 	}
 
-	var _edit = function(id, url, data){
-		App.openModal({ id, url, data })
+	var _edit = function(options){
+		App.openModal({
+			id   : options.modal,
+			url  : options.url,
+			data : options.data
+		})
 	}
 
 	var _active = function(options){
@@ -83,8 +87,12 @@ var Helper = function(){
 		new : function(id, url){
 			_new(id, url)
 		},
-		edit : function(id, url, data){
-			_edit(id, url, data)
+		edit : function(options){
+			_edit({
+				modal : options.modal || 'modal-edit',
+				url   : options.url || this.manager(),
+				data  : options.data || { id : options.id }
+			})
 		},
 		active : function(options){
 			_active({

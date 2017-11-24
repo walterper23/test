@@ -24,7 +24,8 @@ class ManagerTipoDocumentoRequest extends FormRequest
     public function rules()
     {
         return [
-            'action' => 'required',
+            'action' => 'required|in:1,2,3,4,5',
+            'id'     => 'required_if:action:2,3,4,5',
             'nombre' => 'required_if:action,1,2|min:1,max:255'
         ];
     }
@@ -32,6 +33,7 @@ class ManagerTipoDocumentoRequest extends FormRequest
     public function messages(){
         return [
             'action.required' => 'Petición no especificada',
+            'action.in'       => 'Petición no válida',
             'nombre.required' => 'Introduzca un nombre',
             'nombre.min'      => 'Mínimo :min caracter',
             'nombre.max'      => 'Máximo :max caracteres'

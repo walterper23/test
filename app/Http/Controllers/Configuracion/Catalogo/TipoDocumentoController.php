@@ -69,7 +69,8 @@ class TipoDocumentoController extends BaseController{
 
 			$data['title'] = 'Nuevo tipo de documento';
 			$data['form_id'] = $this->form_id;
-			$data['url_send_form'] = url('configuracion/catalogos/tipos-documentos/post-nuevo');
+			$data['url_send_form'] = url('configuracion/catalogos/tipos-documentos/manager');
+			$data['action'] = 1;
 			$data['model'] = null;
 			$data['id'] = null;
 			
@@ -81,21 +82,14 @@ class TipoDocumentoController extends BaseController{
 
 	public function nuevoTipoDocumento(){
 		try{
-			$data = Input::all();
-
-			$validar = Validator::make($data,$this->getRules(),$this->getMessages());
-
-			if( !$validar->passes() ){
-				return response()->json(['status'=>false,'errors'=>$validar->errors()->toArray()]);
-			}
 
 			$tipoDocumento = new MTipoDocumento;
-			$tipoDocumento->TIDO_NOMBRE_TIPO = $data['nombre'];
+			$tipoDocumento->TIDO_NOMBRE_TIPO = Input::get('nombre');
 			$tipoDocumento->TIDO_CREATED_AT  = Carbon::now();
 			$tipoDocumento->save();
 
 			// Lista de tablas que se van a recargar automáticamente
-			$tables = [['dataTableBuilder',null,true]];
+			$tables = ['dataTableBuilder',null,true];
 
 			return response()->json(['status'=>true,'message'=>'El tipo de documento se creó correctamente','tables'=>$tables]);
 		
@@ -109,8 +103,8 @@ class TipoDocumentoController extends BaseController{
 
 			$data['title'] = 'Editar tipo de documento';
 			$data['form_id'] = $this->form_id;
-			$data['url_send_form'] = url('configuracion/catalogos/tipos-documentos/post-editar');
-			
+			$data['url_send_form'] = url('configuracion/catalogos/tipos-documentos/manager');
+			$data['action'] = 2;
 			$data['model'] = MTipoDocumento::find( Input::get('id') );
 			$data['id'] = Input::get('id');
 
@@ -122,24 +116,13 @@ class TipoDocumentoController extends BaseController{
 
 	public function editarTipoDocumento(){
 		try{
-			$data = Input::all();
 
-			$rules = $this->getRules() + ['id' => 'deleted:cat_tipos_documentos,TIDO_TIPO_DOCUMENTO,TIDO_DELETED'];
-			
-			$messages = $this->getMessages() + [ 'id.deleted' => 'El tipo de documento no existe' ];
-
-			$validar = Validator::make($data,$rules,$messages);
-
-			if( !$validar->passes() ){
-				return response()->json(['status'=>false,'errors'=>$validar->errors()->toArray()]);
-			}
-
-			$tipoDocumento = MTipoDocumento::findOrFail( $data['id'] );
-			$tipoDocumento->TIDO_NOMBRE_TIPO = $data['nombre'];
+			$tipoDocumento = MTipoDocumento::findOrFail( Input::get('id') );
+			$tipoDocumento->TIDO_NOMBRE_TIPO = Input::get('nombre');
 			$tipoDocumento->save();
 
 			// Lista de tablas que se van a recargar automáticamente
-			$tables = [['dataTableBuilder']];
+			$tables = 'dataTableBuilder';
 
 			return response()->json(['status'=>true,'message'=>'Los cambios se guardaron correctamente','tables'=>$tables]);
 

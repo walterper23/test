@@ -122,9 +122,9 @@ var App = function(){
 			}
         },
         reloadTables : function(tables){
-            $.each(tables,function(index,table){
-            	this.reloadTable(table)
-			})
+            for(var index in tables){
+            	this.reloadTable(tables[index])
+            }
         },
         loadScript : function(url, callback){
         	_loadScript(url, callback)
