@@ -41,21 +41,25 @@ class PuestosDataTable extends CustomDataTable{
                 'data' => 'PUES_CREATED_AT'
             ],
             [
+                'title' => 'Activo',
+                'render' => function($query){
+                    $checked = '';
+                    if($query->PUES_ENABLED == 1){
+                        $checked = 'checked=""';
+                    }
+                    return '<label class="css-control css-control-sm css-control-primary css-switch">
+                                <input type="checkbox" class="css-control-input" '.$checked.' onclick="hPuesto.active('.$query->PUES_PUESTO.')"><span class="css-control-indicator"></span>
+                            </label>';
+                }
+            ],
+            [
                 'title' => 'Opciones',
                 'render' => function($query){
                     $buttons = '';
 
-                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-primary" onclick="hTipoDocumento.delete('.$query->PUES_PUESTO.')"><i class="fa fa-eye"></i></button>';
+                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hPuesto.edit('.$query->PUES_PUESTO.')"><i class="fa fa-pencil"></i></button>';
 
-                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hTipoDocumento.delete('.$query->PUES_PUESTO.')"><i class="fa fa-pencil"></i></button>';
-                
-                    if($query->PUES_ENABLED == 1){
-                        $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hTipoDocumento.disable('.$query->PUES_PUESTO.')"><i class="fa fa-level-down"></i></button>';
-                    }else{
-                        $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hTipoDocumento.enabled('.$query->PUES_PUESTO.')"><i class="fa fa-level-up"></i></button>';
-                    }
-
-                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hTipoDocumento.delete('.$query->PUES_PUESTO.')"><i class="fa fa-trash"></i></button>';
+                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hPuesto.delete('.$query->PUES_PUESTO.')"><i class="fa fa-trash"></i></button>';
                     
                     return $buttons;
                 }

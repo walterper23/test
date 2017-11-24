@@ -47,7 +47,7 @@ var App = function(){
 	}
 
 	var _openModal = function( config ){
-		var config = $.extend({},defaultOpenModal,config)
+		var config = $.extend({},_defaultOpenModal,config)
 		var modal = $('#modal-' + config.id )
 		modal = modal.length > 0 ? modal : $('<div/>').addClass('modal fade').attr('id','modal-'+config.id).attr('role','dialog')
 

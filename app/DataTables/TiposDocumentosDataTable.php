@@ -18,7 +18,7 @@ class TiposDocumentosDataTable extends CustomDataTable{
                 'render' => function($query){
                     return '<div class="custom-controls-stacked">
                             <label class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="remember" name="remember" value="'.$query->TIDO_TIPO_DOCUMENTO.'">
+                                <input type="checkbox" class="custom-control-input" value="'.$query->TIDO_TIPO_DOCUMENTO.'">
                                 <span class="custom-control-indicator"></span>
                             </label>
                         </div>';
@@ -37,10 +37,25 @@ class TiposDocumentosDataTable extends CustomDataTable{
             [
                 'title' => 'Validar',
                 'render' => function($query){
+                    $checked = '';
                     if($query->TIDO_VALIDAR == 1){
-                        return '<span class="badge badge-success">Validar</span>';
+                        $checked = 'checked=""';
                     }
-                    return '<span class="badge badge-info">No validar</span>';
+                    return '<label class="css-control css-control-sm css-control-success css-switch">
+                                <input type="checkbox" class="css-control-input" '.$checked.' onclick="hTipoDocumento.validate('.$query->TIDO_TIPO_DOCUMENTO.')"><span class="css-control-indicator"></span>
+                            </label>';
+                }
+            ],
+            [
+                'title' => 'Activo',
+                'render' => function($query){
+                    $checked = '';
+                    if($query->TIDO_ENABLED == 1){
+                        $checked = 'checked=""';
+                    }
+                    return '<label class="css-control css-control-sm css-control-primary css-switch">
+                                <input type="checkbox" class="css-control-input" '.$checked.' onclick="hTipoDocumento.active('.$query->TIDO_TIPO_DOCUMENTO.')"><span class="css-control-indicator"></span>
+                            </label>';
                 }
             ],
             [
@@ -50,12 +65,6 @@ class TiposDocumentosDataTable extends CustomDataTable{
 
                     $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hTipoDocumento.edit('.$query->TIDO_TIPO_DOCUMENTO.')"><i class="fa fa-pencil"></i></button>';
                 
-                    if($query->TIDO_ENABLED == 1){
-                        $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hTipoDocumento.disable('.$query->TIDO_TIPO_DOCUMENTO.')"><i class="fa fa-level-down"></i></button>';
-                    }else{
-                        $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hTipoDocumento.disable('.$query->TIDO_TIPO_DOCUMENTO.')"><i class="fa fa-level-up"></i></button>';
-                    }
-
                     $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hTipoDocumento.delete('.$query->TIDO_TIPO_DOCUMENTO.')"><i class="fa fa-trash"></i></button>';
                     
                     return $buttons;
