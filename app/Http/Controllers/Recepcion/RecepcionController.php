@@ -25,6 +25,10 @@ class RecepcionController extends BaseController{
 
 		$data = [];
 
+		$data['tipos_documentos'] = [];
+
+		$data['form'] = view('Recepcion.formNuevaRecepcion')->with($data);
+
 		return view('Recepcion.nuevaRecepcion')->with($data);
 
 	}

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Configuracion\Catalogo;
 
 use Illuminate\Http\Request;
-use App\Http\Requests;
+use App\Http\Requests\ManagerTipoDocumentoRequest;
 use Illuminate\Support\Facades\Input;
 use Carbon\Carbon;
 use Validator;
@@ -33,6 +33,33 @@ class TipoDocumentoController extends BaseController{
 		return view('Configuracion.Catalogo.TipoDocumento.indexTipoDocumento')->with($data);
 	}
 
+	public function manager(ManagerTipoDocumentoRequest $request){
+
+		$action = Input::get('action');
+
+		switch ($action) {
+			case 1: // Nuevo
+				$response = $this->nuevoTipoDocumento();
+				break;
+			case 2: // Editar
+				$response = $this->editarTipoDocumento();
+				break;
+			case 3: // Activar / Desactivar
+				$response = $this->activarTipoDocumento();
+				break;
+			case 4: // Eliminar
+				$response = $this->eliminarTipoDocumento();
+				break;
+			case 5: // Validar tipo de documento
+				$response = $this->validarTipoDocumento();
+				break;
+			default:
+				return response()->json(['message'=>'Petición no válida'],404);
+				break;
+		}
+		return $response;
+	}
+
 	public function postDataTable(TiposDocumentosDataTable $dataTables){
 		return $dataTables->getData();
 	}
@@ -42,7 +69,8 @@ class TipoDocumentoController extends BaseController{
 
 			$data['title'] = 'Nuevo tipo de documento';
 			$data['form_id'] = $this->form_id;
-			$data['url_send_form'] = url('configuracion/catalogos/tipos-documentos/post-nuevo');
+			$data['url_send_form'] = url('configuracion/catalogos/tipos-documentos/manager');
+			$data['action'] = 1;
 			$data['model'] = null;
 			$data['id'] = null;
 			
@@ -52,23 +80,16 @@ class TipoDocumentoController extends BaseController{
 		}
 	}
 
-	public function postNuevoTipoDocumento(){
+	public function nuevoTipoDocumento(){
 		try{
-			$data = Input::all();
-
-			$validar = Validator::make($data,$this->getRules(),$this->getMessages());
-
-			if( !$validar->passes() ){
-				return response()->json(['status'=>false,'errors'=>$validar->errors()->toArray()]);
-			}
 
 			$tipoDocumento = new MTipoDocumento;
-			$tipoDocumento->TIDO_NOMBRE_TIPO = $data['nombre'];
+			$tipoDocumento->TIDO_NOMBRE_TIPO = Input::get('nombre');
 			$tipoDocumento->TIDO_CREATED_AT  = Carbon::now();
 			$tipoDocumento->save();
 
 			// Lista de tablas que se van a recargar automáticamente
-			$tables = [['dataTableBuilder',null,true]];
+			$tables = ['dataTableBuilder',null,true];
 
 			return response()->json(['status'=>true,'message'=>'El tipo de documento se creó correctamente','tables'=>$tables]);
 		
@@ -82,8 +103,8 @@ class TipoDocumentoController extends BaseController{
 
 			$data['title'] = 'Editar tipo de documento';
 			$data['form_id'] = $this->form_id;
-			$data['url_send_form'] = url('configuracion/catalogos/tipos-documentos/post-editar');
-			
+			$data['url_send_form'] = url('configuracion/catalogos/tipos-documentos/manager');
+			$data['action'] = 2;
 			$data['model'] = MTipoDocumento::find( Input::get('id') );
 			$data['id'] = Input::get('id');
 
@@ -93,26 +114,15 @@ class TipoDocumentoController extends BaseController{
 		}
 	}
 
-	public function postEditarTipoDocumento(){
+	public function editarTipoDocumento(){
 		try{
-			$data = Input::all();
 
-			$rules = $this->getRules() + ['id' => 'deleted:cat_tipos_documentos,TIDO_TIPO_DOCUMENTO,TIDO_DELETED'];
-			
-			$messages = $this->getMessages() + [ 'id.deleted' => 'El tipo de documento no existe' ];
-
-			$validar = Validator::make($data,$rules,$messages);
-
-			if( !$validar->passes() ){
-				return response()->json(['status'=>false,'errors'=>$validar->errors()->toArray()]);
-			}
-
-			$tipoDocumento = MTipoDocumento::findOrFail( $data['id'] );
-			$tipoDocumento->TIDO_NOMBRE_TIPO = $data['nombre'];
+			$tipoDocumento = MTipoDocumento::findOrFail( Input::get('id') );
+			$tipoDocumento->TIDO_NOMBRE_TIPO = Input::get('nombre');
 			$tipoDocumento->save();
 
 			// Lista de tablas que se van a recargar automáticamente
-			$tables = [['dataTableBuilder']];
+			$tables = 'dataTableBuilder';
 
 			return response()->json(['status'=>true,'message'=>'Los cambios se guardaron correctamente','tables'=>$tables]);
 
@@ -121,7 +131,7 @@ class TipoDocumentoController extends BaseController{
 		}
 	}
 
-	public function desactivarTipoDocumento(){
+	public function activarTipoDocumento(){
 		try{
 			$tipoDocumento = MTipoDocumento::where('TIDO_TIPO_DOCUMENTO',Input::get('id') )
 								->where('TIDO_DELETED',0)->limit(1)->first();
@@ -134,14 +144,11 @@ class TipoDocumentoController extends BaseController{
 				$message = 'El tipo de documento se activó correctamente';
 			}
 			$tipoDocumento->save();
-			$tables = ['dataTableBuilder'];
 
-			return response()->json(['status'=>true,'message'=>$message,'tables'=>$tables]);
+			return response()->json(['status'=>true,'message'=>$message]);
 		}catch(Exception $error){
-			return response()->json(['status'=>false,'message'=>'Ocurrió un error al eliminar el tipo de documento. Error ' . $error->getCode() ]);
+			return response()->json(['status'=>false,'message'=>'Ocurrió un error al guardar los cambios. Error ' . $error->getCode() ]);
 		}
-
-
 	}
 
 	public function eliminarTipoDocumento(){
@@ -162,21 +169,22 @@ class TipoDocumentoController extends BaseController{
 			return response()->json(['status'=>false,'message'=>'Ocurrió un error al eliminar el tipo de documento. Error ' . $error->getMessage() ]);
 		}
 
-
 	}
 
-	public function getRules(){
-		return [
-			'nombre' => 'required|min:1,max:255'
-		];
-	}
+	public function validarTipoDocumento(){
+		try{
+			$tipoDocumento = MTipoDocumento::where('TIDO_TIPO_DOCUMENTO',Input::get('id'))
+								->where('TIDO_DELETED',0)->limit(1)->first();
+			
+			$tipoDocumento->TIDO_VALIDAR = $tipoDocumento->TIDO_VALIDAR * -1 + 1;
+			$tipoDocumento->save();
 
-	public function getMessages(){
-		return [
-			'nombre.required' => 'Introduzca un nombre',
-			'nombre.min'      => 'Mínimo :min caracter',
-			'nombre.max'      => 'Máximo :max caracteres'
-		];
+			return response()->json(['status'=>true,'message'=>'Los cambios se guardaron correctamente']);
+		}catch(Exception $error){
+			return response()->json(['status'=>false,'message'=>'Ocurrió un error al guardar los cambios. Error ' . $error->getMessage() ]);
+		}
+
+
 	}
 
 }

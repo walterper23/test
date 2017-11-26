@@ -33,7 +33,10 @@ var App = function(){
 			success : options.success,
 			complete : options.complete,
 			error : options.error,
-			fail : options.fail
+			fail : options.fail,
+			statusCode : {
+				500 : options.code500
+			}
 		}));
 	}
 
@@ -47,7 +50,7 @@ var App = function(){
 	}
 
 	var _openModal = function( config ){
-		var config = $.extend({},defaultOpenModal,config)
+		var config = $.extend({},_defaultOpenModal,config)
 		var modal = $('#modal-' + config.id )
 		modal = modal.length > 0 ? modal : $('<div/>').addClass('modal fade').attr('id','modal-'+config.id).attr('role','dialog')
 
@@ -92,15 +95,6 @@ var App = function(){
 		$('#'+table).dataTable().api().ajax.reload(callback, resetPaging);
 	}
 
-	var _reloadTables = function(tables){
-		$.each(tables,function(index,value){
-			var callback = value[1] || null
-			var resetPaging = value[2] || false
-			console.log(value[0])
-			reloadTable(value[0],callback,resetPaging)
-		})
-	}
-
 	var _loadScript = function(url, callback){
 		$.getScript({
 			url   : url,
@@ -119,10 +113,18 @@ var App = function(){
             _openModal(options)
         },
         reloadTable : function(table, callback = null , resetPaging = false){
-            _reloadTable(table, callback, resetPaging)
+			if(typeof table == 'string'){
+            	_reloadTable(table, callback, resetPaging)
+        	}else if(table instanceof Array){
+				var callback = table[1] || null
+				var resetPaging = table[2] || false
+				_reloadTable(table[0],callback,resetPaging)
+			}
         },
         reloadTables : function(tables){
-            _reloadTables(tables)
+            for(var index in tables){
+            	this.reloadTable(tables[index])
+            }
         },
         loadScript : function(url, callback){
         	_loadScript(url, callback)

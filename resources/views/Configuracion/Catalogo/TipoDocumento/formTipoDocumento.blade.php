@@ -9,6 +9,7 @@
 <div class="block-content">
     {{ Form::model($model,['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) }}
         {{ Form::hidden('id',$id) }}
+        {{ Form::hidden('action',$action) }}
         <div class="form-group row">
             <label class="col-sm-3 col-form-label" for="nombre">Nombre</label>
             <div class="col-sm-9">
@@ -38,10 +39,11 @@
 						AppForm.closeContext()
 
 						if(data.tables != undefined){
-							App.reloadTables(data.tables)
+							App.reloadTable(data.tables)
 						}
 
 						AppAlert.notify({
+							type : 'info',
 							message : data.message
 						})
 					}else{

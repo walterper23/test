@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Configuracion\Catalogo;
 
 use Illuminate\Http\Request;
-use App\Http\Requests;
+use App\Http\Requests\ManagerPuestoRequest;
 use Illuminate\Support\Facades\Input;
 use Validator;
 
@@ -19,6 +19,30 @@ class PuestoController extends BaseController{
 
 	public function index(PuestosDataTable $dataTables){
 		return view('Configuracion.Catalogo.Puesto.indexPuesto')->with('table', $dataTables);
+	}
+
+	public function manager(ManagerPuestoRequest $request){
+
+		$action = Input::get('action');
+
+		switch ($action) {
+			case 1: // Nuevo
+				$response = $this->nuevoPuesto();
+				break;
+			case 2: // Editar
+				$response = $this->editarPuesto();
+				break;
+			case 3: // Activar / Desactivar
+				$response = $this->activarPuesto();
+				break;
+			case 4: // Eliminar
+				$response = $this->eliminarPuesto();
+				break;
+			default:
+				return response()->json(['message'=>'Petición no válida'],404);
+				break;
+		}
+		return $response;
 	}
 
 	public function postDataTable(PuestosDataTable $dataTables){
@@ -45,7 +69,7 @@ class PuestoController extends BaseController{
 		}
 	}
 
-	public function postNuevoPuesto(){
+	public function nuevoPuesto(){
 		try{
 		
 		}catch(Exception $error){
@@ -53,7 +77,7 @@ class PuestoController extends BaseController{
 		}
 	}
 
-	public function postEditarPuesto(){
+	public function editarPuesto(){
 		try{
 
 		}catch(Exception $error){
@@ -61,12 +85,44 @@ class PuestoController extends BaseController{
 		}
 	}
 
-	public function eliminarPuesto( $id ){
+	public function activarPuesto(){
 		try{
+			$puesto = MPuesto::where('PUES_PUESTO',Input::get('id') )
+								->where('PUES_DELETED',0)->limit(1)->first();
+			
+			if( $puesto->PUES_ENABLED == 1 ){
+				$puesto->PUES_ENABLED = 0;
+				$message = 'El puesto se desactivó correctamente';
+			}else{
+				$puesto->PUES_ENABLED = 1;
+				$message = 'El puesto se activó correctamente';
+			}
+			$puesto->save();
 
+			return response()->json(['status'=>true,'message'=>$message]);
 		}catch(Exception $error){
-
+			return response()->json(['status'=>false,'message'=>'Ocurrió un error al guardar los cambios. Error ' . $error->getCode() ]);
 		}
+	}
+
+	public function eliminarPuesto(){
+		try{
+			$puesto = MPuesto::where('PUES_PUESTO',Input::get('id'))
+								->where('PUES_DELETED',0)->limit(1)->first();
+			
+			$puesto->PUES_ENABLED    = 0;
+			$puesto->PUES_DELETED    = 1;
+			$puesto->PUES_DELETED_AT = Carbon::now();
+			$puesto->save();
+
+			// Lista de tablas que se van a recargar automáticamente
+			$tables = 'dataTableBuilder';
+
+			return response()->json(['status'=>true,'message'=>'El puesto se eliminó correctamente','tables'=>$tables]);
+		}catch(Exception $error){
+			return response()->json(['status'=>false,'message'=>'Ocurrió un error al eliminar el puesto. Error ' . $error->getMessage() ]);
+		}
+
 	}
 
 }

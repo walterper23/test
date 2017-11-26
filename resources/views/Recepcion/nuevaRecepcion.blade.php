@@ -50,19 +50,7 @@
                     </div>
                 </div>
                 <div class="block-content">
-                    <form action="be_forms_elements_bootstrap.html" method="post" onsubmit="return false;">
-                        <div class="form-group">
-                            <label for="example-nf-email">Email</label>
-                            <input type="email" class="form-control" id="example-nf-email" name="example-nf-email" placeholder="Enter Email..">
-                        </div>
-                        <div class="form-group">
-                            <label for="example-nf-password">Password</label>
-                            <input type="password" class="form-control" id="example-nf-password" name="example-nf-password" placeholder="Enter Password..">
-                        </div>
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-alt-primary">Login</button>
-                        </div>
-                    </form>
+                    {!! $form !!}
                 </div>
             </div>
             <!-- END Normal Form -->
