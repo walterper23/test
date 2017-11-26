@@ -24,21 +24,7 @@ class DireccionController extends BaseController{
 		return $dataTables->getData();
 	}
 
-	public function formTipoDocumento(){
-		try{
-
-			$data['title'] = 'Nuevo tipo de documento';
-			
-			$data['form_id'] = 'form-nuevo-tipo-documento';
-			$data['url_send_form'] = url('configuracion/catalogos/tipos-documentos/post-nuevo');
-			
-			$data['model'] = new MTipoDocumento;
-
-			return view('Configuracion.Catalogo.TipoDocumento.formTipoDocumento')->with($data);
-		}catch(Exception $error){
-
-		}
-	}
+	
 	public function formDireccion(){
 		try{
 
@@ -56,9 +42,10 @@ class DireccionController extends BaseController{
 		}
 	}
 
-	public function postNuevaDireccion(){
+	public function postNuevaDireccion(Requests $requests){
 		try{
-		
+		$data['title']=$requests->input('nombre direccion');
+		DB::table('cat_direcciones')->insert(['DIRE_NOMBRE'->$data['title']]);
 		}catch(Exception $error){
 
 		}
