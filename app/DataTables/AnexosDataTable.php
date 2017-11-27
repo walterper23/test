@@ -21,7 +21,7 @@ class AnexosDataTable extends CustomDataTable{
                                     <span class="custom-control-indicator"></span>
                                 </label>
                             </div>';
-                },
+                },//para no habilitar búsqueda ni orden en el elemento
                 'searchable' => false,
                 'orderable'  => false,
             ],

@@ -17,8 +17,19 @@ use App\Model\Catalogo\MAnexo;
 
 class AnexoController extends BaseController{
 
+	private $form_id;
+
+	public function __construct(){
+		$this->form_id = 'form-anexo';
+	}
+
 	public function index(AnexosDataTable $dataTables){
-		return view('Configuracion.Catalogo.Anexo.indexAnexo')->with('table', $dataTables);
+
+		$data['table']    = $dataTables;
+		$data['form_id']  = $this->form_id;
+		$data['form_url'] = url('configuracion/catalogos/anexos/nuevo');
+
+		return view('Configuracion.Catalogo.Anexo.indexAnexo')->with($data);
 	}
 
 	public function manager(ManagerAnexoRequest $request){
@@ -54,9 +65,11 @@ class AnexoController extends BaseController{
 
 			$data = [];
 
-			$data['title'] = 'Nuevo anexo';
-			$data['url_send_form'] ='';
-			$data['form_id'] = '';
+			$data['title']         = 'Nuevo anexo';
+			$data['url_send_form'] =  url('configuracion/catalogos/anexos/manager');
+			$data['form_id']       =  $this->form_id;
+			$data['modelo']		   =  null;
+			$data['action']		   = 1;
 
 			return view('Configuracion.Catalogo.Anexo.formAnexo')-> with ($data);
 
@@ -67,6 +80,14 @@ class AnexoController extends BaseController{
 
 	public function nuevoAnexo(){
 		try{
+
+			$anexo = new MAnexo;
+			$anexo->ANEX_NOMBRE = Input::get('nombre');
+			$anexo->save();			
+
+			$tables = ['dataTableBuilder',null,true];
+
+			return response()->json(['status'=>true,'message'=>'El anexo se creó correctamente','tables' =>$tables]);
 		
 		}catch(Exception $error){
 
@@ -75,6 +96,13 @@ class AnexoController extends BaseController{
 
 	public function editarAnexo(){
 		try{
+			$anexo = MAnexo::find(Input::get('id') )->where('ANEX_DELETED',0);
+			$anexo->ANEX_NOMBRE = Input::get('nombre');
+			$anexo->save();			
+
+			$tables = 'dataTableBuilder';
+
+			return response()->json(['status'=>true,'message'=>'Los cambios se guardaron correctamente','tables' =>$tables]);
 
 		}catch(Exception $error){
 			
@@ -107,7 +135,6 @@ class AnexoController extends BaseController{
 			$anexo = MAnexo::where('ANEX_ANEXO',Input::get('id') )
 								->where('ANEX_DELETED',0)->limit(1)->first();
 			
-			$anexo->ANEX_ENABLED    = 0;
 			$anexo->ANEX_DELETED    = 1;
 			$anexo->ANEX_DELETED_AT = Carbon::now();
 			$anexo->save();
