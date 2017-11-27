@@ -7,7 +7,8 @@
     </div>
 </div>
 <div class="block-content">
-    {{ Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) }}
+    {{ Form::model($modelo,['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) }}
+    {{Form::hidden('action',$action)}}
         <div class="form-group row">
             <label class="col-sm-3 col-form-label" for="nombre">Nombre</label>
             <div class="col-sm-9">
