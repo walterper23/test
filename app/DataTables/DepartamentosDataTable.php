@@ -18,7 +18,7 @@ class DepartamentosDataTable extends CustomDataTable{
                 'render' => function($query){
                     return '<div class="custom-controls-stacked">
                             <label class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="remember" name="remember" value="'.$query->DEPA_DEPARTAMENTO.'">
+                                <input type="checkbox" class="custom-control-input" value="'.$query->DEPA_DEPARTAMENTO.'">
                                 <span class="custom-control-indicator"></span>
                             </label>
                         </div>';
@@ -55,7 +55,7 @@ class DepartamentosDataTable extends CustomDataTable{
                 'render' => function($query){
                     $buttons = '';
 
-                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hDepartamento.edit('.$query->DEPA_DEPARTAMENTO.')"><i class="fa fa-pencil"></i></button>';
+                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hDepartamento.edit_('.$query->DEPA_DEPARTAMENTO.')"><i class="fa fa-pencil"></i></button>';
                 
                     $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hDepartamento.delete_('.$query->DEPA_DEPARTAMENTO.')"><i class="fa fa-trash"></i></button>';
                     

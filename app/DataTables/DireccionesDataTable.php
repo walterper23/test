@@ -18,7 +18,7 @@ class DireccionesDataTable extends CustomDataTable{
                 'render' => function($query){
                     return '<div class="custom-controls-stacked">
                             <label class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="remember" name="remember" value="'.$query->DIRE_DIRECCION.'">
+                                <input type="checkbox" class="custom-control-input" value="'.$query->DIRE_DIRECCION.'">
                                 <span class="custom-control-indicator"></span>
                             </label>
                         </div>';
@@ -51,7 +51,7 @@ class DireccionesDataTable extends CustomDataTable{
                 'render' => function($query){
                     $buttons = '';
 
-                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hDireccion.edit('.$query->DIRE_DIRECCION.')"><i class="fa fa-pencil"></i></button>';
+                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hDireccion.edit_('.$query->DIRE_DIRECCION.')"><i class="fa fa-pencil"></i></button>';
                 
                     $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hDireccion.delete_('.$query->DIRE_DIRECCION.')"><i class="fa fa-trash"></i></button>';
                     

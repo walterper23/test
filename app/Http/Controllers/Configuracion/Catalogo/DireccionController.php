@@ -16,18 +16,18 @@ use App\DataTables\DireccionesDataTable;
 use App\Model\Catalogo\MDireccion;
 
 class DireccionController extends BaseController{
+	
 	private $form_id;
+	
 	public function __construct(){
-		$this -> form_id ='form-direccion';
-
+		$this->form_id ='form-direccion';
 	}
 
 	public function index(DireccionesDataTable $dataTables){
 
-		$data['table'] = $dataTables;
-		$data['form_id'] = $this ->form_id;
+		$data['table']    = $dataTables;
+		$data['form_id']  = $this->form_id;
 		$data['form_url'] = url('configuracion/catalogos/direcciones/nuevo');
-
 
 		return view('Configuracion.Catalogo.Direccion.indexDireccion')->with($data);
 	}
@@ -56,51 +56,40 @@ class DireccionController extends BaseController{
 		return $response;
 	}
 
-	public function formDireccion(){
-try{
- 		$data = [
- 			'title' =>'Nueva direccion',
- 			'form_id' => $this-> form_id,
- 			'url_send_form' => url('configuracion/catalogos/direcciones/manager'),
-
- 	];
- }catch(Exception $error){
-
- }
-
-}
-
 	public function postDataTable(DireccionesDataTable $dataTables){
 		return $dataTables->getData();
 	}
 
-
 	public function formNuevaDireccion(){
 		try{
+	 		$data = [
+	 			'title'         =>'Nueva direccion',
+	 			'form_id'       => $this->form_id,
+	 			'url_send_form' => url('configuracion/catalogos/direcciones/manager'),
+	 			'action'        => 1,
+	 			'modelo'        => null,
+	 			'id'            => null,
+		 	];
 
-			$data['title'] = 'Nueva dirección';
-			
-			$data['form_id'] = 'form-nuevo-tipo-documento';
-			$data['url_send_form'] = url('configuracion/catalogos/tipos-documentos/post-nuevo');
-			
-			$data['model'] = new MTipoDocumento;
+		 	return view('Configuracion.Catalogo.Direccion.formDireccion')->with($data);
 
-			return view('Configuracion.Catalogo.TipoDocumento.formTipoDocumento')->with($data);
 		}catch(Exception $error){
 
 		}
 	}
-	public function formEditarDireccion(){
 
+	public function formEditarDireccion(){
 		try{
 
-			$data =[];
-
-			$data['title']='Nueva Dirección';
-			$data['url_send_form']='';
-			$data['form_id']='';
+			$data = [
+	 			'title'         =>'Editar direccion',
+	 			'form_id'       => $this->form_id,
+	 			'url_send_form' => url('configuracion/catalogos/direcciones/manager'),
+	 			'action'        => 2,
+	 			'modelo'        => MDireccion::find( Input::get('id') ),
+	 			'id'            => Input::get('id'),
+		 	];
 			
-				
 			return view('configuracion.Catalogo.Direccion.formDireccion')-> with ($data);
 
 		}catch(Exception $error){
@@ -110,21 +99,37 @@ try{
 
 
 	public function nuevaDireccion(){
-
 		try{
-		$direccion =new MDireccion;
-		$direccion->DIRE_NOMBRE =input::get('nombre');
 
+			$direccion = new MDireccion;
+			$direccion->DIRE_NOMBRE      = Input::get('nombre');
+			$direccion->DIRE_CREATED_AT  = Carbon::now();
+			$direccion->save();
+
+			// Lista de tablas que se van a recargar automáticamente
+			$tables = ['dataTableBuilder',null,true];
+
+			return response()->json(['status'=>true,'message'=>'La dirección se creó correctamente','tables'=>$tables]);
+		
 		}catch(Exception $error){
-
+			return response()->json(['status'=>false,'message'=>'Ocurrió un error al crear la dirección. Error ' . $error->getMessage() ]);
 		}
 	}
 
 	public function editarDireccion(){
 		try{
 
+			$direccion = MDireccion::find( Input::get('id') );
+			$direccion->DIRE_NOMBRE      = Input::get('nombre');
+			$direccion->save();
+
+			// Lista de tablas que se van a recargar automáticamente
+			$tables = 'dataTableBuilder';
+
+			return response()->json(['status'=>true,'message'=>'Los cambios se guardaron correctamente','tables'=>$tables]);
+		
 		}catch(Exception $error){
-			
+			return response()->json(['status'=>false,'message'=>'Ocurrió un error al guardar los cambios. Error ' . $error->getMessage() ]);
 		}
 	}
 
@@ -152,7 +157,6 @@ try{
 		try{
 			$direccion = MDireccion::where('DIRE_DIRECCION',Input::get('id'))
 								->where('DIRE_DELETED',0)->limit(1)->first();
-			
 			
 			$direccion->DIRE_DELETED    = 1;
 			$direccion->DIRE_DELETED_AT = Carbon::now();

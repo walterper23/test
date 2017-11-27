@@ -1,23 +1,25 @@
 <div class="block-header bg-primary-dark">
     <h3 class="block-title">{{ $title or '' }}</h3>
     <div class="block-options">
-        <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="btn-block-option" data="close-modal" aria-label="Close">
             <i class="si si-close"></i>
         </button>
     </div>
 </div>
 <div class="block-content">
-    {{ Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) }}
+    {{ Form::model($modelo,['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) }}
+        {{ Form::hidden('action',$action) }}	
+		{{ Form::hidden('id',$id) }}
         <div class="form-group row">
             <label class="col-sm-3 col-form-label" for="nombre">Nombre</label>
             <div class="col-sm-9">
-            	{{ Form::text('nombre',null,['id'=>'nombre','class'=>'form-control','placeholder'=>'Nombre del puesto','autofocus']) }}
+            	{{ Form::text('nombre',(is_null($modelo) ? '' : $modelo->PUES_NOMBRE),['id'=>'nombre','class'=>'form-control','placeholder'=>'Nombre del puesto','autofocus']) }}
             </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-3 col-form-label" for="departamento">Departamento</label>
             <div class="col-sm-9">
-            	{{ Form::select('departamento',$departamentos,null,['id'=>'departamento','class'=>'form-control']) }}
+            	{{ Form::select('departamento',$departamentos,(is_null($modelo) ? '' : $modelo->PUES_DEPARTAMENTO),['id'=>'departamento','class'=>'form-control','placeholder'=>'Seleccione una opción']) }}
             </div>
         </div>
 	{{ Form::close() }}
@@ -27,19 +29,8 @@
 	
 	$.extend(AppForm, new function(){
 
-		this.init = function(){
-			$this = this
-			this.context = $('div.modal.fade#modal-{{ $form_id }}')
-			this.form = this.context.find('form')
-			this.btnOk = this.context.find('#btn-ok')
-			this.btnCancel = this.context.find('#btn-cancel')
-
-			this.formSubmit(this.form)
-
-	        this.btnOk.on('click', function(e){
-	        	$this.submit()
-	        });
-		}	
+		this.context = $('#modal-{{ $form_id }}')
+		this.form = $('#{{ $form_id }}')	
 		
 		this.submitHandler = function(form){
 			if(!$(form).valid()) return false;
@@ -50,20 +41,47 @@
 					Codebase.blocks( AppForm.context.find('div.modal-content'), 'state_loading')
 				},
 				success : function(data){
-					AppForm.btnCancel.click()
+					if( data.status ){
+						AppForm.closeContext()
+
+						if(data.tables != undefined){
+							App.reloadTable(data.tables)
+						}
+
+						AppAlert.notify({
+							type : 'info',
+							message : data.message
+						})
+					}else{
+
+						if( data.errors != undefined){
+							$.each(data.errors,function(index, value){
+								error = $('<div/>').addClass('invalid-feedback').attr('id',index+'-error').text(value[0]);
+								console.log(error)
+								console.log($('#'+index))
+								$('#'+index).closest('.form-group').removeClass('is-invalid').addClass('is-invalid');
+								$('#'+index).parents('.form-group > div').append(error);
+							})
+						}
+
+
+						
+					}
 				}
 			})
 		}
 
 		this.rules = function(){
 			return {
-				nombre : { required : true, maxlength : 255 }
+				nombre : { required : true, maxlength : 255 },
+				departamento : { required : true }
 			}
 		}
 
 		this.messages = function(){
 			return {
-				nombre : { required : 'Introduzca un nombre' }
+				nombre : { required : 'Introduzca un nombre' },
+				departamento : { required : 'Especifique un departamento' }
 			}
 		}
 	}).init()

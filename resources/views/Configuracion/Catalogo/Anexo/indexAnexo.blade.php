@@ -1,7 +1,7 @@
 @extends('Tema.app')
 
 @section('title')
-	SIGESD :: Catálogo - Anexos
+	SIGESD :: Cat&aacute;logos - Anexos
 @endsection
 
 @push('css-style')
@@ -19,12 +19,15 @@
 @endsection
 
 @section('content')
-    <div class="block block-themed">
+    <div class="block block-themed block-mode-loading-refresh">
         <div class="block-header bg-corporate-dark">
             <h3 class="block-title"><i class="fa fa-fw fa-clipboard mr-5"></i> Anexos</h3>
             <div class="block-options">
-                <button type="button" class="btn-block-option" onclick="hAnexo.new('{{$form_id}}', '{{$form_url}}')">
+                <button type="button" class="btn-block-option" onclick="hAnexo.new('{{$form_id}}','{{$form_url}}')">
                     <i class="fa fa-plus"></i> Nuevo
+                </button>
+                <button type="button" class="btn-block-option" onclick="hAnexo.reload('dataTableBuilder')">
+                    <i class="fa fa-refresh"></i> Actualizar
                 </button>
                 <div class="dropdown">
                     <button type="button" class="btn-block-option dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cog"></i> Opciones</button>

@@ -64,15 +64,17 @@ class TipoDocumentoController extends BaseController{
 		return $dataTables->getData();
 	}
 
-	public function formTipoDocumento(){
+	public function formNuevoTipoDocumento(){
 		try{
 
-			$data['title'] = 'Nuevo tipo de documento';
-			$data['form_id'] = $this->form_id;
-			$data['url_send_form'] = url('configuracion/catalogos/tipos-documentos/manager');
-			$data['action'] = 1;
-			$data['model'] = null;
-			$data['id'] = null;
+			$data = [
+				'title'         => 'Nuevo tipo de documento',
+				'form_id'       => $this->form_id,
+				'url_send_form' => url('configuracion/catalogos/tipos-documentos/manager'),
+				'action'        => 1,
+				'model'         => null,
+				'id'            => null
+			];
 			
 			return view('Configuracion.Catalogo.TipoDocumento.formTipoDocumento')->with($data);
 		}catch(Exception $error){

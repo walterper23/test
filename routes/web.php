@@ -42,8 +42,8 @@ Route::group(['middleware' => 'preventBackHistory'],function(){
 				Route::group(['prefix'=>'anexos'],function(){
 					Route::get('/',                'AnexoController@index');
 					Route::post('post-data',       'AnexoController@postDataTable');
-					Route::post('nuevo',           'AnexoController@formAnexo');
-					Route::post('editar',          'AnexoController@editarAnexo');
+					Route::post('nuevo',           'AnexoController@formNuevoAnexo');
+					Route::post('editar',          'AnexoController@formEditarAnexo');
 					Route::post('manager',         'AnexoController@manager');
 				});
 				
@@ -51,8 +51,8 @@ Route::group(['middleware' => 'preventBackHistory'],function(){
 				Route::group(['prefix'=>'departamentos'],function(){
 					Route::get('/',          'DepartamentoController@index');
 					Route::post('post-data', 'DepartamentoController@postDataTable');
-					Route::post('nuevo',     'DepartamentoController@formDepartamento');
-					Route::post('editar',    'DepartamentoController@editarDepartamento');
+					Route::post('nuevo',     'DepartamentoController@formNuevoDepartamento');
+					Route::post('editar',    'DepartamentoController@formEditarDepartamento');
 					Route::post('manager',   'DepartamentoController@manager');
 				});
 				
@@ -60,8 +60,8 @@ Route::group(['middleware' => 'preventBackHistory'],function(){
 				Route::group(['prefix'=>'direcciones'],function(){
 					Route::get('/',          'DireccionController@index');
 					Route::post('post-data', 'DireccionController@postDataTable');
-					Route::post('nuevo',     'DireccionController@formDireccion');
-					Route::post('editar',    'DireccionController@editarDireccion');
+					Route::post('nuevo',     'DireccionController@formNuevaDireccion');
+					Route::post('editar',    'DireccionController@formEditarDireccion');
 					Route::post('manager',   'DireccionController@manager');
 				});
 
@@ -69,8 +69,8 @@ Route::group(['middleware' => 'preventBackHistory'],function(){
 				Route::group(['prefix'=>'puestos'],function(){
 					Route::get('/',          'PuestoController@index');
 					Route::post('post-data', 'PuestoController@postDataTable');
-					Route::post('nuevo',     'PuestoController@formPuesto');
-					Route::post('editar',    'PuestoController@editarPuesto');
+					Route::post('nuevo',     'PuestoController@formNuevoPuesto');
+					Route::post('editar',    'PuestoController@formEditarPuesto');
 					Route::post('manager',   'PuestoController@manager');
 				});
 
@@ -78,7 +78,7 @@ Route::group(['middleware' => 'preventBackHistory'],function(){
 				Route::group(['prefix'=>'tipos-documentos'],function(){
 					Route::get('/',          'TipoDocumentoController@index');
 					Route::post('post-data', 'TipoDocumentoController@postDataTable');
-					Route::post('nuevo',     'TipoDocumentoController@formTipoDocumento');
+					Route::post('nuevo',     'TipoDocumentoController@formNuevoTipoDocumento');
 					Route::post('editar',    'TipoDocumentoController@formEditarTipoDocumento');
 					Route::post('manager',   'TipoDocumentoController@manager');
 				});

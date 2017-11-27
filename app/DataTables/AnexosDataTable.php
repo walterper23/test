@@ -50,7 +50,7 @@ class AnexosDataTable extends CustomDataTable{
                 'render' => function($query){
                     $buttons = '';
 
-                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hAnexo.edit('.$query->ANEX_ANEXO.')"><i class="fa fa-pencil"></i></button>';
+                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hAnexo.edit_('.$query->ANEX_ANEXO.')"><i class="fa fa-pencil"></i></button>';
                 
                     $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hAnexo.delete_('.$query->ANEX_ANEXO.')"><i class="fa fa-trash"></i></button>';
                     

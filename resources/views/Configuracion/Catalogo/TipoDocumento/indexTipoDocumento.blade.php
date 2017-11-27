@@ -2,7 +2,7 @@
 
 @section('title')
     SIGESD :: Cat&aacute;logos - Tipos de documentos
-@stop
+@endsection
 
 @push('css-style')
     {{ Html::style('js/plugins/datatables/dataTables.bootstrap4.min.css') }}

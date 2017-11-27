@@ -17,16 +17,18 @@ use App\Model\Catalogo\MDireccion;
 use App\Model\Catalogo\MDepartamento;
 
 class DepartamentoController extends BaseController{
+	
 	private $form_id;
+
 	public function __construct(){
-$this->form_id='form-departamento';
+		$this->form_id = 'form-departamento';
 	}
 	
 	public function index(DepartamentosDataTable $dataTables){
-		$data['table'] = $dataTables;
-		$data['form_id']= $this ->form_id;
-		$data['form_url']= url('configuracion/catalogos/departamentos/nuevo');
-
+		
+		$data['table']    = $dataTables;
+		$data['form_id']  = $this ->form_id;
+		$data['form_url'] = url('configuracion/catalogos/departamentos/nuevo');
 
     	return view('Configuracion.Catalogo.Departamento.indexDepartamento')->with($data);
 	}
@@ -59,17 +61,18 @@ $this->form_id='form-departamento';
 		return $dataTables->getData();
 	}
 
-	public function formDepartamento(){
+	public function formNuevoDepartamento(){
 		try{
 
-			$data =[];
-			$data['title']= 'Nuevo Departamento';
-			$data['url_send_form']= url('configuracion/catalogos/departamentos/manager');
-			$data['form_id']= $this->form_id;
-			$data['modelo']= null;
-			$data['action']= 1;
+			$data                  = [];
+			$data['title']         = 'Nuevo Departamento';
+			$data['url_send_form'] = url('configuracion/catalogos/departamentos/manager');
+			$data['form_id']       = $this->form_id;
+			$data['modelo']        = null;
+			$data['action']        = 1;
+			$data['id']            = Input::get('id');
 
-			$data['direcciones'] = [''=>'Seleccione una opción'] + MDireccion::select('DIRE_DIRECCION','DIRE_NOMBRE')->pluck('DIRE_NOMBRE','DIRE_DIRECCION')->toArray();
+			$data['direcciones'] = MDireccion::select('DIRE_DIRECCION','DIRE_NOMBRE')->pluck('DIRE_NOMBRE','DIRE_DIRECCION')->toArray();
 
 			return view('Configuracion.Catalogo.Departamento.formDepartamento')->with($data);
 
@@ -78,19 +81,40 @@ $this->form_id='form-departamento';
 		}
 	}
 
-
-
 	public function nuevoDepartamento(){
 		try{
-		$departamento = new MDepartamento;
-		$departamento->DEPA_NOMBRE = Input::get('nombre');
-		$departamento->DEPA_DIRECCION = Input::get('direccion');
-		$departamento->save();
+			$departamento = new MDepartamento;
+			$departamento->DEPA_NOMBRE = Input::get('nombre');
+			$departamento->DEPA_DIRECCION = Input::get('direccion');
+			$departamento->save();
 
-		$tables = ['dataTableBuilder',null,true];
+			$tables = ['dataTableBuilder',null,true];
 
-		return response()->json(['status'=>true, 'message'=>'El departamento se creó correctamente','tables'=>$tables]);
-				}catch(Exception $error){
+			return response()->json(['status'=>true, 'message'=>'El departamento se creó correctamente','tables'=>$tables]);
+		}catch(Exception $error){
+
+		}
+	}
+
+	public function formEditarDepartamento(){
+		try{
+
+			$data = [];
+			$data['title']         = 'Editar departamento';
+			$data['url_send_form'] = url('configuracion/catalogos/departamentos/manager');
+			$data['form_id']       = $this->form_id;
+			$data['modelo']        = MDepartamento::find( Input::get('id') )->where('DEPA_DELETED',0)->limit(1)->first();
+			$data['action']        = 2;
+			$data['id']            = Input::get('id');
+
+			$data['direcciones'] = MDireccion::select('DIRE_DIRECCION','DIRE_NOMBRE')
+											->orderBy('DIRE_NOMBRE')
+											->pluck('DIRE_NOMBRE','DIRE_DIRECCION')
+											->toArray();
+
+			return view('Configuracion.Catalogo.Departamento.formDepartamento')->with($data);
+
+		}catch(Exception $error){
 
 		}
 	}
@@ -98,8 +122,8 @@ $this->form_id='form-departamento';
 	public function editarDepartamento(){
 		try{
 
-		$departamento = MDepartamento::find( Input::get('id'))->where('PUES_DELETED',0);
-		$departamento->DEPA_NOMBRE = Input::get('nombre');
+		$departamento = MDepartamento::find( Input::get('id'))->where('DEPA_DELETED',0)->limit(1)->first();
+		$departamento->DEPA_NOMBRE    = Input::get('nombre');
 		$departamento->DEPA_DIRECCION = Input::get('direccion');
 		$departamento->save();
 

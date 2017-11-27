@@ -60,18 +60,19 @@ class AnexoController extends BaseController{
 		return $dataTables->getData();
 	}
 
-	public function formAnexo(){
+	public function formNuevoAnexo(){
 		try{
 
 			$data = [];
 
 			$data['title']         = 'Nuevo anexo';
-			$data['url_send_form'] =  url('configuracion/catalogos/anexos/manager');
-			$data['form_id']       =  $this->form_id;
-			$data['modelo']		   =  null;
+			$data['url_send_form'] = url('configuracion/catalogos/anexos/manager');
+			$data['form_id']       = $this->form_id;
+			$data['modelo']		   = null;
 			$data['action']		   = 1;
+			$data['id']		       = null;
 
-			return view('Configuracion.Catalogo.Anexo.formAnexo')-> with ($data);
+			return view('Configuracion.Catalogo.Anexo.formAnexo')->with($data);
 
 		}catch(Exception $error){
 
@@ -94,9 +95,25 @@ class AnexoController extends BaseController{
 		}
 	}
 
+	public function formEditarAnexo(){
+		try{
+			$data['title']         = 'Editar anexo';
+			$data['url_send_form'] = url('configuracion/catalogos/anexos/manager');
+			$data['form_id']       = $this->form_id;
+			$data['modelo']		   = MAnexo::find( Input::get('id') )->where('ANEX_DELETED',0)->first();
+			$data['action']		   = 2;
+			$data['id']		       = Input::get('id');
+
+			return view('Configuracion.Catalogo.Anexo.formAnexo')->with($data);
+
+		}catch(Exception $error){
+
+		}
+	}
+
 	public function editarAnexo(){
 		try{
-			$anexo = MAnexo::find(Input::get('id') )->where('ANEX_DELETED',0);
+			$anexo = MAnexo::find( Input::get('id') )->where('ANEX_DELETED',0)->first();
 			$anexo->ANEX_NOMBRE = Input::get('nombre');
 			$anexo->save();			
 

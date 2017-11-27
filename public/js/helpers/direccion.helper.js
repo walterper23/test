@@ -9,6 +9,14 @@ App.loadScript('/js/helpers/helper.js', function(){
 				return '/configuracion/catalogos/direcciones/manager'
 			},
 
+			edit_ : function(id){
+				this.edit({
+					modal : 'form-direccion',
+					url   : '/configuracion/catalogos/direcciones/editar',
+					id
+				})
+			},
+
 			delete_ : function(id){
 				this.delete({
 					id, title : 'Eliminar dirección'
