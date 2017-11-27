@@ -17,9 +17,18 @@ use App\Model\Catalogo\MDireccion;
 use App\Model\Catalogo\MDepartamento;
 
 class DepartamentoController extends BaseController{
+	private $form_id;
+	public function __construct(){
+$this->form_id='form-departamento';
+	}
 	
 	public function index(DepartamentosDataTable $dataTables){
-    	return view('Configuracion.Catalogo.Departamento.indexDepartamento')->with('table', $dataTables);
+		$data['table'] = $dataTables;
+		$data['form_id']= $this ->form_id;
+		$data['form_url']= url('configuracion/catalogos/departamentos/nuevo');
+
+
+    	return view('Configuracion.Catalogo.Departamento.indexDepartamento')->with($data);
 	}
 
 	public function manager(ManagerDepartamentoRequest $request){
@@ -55,8 +64,11 @@ class DepartamentoController extends BaseController{
 
 			$data =[];
 			$data['title']= 'Nuevo Departamento';
-			$data['url_send_form']= '';
-			$data['form_id']='';
+			$data['url_send_form']= url('configuracion/catalogos/departamentos/manager');
+			$data['form_id']= $this->form_id;
+			$data['modelo']= null;
+			$data['action']= 1;
+
 			$data['direcciones'] = [''=>'Seleccione una opción'] + MDireccion::select('DIRE_DIRECCION','DIRE_NOMBRE')->pluck('DIRE_NOMBRE','DIRE_DIRECCION')->toArray();
 
 			return view('Configuracion.Catalogo.Departamento.formDepartamento')->with($data);
@@ -70,14 +82,31 @@ class DepartamentoController extends BaseController{
 
 	public function nuevoDepartamento(){
 		try{
-		
-		}catch(Exception $error){
+		$departamento = new MDepartamento;
+		$departamento->DEPA_NOMBRE = Input::get('nombre');
+		$departamento->DEPA_DIRECCION = Input::get('direccion');
+		$departamento->save();
+
+		$tables = ['dataTableBuilder',null,true];
+
+		return response()->json(['status'=>true, 'message'=>'El departamento se creó correctamente','tables'=>$tables]);
+				}catch(Exception $error){
 
 		}
 	}
 
 	public function editarDepartamento(){
 		try{
+
+		$departamento = MDepartamento::find( Input::get('id'))->where('PUES_DELETED',0);
+		$departamento->DEPA_NOMBRE = Input::get('nombre');
+		$departamento->DEPA_DIRECCION = Input::get('direccion');
+		$departamento->save();
+
+		$tables = 'dataTableBuilder';
+
+		return response()->json(['status'=>true, 'message'=>'Los cambios se guardaron correctamente','tables'=>$tables]);
+				}catch(Exception $error){
 
 		}catch(Exception $error){
 			
@@ -110,7 +139,7 @@ class DepartamentoController extends BaseController{
 			$departamento = MDepartamento::where('DEPA_DEPARTAMENTO',Input::get('id') )
 								->where('DEPA_DELETED',0)->limit(1)->first();
 			
-			$departamento->DEPA_ENABLED    = 0;
+			
 			$departamento->DEPA_DELETED    = 1;
 			$departamento->DEPA_DELETED_AT = Carbon::now();
 			$departamento->save();
