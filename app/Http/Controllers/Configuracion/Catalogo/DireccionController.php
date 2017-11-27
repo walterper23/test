@@ -16,9 +16,20 @@ use App\DataTables\DireccionesDataTable;
 use App\Model\Catalogo\MDireccion;
 
 class DireccionController extends BaseController{
+	private $form_id;
+	public function __construct(){
+		$this -> form_id ='form-direccion';
+
+	}
 
 	public function index(DireccionesDataTable $dataTables){
-		return view('Configuracion.Catalogo.Direccion.indexDireccion')->with('table', $dataTables);
+
+		$data['table'] = $dataTables;
+		$data['form_id'] = $this ->form_id;
+		$data['form_url'] = url('configuracion/catalogos/direcciones/nuevo');
+
+
+		return view('Configuracion.Catalogo.Direccion.indexDireccion')->with($data);
 	}
 
 	public function manager(ManagerDireccionRequest $request){
@@ -45,9 +56,24 @@ class DireccionController extends BaseController{
 		return $response;
 	}
 
+	public function formDireccion(){
+try{
+ 		$data = [
+ 			'title' =>'Nueva direccion',
+ 			'form_id' => $this-> form_id,
+ 			'url_send_form' => url('configuracion/catalogos/direcciones/manager'),
+
+ 	];
+ }catch(Exception $error){
+
+ }
+
+}
+
 	public function postDataTable(DireccionesDataTable $dataTables){
 		return $dataTables->getData();
 	}
+
 
 	public function formNuevaDireccion(){
 		try{
@@ -65,6 +91,7 @@ class DireccionController extends BaseController{
 		}
 	}
 	public function formEditarDireccion(){
+
 		try{
 
 			$data =[];
@@ -81,9 +108,13 @@ class DireccionController extends BaseController{
 		}
 	}
 
+
 	public function nuevaDireccion(){
+
 		try{
-		
+		$direccion =new MDireccion;
+		$direccion->DIRE_NOMBRE =input::get('nombre');
+
 		}catch(Exception $error){
 
 		}
@@ -122,7 +153,7 @@ class DireccionController extends BaseController{
 			$direccion = MDireccion::where('DIRE_DIRECCION',Input::get('id'))
 								->where('DIRE_DELETED',0)->limit(1)->first();
 			
-			$direccion->DIRE_ENABLED    = 0;
+			
 			$direccion->DIRE_DELETED    = 1;
 			$direccion->DIRE_DELETED_AT = Carbon::now();
 			$direccion->save();

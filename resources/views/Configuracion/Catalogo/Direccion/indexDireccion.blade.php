@@ -23,7 +23,7 @@
         <div class="block-header bg-corporate-dark">
             <h3 class="block-title"><i class="fa fa-fw fa-sitemap mr-5"></i> Direcciones</h3>
             <div class="block-options">
-                <button type="button" class="btn-block-option" onclick="App.openModal({  url : '/configuracion/catalogos/direcciones/nuevo', id : 'form-nuevo-direcciones' })">
+                <button type="button" class="btn-block-option" onclick="hDireccion.new('{{$form_id}}','{{$form_url}}')">
                     <i class="fa fa-plus"></i> Nuevo
                 </button>
                 <div class="dropdown">
