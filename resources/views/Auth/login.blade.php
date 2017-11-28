@@ -65,7 +65,7 @@
                                     <div class="form-group row">
                                         <div class="col-12">
                                             <div class="form-material floating open">
-                                                {{ Form::text('username',old('username'),['id'=>'username','class'=>'form-control text-center','autofocus']) }}
+                                                {{ Form::text('username',old('username'),['id'=>'username','class'=>'form-control text-center','autofocus','autocomplete'=>'off']) }}
                                                 {{ Form::label('username','Usuario') }}
                                             </div>
                                         </div>
