@@ -13,7 +13,7 @@
 
 @section('content')
 	<div class="block block-themed">
-        <div class="block-header bg-corporate">
+        <div class="block-header bg-earth">
             <h3 class="block-title"><i class="fa fa-fw fa-users mr-5"></i> Usuarios</h3>
             <div class="block-options">
                 <a href="{{ url('configuracion/usuarios/nuevo') }}" class="btn-block-option">

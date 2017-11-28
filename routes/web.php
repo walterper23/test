@@ -24,12 +24,16 @@ Route::group(['middleware' => 'preventBackHistory'],function(){
 			Route::get('/', 'PerfilController@index');
 		});
 
-		Route::group(['prefix'=>'recepcion'], function(){
+		Route::group(['prefix'=>'recepcion','namespace'=>'Recepcion'], function(){
+			
 			Route::get('/',  'RecepcionController@index');
+			
 			Route::group(['prefix'=>'documentos'], function(){
-				Route::get('/',          'RecepcionController@index');
-				Route::post('post-data', 'RecepcionController@postDataTable');
-				Route::get('nuevo',      'RecepcionController@nuevaRecepcion');
+				Route::get('/',                'RecepcionController@index');
+				Route::post('post-data',       'RecepcionController@postDataTable');
+				Route::get('nueva-recepcion',  'RecepcionController@nuevaRecepcion');
+				Route::get('{id}',             'RecepcionController@verDocumentoRecepcionado');
+				Route::get('{id}/seguimiento', 'SeguimientoController@index');
 			});
 		});	
 		

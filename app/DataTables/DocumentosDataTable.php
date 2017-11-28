@@ -14,8 +14,12 @@ class DocumentosDataTable extends CustomDataTable{
     protected function columnsTable(){
         return [
             [
-                'title' => '# OFICIO',
-                'data'  => 'DOCU_NUMERO_OFICIO'
+                'title'  => '# OFICIO',
+                'render' => function($query){
+                    return "<a href='".url('recepcion/documentos', $query->DOCU_DOCUMENTO)."'>
+                                <i class='fa fa-file'></i> {$query->DOCU_NUMERO_OFICIO}
+                            </a>";
+                }
             ],
             [
                 'title' => 'Año',
@@ -29,16 +33,6 @@ class DocumentosDataTable extends CustomDataTable{
                 'title'  => 'Opciones',
                 'render' => function($query){
                     $buttons = '';
-
-                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-primary" onclick="hTipoDocumento.delete('.$query->DOCU_DOCUMENTO.')"><i class="fa fa-eye"></i></button>';
-
-                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hTipoDocumento.delete('.$query->DOCU_DOCUMENTO.')"><i class="fa fa-pencil"></i></button>';
-                
-                    if($query->ANEX_ENABLED == 1){
-                        $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hTipoDocumento.disable('.$query->DOCU_DOCUMENTO.')"><i class="fa fa-level-down"></i></button>';
-                    }else{
-                        $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hTipoDocumento.enabled('.$query->DOCU_DOCUMENTO.')"><i class="fa fa-level-up"></i></button>';
-                    }
 
                     $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hTipoDocumento.delete('.$query->DOCU_DOCUMENTO.')"><i class="fa fa-trash"></i></button>';
                     

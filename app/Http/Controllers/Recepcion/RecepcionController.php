@@ -1,11 +1,20 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Recepcion;
 
-use App\Http\Controllers\BaseController; 
 use Illuminate\Http\Request;
+use App\Http\Requests\ManagerAnexoRequest;
+use Illuminate\Support\Facades\Input;
+use Carbon\Carbon;
+use Validator;
 
+/* Controllers */
+use App\Http\Controllers\BaseController;
 use App\DataTables\DocumentosDataTable;
+
+/* Models */
+use App\Model\MDocumento;
+use App\Model\Catalogo\MTipoDocumento;
 
 class RecepcionController extends BaseController{
 
@@ -25,11 +34,30 @@ class RecepcionController extends BaseController{
 
 		$data = [];
 
-		$data['tipos_documentos'] = [];
+		$data['tipos_documentos'] = MTipoDocumento::select('TIDO_TIPO_DOCUMENTO','TIDO_NOMBRE_TIPO')
+											->where('TIDO_ENABLED',1)
+											->where('TIDO_DELETED',0)
+											->orderBy('TIDO_NOMBRE_TIPO')
+											->pluck('TIDO_NOMBRE_TIPO','TIDO_TIPO_DOCUMENTO')
+											->toArray();
+
+		$data['context'] = 'context-form-recepcion';
+		$data['form_id'] = 'form-recepcion';
 
 		$data['form'] = view('Recepcion.formNuevaRecepcion')->with($data);
 
+		unset($data['tipos_documentos']);
+
 		return view('Recepcion.nuevaRecepcion')->with($data);
+
+	}
+
+	public function verDocumentoRecepcionado( $id ){
+
+		$data['documento'] = MDocumento::find( $id );
+
+
+		return view('Recepcion.verDocumento')->with($data);
 
 	}
 

@@ -16,7 +16,7 @@
                     <a {!! activeItemMenu('recepcion/documentos') !!} href="{{ url('/recepcion/documentos') }}">Recepcionados</a>
                 </li>
                 <li>
-                    <a {!! activeItemMenu('recepcion/documentos/nuevo') !!} href="{{ url('/recepcion/documentos/nuevo') }}">Nueva recepci&oacute;n</a>
+                    <a {!! activeItemMenu('recepcion/documentos/nueva-recepcion') !!} href="{{ url('/recepcion/documentos/nueva-recepcion') }}">Nueva recepci&oacute;n</a>
                 </li>
             </ul>
         </li>
