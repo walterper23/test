@@ -175,8 +175,7 @@ class PuestoController extends BaseController{
 
 	public function activarPuesto(){
 		try{
-			$puesto = MPuesto::where('PUES_PUESTO',Input::get('id') )
-								->where('PUES_DELETED',0)->limit(1)->first();
+			$puesto = MPuesto::find( Input::get('id') );
 			
 			if( $puesto->PUES_ENABLED == 1 ){
 				$puesto->PUES_ENABLED = 0;
@@ -195,8 +194,7 @@ class PuestoController extends BaseController{
 
 	public function eliminarPuesto(){
 		try{
-			$puesto = MPuesto::where('PUES_PUESTO',Input::get('id'))
-								->where('PUES_DELETED',0)->limit(1)->first();
+			$puesto = MPuesto::find( Input::get('id') );
 			
 			$puesto->PUES_DELETED    = 1;
 			$puesto->PUES_DELETED_AT = Carbon::now();

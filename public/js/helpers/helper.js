@@ -33,7 +33,7 @@ var Helper = function(){
 					}
 					
 					AppAlert.notify({
-						type : 'info',
+						type : data.type || 'info',
 						message : data.message
 					})
 				}else{

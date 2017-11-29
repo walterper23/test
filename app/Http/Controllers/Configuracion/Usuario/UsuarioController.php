@@ -26,6 +26,10 @@ class UsuarioController extends BaseController{
 		return view('Configuracion.Usuario.indexUsuario')->with($data);
 	}
 
+	public function postDataTable(UsuariosDataTable $dataTables){
+		return $dataTables->getData();
+	}
+
 
 	public function formUsuario(){
 		return view('Configuracion.Usuario.formUsuario');

@@ -103,7 +103,7 @@ class DepartamentoController extends BaseController{
 			$data['title']         = 'Editar departamento';
 			$data['url_send_form'] = url('configuracion/catalogos/departamentos/manager');
 			$data['form_id']       = $this->form_id;
-			$data['modelo']        = MDepartamento::find( Input::get('id') )->where('DEPA_DELETED',0)->limit(1)->first();
+			$data['modelo']        = MDepartamento::find( Input::get('id') );
 			$data['action']        = 2;
 			$data['id']            = Input::get('id');
 
@@ -122,7 +122,7 @@ class DepartamentoController extends BaseController{
 	public function editarDepartamento(){
 		try{
 
-		$departamento = MDepartamento::find( Input::get('id'))->where('DEPA_DELETED',0)->limit(1)->first();
+		$departamento = MDepartamento::find( Input::get('id') );
 		$departamento->DEPA_NOMBRE    = Input::get('nombre');
 		$departamento->DEPA_DIRECCION = Input::get('direccion');
 		$departamento->save();
@@ -139,8 +139,7 @@ class DepartamentoController extends BaseController{
 
 	public function activarDepartamento(){
 		try{
-			$departamento = MDepartamento::where('DEPA_DEPARTAMENTO',Input::get('id') )
-								->where('DEPA_DELETED',0)->limit(1)->first();
+			$departamento = MDepartamento::find( Input::get('id') );
 			
 			if( $departamento->DEPA_ENABLED == 1 ){
 				$departamento->DEPA_ENABLED = 0;
@@ -160,9 +159,7 @@ class DepartamentoController extends BaseController{
 
 	public function eliminarDepartamento(){
 		try{
-			$departamento = MDepartamento::where('DEPA_DEPARTAMENTO',Input::get('id') )
-								->where('DEPA_DELETED',0)->limit(1)->first();
-			
+			$departamento = MDepartamento::find( Input::get('id') );
 			
 			$departamento->DEPA_DELETED    = 1;
 			$departamento->DEPA_DELETED_AT = Carbon::now();

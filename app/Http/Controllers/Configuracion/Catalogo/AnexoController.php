@@ -100,7 +100,7 @@ class AnexoController extends BaseController{
 			$data['title']         = 'Editar anexo';
 			$data['url_send_form'] = url('configuracion/catalogos/anexos/manager');
 			$data['form_id']       = $this->form_id;
-			$data['modelo']		   = MAnexo::find( Input::get('id') )->where('ANEX_DELETED',0)->first();
+			$data['modelo']		   = MAnexo::find( Input::get('id') );
 			$data['action']		   = 2;
 			$data['id']		       = Input::get('id');
 
@@ -128,8 +128,7 @@ class AnexoController extends BaseController{
 
 	public function activarAnexo(){
 		try{
-			$anexo = MAnexo::where('ANEX_ANEXO',Input::get('id') )
-								->where('ANEX_DELETED',0)->limit(1)->first();
+			$anexo = MAnexo::find( Input::get('id') );
 			
 			if( $anexo->ANEX_ENABLED == 1 ){
 				$anexo->ANEX_ENABLED = 0;
@@ -149,8 +148,7 @@ class AnexoController extends BaseController{
 
 	public function eliminarAnexo(){
 		try{
-			$anexo = MAnexo::where('ANEX_ANEXO',Input::get('id') )
-								->where('ANEX_DELETED',0)->limit(1)->first();
+			$anexo = MAnexo::find( Input::get('id') );
 			
 			$anexo->ANEX_DELETED    = 1;
 			$anexo->ANEX_DELETED_AT = Carbon::now();

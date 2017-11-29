@@ -135,19 +135,20 @@ class TipoDocumentoController extends BaseController{
 
 	public function activarTipoDocumento(){
 		try{
-			$tipoDocumento = MTipoDocumento::where('TIDO_TIPO_DOCUMENTO',Input::get('id') )
-								->where('TIDO_DELETED',0)->limit(1)->first();
+			$tipoDocumento = MTipoDocumento::find( Input::get('id') );
 			
 			if( $tipoDocumento->TIDO_ENABLED == 1 ){
 				$tipoDocumento->TIDO_ENABLED = 0;
-				$message = 'El tipo de documento se desactivó correctamente';
+				$type = 'warning';
+				$message = '<i class="fa fa-warning"></i> Tipo de documento desactivado';
 			}else{
 				$tipoDocumento->TIDO_ENABLED = 1;
-				$message = 'El tipo de documento se activó correctamente';
+				$type = 'info';
+				$message = '<i class="fa fa-check"></i> Tipo de documento activado';
 			}
 			$tipoDocumento->save();
 
-			return response()->json(['status'=>true,'message'=>$message]);
+			return response()->json(['status'=>true]+compact('type','message'));
 		}catch(Exception $error){
 			return response()->json(['status'=>false,'message'=>'Ocurrió un error al guardar los cambios. Error ' . $error->getCode() ]);
 		}
@@ -155,10 +156,8 @@ class TipoDocumentoController extends BaseController{
 
 	public function eliminarTipoDocumento(){
 		try{
-			$tipoDocumento = MTipoDocumento::where('TIDO_TIPO_DOCUMENTO',Input::get('id'))
-								->where('TIDO_DELETED',0)->limit(1)->first();
+			$tipoDocumento = MTipoDocumento::find( Input::get('id') );
 			
-			$tipoDocumento->TIDO_ENABLED    = 0;
 			$tipoDocumento->TIDO_DELETED    = 1;
 			$tipoDocumento->TIDO_DELETED_AT = Carbon::now();
 			$tipoDocumento->save();
@@ -175,8 +174,7 @@ class TipoDocumentoController extends BaseController{
 
 	public function validarTipoDocumento(){
 		try{
-			$tipoDocumento = MTipoDocumento::where('TIDO_TIPO_DOCUMENTO',Input::get('id'))
-								->where('TIDO_DELETED',0)->limit(1)->first();
+			$tipoDocumento = MTipoDocumento::find( Input::get('id') );
 			
 			$tipoDocumento->TIDO_VALIDAR = $tipoDocumento->TIDO_VALIDAR * -1 + 1;
 			$tipoDocumento->save();

@@ -135,8 +135,7 @@ class DireccionController extends BaseController{
 
 	public function activarDireccion(){
 		try{
-			$direccion = MDireccion::where('DIRE_DIRECCION',Input::get('id') )
-								->where('DIRE_DELETED',0)->limit(1)->first();
+			$direccion = MDireccion::find( Input::get('id') );
 			
 			if( $direccion->DIRE_ENABLED == 1 ){
 				$direccion->DIRE_ENABLED = 0;
@@ -155,8 +154,7 @@ class DireccionController extends BaseController{
 
 	public function eliminarDireccion(){
 		try{
-			$direccion = MDireccion::where('DIRE_DIRECCION',Input::get('id'))
-								->where('DIRE_DELETED',0)->limit(1)->first();
+			$direccion = MDireccion::find( Input::get('id') );
 			
 			$direccion->DIRE_DELETED    = 1;
 			$direccion->DIRE_DELETED_AT = Carbon::now();
