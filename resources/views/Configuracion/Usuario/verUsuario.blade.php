@@ -1,33 +1,26 @@
 @extends('Tema.app')
 
 @section('title')
-    SIGESD :: Usuarios
+	SIGESD :: Usuarios
 @endsection
 
 @push('css-style')
-    {{ Html::style('js/plugins/datatables/dataTables.bootstrap4.min.css') }}
-    {{ Html::style('js/plugins/datatables/buttons1.4.2/css/datatables.buttons.bootstrap4.min.css') }}
     {{ Html::style('js/plugins/sweetalert2/sweetalert2.min.css') }}
 @endpush
 
 @section('breadcrumb')
-	<nav class="breadcrumb bg-body-light mb-0">
+    <nav class="breadcrumb bg-body-light mb-0">
         <a class="breadcrumb-item" href="javascript:void(0)"><i class="fa fa-cogs"></i> Configuraci&oacute;n</a>
-        <span class="breadcrumb-item active">Usuarios</span>
+        <a class="breadcrumb-item" href="{{ url('configuracion/usuarios') }}">Usuarios</a>
+        <span class="breadcrumb-item active"># {{ $usuario->USUA_USUARIO }}</span>
     </nav>
 @endsection
 
 @section('content')
-	<div class="block block-themed block-mode-loading-refresh">
+    <div class="block block-themed block-mode-loading-refresh">
         <div class="block-header bg-earth">
-            <h3 class="block-title"><i class="fa fa-fw fa-users mr-5"></i> Usuarios</h3>
+            <h3 class="block-title"><i class="fa fa-fw fa-user mr-5"></i> Información del usuario</h3>
             <div class="block-options">
-                <a href="{{ url('configuracion/usuarios/nuevo') }}" class="btn-block-option">
-                    <i class="fa fa-plus"></i> Nuevo
-                </a>
-                <button type="button" class="btn-block-option" onclick="hUsuario.reload('dataTableBuilder')">
-                    <i class="fa fa-refresh"></i> Actualizar
-                </button>
                 <div class="dropdown">
                     <button type="button" class="btn-block-option dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cog"></i> Opciones</button>
                     <div class="dropdown-menu dropdown-menu-right">
@@ -44,21 +37,17 @@
         </div>
         <div class="block-content block-content-full">
             <div class="table-responsive">
-                {{ $table->html()  }}
             </div>
         </div>
-   	</div>
+    </div>
 @endsection
 
 @push('js-script')
     {{ Html::script('js/plugins/jquery-validation/jquery.validate.min.js') }}
-    {{ Html::script('js/plugins/datatables/jquery.dataTables.min.js') }}
-    {{ Html::script('js/plugins/datatables/dataTables.bootstrap4.min.js') }}
-    {{ Html::script('js/helpers/usuario.helper.js') }}
     {{ Html::script('js/app-form.js') }}
     {{ Html::script('js/app-alert.js') }}
 @endpush
 
 @push('js-custom')
-    {!! $table->javascript() !!}
+
 @endpush

@@ -25,6 +25,10 @@ class RolController extends BaseController{
 		return view('Configuracion.Usuario.indexRol')->with($data);
 	}
 
+	public function postDataTable(RolesDataTable $dataTables){
+		return $dataTables->getData();
+	}
+
 
 	public function formUsuario(){
 		return view('Configuracion.Usuario.formUsuario');

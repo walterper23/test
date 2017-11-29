@@ -1,9 +1,9 @@
 'use strict';
 
-var hUsuario;
+var hRol;
 
 App.loadScript('/js/helpers/helper.js', function(){
-	hUsuario = $.extend({}, Helper, function(){
+	hRol = $.extend({}, Helper, function(){
 		return {
 			manager : function(){
 				return '/configuracion/usuarios/manager'
@@ -19,7 +19,7 @@ App.loadScript('/js/helpers/helper.js', function(){
 
 			delete_ : function(id){
 				this.delete({
-					id, title : 'Eliminar usuario'
+					id, title : 'Eliminar rol'
 				})
 			}
 

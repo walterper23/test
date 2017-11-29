@@ -1,7 +1,7 @@
 @extends('Tema.app')
 
 @section('title')
-
+	SIGESD :: Ver documento
 @endsection
 
 @section('breadcrumb')
@@ -19,7 +19,7 @@
            <!-- Normal Form -->
             <div class="block block-themed">
                 <div class="block-header bg-corporate">
-                    <h3 class="block-title">Documento :: {{ $documento->DOCU_NUMERO_OFICIO }}</h3>
+                    <h3 class="block-title">Documento # {{ $documento->DOCU_NUMERO_FICHA . ' - ' . $documento->DOCU_NUMERO_OFICIO }}</h3>
                     <div class="block-options">
                     	<a class="btn-block-option" href="{{ url('recepcion/documentos/'.$documento->DOCU_DOCUMENTO.'/seguimiento') }}">
 		                    <i class="fa fa-eye"></i> Seguimiento
@@ -39,7 +39,7 @@
                     </div>
                 </div>
                 <div class="block-content">
-                    
+                    <h5>Información del documento recepcionado</h5>
                 </div>
             </div>
             <!-- END Normal Form -->

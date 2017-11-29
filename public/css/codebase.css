@@ -7442,8 +7442,6 @@ p.nice-copy-story {
 }
 
 .content-heading {
-  margin-bottom: 20px;
-  padding-top: 30px;
   padding-bottom: 8px;
   font-size: 1.428571rem;
   font-weight: 400;
@@ -7460,8 +7458,6 @@ p.nice-copy-story {
 
 @media (min-width: 768px) {
   .content-heading {
-    margin-bottom: 25px;
-    padding-top: 40px;
   }
   .content-heading small {
     margin-top: 0;

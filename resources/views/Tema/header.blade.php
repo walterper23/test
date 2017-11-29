@@ -18,13 +18,6 @@
                 <a class="dropdown-item" href="{{ url('perfil') }}">
                     <i class="si si-user mr-5"></i> Perfil
                 </a>
-                <a class="dropdown-item d-flex align-items-center justify-content-between" href="be_pages_generic_inbox.html">
-                    <span><i class="si si-envelope-open mr-5"></i> Inbox</span>
-                    <span class="badge badge-primary">3</span>
-                </a>
-                <a class="dropdown-item" href="be_pages_generic_invoice.html">
-                    <i class="si si-note mr-5"></i> Invoices
-                </a>
                 <div class="dropdown-divider"></div>
 
                 <!-- Toggle Side Overlay -->

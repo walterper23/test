@@ -148,7 +148,7 @@ class TipoDocumentoController extends BaseController{
 			}
 			$tipoDocumento->save();
 
-			return response()->json(['status'=>true]+compact('type','message'));
+			return response()->json(['status'=>true,'type'=>$type,'message'=>$message]);
 		}catch(Exception $error){
 			return response()->json(['status'=>false,'message'=>'Ocurrió un error al guardar los cambios. Error ' . $error->getCode() ]);
 		}

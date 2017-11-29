@@ -103,6 +103,9 @@
                 text  : 'Confirme la información antes de continuar',
                 okBtnText : 'Continuar',
                 cancelBtnText : 'Regresar',
+                then : function(){
+                    location.href = '/recepcion/documentos/'
+                }
 
             })
             /*
@@ -138,15 +141,15 @@
 
         this.rules = function(){
             return {
-                tipo_documento : { required : true },
-                anio : { required : true }
+                //tipo_documento : { required : true },
+                //anio : { required : true }
             }
         }
 
         this.messages = function(){
             return {
-                nombre : { required : 'Seleccione el tipo de documento' },
-                anio   : { required : 'Introduzca el año' }
+                //nombre : { required : 'Seleccione el tipo de documento' },
+                //anio   : { required : 'Introduzca el año' }
             }
         }
     }).init()

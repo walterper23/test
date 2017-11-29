@@ -15,6 +15,7 @@ use App\DataTables\DocumentosDataTable;
 /* Models */
 use App\Model\MDocumento;
 use App\Model\Catalogo\MTipoDocumento;
+use App\Model\Catalogo\MAnexo;
 
 class RecepcionController extends BaseController{
 
@@ -41,6 +42,13 @@ class RecepcionController extends BaseController{
 											->pluck('TIDO_NOMBRE_TIPO','TIDO_TIPO_DOCUMENTO')
 											->toArray();
 
+		$data['anexos'] = MAnexo::select('ANEX_ANEXO','ANEX_NOMBRE')
+									->where('ANEX_ENABLED',1)
+									->where('ANEX_DELETED',0)
+									->orderBy('ANEX_NOMBRE')
+									->pluck('ANEX_NOMBRE','ANEX_ANEXO')
+									->toArray();
+
 		$data['context'] = 'context-form-recepcion';
 		$data['form_id'] = 'form-recepcion';
 
@@ -59,6 +67,13 @@ class RecepcionController extends BaseController{
 
 		return view('Recepcion.verDocumento')->with($data);
 
+	}
+
+	public function verSeguimiento( $id ){
+
+		$data['documento'] = MDocumento::find( $id );
+
+		return view('Seguimiento.verSeguimiento')->with($data);
 	}
 
 }

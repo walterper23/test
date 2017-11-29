@@ -33,9 +33,22 @@ Route::group(['middleware' => 'preventBackHistory'],function(){
 				Route::post('post-data',       'RecepcionController@postDataTable');
 				Route::get('nueva-recepcion',  'RecepcionController@nuevaRecepcion');
 				Route::get('{id}',             'RecepcionController@verDocumentoRecepcionado');
-				Route::get('{id}/seguimiento', 'SeguimientoController@index');
+				Route::get('{id}/seguimiento', 'RecepcionController@verSeguimiento');
 			});
-		});	
+		});
+
+		Route::group(['prefix'=>'panel','namespace'=>'Dashboard'], function(){
+			
+			Route::get('/',  'PanelController@index');
+			
+			Route::group(['prefix'=>'documentos'], function(){
+				Route::get('/',                'PanelController@index');
+				Route::get('recibidos',        'PanelController@index');
+				Route::get('todos',            'PanelController@index');
+				Route::get('importantes',      'PanelController@index');
+				Route::get('finalizados',      'PanelController@index');
+			});
+		});
 		
 		Route::group(['prefix'=>'configuracion','namespace'=>'Configuracion'], function(){
 			Route::get('/', 'ConfiguracionController@index');
@@ -91,6 +104,7 @@ Route::group(['middleware' => 'preventBackHistory'],function(){
 			Route::group(['prefix'=>'usuarios','namespace'=>'Usuario'], function(){
 				Route::get('/',           'UsuarioController@index');
 				Route::post('post-data',  'UsuarioController@postDataTable');
+				Route::get('ver/{id}',    'UsuarioController@verUsuario');
 				Route::get('nuevo',       'UsuarioController@formUsuario');
 				Route::get('editar',      'UsuarioController@editarUsuario');
 				Route::post('manager',    'UsuarioController@manager');

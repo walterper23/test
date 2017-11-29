@@ -1,6 +1,6 @@
 <?php
-    function activeMenu( $menu ){
-        return (request()->segment(2) == $menu) ? 'class="open"' : '';
+    function activeMenu( $menu_a, $menu_b ){
+        return (request()->segment(1) == $menu_a && request()->segment(2) == $menu_b) ? 'class="open"' : '';
     }
     function activeItemMenu( $item ){
         return request()->is($item) ? 'class="active"' : '';
@@ -8,22 +8,42 @@
 ?>
 <div class="content-side content-side-full">
     <ul class="nav-main">
-        <li class="nav-main-heading"><span class="sidebar-mini-visible">UI</span><span class="sidebar-mini-hidden">Recepci&oacute;n</span></li>
-        <li {!! activeMenu('documentos') !!}>
+        <li class="nav-main-heading"><span class="sidebar-mini-visible">Recepci&oacute;n</span><span class="sidebar-mini-hidden">Recepci&oacute;n</span></li>
+        <li {!! activeMenu('recepcion','documentos') !!}>
             <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-puzzle"></i><span class="sidebar-mini-hide">Documentos</span></a>
             <ul>
                 <li>
-                    <a {!! activeItemMenu('recepcion/documentos') !!} href="{{ url('/recepcion/documentos') }}">Recepcionados</a>
+                    <a {!! activeItemMenu('recepcion/documentos') !!} href="{{ url('recepcion/documentos') }}">Recepcionados</a>
                 </li>
                 <li>
-                    <a {!! activeItemMenu('recepcion/documentos/nueva-recepcion') !!} href="{{ url('/recepcion/documentos/nueva-recepcion') }}">Nueva recepci&oacute;n</a>
+                    <a {!! activeItemMenu('recepcion/documentos/nueva-recepcion') !!} href="{{ url('recepcion/documentos/nueva-recepcion') }}">Nueva recepci&oacute;n</a>
                 </li>
             </ul>
         </li>
-    </
+    </ul>
+    <ul class="nav-main">
+        <li class="nav-main-heading"><span class="sidebar-mini-visible">Panel de trabajo</span><span class="sidebar-mini-hidden">Panel de trabajo</span></li>
+        <li {!! activeMenu('panel','documentos') !!}>
+            <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-docs"></i><span class="sidebar-mini-hide">Documentos</span></a>
+            <ul>
+                <li>
+                    <a {!! activeItemMenu('panel/documentos/recibidos') !!} href="{{ url('panel/documentos/recibidos') }}">Recibidos</a>
+                </li>
+                <li>
+                    <a {!! activeItemMenu('panel/documentos/todos') !!} href="{{ url('panel/documentos/todos') }}">Todos</a>
+                </li>
+                <li>
+                    <a {!! activeItemMenu('panel/documentos/importantes') !!} href="{{ url('panel/documentos/importantes') }}">Importantes</a>
+                </li>
+                <li>
+                    <a {!! activeItemMenu('panel/documentos/finalizados') !!} href="{{ url('panel/documentos/finalizados') }}">Finalizados</a>
+                </li>
+            </ul>
+        </li>
+    </ul>
     <ul class="nav-main">
         <li class="nav-main-heading"><span class="sidebar-mini-visible">UI</span><span class="sidebar-mini-hidden">Configuraci&oacute;n</span></li>
-        <li {!! activeMenu('catalogos') !!}>
+        <li {!! activeMenu('configuracion','catalogos') !!}>
             <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-puzzle"></i><span class="sidebar-mini-hide">Cat&aacute;logos</span></a>
             <ul>
                 <li>
@@ -43,7 +63,7 @@
                 </li>
             </ul>
         </li>
-        <li {!! activeMenu('usuarios') !!}>
+        <li {!! activeMenu('configuracion','usuarios') !!}>
             <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-users"></i><span class="sidebar-mini-hidden">Usuarios</span></a>
             <ul>
                 <li>

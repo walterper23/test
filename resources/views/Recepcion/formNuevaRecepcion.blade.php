@@ -27,9 +27,7 @@
             </div>
             <div class="form-group">
                 <label for="">Anexos</label>
-                <div id="anexos">
-
-                </div>
+                {{ Form::select('anexos',$anexos,null,['id'=>'anexo','class'=>'form-control','placeholder'=>'Seleccione una opción']) }}
             </div>
             <div class="form-group">
                 
