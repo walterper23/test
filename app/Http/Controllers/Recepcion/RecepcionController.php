@@ -14,8 +14,10 @@ use App\DataTables\DocumentosDataTable;
 
 /* Models */
 use App\Model\MDocumento;
+use App\Model\MSeguimiento;
+use App\Model\Catalogo\MEstadoDocumento;
 use App\Model\Catalogo\MTipoDocumento;
-use App\Model\Catalogo\MAnexo;
+use App\Model\Catalogo\MDireccion;
 
 class RecepcionController extends BaseController{
 
@@ -74,6 +76,66 @@ class RecepcionController extends BaseController{
 		$data['documento'] = MDocumento::find( $id );
 
 		return view('Seguimiento.verSeguimiento')->with($data);
+	}
+
+
+
+	public function modalCambio(){
+
+		$data = [
+			'title'         => 'Cambio de Estado de Documento',
+			'url_send_form' => url('guardar-cambio'),
+			'form_id'       => 'modal-cambio',
+			'modelo'        => MDocumento::find(1),
+			'action'        => 1,
+			'id'            => 1
+		];
+
+		$direcciones = MDireccion::with('departamentos')
+							->select('DIRE_DIRECCION','DIRE_NOMBRE')
+							->where('DIRE_ENABLED',1)
+							->orderBy('DIRE_NOMBRE')
+							->get();
+
+		$data['direcciones'] = $direcciones->pluck('DIRE_NOMBRE','DIRE_DIRECCION')->toArray();
+
+		$data['departamentos'] = [];
+
+		foreach ($direcciones as $direccion) {
+
+			$nombre_direccion = $direccion->DIRE_NOMBRE;
+			foreach($direccion->departamentos as $departamento){
+				$id_departamento      = $departamento->DEPA_DEPARTAMENTO;
+				$nombre_departamento  = $departamento->DEPA_NOMBRE;
+				$data['departamentos'][ $nombre_direccion ][ $id_departamento ] = $nombre_departamento;
+			}
+
+		}
+
+		$data['departamentos'][0] = '- Ninguno -';
+
+		$estados = MEstadoDocumento::all()->pluck('ESDO_NOMBRE','ESDO_ESTADO_DOCUMENTO')->toArray();
+
+		$data['estados'] = $estados;
+
+		return view('modalCambio')->with($data);
+	}
+
+	public function guardarCambio(){
+
+		$seguimiento = new MSeguimiento;
+
+		$seguimiento->SEGU_DOCUMENTO = 1;
+		$seguimiento->SEGU_DIRECCION = 2;
+		$seguimiento->SEGU_DEPARTAMENTO = 4;
+		$seguimiento->SEGU_USUARIO = 1;
+		$seguimiento->SEGU_ESTADO_DOCUMENTO = Input::get('estado');
+		$seguimiento->SEGU_OBSERVACION = Input::get('observacion');
+
+		$seguimiento->save();
+
+		return response()->json(['status'=>true, 'message'=>'<i class="fa fa-check"></i> El cambio de estado se realizó correctamente']);
+
 	}
 
 }

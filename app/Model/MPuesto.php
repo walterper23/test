@@ -19,6 +19,10 @@ class MPuesto extends Model{
 
     /** Relationships **/
 
+    public function direccion(){
+        return $this->belongsTo('App\Model\Catalogo\MDireccion','PUES_DIRECCION','DIRE_DIRECCION');
+    }
+
     public function departamento(){
         return $this->belongsTo('App\Model\Catalogo\MDepartamento','PUES_DEPARTAMENTO','DEPA_DEPARTAMENTO');
     }

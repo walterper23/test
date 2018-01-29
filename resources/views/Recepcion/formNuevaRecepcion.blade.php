@@ -26,17 +26,18 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="">Anexos</label>
-                {{ Form::select('anexos',$anexos,null,['id'=>'anexo','class'=>'form-control','placeholder'=>'Seleccione una opción']) }}
+                <label for="anexo">Seleccione un anexo</label>
+                {{ Form::select('anexo',$anexos,null,['id'=>'anexo','class'=>'form-control','placeholder'=>'Seleccione una opción']) }}
+            </div>
+            <div class="form-group">
+                <label for="anexos">Anexos</label>
+                {{ Form::textarea('anexos','',['id'=>'anexos','class'=>'form-control','placeholder'=>'Opcional','size'=>'20x5']) }}
             </div>
             <div class="form-group">
                 
             </div>
             <div class="form-group">
-                
-            </div>
-            <div class="form-group">
-                
+                    
             </div>
         </div>
     </div>

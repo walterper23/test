@@ -64,12 +64,28 @@ class MUsuario extends Authenticatable{
     
     /* Relationships */
 
+    public function usuarioAsignaciones(){
+        return $this->hasMany('App\Model\MUsuarioAsignacion','USAS_USUARIO',$this->getKeyName());
+    }
+
+    public function direcciones(){
+        return $this->belongsToMany('App\Model\Catalogo\MDireccion','usuarios_asignaciones','USAS_USUARIO','USAS_DIRECCION');
+    }
+
+    public function departamentos(){
+        return $this->belongsToMany('App\Model\Catalogo\MDepartamento','usuarios_asignaciones','USAS_USUARIO','USAS_DEPARTAMENTO');
+    }
+
+    public function puestos(){
+        return $this->belongsToMany('App\Model\Catalogo\MPuesto','usuarios_asignaciones','USAS_USUARIO','USAS_PUESTO');
+    }
+
     public function rol(){
-    	return $this->hasOne('App\Model\ModeloRol', 'ROLE_ROL', 'USUA_ROL');
+    	return $this->hasOne('App\Model\Acl\MRol','ROLE_ROL','USUA_ROL');
     }
 
     public function usuarioDetalle(){
-        return $this->hasOne('App\Model\MUsuarioDetalle','USDE_USUARIO',$this->primaryKey);
+        return $this->hasOne('App\Model\MUsuarioDetalle','USDE_USUARIO',$this->getKeyName());
     }
 
     /***************/

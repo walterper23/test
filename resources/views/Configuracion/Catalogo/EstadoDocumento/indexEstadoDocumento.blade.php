@@ -1,7 +1,7 @@
 @extends('Tema.app')
 
 @section('title')
-    SIGESD :: Cat&aacute;logos - Direcciones
+	SIGESD :: Cat&aacute;logos - Anexos
 @endsection
 
 @push('css-style')
@@ -14,33 +14,33 @@
     <nav class="breadcrumb bg-body-light mb-0">
         <a class="breadcrumb-item" href="javascript:void(0)"><i class="fa fa-cogs"></i> Configuraci&oacute;n</a>
         <a class="breadcrumb-item" href="{{ url('configuracion/catalogos') }}">Cat&aacute;logos</a>
-        <span class="breadcrumb-item active">Direcciones</span>
+        <span class="breadcrumb-item active">Estados de Documentos</span>
     </nav>
 @endsection
 
 @section('content')
     <div class="block block-themed block-mode-loading-refresh">
         <div class="block-header bg-corporate-dark">
-            <h3 class="block-title"><i class="fa fa-fw fa-sitemap mr-5"></i> Direcciones</h3>
+            <h3 class="block-title"><i class="fa fa-fw fa-clipboard mr-5"></i> Estados de Documentos</h3>
             <div class="block-options">
-                <button type="button" class="btn-block-option" onclick="hDireccion.new('{{$form_id}}','{{$form_url}}')">
+                <button type="button" class="btn-block-option" onclick="hEstadoDocumento.new('{{$form_id}}','{{$form_url}}')">
                     <i class="fa fa-plus"></i> Nuevo
                 </button>
-                <button type="button" class="btn-block-option" onclick="hDireccion.reload('dataTableBuilder')">
+                <button type="button" class="btn-block-option" onclick="hEstadoDocumento.reload('dataTableBuilder')">
                     <i class="fa fa-refresh"></i> Actualizar
                 </button>
                 <div class="dropdown">
                     <button type="button" class="btn-block-option dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cog"></i> Opciones</button>
                     <div class="dropdown-menu dropdown-menu-right">
                         <a class="dropdown-item" href="javascript:void(0)">
-                            <i class="fa fa-fw fa-pencil mr-5"></i>Editar direcci&oacute;n
+                            <i class="fa fa-fw fa-sitemap mr-5"></i>Ordenar por dirección
                         </a>
                         <a class="dropdown-item" href="javascript:void(0)">
-                            <i class="fa fa-fw fa-sitemap mr-5"></i>Crear departamento
+                            <i class="fa fa-fw fa-sitemap mr-5"></i>Ordenar por departamento
                         </a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item text-danger" href="javascript:void(0)">
-                            <i class="fa fa-fw fa-trash mr-5"></i>Eliminar
+                        <a class="dropdown-item" href="javascript:void(0)">
+                            <i class="fa fa-fw fa-pencil mr-5"></i>Edit Profile
                         </a>
                     </div>
                 </div>
@@ -58,11 +58,11 @@
     {{ Html::script('js/plugins/jquery-validation/jquery.validate.min.js') }}
     {{ Html::script('js/plugins/datatables/jquery.dataTables.min.js') }}
     {{ Html::script('js/plugins/datatables/dataTables.bootstrap4.min.js') }}
-    {{ Html::script('js/helpers/direccion.helper.js') }}
+    {{ Html::script('js/helpers/estado_documento.helper.js') }}
     {{ Html::script('js/app-form.js') }}
     {{ Html::script('js/app-alert.js') }}
 @endpush
 
 @push('js-custom')
-    {!! $table->javascript() !!}
+	{!! $table->javascript() !!}
 @endpush

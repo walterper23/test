@@ -11,21 +11,27 @@
         {{ Form::hidden('action',$action) }}	
 		{{ Form::hidden('id',$id) }}
         <div class="form-group row">
-            <label class="col-sm-3 col-form-label" for="nombre">Nombre</label>
-            <div class="col-sm-9">
-            	{{ Form::text('nombre',(is_null($modelo) ? '' : $modelo->PUES_NOMBRE),['id'=>'nombre','class'=>'form-control','placeholder'=>'Nombre del puesto','autofocus']) }}
-            </div>
-        </div>
-        <div class="form-group row">
             <label class="col-sm-3 col-form-label" for="direccion">Direcci&oacute;n</label>
             <div class="col-sm-9">
-            	{{ Form::select('direccion',$direcciones,(is_null($modelo) ? '' : $modelo->PUES_DIRECCION),['id'=>'direccion','class'=>'form-control','placeholder'=>'Seleccione una opción','autofocus']) }}
+            	{{ Form::select('direccion',$direcciones,(is_null($modelo) ? '' : $modelo->SEGU_DIRECCION),['id'=>'direccion','class'=>'form-control','placeholder'=>'Seleccione una opción','autofocus']) }}
             </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-3 col-form-label" for="departamento">Departamento</label>
             <div class="col-sm-9">
-            	{{ Form::select('departamento',$departamentos,(is_null($modelo) ? '' : $modelo->PUES_DEPARTAMENTO),['id'=>'departamento','class'=>'form-control','placeholder'=>'Seleccione una opción']) }}
+            	{{ Form::select('departamento',$departamentos,(is_null($modelo) ? '' : $modelo->SEGU_DEPARTAMENTO),['id'=>'departamento','class'=>'form-control','placeholder'=>'Seleccione una opción']) }}
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label" for="estado">Estado de Documento</label>
+            <div class="col-sm-9">
+            	{{ Form::select('estado',$estados,(is_null($modelo) ? '' : $modelo->SEGU_ESTADO_DOCUMENTO),['id'=>'estado','class'=>'form-control','placeholder'=>'Seleccione una opción']) }}
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label" for="estado">Observaci&oacute;n</label>
+            <div class="col-sm-9">
+            	{{ Form::textarea('observacion',(is_null($modelo) ? '' : $modelo->SEGU_OBSERVACION),['id'=>'observacion','size'=>'20x5','class'=>'form-control','placeholder'=>'Opcional']) }}
             </div>
         </div>
 	{{ Form::close() }}

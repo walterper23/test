@@ -4,7 +4,7 @@ DB::listen(function($query){
 	//echo "<pre style=\"z-index:500\">{$query->sql}</pre>";
 });
 
-Route::group(['middleware' => 'preventBackHistory'],function(){
+Route::middleware('preventBackHistory')->group(function(){
 
 	Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 	Route::post('login', 'Auth\LoginController@login');
@@ -16,15 +16,15 @@ Route::group(['middleware' => 'preventBackHistory'],function(){
 	Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
 	Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 
-	Route::group(['middleware'=>'auth'], function(){
+	Route::middleware('auth')->group(function(){
 
 		Route::get('/', 'Dashboard\DashboardController@index');
 
-		Route::group(['prefix'=>'perfil','namespace'=>'Dashboard'], function(){
+		Route::prefix('perfil')->namespace('Dashboard')->group(function(){
 			Route::get('/', 'PerfilController@index');
 		});
 
-		Route::group(['prefix'=>'recepcion','namespace'=>'Recepcion'], function(){
+		Route::prefix('recepcion')->namespace('Recepcion')->group(function(){
 			
 			Route::get('/',  'RecepcionController@index');
 			
@@ -35,9 +35,10 @@ Route::group(['middleware' => 'preventBackHistory'],function(){
 				Route::get('{id}',             'RecepcionController@verDocumentoRecepcionado');
 				Route::get('{id}/seguimiento', 'RecepcionController@verSeguimiento');
 			});
+
 		});
 
-		Route::group(['prefix'=>'panel','namespace'=>'Dashboard'], function(){
+		Route::prefix('panel')->namespace('Dashboard')->group(function(){
 			
 			Route::get('/',  'PanelController@index');
 			
@@ -48,15 +49,19 @@ Route::group(['middleware' => 'preventBackHistory'],function(){
 				Route::get('importantes',      'PanelController@index');
 				Route::get('finalizados',      'PanelController@index');
 			});
+			
 		});
 		
-		Route::group(['prefix'=>'configuracion','namespace'=>'Configuracion'], function(){
+		Route::prefix('configuracion')->namespace('Configuracion')->group(function(){
+			
 			Route::get('/', 'ConfiguracionController@index');
-			Route::group(['prefix'=>'catalogos','namespace'=>'Catalogo'], function(){
+			
+			Route::prefix('catalogos')->namespace('Catalogo')->group(function(){
+				
 				Route::get('/', 'CatalogoManagerController@index');
 
 				// Catálogo de anexos
-				Route::group(['prefix'=>'anexos'],function(){
+				Route::prefix('anexos')->group(function(){
 					Route::get('/',                'AnexoController@index');
 					Route::post('post-data',       'AnexoController@postDataTable');
 					Route::post('nuevo',           'AnexoController@formNuevoAnexo');
@@ -65,7 +70,7 @@ Route::group(['middleware' => 'preventBackHistory'],function(){
 				});
 				
 				// Catálogo de departamentos
-				Route::group(['prefix'=>'departamentos'],function(){
+				Route::prefix('departamentos')->group(function(){
 					Route::get('/',          'DepartamentoController@index');
 					Route::post('post-data', 'DepartamentoController@postDataTable');
 					Route::post('nuevo',     'DepartamentoController@formNuevoDepartamento');
@@ -74,7 +79,7 @@ Route::group(['middleware' => 'preventBackHistory'],function(){
 				});
 				
 				// Catálogo de direcciones
-				Route::group(['prefix'=>'direcciones'],function(){
+				Route::prefix('direcciones')->group(function(){
 					Route::get('/',          'DireccionController@index');
 					Route::post('post-data', 'DireccionController@postDataTable');
 					Route::post('nuevo',     'DireccionController@formNuevaDireccion');
@@ -83,7 +88,7 @@ Route::group(['middleware' => 'preventBackHistory'],function(){
 				});
 
 				// Catálogo de puestos
-				Route::group(['prefix'=>'puestos'],function(){
+				Route::prefix('puestos')->group(function(){
 					Route::get('/',          'PuestoController@index');
 					Route::post('post-data', 'PuestoController@postDataTable');
 					Route::post('nuevo',     'PuestoController@formNuevoPuesto');
@@ -92,16 +97,26 @@ Route::group(['middleware' => 'preventBackHistory'],function(){
 				});
 
 				// Catálogo de tipos de documentos
-				Route::group(['prefix'=>'tipos-documentos'],function(){
+				Route::prefix('tipos-documentos')->group(function(){
 					Route::get('/',          'TipoDocumentoController@index');
 					Route::post('post-data', 'TipoDocumentoController@postDataTable');
 					Route::post('nuevo',     'TipoDocumentoController@formNuevoTipoDocumento');
 					Route::post('editar',    'TipoDocumentoController@formEditarTipoDocumento');
 					Route::post('manager',   'TipoDocumentoController@manager');
 				});
+
+				// Catálogo de tipos de documentos
+				Route::prefix('estados-documentos')->group(function(){
+					Route::get('/',          'EstadoDocumentoController@index');
+					Route::post('post-data', 'EstadoDocumentoController@postDataTable');
+					Route::post('nuevo',     'EstadoDocumentoController@formNuevoEstadoDocumento');
+					Route::post('editar',    'EstadoDocumentoController@formEditarEstadoDocumento');
+					Route::post('manager',   'EstadoDocumentoController@manager');
+				});
+
 			});
 
-			Route::group(['prefix'=>'usuarios','namespace'=>'Usuario'], function(){
+			Route::prefix('usuarios')->namespace('Usuario')->group(function(){
 				Route::get('/',           'UsuarioController@index');
 				Route::post('post-data',  'UsuarioController@postDataTable');
 				Route::get('ver/{id}',    'UsuarioController@verUsuario');
@@ -125,10 +140,14 @@ Route::group(['middleware' => 'preventBackHistory'],function(){
 					Route::post('manager',    'PermisoController@manager');
 				});
 
-				
 			});
 
 		});
+
+
+
+		Route::post('modal-cambio', 'Recepcion\RecepcionController@modalCambio');
+		Route::post('guardar-cambio', 'Recepcion\RecepcionController@guardarCambio');
 	
 	});
 

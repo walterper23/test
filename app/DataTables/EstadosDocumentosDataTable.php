@@ -2,12 +2,12 @@
 
 namespace App\DataTables;
 
-use App\Model\Catalogo\MPuesto;
+use App\Model\Catalogo\MEstadoDocumento;
 
-class PuestosDataTable extends CustomDataTable{
-    
+class EstadosDocumentosDataTable extends CustomDataTable{
+
     protected function setSourceData(){
-        $this->sourceData = MPuesto::with(['direccion','departamento'])->select(['PUES_PUESTO','PUES_DIRECCION','PUES_DEPARTAMENTO','PUES_NOMBRE','PUES_CREATED_AT','PUES_ENABLED'])->where('PUES_DELETED',0)->get();
+        $this->sourceData = MEstadoDocumento::with(['direccion','departamento'])->selectRaw('ESDO_ESTADO_DOCUMENTO, ESDO_DIRECCION, ESDO_DEPARTAMENTO, ESDO_NOMBRE, ESDO_CREATED_AT, ESDO_ENABLED')->where('ESDO_DELETED',0)->orderBy('ESDO_CREATED_AT','DESC')->get();
     }
 
     protected function columnsTable(){
@@ -17,7 +17,7 @@ class PuestosDataTable extends CustomDataTable{
                 'render' => function($query){
                     return '<div class="custom-controls-stacked">
                             <label class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" value="'.$query->PUES_PUESTO.'">
+                                <input type="checkbox" class="custom-control-input" value="'.$query->ESDO_ESTADO_DOCUMENTO.'">
                                 <span class="custom-control-indicator"></span>
                             </label>
                         </div>';
@@ -25,10 +25,6 @@ class PuestosDataTable extends CustomDataTable{
                 'searchable' => false,
                 'orderable'  => false,
             ],*/
-            [
-                'title' => 'Nombre',
-                'data' => 'PUES_NOMBRE'
-            ],
             [
                 'title' => 'Dirección',
                 'render' => function($query){
@@ -48,38 +44,43 @@ class PuestosDataTable extends CustomDataTable{
                 }
             ],
             [
-                'title' => 'Fecha / Hora',
-                'data' => 'PUES_CREATED_AT'
+                'title' => 'Nombre',
+                'data'  => 'ESDO_NOMBRE'
+            ],
+            [
+                'title' => 'Fecha',
+                'data'  => 'ESDO_CREATED_AT'
             ],
             [
                 'title' => 'Activo',
                 'render' => function($query){
                     $checked = '';
-                    if($query->PUES_ENABLED == 1){
+                    if($query->ESDO_ENABLED == 1){
                         $checked = 'checked=""';
                     }
                     return '<label class="css-control css-control-sm css-control-primary css-switch">
-                                <input type="checkbox" class="css-control-input" '.$checked.' onclick="hPuesto.active({id:'.$query->PUES_PUESTO.'})"><span class="css-control-indicator"></span>
+                                <input type="checkbox" class="css-control-input" '.$checked.' onclick="hEstadoDocumento.active({id:'.$query->ESDO_ESTADO_DOCUMENTO.'})"><span class="css-control-indicator"></span>
                             </label>';
                 }
             ],
             [
-                'title' => 'Opciones',
+                'title'  => 'Opciones',
                 'render' => function($query){
                     $buttons = '';
 
-                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hPuesto.edit_('.$query->PUES_PUESTO.')"><i class="fa fa-pencil"></i></button>';
-
-                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hPuesto.delete_('.$query->PUES_PUESTO.')"><i class="fa fa-trash"></i></button>';
+                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hEstadoDocumento.edit_('.$query->ESDO_ESTADO_DOCUMENTO.')"><i class="fa fa-pencil"></i></button>';
+                
+                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hEstadoDocumento.delete_('.$query->ESDO_ESTADO_DOCUMENTO.')"><i class="fa fa-trash"></i></button>';
                     
                     return $buttons;
                 }
             ]
+
         ];
     }
 
     protected function getUrlAjax(){
-        return url('configuracion/catalogos/puestos/post-data');
+        return url('configuracion/catalogos/estados-documentos/post-data');
     }
-
+    
 }

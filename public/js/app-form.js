@@ -22,6 +22,8 @@ var AppForm = new function(){
         this.btnClose.on('click', function(e){
         	self.onClose()
         })
+        
+        return this;
 	}
 
 	this.submit = function(form){
@@ -66,10 +68,11 @@ var AppForm = new function(){
 	this.onClose = function(){
 		if(	this.cloneForm.serialize() != this.form.serialize() ){
 			AppAlert.confirm({
-				title : 'Guardar cambios',
-				text  : '¿Desea guardar los cambios realizados?',
+				title : 'Descartar cambios',
+				text  : '¿Desea descartar los cambios realizados?',
+				okBtnText : 'Descartar',
 				then  : function(){
-					
+					AppForm.closeContext();
 				}
 			});
 		}else{

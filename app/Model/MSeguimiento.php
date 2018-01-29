@@ -23,6 +23,15 @@ class MSeguimiento extends Model{
 
 
     /** Relationships **/
+
+    public function direccion(){
+        return $this->belongsTo('App\Model\Catalogo\MDireccion','SEGU_DIRECCION','DIRE_DIRECCION');
+    }
+
+    public function departamento(){
+        return $this->belongsTo('App\Model\Catalogo\MDepartamento','SEGU_DEPARTAMENTO','DEPA_DEPARTAMENTO');
+    }
+
     public function documento(){
         return $this->belongsTo('App\Model\MDocumento','SEGU_DOCUMENTO','DOCU_DOCUMENTO');
     }
@@ -31,8 +40,8 @@ class MSeguimiento extends Model{
         return $this->belongsTo('App\Model\MUsuario','SEGU_USUARIO','USUA_USUARIO');
     }
 
-    public function status(){
-        return $this->belongsTo('App\Model\MStatus','SEGU_STATUS','STAT_STATUS');
+    public function estadoDocumento(){
+        return $this->belongsTo('App\Model\Catalogo\MEstadoDocumento','SEGU_ESTADO_DOCUMENTO','ESDO_ESTADO_DOCUMENTO');
     }
 
     /******************/

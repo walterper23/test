@@ -27,6 +27,14 @@ class MDepartamento extends Model{
         return $this->belongsTo('App\Model\Catalogo\MDireccion','DEPA_DIRECCION','DIRE_DIRECCION');
     }
 
+    public function seguimientos(){
+        return $this->hasMany('App\Model\MSeguimiento','SEGU_DEPARTAMENTO',$this->getKeyName());
+    }
+
+    public function documentos(){
+        return $this->hasMany('App\Model\MDocumento','DOCU_DOCUMENTO','');
+    }
+
     /** ************ **/
 
 

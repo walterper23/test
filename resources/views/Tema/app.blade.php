@@ -146,13 +146,14 @@
         {{ Html::script('js/codebase.js') }}
         {{ Html::script('js/app.js') }}
 
-        
         @stack('js-script')
 
         <script type="text/javascript">
-            jQuery.extend( jQuery.fn.dataTable.ext.classes, {
-                sWrapper: "dataTables_wrapper dt-bootstrap4"
-            });
+            if( jQuery.fn.dataTable != undefined ){
+                jQuery.extend( jQuery.fn.dataTable.ext.classes, {
+                    sWrapper: "dataTables_wrapper dt-bootstrap4"
+                });
+            }
         </script>
         
         @stack('js-custom')

@@ -2,16 +2,21 @@
 
 namespace App\Model\Catalogo;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Auth;
+
+use App\Model\BaseModel;
 
 use App\Presenters\MTipoDocumentoPresenter;
 
-class MTipoDocumento extends Model{
+class MTipoDocumento extends BaseModel {
     
     protected $table          = 'cat_tipos_documentos';
     protected $primaryKey     = 'TIDO_TIPO_DOCUMENTO';
     public    $timestamps     = false;
+
+    protected $fieldCreatedBy = 'TIDO_CREATED_BY';
+    protected $fieldUpdated   = 'TIDO_UPDATED';
 
     protected $fillable = [];
 

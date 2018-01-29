@@ -61,6 +61,9 @@
                 <li>
                     <a {!! activeItemMenu('configuracion/catalogos/tipos-documentos') !!} href="{{ url('configuracion/catalogos/tipos-documentos') }}">Tipos de documentos</a>
                 </li>
+                <li>
+                    <a {!! activeItemMenu('configuracion/catalogos/estados-documentos') !!} href="{{ url('configuracion/catalogos/estados-documentos') }}">Estados de documentos</a>
+                </li>
             </ul>
         </li>
         <li {!! activeMenu('configuracion','usuarios') !!}>

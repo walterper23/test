@@ -183,7 +183,11 @@ return [
         Yajra\DataTables\DataTablesServiceProvider::class,
         Yajra\DataTables\HtmlServiceProvider::class,
         Yajra\DataTables\ButtonsServiceProvider::class,
-        Yajra\Acl\AclServiceProvider::class
+        Yajra\Acl\AclServiceProvider::class,
+
+        App\Providers\FieldServiceProvider::class,
+        App\Providers\ModalServiceProvider::class,
+
     ],
 
     /*
@@ -236,6 +240,9 @@ return [
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
+
+        'Field' => App\Componentes\Field\Field::class,
+        'Modal' => App\Componentes\Modal\Modal::class,
 
     ],
 

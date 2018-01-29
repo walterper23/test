@@ -33,11 +33,17 @@
                     <button type="button" class="btn-block-option dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cog"></i> Opciones</button>
                     <div class="dropdown-menu dropdown-menu-right">
                         <a class="dropdown-item" href="javascript:void(0)">
-                            <i class="fa fa-fw fa-bell mr-5"></i>News
+                            <i class="fa fa-fw fa-pencil mr-5"></i>Editar puesto
+                        </a>
+                        <a class="dropdown-item" href="javascript:void(0)">
+                            <i class="fa fa-fw fa-sitemap mr-5"></i>Nueva direcci&oacute;n
+                        </a>
+                        <a class="dropdown-item" href="javascript:void(0)">
+                            <i class="fa fa-fw fa-sitemap mr-5"></i>Nuevo departamento
                         </a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="javascript:void(0)">
-                            <i class="fa fa-fw fa-pencil mr-5"></i>Edit Profile
+                        <a class="dropdown-item text-danger" href="javascript:void(0)">
+                            <i class="fa fa-fw fa-trash mr-5"></i>Desactivar puesto
                         </a>
                     </div>
                 </div>

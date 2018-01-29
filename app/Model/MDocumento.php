@@ -81,4 +81,8 @@ class MDocumento extends Model{
         return $this->haOne('App\Model\MDocumentoDetalle','DODE_DOCUMENTO',$this->primaryKey);
     }
 
+    public function seguimientos(){
+        return $this->hasMany('App\Model\MSeguimiento','SEGU_DOCUMENTO',$this->getKeyName());
+    }
+
 }

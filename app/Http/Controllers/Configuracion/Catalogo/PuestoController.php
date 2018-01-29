@@ -82,6 +82,8 @@ class PuestoController extends BaseController{
 									->orderBy('DIRE_NOMBRE')
 									->get();
 
+			$data['direcciones'] = $direcciones->pluck('DIRE_NOMBRE','DIRE_DIRECCION')->toArray();
+
 			$data['departamentos'] = [];
 
 			foreach ($direcciones as $direccion) {
@@ -93,8 +95,9 @@ class PuestoController extends BaseController{
 					$data['departamentos'][ $nombre_direccion ][ $id_departamento ] = $nombre_departamento;
 				}
 
-
 			}
+
+			$data['departamentos'][0] = '- Ninguno -';
 
 
 			return view('Configuracion.Catalogo.Puesto.formPuesto')->with($data);
@@ -106,10 +109,16 @@ class PuestoController extends BaseController{
 
 	public function nuevoPuesto(){
 		try{
+			
+			$departamento = Input::get('departamento');
+
+			if( $departamento == 0 )
+				$departamento = null;
+
 			$puesto = new MPuesto;
 			$puesto->PUES_NOMBRE       = Input::get('nombre');
-			$puesto->PUES_DEPARTAMENTO = Input::get('departamento');
-			$puesto->PUES_CREATED_AT   = Carbon::now();
+			$puesto->PUES_DIRECCION    = Input::get('direccion');
+			$puesto->PUES_DEPARTAMENTO = $departamento;
 			$puesto->save();
 
 			$tables = ['dataTableBuilder',null,true];

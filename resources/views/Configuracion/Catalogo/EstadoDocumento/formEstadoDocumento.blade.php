@@ -10,18 +10,24 @@
     {{ Form::model($modelo,['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) }}
 	    {{ Form::hidden('action',$action) }}
 	    {{ Form::hidden('id',$id) }}
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label" for="direccion">Dirección</label>
+	    <div class="form-group row">
+            <label class="col-sm-3 col-form-label" for="direccion">Direcci&oacute;n</label>
             <div class="col-sm-9">
-            	{{ Form::select('direccion',$direcciones,(is_null($modelo) ? null : $modelo->DEPA_DIRECCION),['id'=>'direccion','class'=>'form-control','placeholder'=>'Seleccione una opción']) }}
+            	{{ Form::select('direccion',$direcciones,(is_null($modelo) ? '' : $modelo->ESDO_DIRECCION),['id'=>'direccion','class'=>'form-control','placeholder'=>'Seleccione una opción']) }}
             </div>
-        </div>
+        </div> 
+        <div class="form-group row">
+            <label class="col-sm-3 col-form-label" for="departamento">Departamento</label>
+            <div class="col-sm-9">
+            	{{ Form::select('departamento',$departamentos,(is_null($modelo) ? '' : $modelo->ESDO_DEPARTAMENTO),['id'=>'departamento','class'=>'form-control','placeholder'=>'Seleccione una opción']) }}
+            </div>
+        </div> 
         <div class="form-group row">
             <label class="col-sm-3 col-form-label" for="nombre">Nombre</label>
             <div class="col-sm-9">
-            	{{ Form::text('nombre',(is_null($modelo) ? '' : $modelo->DEPA_NOMBRE),['id'=>'nombre','class'=>'form-control','placeholder'=>'Nombre del departamento','autofocus']) }}
+            	{{ Form::text('nombre',(is_null($modelo) ? '' : $modelo->ESDO_NOMBRE),['id'=>'nombre','class'=>'form-control','placeholder'=>'Nombre del estado de documento']) }}
             </div>
-        </div>
+        </div> 
 	{{ Form::close() }}
 </div>
 
@@ -30,13 +36,8 @@
 	$.extend(AppForm, new function(){
 
 		this.context = $('#modal-{{ $form_id }}')
-		this.form = $('#{{ $form_id }}')
-
-		this.start = function(){
-
-
-		};
-				
+		this.form = $('#{{$form_id}}')
+	
 		this.submitHandler = function(form){
 			if(!$(form).valid()) return false;
 			App.ajaxRequest({
@@ -70,23 +71,29 @@
 
 						
 					}
+				},
+				code422 : function(data){
+					alert(JSON.stringify(data.responseJSON))
 				}
 			})
 		}
 
+
 		this.rules = function(){
 			return {
-				nombre : { required : true, maxlength : 255 },
-				direccion : { required : true }
+				direccion : { required : true },
+				departamento : { required : true },
+				nombre : { required : true, maxlength : 255 }
 			}
 		}
 
 		this.messages = function(){
 			return {
-				nombre : { required : 'Introduzca un nombre' },
-				direccion : { required : 'Especifique una dirección' }
+				direccion : { required : 'Especifique una dirección' },
+				departamento : { required : 'Especifique un departamento' },
+				nombre : { required : 'Introduzca un nombre' }
 			}
 		}
-	}).init().start()
+	}).init()
 
 </script>

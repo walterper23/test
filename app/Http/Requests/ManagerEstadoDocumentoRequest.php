@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ManagerPuestoRequest extends FormRequest
+class ManagerEstadoDocumentoRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -36,9 +36,10 @@ class ManagerPuestoRequest extends FormRequest
         return [
             'action.required'       => 'Petición no especificada',
             'action.in'             => 'Petición no válida',
-            'nombre.required_if'    => 'Introduzca un nombre',
+            'nombre.required'       => 'Introduzca un nombre',
             'nombre.min'            => 'Mínimo :min caracter',
             'nombre.max'            => 'Máximo :max caracteres',
+            'nombre.required_if'    => 'Introduzca un nombre',
             'direccion.required'    => 'Especifique una dirección',
             'departamento.required' => 'Especifique un departamento'
         ];

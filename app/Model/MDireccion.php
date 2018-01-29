@@ -21,13 +21,14 @@ class MDireccion extends Model{
 
 
 
-
-
-
     /** Relationships **/
 
     public function departamentos(){
         return $this->hasMany('App\Model\Catalogo\MDepartamento','DEPA_DIRECCION',$this->primaryKey)->where('DEPA_DELETED',0);
+    }
+
+    public function seguimientos(){
+        return $this->hasMany('App\Model\MSeguimiento','SEGU_DIRECCION',$this->getKeyName());
     }
 
     /** ************ **/

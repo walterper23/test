@@ -18,7 +18,7 @@
     <h2 class="content-heading">{{ $documento->DOCU_NUMERO_OFICIO }} <small>Seguimiento del documento</small></h2>
     <div class="block">
         <div class="block-header block-header-default">
-            <h3 class="block-title">Eventos</h3>
+            <h3 class="block-title">Historial de Estados del Documento</h3>
             <div class="block-options">
                 <button type="button" class="btn-block-option" data-toggle="block-option" data-action="fullscreen_toggle"></button>
                 <button type="button" class="btn-block-option" data-toggle="block-option" data-action="state_toggle" data-action-mode="demo">
@@ -29,56 +29,24 @@
         </div>
         <div class="block-content">
             <ul class="list list-activity">
-                <li>
-                    <i class="si si-wallet text-success"></i>
-                    <div class="font-w600">+$29 New sale</div>
-                    <div>
-                        <a href="javascript:void(0)">Admin Template</a>
-                    </div>
-                    <div class="font-size-xs text-muted">5 min ago</div>
-                </li>
-                <li>
-                    <i class="si si-close text-danger"></i>
-                    <div class="font-w600">Project removed</div>
-                    <div>
-                        <a href="javascript:void(0)">Best Icon Set</a>
-                    </div>
-                    <div class="font-size-xs text-muted">26 min ago</div>
-                </li>
+                @foreach( $documento->seguimientos()->orderBy('SEGU_SEGUIMIENTO','DESC')->get() as $seguimiento )
                 <li>
                     <i class="si si-pencil text-info"></i>
-                    <div class="font-w600">You edited the file</div>
+                    <div><b>{{ $seguimiento->estadoDocumento->ESDO_NOMBRE }}</b></div>
+                    <div><span class="font-w600">Observaciones:</span> {{ $seguimiento->SEGU_OBSERVACION }}</div>
                     <div>
                         <a href="javascript:void(0)">
-                            <i class="fa fa-file-text-o"></i> Docs.doc
+                            <i class="fa fa-sitemap"></i> {{ $seguimiento->direccion->DIRE_NOMBRE }}
                         </a>
                     </div>
-                    <div class="font-size-xs text-muted">3 hours ago</div>
-                </li>
-                <li>
-                    <i class="si si-plus text-success"></i>
-                    <div class="font-w600">New user</div>
                     <div>
-                        <a href="javascript:void(0)">StudioWeb - View Profile</a>
+                        <a href="javascript:void(0)">
+                            <i class="fa fa-sitemap"></i> {{ $seguimiento->departamento->DEPA_NOMBRE }}
+                        </a>
                     </div>
-                    <div class="font-size-xs text-muted">5 hours ago</div>
+                    <div class="font-size-xs text-muted">{{ $seguimiento->SEGU_CREATED_AT }}</div>
                 </li>
-                <li>
-                    <i class="si si-wrench text-warning"></i>
-                    <div class="font-w600">Core v3.9 is available</div>
-                    <div>
-                        <a href="javascript:void(0)">Update now</a>
-                    </div>
-                    <div class="font-size-xs text-muted">8 hours ago</div>
-                </li>
-                <li>
-                    <i class="si si-user-follow text-pulse"></i>
-                    <div class="font-w600">+1 Friend Request</div>
-                    <div>
-                        <a href="javascript:void(0)">Accept</a>
-                    </div>
-                    <div class="font-size-xs text-muted">1 day ago</div>
-                </li>
+                @endforeach
             </ul>
         </div>
     </div>

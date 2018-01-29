@@ -10,6 +10,11 @@ var App = function(){
 		complete : function(){},
 		error    : function(){},
 		fail     : function(){},
+		statusCode : {
+			422  : function( error ){
+				console.log(error)
+			}
+		}
 	}
 
 	var _init = function(){
@@ -35,7 +40,7 @@ var App = function(){
 			error : options.error,
 			fail : options.fail,
 			statusCode : {
-				500 : options.code500
+				500 : options.code500,
 			}
 		}));
 	}
@@ -77,7 +82,8 @@ var App = function(){
 			data : config.data,
 			before : function(){
 				modal.modal({
-					backdrop: 'static',
+					backdrop : 'static',
+					keyboard : false,
 					show : true
 				})
 			},
