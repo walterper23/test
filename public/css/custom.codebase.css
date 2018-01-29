@@ -1,0 +1,58 @@
+body {
+	color: #171717;
+	background-color: #e1e8ea;
+}
+
+.greca {
+	background-image : url('../img/background/background.png');
+	background-repeat : no-repeat;
+	background-size: 95% 100%;
+	background-position: top right;
+}
+
+.content-heading {
+	margin-bottom: 0;
+	padding-top: 0;
+}
+
+@media (min-width: 768px) {
+	.content-heading {
+		margin-bottom: 0;
+		padding-top: 0;
+	}
+}
+
+a {
+	cursor: pointer;
+}
+
+#page-header {
+  background-color: #4a6a82;
+}
+
+@media (min-width: 992px) {
+  #page-container.page-header-modern #page-header {
+    background-color: #4a6a82;
+  }
+}
+
+.nav-main .nav-main-heading {
+	font-weight: 700;
+	opacity: .95;
+}
+
+.sidebar-inverse #sidebar .nav-main a {
+	color: #B8B8B8;
+}
+
+.nav-main a:hover, .nav-main a:focus, .nav-main a.active {
+	color: #0A7EDB;
+}
+
+.nav-main a:hover > i, .nav-main a:focus > i, .nav-main a.active > i {
+	color: #0A7EDB;
+}
+
+.nav-main ul a {
+	color: rgb(87, 87, 87);
+}

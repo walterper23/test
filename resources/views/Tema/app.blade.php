@@ -30,7 +30,8 @@
         @stack('css-style')
 
         <!-- Codebase framework -->
-        {{ Html::style('css/codebase.css',['id'=>'css-main']) }}
+        {{ Html::style('css/codebase.min.css',['id'=>'css-main']) }}
+        {{ Html::style('css/custom.codebase.css') }}
 
         <!-- END Stylesheets -->
         @stack('css-custom')
