@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\BaseController; 
 use Illuminate\Http\Request;
 
-class DashboardAdministradorController extends BaseController{
+class DashboardAdministradorController extends BaseController {
 
 
 	public function __construct(){

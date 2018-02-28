@@ -15,7 +15,7 @@ use App\DataTables\UsuariosDataTable;
 use App\Model\MUsuario;
 
 
-class PanelController extends BaseController{
+class PanelController extends BaseController {
 
 	public function __construct(){
 

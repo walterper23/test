@@ -137,8 +137,7 @@
 
         <!-- Codebase Core JS -->
         {{ Html::script('js/core/jquery.min.js') }}
-        {{ Html::script('js/core/popper.min.js') }}
-        {{ Html::script('js/core/bootstrap.min.js') }}
+        {{ Html::script('js/core/bootstrap.bundle.min.js') }}
         {{ Html::script('js/core/jquery.slimscroll.min.js') }}
         {{ Html::script('js/core/jquery.scrollLock.min.js') }}
         {{ Html::script('js/core/jquery.appear.min.js') }}

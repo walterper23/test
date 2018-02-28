@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\BaseController; 
 use Illuminate\Http\Request;
 
-class PerfilController extends BaseController{
+class PerfilController extends BaseController {
 
 
 	public function __construct(){
