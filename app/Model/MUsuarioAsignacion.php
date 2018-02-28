@@ -1,9 +1,5 @@
 <?php
-
 namespace App\Model;
-
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 
 class MUsuarioAsignacion extends BaseModel {
     
@@ -11,22 +7,19 @@ class MUsuarioAsignacion extends BaseModel {
     protected $primaryKey     = 'USAS_ASIGNACION';
     public    $timestamps     = false;
 
-    protected $fillable = [];
-
-    protected $hidden = [];
-
-
     /* Relationships */
 
-    public function direccion(){
-        return $this->hasOne('App\Model\Catalogo\MDireccion','DIRE_DIRECCION','USAS_DIRECCION');
+    public function Direccion(){
+        return $this -> belongsTo('App\Model\Catalogo\MDireccion','USAS_DIRECCION','DIRE_DIRECCION');
     }
 
-    public function departamento(){
-        return $this->hasOne('App\Model\Catalogo\MDepartamento','USAS_DEPARTAMENTO','PUES_DEPARTAMENTO');
+    public function Departamento(){
+        return $this -> belongsTo('App\Model\Catalogo\MDepartamento','USAS_DEPARTAMENTO','PUES_DEPARTAMENTO');
     }
 
-    /****************/
+    public function Usuario(){
+        return $this -> belongsTo('App\Model\MUsuario','USAS_USUARIO','USUA_USUARIO');
+    }
 
     
 

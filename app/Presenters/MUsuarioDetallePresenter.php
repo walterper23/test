@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Presenters;
 
 class MUsuarioDetallePresenter extends Presenter{

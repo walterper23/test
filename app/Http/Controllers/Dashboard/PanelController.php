@@ -34,6 +34,7 @@ class PanelController extends BaseController {
 			'nuevos'      => [],
 			'todos'       => [],
 			'importantes' => [],
+			'archivados'  => [],
 			'finalizados' => [],
 		];
 
@@ -71,30 +72,35 @@ class PanelController extends BaseController {
 			
 		}
 
-		$data['conteoDocumentos'] = view('Panel.Documentos.conteoDocumentos')->with('type',$type)->with($documentos);
+		$data['conteoDocumentos'] = view('Panel.Documentos.conteoDocumentos') -> with('type',$type) -> with($documentos);
 
 		switch ($type) {
 			case 'news':
+				$data['title']      = 'Documentos nuevos';
 				$data['documentos'] = $documentos['nuevos'];
-				
 				break;
 			case 'all':
+				$data['title']      = 'Documentos';
 				$data['documentos'] = $documentos['todos'];
-				
 				break;
 			case 'important':
+				$data['title']      = 'Documentos importantes';
 				$data['documentos'] = $documentos['importantes'];
-				
+				break;
+			case 'archived':
+				$data['title']      = 'Documentos archivados';
+				$data['documentos'] = $documentos['archivados'];
 				break;
 			case 'finished':
-				$data['documentos'] = $documentos['finished'];
-				
+				$data['title']      = 'Documentos finalizados';
+				$data['documentos'] = $documentos['finalizados'];
 				break;
 			
 			default:
-				$data['documentos'] = $documentos['todos'];
+				$data['title'] = 'Documentos nuevos';$data['documentos'] = $documentos['todos'];
 				break;
 		}
+
 
 		return view('Panel.Documentos.index')->with($data);
 

@@ -1,13 +1,13 @@
 <?php
-
 namespace App\Presenters;
 
-class MUsuarioPresenter extends Presenter{
+class MUsuarioPresenter extends Presenter {
 
 	
 
 	public function imgAvatarSmall($class = 'img-avatar' ){
-		return "<img src='/img/avatars/{$this->model->getAvatarSmall()}' alt='' class='{$class}' title='{$this->model->usuarioDetalle->presenter()->nombreCompleto()}'>";
+		return sprintf('<img src="/img/avatars/%s" alt="" class="%s" title="%s">',
+					$this -> model -> getAvatarSmall(), $class, $this -> model -> usuarioDetalle -> presenter() -> nombreCompleto());
 	}
 
 }

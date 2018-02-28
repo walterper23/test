@@ -1,8 +1,7 @@
 <?php
-
 namespace App\Presenters;
 
-class MEstadoDocumentoPresenter extends Presenter{
+class MEstadoDocumentoPresenter extends Presenter {
 
 	public function badge(){
         switch ( $this->model->getKey() ) {

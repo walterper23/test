@@ -1,8 +1,7 @@
 <?php
-
 namespace App\Presenters;
 
-class MAnexoPresenter extends Presenter{
+class MAnexoPresenter extends Presenter {
 
 	
 

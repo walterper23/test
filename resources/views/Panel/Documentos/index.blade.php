@@ -1,7 +1,7 @@
 @extends('Tema.app')
 
 @section('title')
-	SIGESD :: Documentos recibidos
+	SIGESD :: {{ $title }}
 @endsection
 
 @push('css-style')

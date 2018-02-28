@@ -1,12 +1,11 @@
 <?php
-
 namespace App\Model;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 use App\Presenters\MUsuarioDetallePresenter;
 
-class MUsuarioDetalle extends Authenticatable{
+class MUsuarioDetalle extends Authenticatable {
     
     protected $table          = 'usuarios_detalles';
     protected $primaryKey     = 'USDE_USUARIO_DETALLE';
@@ -28,17 +27,14 @@ class MUsuarioDetalle extends Authenticatable{
         return $this->attributes['USDE_APELLIDOS'];
     }
     
-    /** Relationships **/
+    /* Relationships */
 
-    public function usuario(){
+    public function Usuario(){
         return $this->belongsTo('App\Model\MUsuario','USUA_USUARIO','USDE_USUARIO');
     }
 
 
-    /** ************ **/
-
-
-
+    /* Presenter */
     public function presenter(){
         return new MUsuarioDetallePresenter($this);
     }

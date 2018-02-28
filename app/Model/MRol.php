@@ -1,12 +1,11 @@
 <?php
-
 namespace App\Model\Acl;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Yajra\Acl\Models\Role;
 
-class MRol extends Role{
+class MRol extends Role {
     
     protected $table          = 'acl_roles';
     protected $primaryKey     = 'ROLE_ROL';
@@ -22,7 +21,6 @@ class MRol extends Role{
     public function usuarios(){
         return $this->belongsToMany(config('auth.providers.users.model'), 'usuarios_acl_roles','USRO_USUARIO','USRO_USUARIO');
     }
-    /****************/
 
     
     /* Overrides methods :: trait HasPermission */
@@ -35,6 +33,5 @@ class MRol extends Role{
         return $this->permissions->pluck('ROLE_SLUG')->toArray();
     }
 
-    /******************************************/
 
 }

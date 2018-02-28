@@ -44,9 +44,10 @@ Route::middleware('preventBackHistory')->group(function(){
 			
 			Route::group(['prefix'=>'documentos'], function(){
 				Route::get('/',                'PanelController@index');
-				Route::get('recibidos',        'PanelController@index');
+				Route::get('nuevos',           'PanelController@index');
 				Route::get('todos',            'PanelController@index');
 				Route::get('importantes',      'PanelController@index');
+				Route::get('archivados',       'PanelController@index');
 				Route::get('finalizados',      'PanelController@index');
 			});
 			
@@ -96,16 +97,7 @@ Route::middleware('preventBackHistory')->group(function(){
 					Route::post('manager',   'PuestoController@manager');
 				});
 
-				// Catálogo de tipos de documentos
-				Route::prefix('tipos-documentos')->group(function(){
-					Route::get('/',          'TipoDocumentoController@index');
-					Route::post('post-data', 'TipoDocumentoController@postDataTable');
-					Route::post('nuevo',     'TipoDocumentoController@formNuevoTipoDocumento');
-					Route::post('editar',    'TipoDocumentoController@formEditarTipoDocumento');
-					Route::post('manager',   'TipoDocumentoController@manager');
-				});
-
-				// Catálogo de tipos de documentos
+				// Catálogo de estados de documentos
 				Route::prefix('estados-documentos')->group(function(){
 					Route::get('/',          'EstadoDocumentoController@index');
 					Route::post('post-data', 'EstadoDocumentoController@postDataTable');

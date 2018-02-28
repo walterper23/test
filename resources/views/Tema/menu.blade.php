@@ -10,13 +10,16 @@
     <ul class="nav-main">
         <li class="nav-main-heading"><span class="sidebar-mini-visible">Recepci&oacute;n</span><span class="sidebar-mini-hidden">Recepci&oacute;n</span></li>
         <li {!! activeMenu('recepcion','documentos') !!}>
-            <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-puzzle"></i><span class="sidebar-mini-hide">Documentos</span></a>
+            <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="fa fa-files-o"></i><span class="sidebar-mini-hide">Documentos</span></a>
             <ul>
                 <li>
-                    <a {!! activeItemMenu('recepcion/documentos') !!} href="{{ url('recepcion/documentos') }}">Recepcionados</a>
+                    <a {!! activeItemMenu('recepcion/documentos/nueva-recepcion') !!} href="{{ url('recepcion/documentos/nueva-recepcion') }}">Nueva recepci&oacute;n</a>
                 </li>
                 <li>
-                    <a {!! activeItemMenu('recepcion/documentos/nueva-recepcion') !!} href="{{ url('recepcion/documentos/nueva-recepcion') }}">Nueva recepci&oacute;n</a>
+                    <a {!! activeItemMenu('recepcion/documentos/en-captura') !!} href="{{ url('recepcion/documentos/en-captura') }}">Recepción en captura</a>
+                </li>
+                <li>
+                    <a {!! activeItemMenu('recepcion/documentos/recepcionados') !!} href="{{ url('recepcion/documentos/recepcionados') }}">Recepcionados</a>
                 </li>
             </ul>
         </li>
@@ -27,13 +30,16 @@
             <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-docs"></i><span class="sidebar-mini-hide">Documentos</span></a>
             <ul>
                 <li>
-                    <a {!! activeItemMenu('panel/documentos/recibidos') !!} href="{{ url('panel/documentos/recibidos') }}">Recibidos</a>
+                    <a {!! activeItemMenu('panel/documentos/nuevos') !!} href="{{ url('panel/documentos/nuevos') }}">Nuevos</a>
                 </li>
                 <li>
                     <a {!! activeItemMenu('panel/documentos/todos') !!} href="{{ url('panel/documentos/todos') }}">Todos</a>
                 </li>
                 <li>
                     <a {!! activeItemMenu('panel/documentos/importantes') !!} href="{{ url('panel/documentos/importantes') }}">Importantes</a>
+                </li>
+                <li>
+                    <a {!! activeItemMenu('panel/documentos/archivados') !!} href="{{ url('panel/documentos/archivados') }}">Archivados</a>
                 </li>
                 <li>
                     <a {!! activeItemMenu('panel/documentos/finalizados') !!} href="{{ url('panel/documentos/finalizados') }}">Finalizados</a>
@@ -44,7 +50,7 @@
     <ul class="nav-main">
         <li class="nav-main-heading"><span class="sidebar-mini-visible">UI</span><span class="sidebar-mini-hidden">Reportes</span></li>
         <li {!! activeMenu('configuracion','catalogos') !!}>
-            <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-puzzle"></i><span class="sidebar-mini-hide">Cat&aacute;logos</span></a>
+            <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="fa fa-file-pdf-o"></i><span class="sidebar-mini-hide">Cat&aacute;logos</span></a>
             <ul>
                 <li>
                     <a {!! activeItemMenu('configuracion/catalogos/anexos') !!} href="{{ url('configuracion/catalogos/anexos') }}">Anexos</a>
@@ -70,7 +76,7 @@
     <ul class="nav-main">
         <li class="nav-main-heading"><span class="sidebar-mini-visible">UI</span><span class="sidebar-mini-hidden">Configuraci&oacute;n</span></li>
         <li {!! activeMenu('configuracion','catalogos') !!}>
-            <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-puzzle"></i><span class="sidebar-mini-hide">Cat&aacute;logos</span></a>
+            <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="fa fa-cubes"></i><span class="sidebar-mini-hide">Cat&aacute;logos</span></a>
             <ul>
                 <li>
                     <a {!! activeItemMenu('configuracion/catalogos/anexos') !!} href="{{ url('configuracion/catalogos/anexos') }}">Anexos</a>
@@ -93,7 +99,7 @@
             </ul>
         </li>
         <li {!! activeMenu('configuracion','usuarios') !!}>
-            <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-users"></i><span class="sidebar-mini-hidden">Usuarios</span></a>
+            <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="fa fa-users"></i><span class="sidebar-mini-hidden">Usuarios</span></a>
             <ul>
                 <li>
                     <a {!! activeItemMenu('configuracion/usuarios') !!} href="{{ url('configuracion/usuarios') }}">Ver usuarios</a>
@@ -103,6 +109,23 @@
                 </li>
                 <li>
                     <a {!! activeItemMenu('configuracion/usuarios/roles') !!} href="{{ url('configuracion/usuarios/roles') }}">Roles</a>
+                </li>
+            </ul>
+        </li>
+        <li {!! activeMenu('configuracion','sistema') !!}>
+            <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="fa fa-cogs"></i><span class="sidebar-mini-hidden">Sistema</span></a>
+            <ul>
+                <li>
+                    <a {!! activeItemMenu('configuracion/sistema/tipos-documentos') !!} href="{{ url('configuracion/sistema/tipos-documentos') }}">Tipos de documentos</a>
+                </li>
+                <li>
+                    <a {!! activeItemMenu('configuracion/sistema/estados-documentos') !!} href="{{ url('configuracion/sistema/estados-documentos') }}">Estados de documentos</a>
+                </li>
+                <li>
+                    <a {!! activeItemMenu('configuracion/sistema/variables') !!} href="{{ url('configuracion/sistema/variables') }}">Variables</a>
+                </li>
+                <li>
+                    <a {!! activeItemMenu('configuracion/sistema/bitacora') !!} href="{{ url('configuracion/usuarios/bitacora') }}">Bitácora</a>
                 </li>
             </ul>
         </li>

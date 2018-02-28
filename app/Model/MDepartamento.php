@@ -1,43 +1,34 @@
 <?php
-
 namespace App\Model\Catalogo;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
+/* Models */
+use App\Model\BaseModel;
 
+/* Presenter */
 use App\Presenters\MDepartamentoPresenter;
 
-class MDepartamento extends Model{
+class MDepartamento extends BaseModel {
     
     protected $table          = 'cat_departamentos';
     protected $primaryKey     = 'DEPA_DEPARTAMENTO';
     public    $timestamps     = false;
 
-    protected $fillable = [];
 
-    protected $hidden = [];
+    /* Relationships */
 
-
-
-
-
-    /** Relationships **/
-
-    public function direccion(){
-        return $this->belongsTo('App\Model\Catalogo\MDireccion','DEPA_DIRECCION','DIRE_DIRECCION');
+    public function Direccion(){
+        return $this -> belongsTo('App\Model\Catalogo\MDireccion','DEPA_DIRECCION','DIRE_DIRECCION');
     }
 
-    public function seguimientos(){
-        return $this->hasMany('App\Model\MSeguimiento','SEGU_DEPARTAMENTO',$this->getKeyName());
+    public function Seguimientos(){
+        return $this -> hasMany('App\Model\MSeguimiento','SEGU_DEPARTAMENTO',$this -> getKeyName());
     }
 
-    public function documentos(){
-        return $this->hasMany('App\Model\MDocumento','DOCU_DOCUMENTO','');
+    public function Documentos(){
+        return $this -> hasMany('App\Model\MDocumento','DOCU_DOCUMENTO','');
     }
 
-    /** ************ **/
-
-
+    /* Presenter */
     public function presenter(){
     	return new MDepartamentoPresenter($this);
     }

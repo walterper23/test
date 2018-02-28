@@ -1,30 +1,19 @@
 <?php
-
 namespace App\Model\Catalogo;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
+/* Models */
+use App\Model\BaseModel;
 
+/* Presenter */
 use App\Presenters\MAnexoPresenter;
 
-class MAnexo extends Model{
+class MAnexo extends BaseModel {
     
     protected $table          = 'cat_anexos';
     protected $primaryKey     = 'ANEX_ANEXO';
     public    $timestamps     = false;
 
-    protected $fillable = [];
-
-    protected $hidden = [];
-
-    
-    /** Relationships **/
-
-
-
-    /** ************ **/
-
-
+    /* Presenter */    
     public function presenter(){
         return new MAnexoPresenter($this);
     }

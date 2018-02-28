@@ -1,10 +1,9 @@
 <?php
-
 namespace App\Presenters;
 
 use Illuminate\Database\Eloquent\Model;
 
-abstract class Presenter{
+abstract class Presenter {
 
 	protected $model;
 
