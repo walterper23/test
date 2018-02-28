@@ -15,14 +15,10 @@ use App\DataTables\DireccionesDataTable;
 /* Models */
 use App\Model\Catalogo\MDireccion;
 
-class DireccionController extends BaseController{
+class DireccionController extends BaseController {
 	
-	private $form_id;
+	private $form_id = 'form-direccion';
 	
-	public function __construct(){
-		$this->form_id ='form-direccion';
-	}
-
 	public function index(DireccionesDataTable $dataTables){
 
 		$data['table']    = $dataTables;

@@ -13,8 +13,7 @@ use App\Model\Catalogo\MDireccion;
 use App\Model\Catalogo\MPuesto;
 use App\Model\Catalogo\MTipoDocumento;
 
-
-class CatalogoManagerController extends BaseController{
+class CatalogoManagerController extends BaseController {
 
 	public function index(){
 

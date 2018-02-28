@@ -16,14 +16,10 @@ use App\DataTables\DepartamentosDataTable;
 use App\Model\Catalogo\MDireccion;
 use App\Model\Catalogo\MDepartamento;
 
-class DepartamentoController extends BaseController{
+class DepartamentoController extends BaseController {
 	
-	private $form_id;
+	private $form_id = 'form-departamento';
 
-	public function __construct(){
-		$this->form_id = 'form-departamento';
-	}
-	
 	public function index(DepartamentosDataTable $dataTables){
 		
 		$data['table']    = $dataTables;

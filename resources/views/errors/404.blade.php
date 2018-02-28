@@ -5,7 +5,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
 
-        <title>@yield('title')</title>
+        <title>Página no encontrada</title>
         
         <meta name="description" content="Sistema Gestor de Documentos :: PPA">
         <meta name="author" content="Instituto Tecnológico de Chetumal">
@@ -25,16 +25,10 @@
         <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('img/favicons/apple-touch-icon-180x180.png') }}">
         <!-- END Icons -->
         
-        <!-- Stylesheets -->
-        <!-- Page JS Plugins CSS -->
-        @stack('css-style')
-
         <!-- Codebase framework -->
-        {{ Html::style('css/codebase.css',['id'=>'css-main']) }}
+        {{ Html::style('css/codebase.min.css',['id'=>'css-main']) }}
 
         <!-- END Stylesheets -->
-        @stack('css-custom')
-
     </head>
     <body>
 
@@ -75,10 +69,6 @@
         {{ Html::script('js/core/jquery.countTo.min.js') }}
         {{ Html::script('js/core/js.cookie.min.js') }}
         {{ Html::script('js/codebase.js') }}
-
-        @stack('js-script')
-
-        @stack('js-custom')
 
     </body>
 </html>

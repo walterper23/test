@@ -18,7 +18,7 @@ class FieldBuilder {
     ];
 
     // Ruta de la carpeta donde se encuentran las plantillas de los distintos campos de formularios
-    protected $folderTemplates = 'form.fields';
+    protected $folderTemplates = 'vendor.form.fields';
     
     // Método que se llama en primer lugar al llamar a algún método estático de esta clase Field
     public function __call($type, $params){
@@ -61,9 +61,12 @@ class FieldBuilder {
         if( !$this->_getId() ) // Si no se debe incluir el atributo ID al control...
             unset($this->attributes['id']); // ... lo removemos de los atributos
         
-        if( in_array($this->type,['select','chosen']) )
+        if( in_array($this->type,['select','selectTwo']) ){
             if( !isset($this->attributes['placeholder']) )
                 $this->attributes['placeholder'] = 'Seleccione una opción';
+            elseif( is_bool($this->attributes['placeholder']) && $this->attributes['placeholder'] == false )
+                unset($this->attributes['placeholder']); // Removemos el atributo Placeholder de los atributos
+        }
         
         if( isset($this->attributes['labelClass']) ){
             $this->defaultClass['labelClass'] = $this->attributes['labelClass'];
@@ -151,8 +154,14 @@ class FieldBuilder {
             case 'text':
             case 'number':
                 return Form::text($this->name, $this->value, $this->attributes);
+            case 'email':
+                return Form::email($this->name, $this->value, $this->attributes);
             case 'select':
-            case 'chosen':
+                return Form::select($this->name, $this->options, $this->value, $this->attributes);
+            case 'selectTwo':
+                $this->attributes['class'] .= ' select2 selectTwo';
+                $this->attributes['style'] = 'width:100%;';
+                $this->attributes['lang']  = 'es';
                 return Form::select($this->name, $this->options, $this->value, $this->attributes);
             case 'password':
                 return Form::password($this->name, $this->attributes);
@@ -164,6 +173,8 @@ class FieldBuilder {
             case 'date':
                 $this->attributes['class'] .= ' datepicker';
                 return Form::text($this->name, $this->value, $this->attributes);
+            case 'hidden':
+                return Form::hidden($this->name, $this->value, $this->attributes);
             default:
                 return Form::input($this->type, $this->name, $this->value, $this->attributes);
         }
@@ -172,19 +183,17 @@ class FieldBuilder {
     // Método para recuperar la plantilla de diseño para el control solicitado
     private function getTemplate(){
 
-        $template = 'default';
-        /* Habilitar en caso de más plantillas de diseño para los controles
+        // Habilitar en caso de más plantillas de diseño para los controles
         switch ( $this->type ) {
-            case 'text':
-                # code...
+            case 'hidden':
+                $template = 'hidden';
                 break;         
             default:
                 $template = 'default';
                 break;
         }
-        */
 
-        return $this->folderTemplates . '.' . $template;
+        return sprintf('%s.%s',$this->folderTemplates,$template);
 
     }
 

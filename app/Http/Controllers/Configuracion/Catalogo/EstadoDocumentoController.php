@@ -16,13 +16,9 @@ use App\Model\Catalogo\MDireccion;
 use App\Model\Catalogo\MEstadoDocumento;
 
 
-class EstadoDocumentoController extends BaseController{
+class EstadoDocumentoController extends BaseController {
 
-	private $form_id;
-
-	public function __construct(){
-		$this->form_id = 'form-estado-documento';
-	}
+	private $form_id = 'form-estado-documento';
 
 	public function index(EstadosDocumentosDataTable $dataTables){
 

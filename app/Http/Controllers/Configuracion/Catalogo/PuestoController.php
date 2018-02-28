@@ -17,7 +17,7 @@ use App\Model\Catalogo\MDepartamento;
 use App\Model\Catalogo\MDireccion;
 use App\Model\Catalogo\MPuesto;
 
-class PuestoController extends BaseController{
+class PuestoController extends BaseController {
 
 	private $form_id;
 

@@ -1,10 +1,8 @@
 <?php
-
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-
-use App\Componentes\Field\FieldBuilder;
+use Illuminate\Support\Facades\App;
 
 class FieldServiceProvider extends ServiceProvider {
     /**
@@ -24,9 +22,8 @@ class FieldServiceProvider extends ServiceProvider {
      */
     public function register()
     {
-        // TODO: Implement register() method.
-        $this->app->singleton(FieldBuilder::class, function ($app){
-            return new FieldBuilder(config('field'));
+        App::bind('field', function(){
+            return new \App\Componentes\Field\FieldBuilder;
         });
     }
 }

@@ -15,13 +15,9 @@ use App\DataTables\AnexosDataTable;
 /* Models */
 use App\Model\Catalogo\MAnexo;
 
-class AnexoController extends BaseController{
+class AnexoController extends BaseController {
 
-	private $form_id;
-
-	public function __construct(){
-		$this->form_id = 'form-anexo';
-	}
+	private $form_id = 'form-anexo';
 
 	public function index(AnexosDataTable $dataTables){
 

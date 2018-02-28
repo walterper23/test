@@ -16,7 +16,7 @@ use App\DataTables\TiposDocumentosDataTable;
 /* Models */
 use App\Model\Catalogo\MTipoDocumento;
 
-class TipoDocumentoController extends BaseController{
+class TipoDocumentoController extends BaseController {
 
 	private $form_id;
 

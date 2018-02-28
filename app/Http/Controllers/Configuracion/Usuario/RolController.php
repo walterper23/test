@@ -15,8 +15,7 @@ use App\DataTables\RolesDataTable;
 use App\Model\Catalogo\MDepartamento;
 use App\Model\Catalogo\MPuesto;
 
-class RolController extends BaseController{
-
+class RolController extends BaseController {
 
 	public function index(RolesDataTable $dataTables){
 

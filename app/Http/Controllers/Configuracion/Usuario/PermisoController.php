@@ -1,17 +1,19 @@
 <?php
-
 namespace App\Http\Controllers\Configuracion\Usuario;
 
 use Illuminate\Http\Request;
 use App\Http\Requests;
-use App\Http\Controllers\BaseController;
-use App\Http\Controllers\DataTables\CustomDataTablesController;
 
+/* Controllers */
+use App\Http\Controllers\BaseController;
+use App\DataTables\PermisosDataTable;
+
+/* Models */
 use App\Model\Catalogo\MTipoDocumento;
 use App\Model\MDocumento;
 
 
-class PermisoController extends BaseController{
+class PermisoController extends BaseController {
 
 
 	public function index(){
