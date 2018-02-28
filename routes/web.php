@@ -120,8 +120,8 @@ Route::middleware('preventBackHistory')->group(function(){
 				Route::get('/',           'UsuarioController@index');
 				Route::post('post-data',  'UsuarioController@postDataTable');
 				Route::get('ver/{id}',    'UsuarioController@verUsuario');
-				Route::get('nuevo',       'UsuarioController@formUsuario');
-				Route::get('editar',      'UsuarioController@editarUsuario');
+				Route::post('nuevo',      'UsuarioController@formUsuario');
+				Route::post('editar',     'UsuarioController@editarUsuario');
 				Route::post('manager',    'UsuarioController@manager');
 
 				Route::group(['prefix'=>'roles'], function(){

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Seguimiento;
 use App\Http\Controllers\BaseController; 
 use Illuminate\Http\Request;
 
-class SeguimientoController extends BaseController{
+class SeguimientoController extends BaseController {
 
 
 	public function __construct(){

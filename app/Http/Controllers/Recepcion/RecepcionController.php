@@ -19,7 +19,7 @@ use App\Model\Catalogo\MEstadoDocumento;
 use App\Model\Catalogo\MTipoDocumento;
 use App\Model\Catalogo\MDireccion;
 
-class RecepcionController extends BaseController{
+class RecepcionController extends BaseController {
 
 	public function __construct(){
 

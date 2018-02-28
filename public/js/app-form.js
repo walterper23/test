@@ -7,8 +7,8 @@ var AppForm = new function(){
 
 	this.init = function(){
 		var self = this;
-		this.btnOk = this.context.find('#btn-ok')
-		this.btnCancel = this.context.find('#btn-cancel')
+		this.btnOk = this.context.find('#modal-btn-ok')
+		this.btnCancel = this.context.find('#modal-btn-cancel')
 		this.btnClose = this.context.find('[data="close-modal"]')
 
 		this.formSubmit(this.form)
@@ -60,6 +60,11 @@ var AppForm = new function(){
 		return { }
 	}
 
+	this.resetForm = function(){
+		this.cloneForm = this.form.trigger('reset').clone()
+		return this;
+	};
+
 	this.submitHandler = function( form ){
 		if(!$(form).valid()) return false
 		return true
@@ -72,7 +77,7 @@ var AppForm = new function(){
 				text  : '¿Desea descartar los cambios realizados?',
 				okBtnText : 'Descartar',
 				then  : function(){
-					AppForm.closeContext();
+					AppForm.resetForm().closeContext();
 				}
 			});
 		}else{
