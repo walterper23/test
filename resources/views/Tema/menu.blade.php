@@ -46,29 +46,14 @@
                 </li>
             </ul>
         </li>
-    </ul>
-    <ul class="nav-main">
-        <li class="nav-main-heading"><span class="sidebar-mini-visible">UI</span><span class="sidebar-mini-hidden">Reportes</span></li>
-        <li {!! activeMenu('configuracion','catalogos') !!}>
-            <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="fa fa-file-pdf-o"></i><span class="sidebar-mini-hide">Cat&aacute;logos</span></a>
+        <li {!! activeMenu('panel','reportes') !!}>
+            <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="fa fa-file-pdf-o"></i><span class="sidebar-mini-hide">Reportes</span></a>
             <ul>
                 <li>
-                    <a {!! activeItemMenu('configuracion/catalogos/anexos') !!} href="{{ url('configuracion/catalogos/anexos') }}">Anexos</a>
+                    <a {!! activeItemMenu('panel/reportes/generar') !!} href="{{ url('panel/reportes/generar') }}">Generar reporte</a>
                 </li>
                 <li>
-                    <a {!! activeItemMenu('configuracion/catalogos/departamentos') !!} href="{{ url('configuracion/catalogos/departamentos') }}">Departamentos</a>
-                </li>
-                <li>
-                    <a {!! activeItemMenu('configuracion/catalogos/direcciones') !!} href="{{ url('configuracion/catalogos/direcciones') }}">Direcciones</a>
-                </li>
-                <li>
-                    <a {!! activeItemMenu('configuracion/catalogos/puestos') !!} href="{{ url('configuracion/catalogos/puestos') }}">Puestos</a>
-                </li>
-                <li>
-                    <a {!! activeItemMenu('configuracion/catalogos/tipos-documentos') !!} href="{{ url('configuracion/catalogos/tipos-documentos') }}">Tipos de documentos</a>
-                </li>
-                <li>
-                    <a {!! activeItemMenu('configuracion/catalogos/estados-documentos') !!} href="{{ url('configuracion/catalogos/estados-documentos') }}">Estados de documentos</a>
+                    <a {!! activeItemMenu('panel/reportes/configurados') !!} href="{{ url('panel/reportes/configurados') }}">Reportes configurados</a>
                 </li>
             </ul>
         </li>
@@ -89,9 +74,6 @@
                 </li>
                 <li>
                     <a {!! activeItemMenu('configuracion/catalogos/puestos') !!} href="{{ url('configuracion/catalogos/puestos') }}">Puestos</a>
-                </li>
-                <li>
-                    <a {!! activeItemMenu('configuracion/catalogos/tipos-documentos') !!} href="{{ url('configuracion/catalogos/tipos-documentos') }}">Tipos de documentos</a>
                 </li>
                 <li>
                     <a {!! activeItemMenu('configuracion/catalogos/estados-documentos') !!} href="{{ url('configuracion/catalogos/estados-documentos') }}">Estados de documentos</a>

@@ -13,6 +13,7 @@ class MDepartamento extends BaseModel {
     protected $primaryKey     = 'DEPA_DEPARTAMENTO';
     public    $timestamps     = false;
 
+    protected $fieldEnabled   = 'DEPA_ENABLED';
 
     /* Relationships */
 

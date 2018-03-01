@@ -13,6 +13,8 @@ class MAnexo extends BaseModel {
     protected $primaryKey     = 'ANEX_ANEXO';
     public    $timestamps     = false;
 
+  	protected $fieldEnabled = 'ANEX_ENABLED';
+
     /* Presenter */    
     public function presenter(){
         return new MAnexoPresenter($this);

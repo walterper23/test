@@ -1,5 +1,4 @@
 <?php
-
 namespace App\DataTables;
 
 use App\Model\Catalogo\MDepartamento;
@@ -7,8 +6,8 @@ use App\Model\Catalogo\MDepartamento;
 class DepartamentosDataTable extends CustomDataTable{
 
     protected function setSourceData(){
-        $this->sourceData = MDepartamento::with('direccion')->select(['DEPA_DEPARTAMENTO','DEPA_DIRECCION','DEPA_NOMBRE','DEPA_CREATED_AT','DEPA_ENABLED'])
-                            ->where('DEPA_DELETED',0);
+        $this->sourceData = MDepartamento::with('direccion') -> select(['DEPA_DEPARTAMENTO','DEPA_DIRECCION','DEPA_NOMBRE','DEPA_CREATED_AT','DEPA_ENABLED'])
+                            -> where('DEPA_DELETED',0);
     }
 
     protected function columnsTable(){
@@ -31,7 +30,7 @@ class DepartamentosDataTable extends CustomDataTable{
             [
                 'title' => 'Dirección',
                 'render' => function($query){
-                    return $query->direccion->presenter()->link();
+                    return $query -> Direccion -> presenter() -> link();
                 }
             ],
             [
@@ -41,13 +40,10 @@ class DepartamentosDataTable extends CustomDataTable{
             [
                 'title' => 'Activo',
                 'render' => function($query){
-                    $checked = '';
-                    if($query->DEPA_ENABLED == 1){
-                        $checked = 'checked=""';
-                    }
-                    return '<label class="css-control css-control-sm css-control-primary css-switch">
-                                <input type="checkbox" class="css-control-input" '.$checked.' onclick="hDepartamento.active({id:'.$query->DEPA_DEPARTAMENTO.'})"><span class="css-control-indicator"></span>
-                            </label>';
+                    $checked = ($query -> disponible()) ? ' checked=""' : '';
+                    
+                    return sprintf('<label class="css-control css-control-sm css-control-primary css-switch">
+                            <input type="checkbox" class="css-control-input"%s onclick="hDepartamento.active({id:%d})"><span class="css-control-indicator"></span></label>',$checked,$query -> getKey());
                 }
             ],
             [

@@ -1,9 +1,10 @@
 <?php
 namespace App\Model\Catalogo;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
+/* Models */
+use App\Model\BaseModel;
 
+/* Presenter */
 use App\Presenters\MDireccionPresenter;
 
 class MDireccion extends BaseModel {
@@ -11,6 +12,8 @@ class MDireccion extends BaseModel {
     protected $table          = 'cat_direcciones';
     protected $primaryKey     = 'DIRE_DIRECCION';
     public    $timestamps     = false;
+
+    protected $fieldEnabled   = 'DIRE_ENABLED';
 
 
     /* Relationships */

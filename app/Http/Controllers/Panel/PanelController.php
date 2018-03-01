@@ -1,6 +1,5 @@
 <?php
-
-namespace App\Http\Controllers\Dashboard;
+namespace App\Http\Controllers\Panel;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\ManagerUsuarioRequest;
@@ -25,10 +24,10 @@ class PanelController extends BaseController {
 
 		$type = Input::get('type','all');
 
-		$asignaciones = \Auth::user()->usuarioAsignaciones;
+		$asignaciones = \Auth::user() -> UsuarioAsignaciones;
 
-		$direcciones = \Auth::user()->direcciones;
-		$departamentos = \Auth::user()->departamentos;
+		$direcciones = \Auth::user() -> Direcciones;
+		$departamentos = \Auth::user() -> Departamentos;
 
 		$documentos = [
 			'nuevos'      => [],
@@ -108,19 +107,19 @@ class PanelController extends BaseController {
 
 
 
-	public function nuevosDocumentos(){
+	public function documentosNuevos(){
 
 	}
 
-	public function todosDocumentos(){
-		$documentos = MSeguimiento::where()->get();
+	public function documentosTodos(){
+		
 	}
 
-	public function importantesDocumentos(){
+	public function documentosImportantes(){
 
 	}
 
-	public function finalizadosDocumentos(){
+	public function documentosFinalizados(){
 
 	}
 

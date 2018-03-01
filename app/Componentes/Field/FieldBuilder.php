@@ -12,7 +12,7 @@ class FieldBuilder {
 
     // Nombres de las clases por default para los componentes Label y Control de formulario
     protected $defaultClass = [
-        'labelClass'   => 'col-md-4',      // <label class="">
+        'labelClass'   => 'col-md-4 col-form-label',      // <label class="">
         'controlWidth' => 'col-md-8',      // <div class="">
         'controlClass' => 'form-control',  // <input class="">
     ];
@@ -83,12 +83,12 @@ class FieldBuilder {
 
         if( isset($this->attributes['addClass']) ){
             $this->attributes['class'] .= ' ' . $this->attributes['addClass'];
-            unset($this->attributes['addClass']);
+            unset($this->attributes['addClass']); // Removemos el atributo addClass de los atributos
         }
 
         if( isset($this->attributes['width']) ){
             $this->defaultClass['controlWidth'] = $this->attributes['width'];
-            unset($this->attributes['width']);
+            unset($this->attributes['width']); // Removemos el atributo width de los atributos
         }
 
     }

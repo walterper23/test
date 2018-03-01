@@ -62,7 +62,7 @@ class EstadoDocumentoController extends BaseController {
 
 			$data = [];
 
-			$data['title']         = 'Nuevo estado de documento';
+			$data['title']         = '<i class="fa fa-tags"></i> Nuevo estado de documento';
 			$data['url_send_form'] = url('configuracion/catalogos/estados-documentos/manager');
 			$data['form_id']       = $this->form_id;
 			$data['modelo']		   = null;

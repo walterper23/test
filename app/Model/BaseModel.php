@@ -7,6 +7,7 @@ class BaseModel extends Model {
 
 	protected $fieldCreatedBy;
 	protected $fieldUpdated;
+    protected $fieldEnabled;
 
 	protected static function boot(){
 
@@ -42,6 +43,12 @@ class BaseModel extends Model {
 
             $this -> attributes[ $this -> fieldUpdated ] = json_encode( $updated );
 	    }
+    }
+
+    public function disponible(){
+        if( !is_null($this -> fieldEnabled) )
+            return ($this -> attributes[ $this -> fieldEnabled ] == 1);
+        return false;
     }
 
 }

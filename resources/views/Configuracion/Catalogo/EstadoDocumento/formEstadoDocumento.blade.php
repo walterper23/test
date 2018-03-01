@@ -1,11 +1,8 @@
-<div class="block-header bg-primary-dark">
-    <h3 class="block-title">{{ $title or '' }}</h3>
-    <div class="block-options">
-        <button type="button" class="btn-block-option" data="close-modal" aria-label="Close">
-            <i class="si si-close"></i>
-        </button>
-    </div>
-</div>
+@extends('vendor.templateModal')
+
+@section('title') {!! $title !!} @endsection
+
+@section('content')
 <div class="block-content">
     {{ Form::model($modelo,['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) }}
 	    {{ Form::hidden('action',$action) }}
@@ -15,7 +12,8 @@
             <div class="col-sm-9">
             	{{ Form::select('direccion',$direcciones,(is_null($modelo) ? '' : $modelo->ESDO_DIRECCION),['id'=>'direccion','class'=>'form-control','placeholder'=>'Seleccione una opción']) }}
             </div>
-        </div> 
+        </div>
+        {!! Field::select('direccion',(is_null($modelo) ? '' : $modelo->ESDO_DIRECCION),['label'=>'Dirección','width'=>'col-md-9'],$direcciones) !!}
         <div class="form-group row">
             <label class="col-sm-3 col-form-label" for="departamento">Departamento</label>
             <div class="col-sm-9">
@@ -30,7 +28,9 @@
         </div> 
 	{{ Form::close() }}
 </div>
+@endsection
 
+@push('js-custom')
 <script type="text/javascript">
 	
 	$.extend(AppForm, new function(){
@@ -67,8 +67,6 @@
 								$('#'+index).parents('.form-group > div').append(error);
 							})
 						}
-
-
 						
 					}
 				},
@@ -77,7 +75,6 @@
 				}
 			})
 		}
-
 
 		this.rules = function(){
 			return {
@@ -97,3 +94,4 @@
 	}).init()
 
 </script>
+@endpush

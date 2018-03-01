@@ -23,7 +23,7 @@ class CustomDataTable {
 	}
 
 	protected function setSourceData(){
-		$this->sourceData = App\User::all();
+		$this->sourceData = collect([]);
 	}
 
 	protected function getSourceData(){
@@ -49,7 +49,7 @@ class CustomDataTable {
 			// Config *name* attribute
 			$config['name']  = $key;
 
-			// Config *title* attribute. Using value empty if it's not set.
+			// Config *title* attribute. Using value empty if it is not set.
 			$config['title'] = isset($column['title']) ? $column['title'] : '';
 
 			$config['searchable'] = isset($column['searchable']) ? $column['searchable'] : true;
