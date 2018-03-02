@@ -6,6 +6,7 @@ use App\Http\Requests\ManagerUsuarioRequest;
 use Illuminate\Support\Facades\Input;
 use Carbon\Carbon;
 use Validator;
+use DB;
 
 /* Controllers */
 use App\Http\Controllers\BaseController;
@@ -13,6 +14,7 @@ use App\DataTables\UsuariosDataTable;
 
 /* Models */
 use App\Model\MUsuario;
+use App\Model\MUsuarioDetalle;
 
 class UsuarioController extends BaseController {
 
@@ -29,23 +31,21 @@ class UsuarioController extends BaseController {
 
 	public function manager(ManagerUsuarioRequest $request){
 
-		$action = Input::get('action');
-
-		switch ($action) {
+		switch ($request -> action) {
 			case 1: // Nuevo
-				$response = $this -> nuevoUsuario();
+				$response = $this -> nuevoUsuario( $request );
 				break;
 			case 2: // Editar
-				$response = $this -> editarUsuario();
+				$response = $this -> editarUsuario( $request );
 				break;
 			case 3: // Activar / Desactivar
-				$response = $this -> activarUsuario();
+				$response = $this -> activarUsuario( $request );
 				break;
 			case 4: // Eliminar
-				$response = $this -> eliminarUsuario();
+				$response = $this -> eliminarUsuario( $request );
 				break;
 			case 5: // Cambiar contraseña
-				$response = $this -> modificarPassword();
+				$response = $this -> modificarPassword( $request );
 				break;
 			default:
 				return response()->json(['message'=>'Petición no válida'],404);
@@ -78,9 +78,43 @@ class UsuarioController extends BaseController {
 		return view('Configuracion.Usuario.formUsuario') -> with($data);
 	}
 
-	public function activarUsuario(){
+	public function nuevoUsuario( $request ){
+
 		try{
-			$anexo = MUsuario::find( Input::get('id') );
+
+			DB::beginTransaction();
+
+			$usuario = new MUsuario;
+			$usuario -> USUA_USERNAME = $request -> usuario;
+			$usuario -> USUA_PASSWORD = bcrypt( $request -> password );
+			$usuario -> USUA_NOMBRE   = $request -> descripcion;
+			$usuario -> USUA_AVATAR_SMALL = 'no-profile-male.png';
+			$usuario -> USUA_AVATAR_FULL  = 'no-profile-male.png';
+			$usuario -> save();
+			
+			$detalle = new MUsuarioDetalle;
+			$detalle -> USDE_USUARIO   = $usuario -> getKey();
+			$detalle -> USDE_NOMBRES   = $request -> nombres;
+			$detalle -> USDE_APELLIDOS = $request -> apellidos;
+			$detalle -> USDE_EMAIL     = $request -> email;
+
+
+			$detalle -> save();
+
+			DB::commit();
+
+		}catch(Exception $error){
+			DB::rollback();
+		}
+
+
+	}
+
+
+
+	public function activarUsuario( $request ){
+		try{
+			$anexo = MUsuario::find( $request -> id );
 			
 			if( $anexo -> USUA_ENABLED == 1 ){
 				$anexo -> USUA_ENABLED = 0;

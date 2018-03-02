@@ -1,18 +1,18 @@
 @extends('vendor.templateModal')
 
-@section('title') Nuevo usuario @endsection
+@section('title') <i class="fa fa-fw fa-user-plus"></i> Nuevo usuario @endsection
 
 @section('content')
     {{ Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) }}
 	    {{ Form::hidden('action',1) }}
 	    {!! Field::text('usuario','',['label'=>'Usuario','placeholder'=>'Nombre de usuario','autofocus']) !!}
-	    {!! Field::password('password','',['label'=>'Contraseña','placeholder'=>'.....',]) !!}
-	    {!! Field::password('password_confirmed','',['label'=>'Contraseña','placeholder'=>'.....',]) !!}
-	    {!! Field::text('descripcion','',['label'=>'Descripción','placeholder'=>'Ej. Director de Operaciones y Vigilancia',]) !!}
+	    {!! Field::password('password','',['label'=>'Contraseña']) !!}
+	    {!! Field::password('password_confirmation','',['label'=>'Contraseña','placeholder'=>'Confirme la contraseña']) !!}
+	    {!! Field::text('descripcion','',['label'=>'Descripción','placeholder'=>'Ej. Director de Operaciones y Vigilancia']) !!}
 	    {!! Field::text('nombres','',['label'=>'Nombre(s)','placeholder'=>'Nombre(s)',]) !!}
-	    {!! Field::text('apellidos','',['label'=>'Apellido(s)','placeholder'=>'Apelido paterno y materno',]) !!}
-	    {!! Field::email('email','',['label'=>'E-mail','placeholder'=>'Correo electrónico',]) !!}
-	    {!! Field::text('teléfono','',['label'=>'Teléfono','placeholder'=>'Opcional',]) !!}
+	    {!! Field::text('apellidos','',['label'=>'Apellido(s)','placeholder'=>'Apelido paterno y materno']) !!}
+	    {!! Field::email('email','',['label'=>'E-mail','placeholder'=>'Correo electrónico']) !!}
+	    {!! Field::text('teléfono','',['label'=>'Teléfono','placeholder'=>'Opcional']) !!}
 	{{ Form::close() }}
 @endsection
 
@@ -25,6 +25,7 @@
 		this.form = $('#{{$form_id}}')
 	
 		this.submitHandler = function(form){
+			console.log(form)
 			if(!$(form).valid()) return false;
 			App.ajaxRequest({
 				url  : $(form).attr('action'),
@@ -64,13 +65,13 @@
 
 		this.rules = function(){
 			return {
-				nombre : { required : true, maxlength : 255 }
+				usuario : { required : true, maxlength : 255 }
 			}
 		}
 
 		this.messages = function(){
 			return {
-				nombre : { required : 'Introduzca un nombre' }
+				usuario : { required : 'Introduzca un nombre usuario' }
 			}
 		}
 	}).init()

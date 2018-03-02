@@ -7,9 +7,7 @@
     </div>
 </div>
 <div class="block-content">
-    
 	@yield('content')
-
 </div>
 
 @stack('js-script')

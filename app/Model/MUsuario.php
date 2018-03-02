@@ -59,7 +59,9 @@ class MUsuario extends Authenticatable {
         $this -> USUA_REMEMBER_TOKEN = $value;
     }
 
-
+    public function disponible(){
+        return $this -> attributes['USUA_ENABLED'] == 1;
+    }
     
     /* Relationships */
 

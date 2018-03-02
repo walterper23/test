@@ -136,8 +136,6 @@ Route::middleware('preventBackHistory')->group(function(){
 
 		});
 
-
-
 		Route::post('modal-cambio', 'Recepcion\RecepcionController@modalCambio');
 		Route::post('guardar-cambio', 'Recepcion\RecepcionController@guardarCambio');
 	

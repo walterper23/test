@@ -21,6 +21,12 @@ App.loadScript('/js/helpers/helper.js', function(){
 				this.delete({
 					id, title : 'Eliminar usuario'
 				})
+			},
+
+			password_ : function(id){
+				this.active({
+					data : { action : 5, id }
+				})
 			}
 
 		}

@@ -66,8 +66,8 @@ var App = function(){
 
 	    if( config.footer ){
 	        html +=    `<div class="modal-footer">`;
-	        if( config.btnOk )     html += `<button type="button" class="btn btn-alt-primary" id="btn-ok">`+config.btnOkText+`</button>`;
-	        if( config.btnCancel ) html += `<button type="button" class="btn btn-alt-default" data="close-modal" id="btn-cancel">`+config.btnCancelText+`</button>`;
+	        if( config.btnOk )     html += `<button type="button" class="btn btn-alt-primary" id="modal-btn-ok">`+config.btnOkText+`</button>`;
+	        if( config.btnCancel ) html += `<button type="button" class="btn btn-alt-default" data="close-modal" id="modal-btn-cancel">`+config.btnCancelText+`</button>`;
 	        html +=    `</div>`;
 	    }
 	    

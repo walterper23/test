@@ -1,24 +1,16 @@
-<div class="block-header bg-primary-dark">
-    <h3 class="block-title">{{ $title or '' }}</h3>
-    <div class="block-options">
-        <button type="button" class="btn-block-option" data="close-modal" aria-label="Close">
-            <i class="si si-close"></i>
-        </button>
-    </div>
-</div>
-<div class="block-content">
-    {{ Form::model($modelo,['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) }}
-	    {{ Form::hidden('action',$action) }}
-	    {{ Form::hidden('id',$id) }}
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label" for="nombre">Nombre</label>
-            <div class="col-sm-9">
-            	{{ Form::text('nombre',(is_null($modelo) ? '' : $modelo->ANEX_NOMBRE),['id'=>'nombre','class'=>'form-control','placeholder'=>'Nombre del anexo','autofocus']) }}
-            </div>
-        </div>       
-	{{ Form::close() }}
-</div>
+@extends('vendor.templateModal')
 
+@section('title') {!! $title !!} @endsection
+
+@section('content')
+    {!! Form::model($modelo,['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) !!}
+	    {!! Form::hidden('action',$action) !!}
+	    {!! Form::hidden('id',$id) !!}
+        {!! Field::text('nombre',(is_null($modelo) ? '' : $modelo->ANEX_NOMBRE),['label'=>'Nombre','placeholder'=>'Nombre del anexo','autofocus']) !!}
+	{!! Form::close() !!}
+@endsection
+
+@push('js-custom')
 <script type="text/javascript">
 	
 	$.extend(AppForm, new function(){
@@ -56,13 +48,10 @@
 							})
 						}
 
-
-						
 					}
 				}
 			})
 		}
-
 
 		this.rules = function(){
 			return {
@@ -78,3 +67,4 @@
 	}).init()
 
 </script>
+@endpush

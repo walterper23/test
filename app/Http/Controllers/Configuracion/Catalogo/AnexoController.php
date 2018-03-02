@@ -30,20 +30,18 @@ class AnexoController extends BaseController {
 
 	public function manager(ManagerAnexoRequest $request){
 
-		$action = Input::get('action');
-
-		switch ($action) {
+		switch ($request -> action) {
 			case 1: // Nuevo
-				$response = $this->nuevoAnexo();
+				$response = $this->nuevoAnexo( $request );
 				break;
 			case 2: // Editar
-				$response = $this->editarAnexo();
+				$response = $this->editarAnexo( $request );
 				break;
 			case 3: // Activar / Desactivar
-				$response = $this->activarAnexo();
+				$response = $this->activarAnexo( $request );
 				break;
 			case 4: // Eliminar
-				$response = $this->eliminarAnexo();
+				$response = $this->eliminarAnexo( $request );
 				break;
 			default:
 				return response()->json(['message'=>'Petición no válida'],404);
@@ -61,7 +59,7 @@ class AnexoController extends BaseController {
 
 			$data = [];
 
-			$data['title']         = 'Nuevo anexo';
+			$data['title']         = '<i class="fa fa-fw fa-clipboard"></i> Nuevo anexo';
 			$data['url_send_form'] = url('configuracion/catalogos/anexos/manager');
 			$data['form_id']       = $this->form_id;
 			$data['modelo']		   = null;
@@ -75,12 +73,12 @@ class AnexoController extends BaseController {
 		}
 	}
 
-	public function nuevoAnexo(){
+	public function nuevoAnexo( $request ){
 		try{
 
 			$anexo = new MAnexo;
-			$anexo->ANEX_NOMBRE = Input::get('nombre');
-			$anexo->save();			
+			$anexo -> ANEX_NOMBRE = $request -> nombre;
+			$anexo -> save();			
 
 			$tables = ['dataTableBuilder',null,true];
 
@@ -107,11 +105,11 @@ class AnexoController extends BaseController {
 		}
 	}
 
-	public function editarAnexo(){
+	public function editarAnexo( $request ){
 		try{
 			$anexo = MAnexo::find( Input::get('id') )->where('ANEX_DELETED',0)->first();
-			$anexo->ANEX_NOMBRE = Input::get('nombre');
-			$anexo->save();			
+			$anexo -> ANEX_NOMBRE = Input::get('nombre');
+			$anexo -> save();			
 
 			$tables = 'dataTableBuilder';
 
@@ -122,18 +120,16 @@ class AnexoController extends BaseController {
 		}
 	}
 
-	public function activarAnexo(){
+	public function activarAnexo( $request ){
 		try{
-			$anexo = MAnexo::find( Input::get('id') );
+			$anexo = MAnexo::find( $request -> id );
 			
-			if( $anexo->ANEX_ENABLED == 1 ){
-				$anexo->ANEX_ENABLED = 0;
-				$message = 'El anexo se desactivó correctamente';
+			if( $anexo -> cambiarDisponibilidad() -> disponible() ){
+				$message = 'El anexo ha sido activado';
 			}else{
-				$anexo->ANEX_ENABLED = 1;
-				$message = 'El anexo se activó correctamente';
+				$message = 'El anexo ha sido desactivado';
 			}
-			$anexo->save();
+			$anexo -> save();
 
 			return response()->json(['status'=>true,'message'=>$message]);
 		}catch(Exception $error){
@@ -142,13 +138,13 @@ class AnexoController extends BaseController {
 	}
 
 
-	public function eliminarAnexo(){
+	public function eliminarAnexo( $request ){
 		try{
-			$anexo = MAnexo::find( Input::get('id') );
+			$anexo = MAnexo::find( $request -> id );
 			
-			$anexo->ANEX_DELETED    = 1;
-			$anexo->ANEX_DELETED_AT = Carbon::now();
-			$anexo->save();
+			$anexo -> ANEX_DELETED    = 1;
+			$anexo -> ANEX_DELETED_AT = Carbon::now();
+			$anexo -> save();
 
 			// Lista de tablas que se van a recargar automáticamente
 			$tables = 'dataTableBuilder';

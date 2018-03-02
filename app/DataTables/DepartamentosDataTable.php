@@ -15,12 +15,7 @@ class DepartamentosDataTable extends CustomDataTable{
             [
                 'title' => '#',
                 'render' => function($query){
-                    return '<div class="custom-controls-stacked">
-                            <label class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" value="'.$query->DEPA_DEPARTAMENTO.'">
-                                <span class="custom-control-indicator"></span>
-                            </label>
-                        </div>';
+                    return $query -> getCodigo();
                 }
             ],
             [

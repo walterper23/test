@@ -22,7 +22,7 @@ class DireccionController extends BaseController {
 	public function index(DireccionesDataTable $dataTables){
 
 		$data['table']    = $dataTables;
-		$data['form_id']  = $this->form_id;
+		$data['form_id']  = $this -> form_id;
 		$data['form_url'] = url('configuracion/catalogos/direcciones/nuevo');
 
 		return view('Configuracion.Catalogo.Direccion.indexDireccion')->with($data);
@@ -30,20 +30,18 @@ class DireccionController extends BaseController {
 
 	public function manager(ManagerDireccionRequest $request){
 
-		$action = Input::get('action');
-
-		switch ($action) {
+		switch ($request -> action) {
 			case 1: // Nuevo
-				$response = $this->nuevaDireccion();
+				$response = $this -> nuevaDireccion( $request );
 				break;
 			case 2: // Editar
-				$response = $this->editarDireccion();
+				$response = $this -> editarDireccion( $request );
 				break;
 			case 3: // Activar / Desactivar
-				$response = $this->activarDireccion();
+				$response = $this -> activarDireccion( $request );
 				break;
 			case 4: // Eliminar
-				$response = $this->eliminarDireccion();
+				$response = $this -> eliminarDireccion( $request );
 				break;
 			default:
 				return response()->json(['message'=>'Petición no válida'],404);
@@ -59,8 +57,8 @@ class DireccionController extends BaseController {
 	public function formNuevaDireccion(){
 		try{
 	 		$data = [
-	 			'title'         =>'Nueva direccion',
-	 			'form_id'       => $this->form_id,
+	 			'title'         =>'<i class="fa fa-fw fa-sitemap"></i> Nueva direccion',
+	 			'form_id'       => $this -> form_id,
 	 			'url_send_form' => url('configuracion/catalogos/direcciones/manager'),
 	 			'action'        => 1,
 	 			'modelo'        => null,
@@ -74,12 +72,30 @@ class DireccionController extends BaseController {
 		}
 	}
 
+	public function nuevaDireccion( $request ){
+		try{
+
+			$direccion = new MDireccion;
+			$direccion -> DIRE_NOMBRE      = $request -> nombre;
+			$direccion -> DIRE_CREATED_AT  = Carbon::now();
+			$direccion -> save();
+
+			// Lista de tablas que se van a recargar automáticamente
+			$tables = ['dataTableBuilder',null,true];
+
+			return response()->json(['status'=>true,'message'=>'La dirección se creó correctamente','tables'=>$tables]);
+		
+		}catch(Exception $error){
+			return response()->json(['status'=>false,'message'=>'Ocurrió un error al crear la dirección. Error ' . $error->getMessage() ]);
+		}
+	}
+
 	public function formEditarDireccion(){
 		try{
 
 			$data = [
-	 			'title'         =>'Editar direccion',
-	 			'form_id'       => $this->form_id,
+	 			'title'         =>'<i class="fa fa-fw fa-sitemap"></i> Editar direccion',
+	 			'form_id'       => $this -> form_id,
 	 			'url_send_form' => url('configuracion/catalogos/direcciones/manager'),
 	 			'action'        => 2,
 	 			'modelo'        => MDireccion::find( Input::get('id') ),
@@ -93,31 +109,12 @@ class DireccionController extends BaseController {
 		}
 	}
 
-
-	public function nuevaDireccion(){
+	public function editarDireccion( $request ){
 		try{
 
-			$direccion = new MDireccion;
-			$direccion->DIRE_NOMBRE      = Input::get('nombre');
-			$direccion->DIRE_CREATED_AT  = Carbon::now();
-			$direccion->save();
-
-			// Lista de tablas que se van a recargar automáticamente
-			$tables = ['dataTableBuilder',null,true];
-
-			return response()->json(['status'=>true,'message'=>'La dirección se creó correctamente','tables'=>$tables]);
-		
-		}catch(Exception $error){
-			return response()->json(['status'=>false,'message'=>'Ocurrió un error al crear la dirección. Error ' . $error->getMessage() ]);
-		}
-	}
-
-	public function editarDireccion(){
-		try{
-
-			$direccion = MDireccion::find( Input::get('id') );
-			$direccion->DIRE_NOMBRE      = Input::get('nombre');
-			$direccion->save();
+			$direccion = MDireccion::find( $request -> id );
+			$direccion -> DIRE_NOMBRE = $request -> nombre;
+			$direccion -> save();
 
 			// Lista de tablas que se van a recargar automáticamente
 			$tables = 'dataTableBuilder';
@@ -129,18 +126,16 @@ class DireccionController extends BaseController {
 		}
 	}
 
-	public function activarDireccion(){
+	public function activarDireccion( $request ){
 		try{
-			$direccion = MDireccion::find( Input::get('id') );
+			$direccion = MDireccion::find( $request -> id );
 			
-			if( $direccion->DIRE_ENABLED == 1 ){
-				$direccion->DIRE_ENABLED = 0;
-				$message = 'La dirección se desactivó correctamente';
+			if( $direccion -> cambiarDisponibilidad() -> disponible() ){
+				$message = 'La dirección ha sido activada';
 			}else{
-				$direccion->DIRE_ENABLED = 1;
-				$message = 'La dirección se activó correctamente';
+				$message = 'La dirección ha sido desactivada';
 			}
-			$direccion->save();
+			$direccion -> save();
 
 			return response()->json(['status'=>true,'message'=>$message]);
 		}catch(Exception $error){
@@ -148,13 +143,13 @@ class DireccionController extends BaseController {
 		}
 	}
 
-	public function eliminarDireccion(){
+	public function eliminarDireccion( $request ){
 		try{
-			$direccion = MDireccion::find( Input::get('id') );
+			$direccion = MDireccion::find( $request -> id );
 			
-			$direccion->DIRE_DELETED    = 1;
-			$direccion->DIRE_DELETED_AT = Carbon::now();
-			$direccion->save();
+			$direccion -> DIRE_DELETED    = 1;
+			$direccion -> DIRE_DELETED_AT = Carbon::now();
+			$direccion -> save();
 
 			// Lista de tablas que se van a recargar automáticamente
 			$tables = 'dataTableBuilder';

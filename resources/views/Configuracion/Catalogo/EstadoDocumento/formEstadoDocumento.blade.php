@@ -3,31 +3,13 @@
 @section('title') {!! $title !!} @endsection
 
 @section('content')
-<div class="block-content">
-    {{ Form::model($modelo,['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) }}
-	    {{ Form::hidden('action',$action) }}
-	    {{ Form::hidden('id',$id) }}
-	    <div class="form-group row">
-            <label class="col-sm-3 col-form-label" for="direccion">Direcci&oacute;n</label>
-            <div class="col-sm-9">
-            	{{ Form::select('direccion',$direcciones,(is_null($modelo) ? '' : $modelo->ESDO_DIRECCION),['id'=>'direccion','class'=>'form-control','placeholder'=>'Seleccione una opción']) }}
-            </div>
-        </div>
-        {!! Field::select('direccion',(is_null($modelo) ? '' : $modelo->ESDO_DIRECCION),['label'=>'Dirección','width'=>'col-md-9'],$direcciones) !!}
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label" for="departamento">Departamento</label>
-            <div class="col-sm-9">
-            	{{ Form::select('departamento',$departamentos,(is_null($modelo) ? '' : $modelo->ESDO_DEPARTAMENTO),['id'=>'departamento','class'=>'form-control','placeholder'=>'Seleccione una opción']) }}
-            </div>
-        </div> 
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label" for="nombre">Nombre</label>
-            <div class="col-sm-9">
-            	{{ Form::text('nombre',(is_null($modelo) ? '' : $modelo->ESDO_NOMBRE),['id'=>'nombre','class'=>'form-control','placeholder'=>'Nombre del estado de documento']) }}
-            </div>
-        </div> 
-	{{ Form::close() }}
-</div>
+    {!! Form::model($modelo,['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) !!}
+	    {!! Form::hidden('action',$action) !!}
+	    {!! Form::hidden('id',$id) !!}
+        {!! Field::selectTwo('direccion',(is_null($modelo) ? '' : $modelo->ESDO_DIRECCION),['label'=>'Dirección'],$direcciones) !!}
+        {!! Field::selectTwo('departamento',(is_null($modelo) ? '' : $modelo->ESDO_DEPARTAMENTO),['label'=>'Departamento'],$departamentos) !!}
+        {!! Field::text('nombre',(is_null($modelo) ? '' : $modelo->ESDO_NOMBRE),['label'=>'Nombre','placeholder'=>'Nombre del estado de documento']) !!}
+	{!! Form::close() !!}
 @endsection
 
 @push('js-custom')

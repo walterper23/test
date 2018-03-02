@@ -31,23 +31,21 @@ class DepartamentoController extends BaseController {
 
 	public function manager(ManagerDepartamentoRequest $request){
 
-		$action = Input::get('action');
-
-		switch ($action) {
+		switch ($request -> action) {
 			case 1: // Nuevo
-				$response = $this->nuevoDepartamento();
+				$response = $this -> nuevoDepartamento( $request );
 				break;
 			case 2: // Editar
-				$response = $this->editarDepartamento();
+				$response = $this -> editarDepartamento( $request );
 				break;
 			case 3: // Activar / Desactivar
-				$response = $this->activarDepartamento();
+				$response = $this -> activarDepartamento( $request );
 				break;
 			case 4: // Eliminar
-				$response = $this->eliminarDepartamento();
+				$response = $this -> eliminarDepartamento( $request );
 				break;
 			default:
-				return response()->json(['message'=>'Petición no válida'],404);
+				return response() -> json(['message'=>'Petición no válida'],404);
 				break;
 		}
 		return $response;
@@ -61,9 +59,9 @@ class DepartamentoController extends BaseController {
 		try{
 
 			$data                  = [];
-			$data['title']         = 'Nuevo Departamento';
+			$data['title']         = '<i class="fa fa-fw fa-sitemap"></i> Nuevo Departamento';
 			$data['url_send_form'] = url('configuracion/catalogos/departamentos/manager');
-			$data['form_id']       = $this->form_id;
+			$data['form_id']       = $this -> form_id;
 			$data['modelo']        = null;
 			$data['action']        = 1;
 			$data['id']            = Input::get('id');
@@ -77,16 +75,16 @@ class DepartamentoController extends BaseController {
 		}
 	}
 
-	public function nuevoDepartamento(){
+	public function nuevoDepartamento( $request ){
 		try{
 			$departamento = new MDepartamento;
-			$departamento->DEPA_NOMBRE = Input::get('nombre');
-			$departamento->DEPA_DIRECCION = Input::get('direccion');
-			$departamento->save();
+			$departamento -> DEPA_NOMBRE    = $request -> nombre;
+			$departamento -> DEPA_DIRECCION = $request -> direccion;
+			$departamento -> save();
 
 			$tables = ['dataTableBuilder',null,true];
 
-			return response()->json(['status'=>true, 'message'=>'El departamento se creó correctamente','tables'=>$tables]);
+			return response() -> json(['status'=>true, 'message'=>'El departamento se creó correctamente','tables'=>$tables]);
 		}catch(Exception $error){
 
 		}
@@ -96,9 +94,9 @@ class DepartamentoController extends BaseController {
 		try{
 
 			$data = [];
-			$data['title']         = 'Editar departamento';
+			$data['title']         = '<i class="fa fa-fw fa-sitemap"></i> Editar departamento';
 			$data['url_send_form'] = url('configuracion/catalogos/departamentos/manager');
-			$data['form_id']       = $this->form_id;
+			$data['form_id']       = $this -> form_id;
 			$data['modelo']        = MDepartamento::find( Input::get('id') );
 			$data['action']        = 2;
 			$data['id']            = Input::get('id');
@@ -115,58 +113,55 @@ class DepartamentoController extends BaseController {
 		}
 	}
 
-	public function editarDepartamento(){
+	public function editarDepartamento( $request ){
 		try{
 
-		$departamento = MDepartamento::find( Input::get('id') );
-		$departamento->DEPA_NOMBRE    = Input::get('nombre');
-		$departamento->DEPA_DIRECCION = Input::get('direccion');
-		$departamento->save();
+			$departamento = MDepartamento::find( $request -> id );
+			$departamento -> DEPA_NOMBRE    = $request -> nombre;
+			$departamento -> DEPA_DIRECCION = $request -> direccion;
+			$departamento -> save();
 
-		$tables = 'dataTableBuilder';
+			$tables = 'dataTableBuilder';
 
-		return response()->json(['status'=>true, 'message'=>'Los cambios se guardaron correctamente','tables'=>$tables]);
-				}catch(Exception $error){
-
+			return response() -> json(['status'=>true, 'message'=>'Los cambios se guardaron correctamente','tables'=>$tables]);
 		}catch(Exception $error){
-			
+
 		}
+
 	}
 
-	public function activarDepartamento(){
+	public function activarDepartamento( $request ){
 		try{
-			$departamento = MDepartamento::find( Input::get('id') );
+			$departamento = MDepartamento::find( $request -> id );
 			
-			if( $departamento->DEPA_ENABLED == 1 ){
-				$departamento->DEPA_ENABLED = 0;
-				$message = 'El departamento se desactivó correctamente';
+			if( $departamento -> cambiarDisponibilidad() -> disponible() ){
+				$message = 'El departamento ha sido activado';
 			}else{
-				$departamento->DEPA_ENABLED = 1;
-				$message = 'El departamento se activó correctamente';
+				$message = 'El departamento ha sido desactivado';
 			}
-			$departamento->save();
+			$departamento -> save();
 
-			return response()->json(['status'=>true,'message'=>$message]);
+			return response() -> json(['status'=>true,'message'=>$message]);
 		}catch(Exception $error){
-			return response()->json(['status'=>false,'message'=>'Ocurrió un error al guardar los cambios. Error ' . $error->getCode() ]);
+			return response() -> json(['status'=>false,'message'=>'Ocurrió un error al guardar los cambios. Error ' . $error->getCode() ]);
 		}
 	}
 
 
-	public function eliminarDepartamento(){
+	public function eliminarDepartamento( $request ){
 		try{
-			$departamento = MDepartamento::find( Input::get('id') );
+			$departamento = MDepartamento::find( $request -> id );
 			
-			$departamento->DEPA_DELETED    = 1;
-			$departamento->DEPA_DELETED_AT = Carbon::now();
-			$departamento->save();
+			$departamento -> DEPA_DELETED    = 1;
+			$departamento -> DEPA_DELETED_AT = Carbon::now();
+			$departamento -> save();
 
 			// Lista de tablas que se van a recargar automáticamente
 			$tables = 'dataTableBuilder';
 
-			return response()->json(['status'=>true,'message'=>'El departamento se eliminó correctamente','tables'=>$tables]);
+			return response() -> json(['status'=>true,'message'=>'El departamento se eliminó correctamente','tables'=>$tables]);
 		}catch(Exception $error){
-			return response()->json(['status'=>false,'message'=>'Ocurrió un error al eliminar el anexo. Error ' . $error->getMessage() ]);
+			return response() -> json(['status'=>false,'message'=>'Ocurrió un error al eliminar el anexo. Error ' . $error->getMessage() ]);
 		}
 	}
 

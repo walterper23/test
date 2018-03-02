@@ -12,9 +12,10 @@ class FieldBuilder {
 
     // Nombres de las clases por default para los componentes Label y Control de formulario
     protected $defaultClass = [
-        'labelClass'   => 'col-md-4 col-form-label',      // <label class="">
-        'controlWidth' => 'col-md-8',      // <div class="">
-        'controlClass' => 'form-control',  // <input class="">
+        'labelWidth'   => 'col-md-3',       // <label class="">
+        'labelClass'   => 'col-form-label', // <label class="">
+        'controlWidth' => 'col-md-9',       // <div class="">
+        'controlClass' => 'form-control',   // <input class="">
     ];
 
     // Ruta de la carpeta donde se encuentran las plantillas de los distintos campos de formularios
@@ -42,9 +43,7 @@ class FieldBuilder {
 
         $this->buildAttributes();
         
-        $config['_label'] = $this->_buildLabel();
-
-        if( $config['_label'] ) // Si se debe crear el label
+        if( $this->_buildLabel() ) // Si se debe crear el label
             $config['label'] = $this->buildLabel();
 
         $config['widthClass'] = $this->defaultClass['controlWidth'];
@@ -68,29 +67,37 @@ class FieldBuilder {
                 unset($this->attributes['placeholder']); // Removemos el atributo Placeholder de los atributos
         }
         
-        if( isset($this->attributes['labelClass']) ){
-            $this->defaultClass['labelClass'] = $this->attributes['labelClass'];
-            unset($this->attributes['labelClass']);
+        /* Build Class for Label */
+        if( isset($this->attributes['labelWidth']) ){
+            $this->defaultClass['labelWidth'] = $this->attributes['labelWidth'];
+            unset($this->attributes['labelWidth']); // Removemos el atributo LabelWidth de los atributos
         }
 
         if( isset($this->attributes['addLabelClass']) ){
-            $this->defaultClass['labelClass'] .= ' ' . $this->attributes['addLabelClass'];
-            unset($this->attributes['addLabelClass']);
+            $this->defaultClass['labelClass'] .= sprintf(' %s',$this->attributes['addLabelClass']);
+            unset($this->attributes['addLabelClass']); // Removemos el atributo AddLabelClass de los atributos
         }
 
-        if( !isset($this->attributes['class']) )
-            $this->attributes['class'] = $this->defaultClass['controlClass'];
+        if( isset($this->attributes['labelClass']) ){
+            $this->defaultClass['labelClass'] = $this->attributes['labelClass'];
+            unset($this->attributes['labelClass']); // Removemos el atributo LabelClass de los atributos
+        }
 
+        $this->defaultClass['labelClass'] = trim(sprintf('%s %s',$this->defaultClass['labelWidth'],$this->defaultClass['labelClass']));
+
+        /* Build Class for Control */
         if( isset($this->attributes['addClass']) ){
-            $this->attributes['class'] .= ' ' . $this->attributes['addClass'];
+            $this->attributes['class'] .= sprintf(' %s',$this->attributes['addClass']);
             unset($this->attributes['addClass']); // Removemos el atributo addClass de los atributos
         }
+        
+        if( !isset($this->attributes['class']) )
+            $this->attributes['class'] = $this->defaultClass['controlClass'];
 
         if( isset($this->attributes['width']) ){
             $this->defaultClass['controlWidth'] = $this->attributes['width'];
             unset($this->attributes['width']); // Removemos el atributo width de los atributos
         }
-
     }
 
     // Método para saber si se debe crear el atributo id=""
@@ -142,7 +149,7 @@ class FieldBuilder {
             $label = $this->attributes['label']; // Valor del Label
 
             unset($this->attributes['label']); // Removemos el atributo label
-            
+
             return Form::label($for, $label, ['class' => $this->defaultClass['labelClass']]);
         }
 
@@ -166,8 +173,8 @@ class FieldBuilder {
             case 'password':
                 return Form::password($this->name, $this->attributes);
             case 'checkbox':
-                $valor = is_numeric($this->value) ? ($this->value == 1) : (strtolower($this->value) == 'si'); 
-                return Form::checkbox($this->name, $this->value, $valor);
+                $checked = ($this->value == 1); 
+                return Form::checkbox($this->name, $this->value, $checked);
             case 'textarea':
                 return Form::textarea($this->name, $this->value, $this->attributes);
             case 'date':
