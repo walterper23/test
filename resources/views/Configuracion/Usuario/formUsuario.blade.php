@@ -1,6 +1,6 @@
 @extends('vendor.templateModal')
 
-@section('title') <i class="fa fa-fw fa-user-plus"></i> Nuevo usuario @endsection
+@section('title')<i class="fa fa-fw fa-user-plus"></i> {!! $title !!}@endsection
 
 @section('content')
     <div class="js-wizard-simple block">

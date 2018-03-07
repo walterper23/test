@@ -6,12 +6,18 @@ use App\Model\MUsuario;
 class UsuariosDataTable extends CustomDataTable {
     
     protected function setSourceData(){
-        $this->sourceData = MUsuario::with('usuarioDetalle')->select(['USUA_USUARIO','USUA_NOMBRE','USUA_CREATED_AT','USUA_ENABLED'])->
-                            where('USUA_DELETED',0);
+        $this->sourceData = MUsuario::with('usuarioDetalle')->select('USUA_USUARIO','USUA_NOMBRE','USUA_RECENT_LOGIN','USUA_CREATED_AT','USUA_ENABLED')
+                            ->where('USUA_DELETED',0);
     }
 
     protected function columnsTable(){
         return [
+            [
+                'title' => '#',
+                'render' => function($query){
+                    return $query -> getCodigo();
+                }
+            ],
             [
                 'title' => 'Nombre',
                 'render' => function($query){
@@ -29,6 +35,10 @@ class UsuariosDataTable extends CustomDataTable {
                 },
             ],
             [
+                'title' => 'Último acceso',
+                'data' => 'USUA_RECENT_LOGIN'
+            ],
+            [
                 'title' => 'Activo',
                 'render' => function($query){
                     $checked = ($query -> disponible()) ? ' checked=""' : '';
@@ -41,7 +51,7 @@ class UsuariosDataTable extends CustomDataTable {
                 'title' => 'Opciones',
                 'render' => function($query){
                     $buttons = sprintf('
-                        <button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-warning" onclick="hUsuario.delete_(%d)" title="Cambiar contraseña"><i class="fa fa-key"></i></button>
+                        <button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-warning" onclick="hUsuario.password(%d)" title="Cambiar contraseña"><i class="fa fa-key"></i></button>
                         <button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hUsuario.delete_(%d)"><i class="fa fa-trash"></i></button>',
                         $query -> getKey(), $query -> getKey()
                     );

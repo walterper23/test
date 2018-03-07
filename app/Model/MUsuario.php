@@ -6,22 +6,15 @@ use Yajra\Acl\Traits\HasRole;
 
 use App\Presenters\MUsuarioPresenter;
 
-
 class MUsuario extends Authenticatable {
 
-    use HasRole;
+    use HasRole, BaseModelTrait;
     
     protected $table          = 'usuarios';
     protected $primaryKey     = 'USUA_USUARIO';
     public    $timestamps     = false;
 
-    protected $fillable = [
-        'USUA_NOMBRE', 'USUA_EMAIL'
-    ];
-
-    protected $hidden = [
-        'USUA_PASSWORD', 'USUA_REMEMBER_TOKEN',
-    ];
+    protected $fieldEnabled   = 'USUA_ENABLED';
 
     public function getAuthUsername(){
         return $this -> attributes['USUA_USERNAME'];
@@ -59,10 +52,6 @@ class MUsuario extends Authenticatable {
         $this -> USUA_REMEMBER_TOKEN = $value;
     }
 
-    public function disponible(){
-        return $this -> attributes['USUA_ENABLED'] == 1;
-    }
-    
     /* Relationships */
 
     public function UsuarioAsignaciones(){

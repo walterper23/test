@@ -15,23 +15,17 @@ App.loadScript('/js/helpers/helper.js', function(){
 				});
 			},
 
-			edit_ : function(id){
-				this.edit({
-					modal : 'form-puesto',
-					url   : '/configuracion/usuarios/editar',
-					id
-				})
-			},
-
 			delete_ : function(id){
 				this.delete({
 					id, title : 'Eliminar usuario'
 				})
 			},
 
-			password_ : function(id){
-				this.active({
-					data : { action : 5, id }
+			password : function(id){
+				this.edit({
+					modal : 'form-password',
+					url   : '/configuracion/usuarios/password',
+					id
 				})
 			}
 

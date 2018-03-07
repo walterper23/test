@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Configuracion\Catalogo;
 
 use Illuminate\Http\Request;
@@ -22,7 +21,7 @@ class AnexoController extends BaseController {
 	public function index(AnexosDataTable $dataTables){
 
 		$data['table']    = $dataTables;
-		$data['form_id']  = $this->form_id;
+		$data['form_id']  = $this -> form_id;
 		$data['form_url'] = url('configuracion/catalogos/anexos/nuevo');
 
 		return view('Configuracion.Catalogo.Anexo.indexAnexo')->with($data);
@@ -32,16 +31,16 @@ class AnexoController extends BaseController {
 
 		switch ($request -> action) {
 			case 1: // Nuevo
-				$response = $this->nuevoAnexo( $request );
+				$response = $this -> nuevoAnexo( $request );
 				break;
 			case 2: // Editar
-				$response = $this->editarAnexo( $request );
+				$response = $this -> editarAnexo( $request );
 				break;
 			case 3: // Activar / Desactivar
-				$response = $this->activarAnexo( $request );
+				$response = $this -> activarAnexo( $request );
 				break;
 			case 4: // Eliminar
-				$response = $this->eliminarAnexo( $request );
+				$response = $this -> eliminarAnexo( $request );
 				break;
 			default:
 				return response()->json(['message'=>'Petición no válida'],404);
@@ -61,7 +60,7 @@ class AnexoController extends BaseController {
 
 			$data['title']         = 'Nuevo anexo';
 			$data['url_send_form'] = url('configuracion/catalogos/anexos/manager');
-			$data['form_id']       = $this->form_id;
+			$data['form_id']       = $this -> form_id;
 			$data['modelo']		   = null;
 			$data['action']		   = 1;
 			$data['id']		       = null;
@@ -93,7 +92,7 @@ class AnexoController extends BaseController {
 		try{
 			$data['title']         = 'Editar anexo';
 			$data['url_send_form'] = url('configuracion/catalogos/anexos/manager');
-			$data['form_id']       = $this->form_id;
+			$data['form_id']       = $this -> form_id;
 			$data['modelo']		   = MAnexo::find( Input::get('id') );
 			$data['action']		   = 2;
 			$data['id']		       = Input::get('id');

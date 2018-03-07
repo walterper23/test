@@ -72,9 +72,10 @@ class UsuarioController extends BaseController {
 
 	public function formUsuario(){
 
-		$data['form_id']       = $this->form_id;
+		$data['title']         = 'Nuevo usuario';
+		$data['form_id']       = $this -> form_id;
 		$data['url_send_form'] = url('configuracion/usuarios/manager');
-
+		
 		return view('Configuracion.Usuario.formUsuario') -> with($data);
 	}
 
@@ -113,6 +114,18 @@ class UsuarioController extends BaseController {
 
 	}
 
+	public function formPassword(){
+
+		$data['title']         = 'Cambiar contraseña';
+		$data['form_id']       = $this -> form_id;
+		$data['url_send_form'] = url('configuracion/usuarios/manager');
+		$data['action']        = 5;
+		$data['usuario']       = MUsuario::find( request() -> id ) -> getAuthUsername();
+		$data['id']            = request() -> id;
+
+		return view('Configuracion.Usuario.formPassword') -> with($data);
+	}
+
 
 	public function activarUsuario( $request ){
 		try{
@@ -146,7 +159,7 @@ class UsuarioController extends BaseController {
 			// Lista de tablas que se van a recargar automáticamente
 			$tables = 'dataTableBuilder';
 
-			return response()->json(['status'=>true,'message'=>'El usuario se eliminó correctamente','tables'=>$tables]);
+			return response()->json(['status'=>true,'message'=>'El usuario ha sido eliminado','tables'=>$tables]);
 		}catch(Exception $error){
 			return response()->json(['status'=>false,'message'=>'Ocurrió un error al eliminar el usuario. Error ' . $error->getMessage() ]);
 		}

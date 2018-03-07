@@ -1,24 +1,14 @@
 <?php
 namespace App\Model;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
-
 use App\Presenters\MUsuarioDetallePresenter;
 
-class MUsuarioDetalle extends Authenticatable {
+class MUsuarioDetalle extends BaseModel {
     
     protected $table          = 'usuarios_detalles';
     protected $primaryKey     = 'USDE_USUARIO_DETALLE';
     public    $timestamps     = false;
 
-    protected $fillable = [
-
-    ];
-
-    protected $hidden = [
-
-    ];
-    
     public function getNombres(){
         return $this->attributes['USDE_NOMBRES'];
     }

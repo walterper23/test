@@ -1,6 +1,6 @@
 body {
 	color: #000000;
-	background-color: #e1e8ea;
+	background-color: #D4D4D4;
 }
 
 .greca {
@@ -27,13 +27,13 @@ a {
 }
 
 #page-header {
-  background-color: #4a6a82;
+	background-color: #4a6a82;
 }
 
 @media (min-width: 992px) {
-  #page-container.page-header-modern #page-header {
-    background-color: #4a6a82;
-  }
+	#page-container.page-header-modern #page-header {
+		background-color: #4a6a82;
+	}
 }
 
 .nav-main .nav-main-heading {

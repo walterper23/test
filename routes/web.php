@@ -116,6 +116,7 @@ Route::middleware('preventBackHistory')->group(function(){
 				Route::get('ver/{id}',    'UsuarioController@verUsuario');
 				Route::post('nuevo',      'UsuarioController@formUsuario');
 				Route::post('editar',     'UsuarioController@editarUsuario');
+				Route::post('password',   'UsuarioController@formPassword');
 				Route::post('manager',    'UsuarioController@manager');
 
 				Route::group(['prefix'=>'roles'], function(){
