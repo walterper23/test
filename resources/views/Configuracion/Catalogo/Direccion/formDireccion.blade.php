@@ -1,13 +1,15 @@
 @extends('vendor.templateModal')
 
-@section('title') {!! $title !!} @endsection
+@section('title')<i class="fa fa-fw fa-sitemap"></i> {!! $title !!}@endsection
 
 @section('content')
-{!! Form::model($modelo,['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) !!}
-	{!! Form::hidden('action',$action) !!}
-	{!! Form::hidden('id',$id) !!}
-	{!! Field::text('nombre',(is_null($modelo) ? '' : $modelo->DIRE_NOMBRE),['label'=>'Nombre','placeholder'=>'Nombre de la dirección','autofocus']) !!}
-{!! Form::close() !!}
+	@component('vendor.modal.contentModal')
+	{!! Form::model($modelo,['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) !!}
+		{!! Form::hidden('action',$action) !!}
+		{!! Form::hidden('id',$id) !!}
+		{!! Field::text('nombre',(is_null($modelo) ? '' : $modelo->DIRE_NOMBRE),['label'=>'Nombre','placeholder'=>'Nombre de la dirección','autofocus']) !!}
+	{!! Form::close() !!}
+	@endcomponent
 @endsection
 
 @push('js-custom')

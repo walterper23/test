@@ -1,6 +1,6 @@
 <!doctype html>
-<!--[if lte IE 9]>     <html lang="en" class="no-focus lt-ie10 lt-ie10-msg"> <![endif]-->
-<!--[if gt IE 9]><!--> <html lang="en" class="no-focus"> <!--<![endif]-->
+<!--[if lte IE 9]>     <html lang="es" class="no-focus lt-ie10 lt-ie10-msg"> <![endif]-->
+<!--[if gt IE 9]><!--> <html lang="es" class="no-focus"> <!--<![endif]-->
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
@@ -39,7 +39,7 @@
     </head>
     <body>
         <!-- Page Container -->
-        <div id="page-container" class="sidebar-o side-scroll page-header-modern page-header-fixed">
+        <div id="page-container" class="side-scroll page-header-modern page-header-fixed">
 
             <!-- Sidebar -->
            <nav id="sidebar">

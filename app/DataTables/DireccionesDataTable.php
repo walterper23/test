@@ -15,15 +15,8 @@ class DireccionesDataTable extends CustomDataTable{
             [
                 'title'  => '#',
                 'render' => function($query){
-                    return '<div class="custom-controls-stacked">
-                            <label class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" value="'.$query->DIRE_DIRECCION.'">
-                                <span class="custom-control-indicator"></span>
-                            </label>
-                        </div>';
-                },
-                'searchable' => false,
-                'orderable'  => false,
+                    return $query -> getCodigo();
+                }
             ],
             [
                 'title' => 'Nombre',

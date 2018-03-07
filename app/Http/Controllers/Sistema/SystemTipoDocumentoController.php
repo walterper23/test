@@ -1,6 +1,5 @@
 <?php
-
-namespace App\Http\Controllers\Configuracion\Catalogo;
+namespace App\Http\Controllers\Configuracion\Sistema;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\ManagerTipoDocumentoRequest;
@@ -11,12 +10,12 @@ use Exception;
 
 /* Controllers */
 use App\Http\Controllers\BaseController;
-use App\DataTables\TiposDocumentosDataTable;
+use App\DataTables\SystemTiposDocumentosDataTable;
 
 /* Models */
-use App\Model\Catalogo\MTipoDocumento;
+use App\Model\System\MSystemTipoDocumento;
 
-class TipoDocumentoController extends BaseController {
+class SystemTipoDocumentoController extends BaseController {
 
 	private $form_id;
 
@@ -24,13 +23,13 @@ class TipoDocumentoController extends BaseController {
 		$this->form_id = 'form-tipo-documento';
 	}
 
-	public function index(TiposDocumentosDataTable $dataTables){
+	public function index(SystemTiposDocumentosDataTable $dataTables){
 
 		$data['table']    = $dataTables;
 		$data['form_id']  = $this->form_id;
-		$data['form_url'] = url('configuracion/catalogos/tipos-documentos/nuevo');
+		$data['form_url'] = url('configuracion/sistema/tipos-documentos/nuevo');
 
-		return view('Configuracion.Catalogo.TipoDocumento.indexTipoDocumento')->with($data);
+		return view('Configuracion.Sistema.TipoDocumento.indexTipoDocumento')->with($data);
 	}
 
 	public function manager(ManagerTipoDocumentoRequest $request){
@@ -60,7 +59,7 @@ class TipoDocumentoController extends BaseController {
 		return $response;
 	}
 
-	public function postDataTable(TiposDocumentosDataTable $dataTables){
+	public function postDataTable(SystemTiposDocumentosDataTable $dataTables){
 		return $dataTables->getData();
 	}
 
@@ -70,13 +69,13 @@ class TipoDocumentoController extends BaseController {
 			$data = [
 				'title'         => 'Nuevo tipo de documento',
 				'form_id'       => $this->form_id,
-				'url_send_form' => url('configuracion/catalogos/tipos-documentos/manager'),
+				'url_send_form' => url('configuracion/sistema/tipos-documentos/manager'),
 				'action'        => 1,
 				'model'         => null,
 				'id'            => null
 			];
 			
-			return view('Configuracion.Catalogo.TipoDocumento.formTipoDocumento')->with($data);
+			return view('Configuracion.Sistema.TipoDocumento.formTipoDocumento')->with($data);
 		}catch(Exception $error){
 
 		}
@@ -85,7 +84,7 @@ class TipoDocumentoController extends BaseController {
 	public function nuevoTipoDocumento(){
 		try{
 
-			$tipoDocumento = new MTipoDocumento;
+			$tipoDocumento = new MSystemTipoDocumento;
 			$tipoDocumento->TIDO_NOMBRE_TIPO = Input::get('nombre');
 			$tipoDocumento->TIDO_CREATED_AT  = Carbon::now();
 			$tipoDocumento->save();
@@ -105,12 +104,12 @@ class TipoDocumentoController extends BaseController {
 
 			$data['title'] = 'Editar tipo de documento';
 			$data['form_id'] = $this->form_id;
-			$data['url_send_form'] = url('configuracion/catalogos/tipos-documentos/manager');
+			$data['url_send_form'] = url('configuracion/sistema/tipos-documentos/manager');
 			$data['action'] = 2;
-			$data['model'] = MTipoDocumento::find( Input::get('id') );
+			$data['model'] = MSystemTipoDocumento::find( Input::get('id') );
 			$data['id'] = Input::get('id');
 
-			return view('Configuracion.Catalogo.TipoDocumento.formTipoDocumento')->with($data);
+			return view('Configuracion.Sistema.TipoDocumento.formTipoDocumento')->with($data);
 		}catch(Exception $error){
 
 		}
@@ -119,7 +118,7 @@ class TipoDocumentoController extends BaseController {
 	public function editarTipoDocumento(){
 		try{
 
-			$tipoDocumento = MTipoDocumento::findOrFail( Input::get('id') );
+			$tipoDocumento = MSystemTipoDocumento::findOrFail( Input::get('id') );
 			$tipoDocumento->TIDO_NOMBRE_TIPO = Input::get('nombre');
 			$tipoDocumento->save();
 
@@ -135,7 +134,7 @@ class TipoDocumentoController extends BaseController {
 
 	public function activarTipoDocumento(){
 		try{
-			$tipoDocumento = MTipoDocumento::find( Input::get('id') );
+			$tipoDocumento = MSystemTipoDocumento::find( Input::get('id') );
 			
 			if( $tipoDocumento->TIDO_ENABLED == 1 ){
 				$tipoDocumento->TIDO_ENABLED = 0;
@@ -156,7 +155,7 @@ class TipoDocumentoController extends BaseController {
 
 	public function eliminarTipoDocumento(){
 		try{
-			$tipoDocumento = MTipoDocumento::find( Input::get('id') );
+			$tipoDocumento = MSystemTipoDocumento::find( Input::get('id') );
 			
 			$tipoDocumento->TIDO_DELETED    = 1;
 			$tipoDocumento->TIDO_DELETED_AT = Carbon::now();
@@ -174,7 +173,7 @@ class TipoDocumentoController extends BaseController {
 
 	public function validarTipoDocumento(){
 		try{
-			$tipoDocumento = MTipoDocumento::find( Input::get('id') );
+			$tipoDocumento = MSystemTipoDocumento::find( Input::get('id') );
 			
 			$tipoDocumento->TIDO_VALIDAR = $tipoDocumento->TIDO_VALIDAR * -1 + 1;
 			$tipoDocumento->save();

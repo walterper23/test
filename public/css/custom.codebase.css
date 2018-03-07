@@ -1,5 +1,5 @@
 body {
-	color: #171717;
+	color: #000000;
 	background-color: #e1e8ea;
 }
 
@@ -55,4 +55,16 @@ a {
 
 .nav-main ul a {
 	color: rgb(87, 87, 87);
+}
+
+.form-group {
+	margin-bottom: 5px;
+}
+
+.form-control {
+	border: 1px solid #C7C7C7;
+}
+
+.block.block-themed>.block-header>.block-title {
+	color: #FFFFFF;
 }

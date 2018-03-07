@@ -9,6 +9,12 @@ App.loadScript('/js/helpers/helper.js', function(){
 				return '/configuracion/usuarios/manager'
 			},
 
+			new_ : function(id, url){
+				App.openModal({
+					id, url
+				});
+			},
+
 			edit_ : function(id){
 				this.edit({
 					modal : 'form-puesto',

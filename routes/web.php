@@ -30,15 +30,17 @@ Route::middleware('preventBackHistory')->group(function(){
 			
 			Route::group(['prefix'=>'documentos'], function(){
 				Route::get('/',                'RecepcionController@index');
+				Route::get('recepcionados',    'RecepcionController@index');
 				Route::post('post-data',       'RecepcionController@postDataTable');
 				Route::get('nueva-recepcion',  'RecepcionController@nuevaRecepcion');
+				Route::get('seguimiento/{id}', 'RecepcionController@verSeguimiento');
+				Route::get('en-captura',       'RecepcionController@index');
 				Route::get('{id}',             'RecepcionController@verDocumentoRecepcionado');
-				Route::get('{id}/seguimiento', 'RecepcionController@verSeguimiento');
 			});
 
 		});
 
-		Route::prefix('panel')->namespace('Dashboard')->group(function(){
+		Route::prefix('panel')->namespace('Panel')->group(function(){
 			
 			Route::get('/',  'PanelController@index');
 			
@@ -130,6 +132,30 @@ Route::middleware('preventBackHistory')->group(function(){
 					Route::get('nuevo',       'PermisoController@formUsuario');
 					Route::get('editar',      'PermisoController@editarUsuario');
 					Route::post('manager',    'PermisoController@manager');
+				});
+
+			});
+
+			Route::prefix('sistema')->namespace('Sistema')->group(function(){
+				
+				Route::prefix('tipos-documentos')->group(function(){
+					Route::get('/',          'SystemTipoDocumentoController@index');
+					Route::post('post-data', 'SystemTipoDocumentoController@postDataTable');
+					Route::post('nuevo',     'SystemTipoDocumentoController@formNuevoTipoDocumento');
+					Route::post('editar',    'SystemTipoDocumentoController@formEditarTipoDocumento');
+					Route::post('manager',   'SystemTipoDocumentoController@manager');
+				});
+
+				Route::prefix('estados-documentos')->group(function(){
+					Route::get('/',          'SystemTipoDocumentoController@index');
+				});
+
+				Route::prefix('variables')->group(function(){
+					Route::get('/',          'SystemTipoDocumentoController@index');
+				});
+
+				Route::prefix('bitacora')->group(function(){
+					Route::get('/',          'SystemTipoDocumentoController@index');
 				});
 
 			});

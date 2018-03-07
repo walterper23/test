@@ -22,7 +22,7 @@
         <div class="block-header bg-earth">
             <h3 class="block-title"><i class="fa fa-fw fa-users mr-5"></i> Usuarios</h3>
             <div class="block-options">
-                <button type="button" class="btn-block-option" onclick="hUsuario.new('{{$form_id}}','{{$form_url}}')">
+                <button type="button" class="btn-block-option" onclick="hUsuario.new_('{{$form_id}}','{{$form_url}}')">
                     <i class="fa fa-plus"></i> Nuevo
                 </button>
                 <button type="button" class="btn-block-option" onclick="hUsuario.reload('dataTableBuilder')">

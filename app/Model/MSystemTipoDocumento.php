@@ -16,10 +16,6 @@ class MSystemTipoDocumento extends BaseModel {
     protected $fieldCreatedBy = 'SYTD_CREATED_BY';
     protected $fieldUpdated   = 'SYTD_UPDATED';
 
-    public function getCodigo(){
-    	return str_pad(self::getKey(), 3, '0', STR_PAD_LEFT);
-    }
-
     public function getNombre(){
     	return $this -> attributes['SYTD_NOMBRE_TIPO'];
     }

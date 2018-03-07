@@ -73,20 +73,5 @@
                 </div>
             </a>
         </div>
-        <div class="col-md-3">
-            <a class="block block-rounded block-link-shadow" href="{{ url('configuracion/catalogos/tipos-documentos') }}">
-                <div class="block-content block-content-full block-sticky-options">
-                    <div class="block-options">
-                        <div class="block-options-item">
-                            <i class="fa fa-files-o fa-2x text-warning-light"></i>
-                        </div>
-                    </div>
-                    <div class="py-20 text-center">
-                        <div class="font-size-h2 font-w700 mb-0 text-warning js-count-to-enabled" data-toggle="countTo" data-to="{{ $tipos_documentos }}">{{ $tipos_documentos }}</div>
-                        <div class="font-size-sm font-w600 text-uppercase text-muted">Tipos de documentos</div>
-                    </div>
-                </div>
-            </a>
-        </div>
     </div>
 @endsection

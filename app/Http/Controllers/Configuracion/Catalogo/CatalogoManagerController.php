@@ -22,7 +22,6 @@ class CatalogoManagerController extends BaseController {
 			'departamentos'    => MDepartamento::where('DEPA_DELETED',0)->count(),
 			'direcciones'      => MDireccion::where('DIRE_DELETED',0)->count(),
 			'puestos'          => MPuesto::where('PUES_DELETED',0)->count(),
-			'tipos_documentos' => MTipoDocumento::where('TIDO_DELETED',0)->count()
 		];
 
 		return view('Configuracion.Catalogo.index')->with($data);

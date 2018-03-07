@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Configuracion\Catalogo;
 
 use Illuminate\Http\Request;
@@ -57,7 +56,7 @@ class DireccionController extends BaseController {
 	public function formNuevaDireccion(){
 		try{
 	 		$data = [
-	 			'title'         =>'<i class="fa fa-fw fa-sitemap"></i> Nueva direccion',
+	 			'title'         =>'Nueva dirección',
 	 			'form_id'       => $this -> form_id,
 	 			'url_send_form' => url('configuracion/catalogos/direcciones/manager'),
 	 			'action'        => 1,
@@ -94,7 +93,7 @@ class DireccionController extends BaseController {
 		try{
 
 			$data = [
-	 			'title'         =>'<i class="fa fa-fw fa-sitemap"></i> Editar direccion',
+	 			'title'         =>'Editar dirección',
 	 			'form_id'       => $this -> form_id,
 	 			'url_send_form' => url('configuracion/catalogos/direcciones/manager'),
 	 			'action'        => 2,

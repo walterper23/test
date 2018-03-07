@@ -2,14 +2,14 @@
 
 var AppForm = new function(){
 
-	this.context;
-	this.form;
+	this.context   = $('body');
+	this.form 	   = $('form');
+	this.btnOk     = this.context.find('#modal-btn-ok')
+	this.btnCancel = this.context.find('#modal-btn-cancel')
+	this.btnClose  = this.context.find('[data="close-modal"]')
 
 	this.init = function(){
 		var self = this;
-		this.btnOk = this.context.find('#modal-btn-ok')
-		this.btnCancel = this.context.find('#modal-btn-cancel')
-		this.btnClose = this.context.find('[data="close-modal"]')
 
 		this.formSubmit(this.form)
 

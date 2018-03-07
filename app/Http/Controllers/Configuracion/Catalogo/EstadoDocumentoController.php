@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Configuracion\Catalogo;
 
 use App\Http\Requests\ManagerEstadoDocumentoRequest;
@@ -14,7 +13,6 @@ use App\DataTables\EstadosDocumentosDataTable;
 /* Models */
 use App\Model\Catalogo\MDireccion;
 use App\Model\Catalogo\MEstadoDocumento;
-
 
 class EstadoDocumentoController extends BaseController {
 
@@ -62,7 +60,7 @@ class EstadoDocumentoController extends BaseController {
 
 			$data = [];
 
-			$data['title']         = '<i class="fa fa-tags"></i> Nuevo estado de documento';
+			$data['title']         = 'Nuevo estado de documento';
 			$data['url_send_form'] = url('configuracion/catalogos/estados-documentos/manager');
 			$data['form_id']       = $this->form_id;
 			$data['modelo']		   = null;

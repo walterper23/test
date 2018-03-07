@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Recepcion;
 
 use Illuminate\Http\Request;
@@ -15,9 +14,10 @@ use App\DataTables\DocumentosDataTable;
 /* Models */
 use App\Model\MDocumento;
 use App\Model\MSeguimiento;
+use App\Model\Catalogo\MAnexo;
 use App\Model\Catalogo\MEstadoDocumento;
-use App\Model\Catalogo\MTipoDocumento;
 use App\Model\Catalogo\MDireccion;
+use App\Model\System\MSystemTipoDocumento;
 
 class RecepcionController extends BaseController {
 
@@ -37,12 +37,11 @@ class RecepcionController extends BaseController {
 
 		$data = [];
 
-		$data['tipos_documentos'] = MTipoDocumento::select('TIDO_TIPO_DOCUMENTO','TIDO_NOMBRE_TIPO')
-											->where('TIDO_ENABLED',1)
-											->where('TIDO_DELETED',0)
-											->orderBy('TIDO_NOMBRE_TIPO')
-											->pluck('TIDO_NOMBRE_TIPO','TIDO_TIPO_DOCUMENTO')
-											->toArray();
+		$data['tipos_documentos'] = MSystemTipoDocumento::select('SYTD_TIPO_DOCUMENTO','SYTD_NOMBRE_TIPO')
+									->where('SYTD_ENABLED',1)
+									->orderBy('SYTD_NOMBRE_TIPO')
+									->pluck('SYTD_NOMBRE_TIPO','SYTD_TIPO_DOCUMENTO')
+									->toArray();
 
 		$data['anexos'] = MAnexo::select('ANEX_ANEXO','ANEX_NOMBRE')
 									->where('ANEX_ENABLED',1)
@@ -51,8 +50,9 @@ class RecepcionController extends BaseController {
 									->pluck('ANEX_NOMBRE','ANEX_ANEXO')
 									->toArray();
 
-		$data['context'] = 'context-form-recepcion';
-		$data['form_id'] = 'form-recepcion';
+		$data['context']       = 'context-form-recepcion';
+		$data['form_id']       = 'form-recepcion';
+		$data['url_send_form'] = url('recepcion/documentos/recepcionar');
 
 		$data['form'] = view('Recepcion.formNuevaRecepcion')->with($data);
 
@@ -65,7 +65,6 @@ class RecepcionController extends BaseController {
 	public function verDocumentoRecepcionado( $id ){
 
 		$data['documento'] = MDocumento::find( $id );
-
 
 		return view('Recepcion.verDocumento')->with($data);
 

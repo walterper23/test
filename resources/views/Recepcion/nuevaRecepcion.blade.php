@@ -22,7 +22,7 @@
            <!-- Normal Form -->
             <div class="block block-themed">
                 <div class="block-header bg-corporate">
-                    <h3 class="block-title">Nueva recepci&oacute;n</h3>
+                    <h3 class="block-title"><i class="fa fa-fw fa-edit"></i> Nueva recepci&oacute;n</h3>
                     <div class="block-options">
                         <div class="dropdown">
                             <button type="button" class="btn-block-option dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cog"></i> Opciones</button>
@@ -46,10 +46,10 @@
                     {!! $form !!}
 
                     <div class="form-group clearfix">
-                        <button class="btn btn-success"><i class="fa fa-check"></i> Validar</button>
-                        <button class="btn btn-info"><i class="fa fa-save"></i> Guardar</button>
-                        <button class="btn btn-primary ml-20 pull-right" id="btn-recepcionar">Recepcionar</button>
-                        <button class="btn btn-default pull-right" onclick="hRecepcion.cancelar()">Cancelar</button>
+                        <!--button class="btn btn-success"><i class="fa fa-check"></i> Validar</button-->
+                        <button class="btn btn-alt-primary" tabindex="-1"><i class="fa fa-save"></i> Guardar captura</button>
+                        <button class="btn btn-primary ml-20 pull-right" id="btn-ok">Recepcionar <i class="fa fa-fw fa-sign-out"></i></button>
+                        <button class="btn btn-default pull-right" id="btn-cancel" onclick="hRecepcion.cancelar()">Cancelar</button>
                     </div>
                 </div>
             </div>
@@ -67,32 +67,34 @@
 
 @push('js-custom')
 <script type="text/javascript">
-
+    'use strict';
     $.extend(AppForm, new function(){
 
-        this.init = function(){
+        this.context   = $('#{{ $context }}')
+        this.form      = $('#{{ $form_id }}')
+        this.btnOk     = this.context.find('#btn-ok')
+        this.btnCancel = this.context.find('#btn-cancel')
+
+        this.start = function(){
             var self = this;
-            this.context = $('#{{ $context }}')
-            this.form = $('#{{ $form_id }}')
-            this.btnOk = this.context.find('#btn-recepcionar')
-            this.btnCancel = this.context.find('#btn-cancel')
-            this.btnClose = this.context.find('[data="close-modal"]')
 
-            this.formSubmit(this.form)
+            this.textRepresentante = this.form.find('#representante').closest('.form-group');
 
-            this.cloneForm = this.form.clone()
-
-            this.btnOk.on('click', function(e){
-                self.submit()
-            });
-
-            this.btnClose.on('click', function(e){
-                self.onClose()
+            this.selectTipoDocumento = this.form.find('#tipo_documento').on('change',function(e){
+                self.changeForm( this.value )
             })
+
+        }
+
+        this.changeForm = function( option ){
+            this.textRepresentante.hide()
+            if( option == 1 ){
+            }else{
+                this.textRepresentante.fadeIn(200)
+            }
         }
     
         this.submitHandler = function(form){
-            console.log('viene')
             if(!$(form).valid()){
                 return false;
             }
@@ -105,6 +107,9 @@
                 cancelBtnText : 'Regresar',
                 then : function(){
                     location.href = '/recepcion/documentos/'
+                },
+                dismiss : function(){
+                    alert('alert cancelado')
                 }
 
             })
@@ -141,17 +146,19 @@
 
         this.rules = function(){
             return {
-                //tipo_documento : { required : true },
-                //anio : { required : true }
+                tipo_documento : { required : true },
+                no_oficio      : { required : true },
+                anio : { required : true }
             }
         }
 
         this.messages = function(){
             return {
-                //nombre : { required : 'Seleccione el tipo de documento' },
-                //anio   : { required : 'Introduzca el año' }
+                tipo_documento : { required : 'Seleccione el tipo de documento' },
+                no_oficio      : { required : 'Introduzca el número de oficio' },
+                anio   : { required : 'Introduzca el año' }
             }
         }
-    }).init()
+    }).init().start();
 </script>
 @endpush

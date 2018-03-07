@@ -59,7 +59,7 @@ class AnexoController extends BaseController {
 
 			$data = [];
 
-			$data['title']         = '<i class="fa fa-fw fa-clipboard"></i> Nuevo anexo';
+			$data['title']         = 'Nuevo anexo';
 			$data['url_send_form'] = url('configuracion/catalogos/anexos/manager');
 			$data['form_id']       = $this->form_id;
 			$data['modelo']		   = null;

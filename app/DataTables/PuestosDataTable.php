@@ -12,6 +12,12 @@ class PuestosDataTable extends CustomDataTable{
     protected function columnsTable(){
         return [
             [
+                'title'  => '#',
+                'render' => function($query){
+                    return $query -> getCodigo();
+                }
+            ],
+            [
                 'title' => 'Nombre',
                 'data' => 'PUES_NOMBRE'
             ],

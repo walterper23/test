@@ -3,7 +3,7 @@ namespace App\DataTables;
 
 use App\Model\Catalogo\MEstadoDocumento;
 
-class EstadosDocumentosDataTable extends CustomDataTable{
+class SystemEstadosDocumentosDataTable extends CustomDataTable{
 
     protected function setSourceData(){
         $this->sourceData = MEstadoDocumento::with(['direccion','departamento'])->selectRaw('ESDO_ESTADO_DOCUMENTO, ESDO_DIRECCION, ESDO_DEPARTAMENTO, ESDO_NOMBRE, ESDO_CREATED_AT, ESDO_ENABLED')->where('ESDO_DELETED',0)->orderBy('ESDO_CREATED_AT','DESC')->get();
@@ -11,12 +11,19 @@ class EstadosDocumentosDataTable extends CustomDataTable{
 
     protected function columnsTable(){
         return [
-            [
+            /*[
                 'title'  => '#',
                 'render' => function($query){
-                    return $query -> getCodigo();
-                }
-            ],
+                    return '<div class="custom-controls-stacked">
+                            <label class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" value="'.$query->ESDO_ESTADO_DOCUMENTO.'">
+                                <span class="custom-control-indicator"></span>
+                            </label>
+                        </div>';
+                },
+                'searchable' => false,
+                'orderable'  => false,
+            ],*/
             [
                 'title' => 'Dirección',
                 'render' => function($query){

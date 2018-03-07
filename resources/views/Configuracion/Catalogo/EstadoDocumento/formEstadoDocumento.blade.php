@@ -1,8 +1,9 @@
 @extends('vendor.templateModal')
 
-@section('title') {!! $title !!} @endsection
+@section('title')<i class="fa fa-tags"></i> {!! $title !!}@endsection
 
 @section('content')
+	@component('vendor.contentModal')
     {!! Form::model($modelo,['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) !!}
 	    {!! Form::hidden('action',$action) !!}
 	    {!! Form::hidden('id',$id) !!}
@@ -10,6 +11,7 @@
         {!! Field::selectTwo('departamento',(is_null($modelo) ? '' : $modelo->ESDO_DEPARTAMENTO),['label'=>'Departamento'],$departamentos) !!}
         {!! Field::text('nombre',(is_null($modelo) ? '' : $modelo->ESDO_NOMBRE),['label'=>'Nombre','placeholder'=>'Nombre del estado de documento']) !!}
 	{!! Form::close() !!}
+	@endcomponent
 @endsection
 
 @push('js-custom')

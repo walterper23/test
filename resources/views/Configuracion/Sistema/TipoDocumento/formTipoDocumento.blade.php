@@ -1,12 +1,9 @@
-<div class="block-header bg-primary-dark">
-    <h3 class="block-title">{{ $title or '' }}</h3>
-    <div class="block-options">
-        <button type="button" class="btn-block-option" data="close-modal" aria-label="Close">
-            <i class="si si-close"></i>
-        </button>
-    </div>
-</div>
-<div class="block-content">
+@extends('vendor.templateModal')
+
+@section('title')<i class="fa fa-fw fa-files-o"></i> {!! $title !!} @endsection
+
+@section('content')
+	@component('vendor.contentModal')
     {{ Form::model($model,['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) }}
         {{ Form::hidden('action',$action) }}
         {{ Form::hidden('id',$id) }}
@@ -17,8 +14,10 @@
             </div>
         </div>
 	{{ Form::close() }}
-</div>
+	@endcomponent
+@endsection
 
+@push('js-custom')
 <script type="text/javascript">
 	
 	$.extend(AppForm, new function(){
@@ -79,3 +78,4 @@
 	}).init()
 
 </script>
+@endpush

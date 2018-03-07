@@ -14,15 +14,8 @@ class AnexosDataTable extends CustomDataTable{
             [
                 'title' => '#',
                 'render' => function($query){
-                    return '<div class="custom-controls-stacked">
-                                <label class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" value="'.$query->ANEX_ANEXO.'">
-                                    <span class="custom-control-indicator"></span>
-                                </label>
-                            </div>';
-                },//para no habilitar búsqueda ni orden en el elemento
-                'searchable' => false,
-                'orderable'  => false,
+                    return $query -> getCodigo();
+                }
             ],
             [
                 'title' => 'Nombre',

@@ -18,6 +18,9 @@ class FieldBuilder {
         'controlClass' => 'form-control',   // <input class="">
     ];
 
+    // Clases procesadas para ser usadas en la creación del Label y Control de formulario
+    protected $buildClass = [];
+
     // Ruta de la carpeta donde se encuentran las plantillas de los distintos campos de formularios
     protected $folderTemplates = 'vendor.form.fields';
     
@@ -46,7 +49,7 @@ class FieldBuilder {
         if( $this->_buildLabel() ) // Si se debe crear el label
             $config['label'] = $this->buildLabel();
 
-        $config['widthClass'] = $this->defaultClass['controlWidth'];
+        $config['widthClass'] = $this->buildClass['controlWidth'];
 
         $config['control'] = $this->buildControl();
 
@@ -66,36 +69,39 @@ class FieldBuilder {
             elseif( is_bool($this->attributes['placeholder']) && $this->attributes['placeholder'] == false )
                 unset($this->attributes['placeholder']); // Removemos el atributo Placeholder de los atributos
         }
+
+        $this->buildClass = $this->defaultClass;
         
         /* Build Class for Label */
         if( isset($this->attributes['labelWidth']) ){
-            $this->defaultClass['labelWidth'] = $this->attributes['labelWidth'];
+            $this->buildClass['labelWidth'] = $this->attributes['labelWidth'];
             unset($this->attributes['labelWidth']); // Removemos el atributo LabelWidth de los atributos
         }
 
         if( isset($this->attributes['addLabelClass']) ){
-            $this->defaultClass['labelClass'] .= sprintf(' %s',$this->attributes['addLabelClass']);
+            $this->buildClass['labelClass'] .= sprintf(' %s',$this->attributes['addLabelClass']);
             unset($this->attributes['addLabelClass']); // Removemos el atributo AddLabelClass de los atributos
         }
 
         if( isset($this->attributes['labelClass']) ){
-            $this->defaultClass['labelClass'] = $this->attributes['labelClass'];
+            $this->buildClass['labelClass'] = $this->attributes['labelClass'];
             unset($this->attributes['labelClass']); // Removemos el atributo LabelClass de los atributos
         }
 
-        $this->defaultClass['labelClass'] = trim(sprintf('%s %s',$this->defaultClass['labelWidth'],$this->defaultClass['labelClass']));
+        $this->buildClass['labelClass'] = trim(sprintf('%s %s',$this->buildClass['labelWidth'],$this->buildClass['labelClass']));
 
         /* Build Class for Control */
         if( isset($this->attributes['addClass']) ){
-            $this->attributes['class'] .= sprintf(' %s',$this->attributes['addClass']);
+            $this->buildClass['controlClass'] .= sprintf(' %s',$this->attributes['addClass']);
             unset($this->attributes['addClass']); // Removemos el atributo addClass de los atributos
         }
         
-        if( !isset($this->attributes['class']) )
-            $this->attributes['class'] = $this->defaultClass['controlClass'];
+        if( !isset($this->attributes['class']) ){
+            $this->attributes['class'] = $this->buildClass['controlClass'];
+        }
 
         if( isset($this->attributes['width']) ){
-            $this->defaultClass['controlWidth'] = $this->attributes['width'];
+            $this->buildClass['controlWidth'] = $this->attributes['width'];
             unset($this->attributes['width']); // Removemos el atributo width de los atributos
         }
     }
@@ -150,7 +156,7 @@ class FieldBuilder {
 
             unset($this->attributes['label']); // Removemos el atributo label
 
-            return Form::label($for, $label, ['class' => $this->defaultClass['labelClass']]);
+            return Form::label($for, $label, ['class' => $this->buildClass['labelClass']]);
         }
 
         return '';

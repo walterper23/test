@@ -89,16 +89,20 @@ class UsuarioController extends BaseController {
 			$usuario -> USUA_PASSWORD = bcrypt( $request -> password );
 			$usuario -> USUA_NOMBRE   = $request -> descripcion;
 			$usuario -> USUA_AVATAR_SMALL = 'no-profile-male.png';
-			$usuario -> USUA_AVATAR_FULL  = 'no-profile-male.png';
+
+			if( $request -> genero == 'MUJER'){
+				$usuario -> USUA_AVATAR_FULL  = 'no-profile-female.png';
+			}
+
 			$usuario -> save();
 			
 			$detalle = new MUsuarioDetalle;
 			$detalle -> USDE_USUARIO   = $usuario -> getKey();
+			$detalle -> USDE_GENERO    = $request -> genero;
 			$detalle -> USDE_NOMBRES   = $request -> nombres;
 			$detalle -> USDE_APELLIDOS = $request -> apellidos;
 			$detalle -> USDE_EMAIL     = $request -> email;
-
-
+			$detalle -> USDE_TELEFONO  = $request -> telefono;
 			$detalle -> save();
 
 			DB::commit();
@@ -107,9 +111,7 @@ class UsuarioController extends BaseController {
 			DB::rollback();
 		}
 
-
 	}
-
 
 
 	public function activarUsuario( $request ){
@@ -131,6 +133,24 @@ class UsuarioController extends BaseController {
 		}catch(Exception $error){
 			return response() -> json(['status'=>false,'message'=>'Ocurrió un error al guardar los cambios. Error ' . $error->getCode() ]);
 		}
+	}
+
+	public function eliminarUsuario( $request ){
+		try{
+			$usuario = MUsuario::find( $request -> id );
+			
+			$usuario -> USUA_DELETED    = 1;
+			$usuario -> USUA_DELETED_AT = Carbon::now();
+			$usuario -> save();
+
+			// Lista de tablas que se van a recargar automáticamente
+			$tables = 'dataTableBuilder';
+
+			return response()->json(['status'=>true,'message'=>'El usuario se eliminó correctamente','tables'=>$tables]);
+		}catch(Exception $error){
+			return response()->json(['status'=>false,'message'=>'Ocurrió un error al eliminar el usuario. Error ' . $error->getMessage() ]);
+		}
+
 	}
 
 }

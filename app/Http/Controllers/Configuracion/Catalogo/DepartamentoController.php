@@ -59,7 +59,7 @@ class DepartamentoController extends BaseController {
 		try{
 
 			$data                  = [];
-			$data['title']         = '<i class="fa fa-fw fa-sitemap"></i> Nuevo Departamento';
+			$data['title']         = 'Nuevo Departamento';
 			$data['url_send_form'] = url('configuracion/catalogos/departamentos/manager');
 			$data['form_id']       = $this -> form_id;
 			$data['modelo']        = null;
@@ -94,7 +94,7 @@ class DepartamentoController extends BaseController {
 		try{
 
 			$data = [];
-			$data['title']         = '<i class="fa fa-fw fa-sitemap"></i> Editar departamento';
+			$data['title']         = 'Editar departamento';
 			$data['url_send_form'] = url('configuracion/catalogos/departamentos/manager');
 			$data['form_id']       = $this -> form_id;
 			$data['modelo']        = MDepartamento::find( Input::get('id') );

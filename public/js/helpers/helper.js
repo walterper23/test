@@ -101,7 +101,6 @@ var Helper = function(){
 			})
 		},
 		delete : function(options){
-			console.log(options)
 			_delete({
 				title : options.title || 'Eliminar',
 				text  : options.text || 'La eliminación no se podrá deshacer',
