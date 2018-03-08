@@ -81,7 +81,7 @@ class AnexoController extends BaseController {
 
 			$tables = ['dataTableBuilder',null,true];
 
-			return response()->json(['status'=>true,'message'=>'El anexo se creó correctamente','tables' =>$tables]);
+			return response()->json(['status'=>true,'message'=>'Nuevo anexo creado','tables' =>$tables]);
 		
 		}catch(Exception $error){
 
@@ -106,13 +106,13 @@ class AnexoController extends BaseController {
 
 	public function editarAnexo( $request ){
 		try{
-			$anexo = MAnexo::find( Input::get('id') )->where('ANEX_DELETED',0)->first();
-			$anexo -> ANEX_NOMBRE = Input::get('nombre');
+			$anexo = MAnexo::find( $request -> id ) -> where('ANEX_DELETED',0) -> first();
+			$anexo -> ANEX_NOMBRE = $request -> nombre;
 			$anexo -> save();			
 
 			$tables = 'dataTableBuilder';
 
-			return response()->json(['status'=>true,'message'=>'Los cambios se guardaron correctamente','tables' =>$tables]);
+			return response()->json(['status'=>true,'message'=>'Cambios guardados correctamente','tables' =>$tables]);
 
 		}catch(Exception $error){
 			
@@ -136,7 +136,6 @@ class AnexoController extends BaseController {
 		}
 	}
 
-
 	public function eliminarAnexo( $request ){
 		try{
 			$anexo = MAnexo::find( $request -> id );
@@ -148,7 +147,7 @@ class AnexoController extends BaseController {
 			// Lista de tablas que se van a recargar automáticamente
 			$tables = 'dataTableBuilder';
 
-			return response()->json(['status'=>true,'message'=>'El anexo se eliminó correctamente','tables'=>$tables]);
+			return response()->json(['status'=>true,'message'=>'Anexo eliminado correctamente','tables'=>$tables]);
 		}catch(Exception $error){
 			return response()->json(['status'=>false,'message'=>'Ocurrió un error al eliminar el anexo. Error ' . $error->getMessage() ]);
 		}

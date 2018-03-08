@@ -117,7 +117,7 @@ class UsuarioController extends BaseController {
 	public function formPassword(){
 
 		$data['title']         = 'Cambiar contraseña';
-		$data['form_id']       = $this -> form_id;
+		$data['form_id']       = 'form-password';
 		$data['url_send_form'] = url('configuracion/usuarios/manager');
 		$data['action']        = 5;
 		$data['usuario']       = MUsuario::find( request() -> id ) -> getAuthUsername();
@@ -129,18 +129,17 @@ class UsuarioController extends BaseController {
 
 	public function activarUsuario( $request ){
 		try{
-			$anexo = MUsuario::find( $request -> id );
+			$usuario = MUsuario::find( $request -> id );
 			
-			if( $anexo -> USUA_ENABLED == 1 ){
-				$anexo -> USUA_ENABLED = 0;
-				$type = 'warning';
-				$message = '<i class="fa fa-warning"></i> Usuario desactivado';
-			}else{
-				$anexo -> USUA_ENABLED = 1;
+			if( $usuario -> cambiarDisponibilidad() -> disponible() ){
 				$type = 'info';
-				$message = '<i class="fa fa-check"></i> Usuario activado';
+				$message = sprintf('<i class="fa fa-check"></i> Usuario <b>%s</b> activado',$usuario -> getCodigo());
+			}else{
+				$type = 'warning';
+				$message = sprintf('<i class="fa fa-warning"></i> Usuario <b>%s</b> desactivado',$usuario -> getCodigo());
 			}
-			$anexo->save();
+
+			$usuario->save();
 
 			return response() -> json(['status'=>true,'type'=>$type,'message'=>$message]);
 		}catch(Exception $error){

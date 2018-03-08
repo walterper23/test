@@ -128,15 +128,18 @@ class DireccionController extends BaseController {
 	public function activarDireccion( $request ){
 		try{
 			$direccion = MDireccion::find( $request -> id );
-			
+
 			if( $direccion -> cambiarDisponibilidad() -> disponible() ){
-				$message = 'La dirección ha sido activada';
+				$type = 'info';
+				$message = sprintf('<i class="fa fa-fw fa-check"></i> Dirección <b>%s</b> activada',$direccion -> getCodigo());
 			}else{
-				$message = 'La dirección ha sido desactivada';
+				$type = 'warning';
+				$message = sprintf('<i class="fa fa-fw fa-warning"></i> Dirección <b>%s</b> desactivada',$direccion -> getCodigo());
 			}
+
 			$direccion -> save();
 
-			return response()->json(['status'=>true,'message'=>$message]);
+			return response()->json(['status'=>true,'type'=>$type,'message'=>$message]);
 		}catch(Exception $error){
 			return response()->json(['status'=>false,'message'=>'Ocurrió un error al guardar los cambios. Error ' . $error->getCode() ]);
 		}

@@ -3,13 +3,13 @@
 var App = function(){
 
 	var _defaultAjaxRequest = {
-		data     : {},
-		type     : 'POST',
-		before   : function(){},
-		success  : function(){},
-		complete : function(){},
-		error    : function(){},
-		fail     : function(){},
+		data       : {},
+		type       : 'POST',
+		beforeSend : function(){},
+		success    : function(){},
+		complete   : function(){},
+		error      : function(){},
+		fail       : function(){},
 		statusCode : {
 			422  : function( error ){
 				console.log(error)
@@ -31,17 +31,14 @@ var App = function(){
 
 	var _ajaxRequest = function( options ){
 		$.ajax($.extend({},_defaultAjaxRequest,{
-			url  : options.url,
-			data : options.data,
-			type : options.type,
-			beforeSend : options.before,
-			success : options.success,
-			complete : options.complete,
-			error : options.error,
-			fail : options.fail,
-			statusCode : {
-				500 : options.code500,
-			}
+			url        : options.url,
+			data       : options.data,
+			type       : options.type,
+			beforeSend : options.beforeSend,
+			success    : options.success,
+			complete   : options.complete,
+			error      : options.error,
+			fail       : options.fail,
 		}));
 	};
 
@@ -56,6 +53,7 @@ var App = function(){
 	};
 
 	var _openModal = function( config ){
+
 		var config = $.extend({},_defaultOpenModal,config);
 		var modal = $('#modal-' + config.id );
 		modal = modal.length > 0 ? modal : $('<div/>').addClass('modal fade').attr('id','modal-'+config.id).attr('role','dialog');
@@ -81,7 +79,7 @@ var App = function(){
 		_ajaxRequest({
 			url  : config.url,
 			data : config.data,
-			before : function(){
+			beforeSend : function(){
 				modal.modal({
 					backdrop : 'static',
 					keyboard : false,

@@ -4,10 +4,7 @@ namespace App\Model;
 trait BaseModelTrait {
 
     public function getCodigo( $size = 3, $str = '0', $direction = STR_PAD_LEFT ){
-        $this -> fieldCode = $this -> getKeyName();
-        if( isset($this -> fieldCode) )
-            return str_pad($this -> attributes[ $this -> fieldCode ], $size, $str, $direction);
-        return '';
+        return str_pad($this -> attributes[ $this -> getKeyName() ], $size, $str, $direction);
     }
 
     public function disponible(){
