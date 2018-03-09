@@ -115,7 +115,6 @@ class DepartamentoController extends BaseController {
 
 	public function editarDepartamento( $request ){
 		try{
-
 			$departamento = MDepartamento::find( $request -> id );
 			$departamento -> DEPA_NOMBRE    = $request -> nombre;
 			$departamento -> DEPA_DIRECCION = $request -> direccion;
@@ -125,12 +124,10 @@ class DepartamentoController extends BaseController {
 
 			$tables = 'dataTableBuilder';
 
-			return $this -> responseSuccessJSON($message);
-
+			return $this -> responseSuccessJSON($message,$tables);
 		}catch(Exception $error){
 
 		}
-
 	}
 
 	public function activarDepartamento( $request ){

@@ -164,16 +164,8 @@ class CustomDataTable {
 					->table();
 	}
 
-	protected function templateHtml(){
-		return config('datatables.table.table_view');
-	}
-
 	public function javascript(){
 		return $this->builderHtml->scripts();
-	}
-
-	protected function templateJavascript(){
-		return config('datatables.table.script_view');
 	}
 
 	/**************************************************************/

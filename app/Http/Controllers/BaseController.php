@@ -120,24 +120,36 @@ class BaseController extends Controller {
         $this->monolog->log( $loglevel, $message, $data );
     }
 
-    protected function responseSuccessJSON( $message = '', $type = 'success', $tables = '' ){
-        $values = $this -> mergeValues(['status'=>true,'type'=>$type,'tables'=>$tables], $message);
+    protected function responseSuccessJSON( $message = '', $type = null, $tables = null ){
+        return $this -> buildValues(true, $message, 'success', $type, $tables);
+    }
+
+    protected function responseInfoJSON( $message = '', $type = null, $tables = null ){
+        return $this -> buildValues(true, $message, 'info', $type, $tables);
+    }
+
+    protected function responseWarningJSON( $message = '', $type = null, $tables = null ){
+        return $this -> buildValues(true, $message, 'warning', $type, $tables);
+    }
+
+    protected function responseErrorJSON( $message = '', $type = null, $tables = null ){
+        return $this -> buildValues(false, $message, 'danger', $type, $tables);
+    }
+
+    protected function responseJSON( $status, $message, $type, $tables = null ){
+
+        $values = $this -> mergeValues(['status'=>$status,'type'=>$type,'tables'=>$tables], $message);
         return response() -> json( $values );
     }
 
-    protected function responseInfoJSON( $message = '', $type = 'info', $tables = '' ){
-        $values = $this -> mergeValues(['status'=>true,'type'=>$type,'tables'=>$tables], $message);
-        return response() -> json( $values );
-    }
+    private function buildValues( $status, $message, $type, $type2, $tables ){
+        if( is_null($tables) ){
+            $tables = $type2;
+        }else if( !is_null($type2) ){
+            $type = $type2;
+        }
 
-    protected function responseWarningJSON( $message = '', $type = 'warning', $tables = '' ){
-        $values = $this -> mergeValues(['status'=>true,'type'=>$type,'tables'=>$tables], $message);
-        return response() -> json( $values );
-    }
-
-    protected function responseErrorJSON( $message = '', $type = 'danger', $tables = '' ){
-        $values = $this -> mergeValues(['status'=>false,'type'=>$type,'tables'=>$tables], $message);
-        return response() -> json( $values );
+        return $this -> responseJSON( $status, $message, $type, $tables );
     }
 
     private function mergeValues( $values, $message ){
@@ -146,6 +158,10 @@ class BaseController extends Controller {
         }else{
             $values['message'] = $message;
         }
+
+        if( is_null($values['tables']) )
+            unset($values['tables']);
+
         return $values;
     }
 

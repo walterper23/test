@@ -171,7 +171,6 @@ class PuestoController extends BaseController {
 
 	public function editarPuesto( $request ){
 		try{
-			
 			$departamento = $request -> departamento;
 
 			if( $departamento == 0 )
@@ -183,9 +182,11 @@ class PuestoController extends BaseController {
 			$puesto -> PUES_DEPARTAMENTO = $departamento;
 			$puesto -> save();
 
+			$message = sprintf('<i class="fa fa-fw fa-check"></i> Puesto <b>%s</b> modificado',$puesto -> getCodigo());
+
 			$tables = 'dataTableBuilder';
 
-			return response()->json(['status'=>true, 'message'=>'<i class="fa fa-check"></i> Los cambios se guardaron correctamente','tables'=>$tables]);
+			return $this -> responseSuccessJSON($message,$tables);
 		}catch(Exception $error){
 
 		}
@@ -195,17 +196,16 @@ class PuestoController extends BaseController {
 		try{
 			$puesto = MPuesto::find( $request -> id );
 
-			if( $puesto -> cambiarDisponibilidad() -> disponible() ){
-				$type = 'info';
+			$puesto -> cambiarDisponibilidad() -> save();
+
+			if( $puesto -> disponible() ){
 				$message = sprintf('<i class="fa fa-fw fa-check"></i> Puesto <b>%s</b> activado',$puesto -> getCodigo());
+				return $this -> responseInfoJSON($message);
 			}else{
-				$type = 'warning';
 				$message = sprintf('<i class="fa fa-fw fa-warning"></i> Puesto <b>%s</b> desactivado',$puesto -> getCodigo());
+				return $this -> responseWarningJSON($message);
 			}
 
-			$puesto -> save();
-
-			return $this -> responseSuccessJSON($message,$type);
 		}catch(Exception $error){
 			return response()->json(['status'=>false,'message'=>'Ocurrió un error al guardar los cambios. Error ' . $error->getCode() ]);
 		}
@@ -222,7 +222,7 @@ class PuestoController extends BaseController {
 			// Lista de tablas que se van a recargar automáticamente
 			$tables = 'dataTableBuilder';
 
-			return $this -> responseWarningJSON($message,'danger',$tables);
+			return $this -> responseInfoJSON($message,'danger',$tables);
 		}catch(Exception $error){
 			return response()->json(['status'=>false,'message'=>'Ocurrió un error al eliminar el puesto. Error ' . $error->getMessage() ]);
 		}

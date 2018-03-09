@@ -1,6 +1,6 @@
 @extends('vendor.templateModal')
 
-@section('title')<i class="fa fa-fw fa-files-o"></i> {!! $title !!} @endsection
+@section('title')<i class="fa fa-fw fa-flash"></i> {!! $title !!} @endsection
 
 @section('content')
 	@component('vendor.contentModal')

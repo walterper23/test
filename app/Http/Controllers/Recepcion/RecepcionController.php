@@ -17,7 +17,7 @@ use App\Model\MSeguimiento;
 use App\Model\Catalogo\MAnexo;
 use App\Model\Catalogo\MEstadoDocumento;
 use App\Model\Catalogo\MDireccion;
-use App\Model\System\MSystemTipoDocumento;
+use App\Model\Sistema\MSistemaTipoDocumento;
 
 class RecepcionController extends BaseController {
 
@@ -37,7 +37,7 @@ class RecepcionController extends BaseController {
 
 		$data = [];
 
-		$data['tipos_documentos'] = MSystemTipoDocumento::select('SYTD_TIPO_DOCUMENTO','SYTD_NOMBRE_TIPO')
+		$data['tipos_documentos'] = MSistemaTipoDocumento::select('SYTD_TIPO_DOCUMENTO','SYTD_NOMBRE_TIPO')
 									->where('SYTD_ENABLED',1)
 									->orderBy('SYTD_NOMBRE_TIPO')
 									->pluck('SYTD_NOMBRE_TIPO','SYTD_TIPO_DOCUMENTO')

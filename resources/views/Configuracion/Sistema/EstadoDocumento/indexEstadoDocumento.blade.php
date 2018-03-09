@@ -1,7 +1,7 @@
 @extends('Tema.app')
 
 @section('title')
-    SIGESD :: Cat&aacute;logos - Departamentos
+    SIGESD :: Cat&aacute;logos - Estados de documentos
 @endsection
 
 @push('css-style')
@@ -13,22 +13,16 @@
 @section('breadcrumb')
     <nav class="breadcrumb bg-body-light mb-0">
         <a class="breadcrumb-item" href="javascript:void(0)"><i class="fa fa-cogs"></i> Configuraci&oacute;n</a>
-        <a class="breadcrumb-item" href="{{ url('configuracion/catalogos') }}">Cat&aacute;logos</a>
-        <span class="breadcrumb-item active">Departamentos</span>
+        <a class="breadcrumb-item" href="javascript:void(0)">Sistema</a>
+        <span class="breadcrumb-item active">Estados de documentos</span>
     </nav>
 @endsection
 
 @section('content')
     <div class="block block-themed block-mode-loading-refresh">
         <div class="block-header bg-corporate-dark">
-            <h3 class="block-title"><i class="fa fa-fw fa-sitemap mr-5"></i> Departamentos</h3>
+            <h3 class="block-title"><i class="fa fa-fw fa-flash mr-5"></i> Estados de documentos</h3>
             <div class="block-options">
-                <button type="button" class="btn-block-option" onclick="hDepartamento.new('{{ $form_id}}', '{{$form_url}}')">
-                    <i class="fa fa-plus"></i> Nuevo
-                </button>
-                <button type="button" class="btn-block-option" onclick="hDepartamento.reload('dataTableBuilder')">
-                    <i class="fa fa-refresh"></i> Actualizar
-                </button>
                 <div class="dropdown">
                     <button type="button" class="btn-block-option dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cog"></i> Opciones</button>
                     <div class="dropdown-menu dropdown-menu-right">
@@ -45,17 +39,17 @@
         </div>
         <div class="block-content block-content-full">
             <div class="table-responsive font-size-sm">
-            	{{ $table->html() }}
+                {{ $table->html() }}
             </div>
-       	</div>
+        </div>
     </div>
-@endsection
+@stop
 
 @push('js-script')
     {{ Html::script('js/plugins/jquery-validation/jquery.validate.min.js') }}
     {{ Html::script('js/plugins/datatables/jquery.dataTables.min.js') }}
     {{ Html::script('js/plugins/datatables/dataTables.bootstrap4.min.js') }}
-    {{ Html::script('js/helpers/departamento.helper.js') }}
+    {{ Html::script('js/helpers/sistema_estado_documento.helper.js') }}
     {{ Html::script('js/app-form.js') }}
     {{ Html::script('js/app-alert.js') }}
 @endpush

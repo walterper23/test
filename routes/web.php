@@ -140,23 +140,25 @@ Route::middleware('preventBackHistory')->group(function(){
 			Route::prefix('sistema')->namespace('Sistema')->group(function(){
 				
 				Route::prefix('tipos-documentos')->group(function(){
-					Route::get('/',          'SystemTipoDocumentoController@index');
-					Route::post('post-data', 'SystemTipoDocumentoController@postDataTable');
-					Route::post('nuevo',     'SystemTipoDocumentoController@formNuevoTipoDocumento');
-					Route::post('editar',    'SystemTipoDocumentoController@formEditarTipoDocumento');
-					Route::post('manager',   'SystemTipoDocumentoController@manager');
+					Route::get('/',          'SistemaTipoDocumentoController@index');
+					Route::post('post-data', 'SistemaTipoDocumentoController@postDataTable');
+					Route::post('editar',    'SistemaTipoDocumentoController@formEditarTipoDocumento');
+					Route::post('manager',   'SistemaTipoDocumentoController@manager');
 				});
 
 				Route::prefix('estados-documentos')->group(function(){
-					Route::get('/',          'SystemTipoDocumentoController@index');
+					Route::get('/',          'SistemaEstadoDocumentoController@index');
+					Route::post('post-data', 'SistemaEstadoDocumentoController@postDataTable');
+					Route::post('editar',    'SistemaEstadoDocumentoController@formEditarEstadoDocumento');
+					Route::post('manager',   'SistemaEstadoDocumentoController@manager');
 				});
 
 				Route::prefix('variables')->group(function(){
-					Route::get('/',          'SystemTipoDocumentoController@index');
+					Route::get('/',          'SistemaTipoDocumentoController@index');
 				});
 
 				Route::prefix('bitacora')->group(function(){
-					Route::get('/',          'SystemTipoDocumentoController@index');
+					Route::get('/',          'SistemaTipoDocumentoController@index');
 				});
 
 			});

@@ -44,8 +44,8 @@
             </div>
         </div>
         <div class="block-content block-content-full">
-            <div class="table-responsive">
-                {{ $table->html()  }}
+            <div class="table-responsive font-size-sm">
+                {{ $table->html() }}
             </div>
         </div>
    	</div>

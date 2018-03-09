@@ -1,19 +1,19 @@
 <?php
-namespace App\Model\System;
+namespace App\Model\Sistema;
 
 /* Models */
 use App\Model\BaseModel;
 
 /* Presenter */
-use App\Presenters\MSystemTipoDocumentoPresenter;
+use App\Presenters\MSistemaTipoDocumentoPresenter;
 
-class MSystemTipoDocumento extends BaseModel {
+class MSistemaTipoDocumento extends BaseModel {
     
     protected $table          = 'system_tipos_documentos';
     protected $primaryKey     = 'SYTD_TIPO_DOCUMENTO';
     public    $timestamps     = false;
 
-    protected $fieldCreatedBy = 'SYTD_CREATED_BY';
+    protected $fieldEnabled   = 'SYTD_ENABLED';
     protected $fieldUpdated   = 'SYTD_UPDATED';
 
     public function getNombre(){
@@ -31,7 +31,7 @@ class MSystemTipoDocumento extends BaseModel {
     /* Presenter */
 
     public function presenter(){
-        return new MSystemTipoDocumentoPresenter($this);
+        return new MSistemaTipoDocumentoPresenter($this);
     }
 
 }

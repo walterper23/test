@@ -8,14 +8,14 @@ return [
         
         'id'    => 'dataTableBuilder',
         
-        'class' => 'table table-bordered table-vcenter table-sm js-dataTable-full-pagination',
+        'class' => 'table table-bordered table-striped table-vcenter table-sm js-dataTable-full-pagination',
 
     ],
 
     'options' => [
     	//'dom'       => '<"row"<"col-4"l><"col-4"r><"col-4"f>><"row"<"col-12"t>><"row"<"col-6"i><"col-6"p>>',
     	'pagingType' => 'full_numbers',
-    	'processing' => false,
+    	//'processing' => true,
 		'buttons'   => ['reload','export'],
 		'saveState' => true,
 		'pageLength' => '100',

@@ -1,12 +1,12 @@
 <?php
 namespace App\DataTables;
 
-use App\Model\System\MSystemTipoDocumento;
+use App\Model\Sistema\MSistemaTipoDocumento;
 
-class SystemTiposDocumentosDataTable extends CustomDataTable{
+class SistemaTiposDocumentosDataTable extends CustomDataTable{
 
     protected function setSourceData(){
-        $this->sourceData = MSystemTipoDocumento::select('SYTD_TIPO_DOCUMENTO','SYTD_NOMBRE_TIPO','SYTD_CREATED_AT','SYTD_VALIDAR','SYTD_ENABLED')
+        $this->sourceData = MSistemaTipoDocumento::select('SYTD_TIPO_DOCUMENTO','SYTD_NOMBRE_TIPO','SYTD_CREATED_AT','SYTD_VALIDAR','SYTD_ENABLED')
                             ->orderBy('SYTD_CREATED_AT','DESC');
     }
 
@@ -41,11 +41,8 @@ class SystemTiposDocumentosDataTable extends CustomDataTable{
             [
                 'title'  => 'Opciones',
                 'render' => function($query){
-                    $buttons = '';
-
-                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hTipoDocumento.edit_('.$query -> SYTD_TIPO_DOCUMENTO.')"><i class="fa fa-pencil"></i></button>';
-                
-                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hTipoDocumento.delete_('.$query -> SYTD_TIPO_DOCUMENTO.')"><i class="fa fa-trash"></i></button>';
+                    $buttons = sprintf('
+                        <button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hTipoDocumento.edit_(%d)"><i class="fa fa-pencil"></i></button>', $query -> getKey() );
                     
                     return $buttons;
                 }
