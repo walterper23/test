@@ -21,7 +21,7 @@ class EstadoDocumentoController extends BaseController {
 	public function index(EstadosDocumentosDataTable $dataTables){
 
 		$data['table']    = $dataTables;
-		$data['form_id']  = $this->form_id;
+		$data['form_id']  = $this -> form_id;
 		$data['form_url'] = url('configuracion/catalogos/estados-documentos/nuevo');
 
 		return view('Configuracion.Catalogo.EstadoDocumento.indexEstadoDocumento')->with($data);
@@ -29,20 +29,18 @@ class EstadoDocumentoController extends BaseController {
 
 	public function manager(ManagerEstadoDocumentoRequest $request){
 
-		$action = Input::get('action');
-
-		switch ($action) {
+		switch ($request -> action) {
 			case 1: // Nuevo
-				$response = $this->nuevoEstadoDocumento();
+				$response = $this -> nuevoEstadoDocumento( $request );
 				break;
 			case 2: // Editar
-				$response = $this->editarEstadoDocumento();
+				$response = $this -> editarEstadoDocumento( $request );
 				break;
 			case 3: // Activar / Desactivar
-				$response = $this->activarEstadoDocumento();
+				$response = $this -> activarEstadoDocumento( $request );
 				break;
 			case 4: // Eliminar
-				$response = $this->eliminarEstadoDocumento();
+				$response = $this -> eliminarEstadoDocumento( $request );
 				break;
 			default:
 				return response()->json(['message'=>'Petición no válida'],404);
@@ -62,7 +60,7 @@ class EstadoDocumentoController extends BaseController {
 
 			$data['title']         = 'Nuevo estado de documento';
 			$data['url_send_form'] = url('configuracion/catalogos/estados-documentos/manager');
-			$data['form_id']       = $this->form_id;
+			$data['form_id']       = $this -> form_id;
 			$data['modelo']		   = null;
 			$data['action']		   = 1;
 			$data['id']		       = null;
@@ -97,23 +95,25 @@ class EstadoDocumentoController extends BaseController {
 		}
 	}
 
-	public function nuevoEstadoDocumento(){
+	public function nuevoEstadoDocumento( $request ){
 		try{
 
-			$departamento = Input::get('departamento');
+			$departamento = $request -> departamento;
 
 			if( $departamento == 0 )
 				$departamento = null;
 
 			$estadoDocumento = new MEstadoDocumento;
-			$estadoDocumento->ESDO_NOMBRE       = Input::get('nombre');
-			$estadoDocumento->ESDO_DIRECCION    = Input::get('direccion');
-			$estadoDocumento->ESDO_DEPARTAMENTO = $departamento;
-			$estadoDocumento->save();			
+			$estadoDocumento -> ESDO_NOMBRE       = $request -> nombre;
+			$estadoDocumento -> ESDO_DIRECCION    = $request -> direccion;
+			$estadoDocumento -> ESDO_DEPARTAMENTO = $departamento;
+			$estadoDocumento -> save();			
 
 			$tables = ['dataTableBuilder',null,true];
 
-			return response()->json(['status'=>true,'message'=>'El estado de documento se creó correctamente','tables' =>$tables]);
+			$message = sprintf('<i class="fa fa-check"></i> Nuevo estado de documento <b>%s</b> creado',$estadoDocumento -> getCodigo());
+
+			return $this -> responseSuccessJSON($message,$tables);
 		
 		}catch(Exception $error){
 
@@ -124,7 +124,7 @@ class EstadoDocumentoController extends BaseController {
 		try{
 			$data['title']         = 'Editar estado de documento';
 			$data['url_send_form'] = url('configuracion/catalogos/estados-documentos/manager');
-			$data['form_id']       = $this->form_id;
+			$data['form_id']       = $this -> form_id;
 			$data['modelo']		   = MEstadoDocumento::find( Input::get('id') );
 			$data['action']		   = 2;
 			$data['id']		       = Input::get('id');
@@ -148,41 +148,43 @@ class EstadoDocumentoController extends BaseController {
 
 			}
 
-			return view('Configuracion.Catalogo.EstadoDocumento.formEstadoDocumento')->with($data);
+			return view('Configuracion.Catalogo.EstadoDocumento.formEstadoDocumento') -> with($data);
 
 		}catch(Exception $error){
 
 		}
 	}
 
-	public function editarEstadoDocumento(){
+	public function editarEstadoDocumento( $request ){
 		try{
-			$estadoDocumento = MEstadoDocumento::where('ESDO_DELETED',0)->find( Input::get('id') );
-			$estadoDocumento->ESDO_NOMBRE       = Input::get('nombre');
-			$estadoDocumento->ESDO_DEPARTAMENTO = Input::get('departamento');
-			$estadoDocumento->save();			
+			$estadoDocumento = MEstadoDocumento::find( $request -> id );
+			$estadoDocumento -> ESDO_NOMBRE       = $request -> nombre;
+			$estadoDocumento -> ESDO_DEPARTAMENTO = $request -> departamento;
+			$estadoDocumento -> save();			
 
 			$tables = 'dataTableBuilder';
 
-			return response()->json(['status'=>true,'message'=>'Los cambios se guardaron correctamente','tables' =>$tables]);
+			$message = sprintf('<i class="fa fa-check"></i> Estado de documento <b>%s</b> modificado',$estadoDocumento -> getCodigo());
+
+			return $this -> responseSuccessJSON($message,$tables);
 
 		}catch(Exception $error){
 			
 		}
 	}
 
-	public function activarEstadoDocumento(){
+	public function activarEstadoDocumento( $request ){
 		try{
-			$estadoDocumento = MEstadoDocumento::find( Input::get('id') );
+			$estadoDocumento = MEstadoDocumento::find( $request -> id );
 			
-			if( $estadoDocumento->ESDO_ENABLED == 1 ){
-				$estadoDocumento->ESDO_ENABLED = 0;
+			if( $estadoDocumento -> ESDO_ENABLED == 1 ){
+				$estadoDocumento -> ESDO_ENABLED = 0;
 				$message = 'El estado de documento se desactivó correctamente';
 			}else{
-				$estadoDocumento->ESDO_ENABLED = 1;
+				$estadoDocumento -> ESDO_ENABLED = 1;
 				$message = 'El estado de documento se activó correctamente';
 			}
-			$estadoDocumento->save();
+			$estadoDocumento -> save();
 
 			return response()->json(['status'=>true,'message'=>$message]);
 		}catch(Exception $error){
@@ -195,9 +197,9 @@ class EstadoDocumentoController extends BaseController {
 		try{
 			$estadoDocumento = MEstadoDocumento::find( Input::get('id') );
 			
-			$estadoDocumento->ESDO_DELETED    = 1;
-			$estadoDocumento->ESDO_DELETED_AT = Carbon::now();
-			$estadoDocumento->save();
+			$estadoDocumento -> ESDO_DELETED    = 1;
+			$estadoDocumento -> ESDO_DELETED_AT = Carbon::now();
+			$estadoDocumento -> save();
 
 			// Lista de tablas que se van a recargar automáticamente
 			$tables = 'dataTableBuilder';

@@ -122,7 +122,7 @@ class PuestoController extends BaseController {
 
 			$message = sprintf('<i class="fa fa-check"></i> Nuevo puesto <b>%s</b> creado',$puesto -> getCodigo());
 
-			return response()->json(['status'=>true, 'message'=>$message,'tables'=>$tables]);
+			return $this -> responseSuccessJSON($message,$tables);
 		}catch(Exception $error){
 
 		}
