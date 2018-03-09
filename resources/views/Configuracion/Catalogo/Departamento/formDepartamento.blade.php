@@ -18,61 +18,27 @@
 	
 	$.extend(AppForm, new function(){
 
-		this.context = $('#modal-{{ $form_id }}')
-		this.form = $('#{{ $form_id }}')
+		this.context_ = '#modal-{{ $form_id }}';
+		this.form_    = '#{{ $form_id }}';
 
 		this.start = function(){
 
 
 		};
 				
-		this.submitHandler = function(form){
-			if(!$(form).valid()) return false;
-			App.ajaxRequest({
-				url  : $(form).attr('action'),
-				data : $(form).serialize(),
-				before : function(){
-					Codebase.blocks( AppForm.context.find('div.modal-content'), 'state_loading')
-				},
-				success : function(data){
-					if( data.status ){
-						AppForm.closeContext()
-
-						if(data.tables != undefined){
-							App.reloadTable(data.tables)
-						}
-
-						AppAlert.notify({
-							type : 'info',
-							message : data.message
-						})
-					}else{
-
-						if( data.errors != undefined){
-							$.each(data.errors,function(index, value){
-								error = $('<div/>').addClass('invalid-feedback').attr('id',index+'-error').text(value[0]);
-								$('#'+index).closest('.form-group').removeClass('is-invalid').addClass('is-invalid');
-								$('#'+index).parents('.form-group > div').append(error);
-							})
-						}
-
-
-						
-					}
-				}
-			})
-		}
-
 		this.rules = function(){
 			return {
-				nombre : { required : true, maxlength : 255 },
-				direccion : { required : true }
+				direccion : { required : true },
+				nombre : { required : true, maxlength : 255 }
 			}
 		}
 
 		this.messages = function(){
 			return {
-				nombre : { required : 'Introduzca un nombre' },
+				nombre : {
+					required : 'Introduzca un nombre',
+					maxlength : 'Máximo {0} caracteres'
+				},
 				direccion : { required : 'Especifique una dirección' }
 			}
 		}

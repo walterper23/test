@@ -70,7 +70,10 @@ App.loadScript('/js/plugins/sweetalert2/sweetalert2.min.js', function(){
                         cancelButtonText: options.cancelBtnText,
                         cancelButtonClass: options.cancelBtnClass,
                         buttonsStyling: options.btnStyling,
-                    }).then( options.then, options.dismiss )
+                    }).then(function(result){
+                        if(result.value){ options.then(); }
+                        else{ options.dismiss(); }
+                    });
                 }
 
                 var _waiting = function( options ){
@@ -91,7 +94,10 @@ App.loadScript('/js/plugins/sweetalert2/sweetalert2.min.js', function(){
                         allowEnterKey: options.enterKey,
                         showLoaderOnConfirm: options.showLoader,
                         preConfirm: options.preConfirm
-                    }).then( options.then, options.dismiss )
+                    }).then(function(result){
+                        if(result.value){ options.then(); }
+                        else{ options.dismiss(); }
+                    });
                 }
 
                 var _error = function( options ){

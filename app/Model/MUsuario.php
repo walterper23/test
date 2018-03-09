@@ -20,6 +20,10 @@ class MUsuario extends Authenticatable {
         return $this -> attributes['USUA_USERNAME'];
     }    
 
+    public function setUsuaPasswordAttribute( $password ){
+        $this -> attributes['USUA_PASSWORD'] = bcrypt($password);
+    }
+
     public function getAuthPassword(){
         return $this -> attributes['USUA_PASSWORD'];
     }

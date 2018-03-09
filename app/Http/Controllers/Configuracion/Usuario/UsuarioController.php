@@ -126,6 +126,19 @@ class UsuarioController extends BaseController {
 		return view('Configuracion.Usuario.formPassword') -> with($data);
 	}
 
+	public function modificarPassword( $request ){
+		try{
+
+			$usuario = MUsuario::find( $request -> id );
+			$usuario -> USUA_PASSWORD = $request -> password;
+			$usuario -> save();
+
+			return response() -> json(['status'=>true,'message'=>'Contraseña modificada correctamente']);
+
+		}catch(Exception $error){
+			return response() -> json(['status'=>false,'message'=>'Ocurrió un error al guardar los cambios. Error ' . $error->getCode() ]);
+		}
+	}
 
 	public function activarUsuario( $request ){
 		try{
@@ -155,10 +168,12 @@ class UsuarioController extends BaseController {
 			$usuario -> USUA_DELETED_AT = Carbon::now();
 			$usuario -> save();
 
+			$message = sprintf('<i class="fa fa-warning"></i> Usuario <b>%s</b> eliminado',$usuario -> getCodigo());
+
 			// Lista de tablas que se van a recargar automáticamente
 			$tables = 'dataTableBuilder';
 
-			return response()->json(['status'=>true,'message'=>'El usuario ha sido eliminado','tables'=>$tables]);
+			return response()->json(['status'=>true,'type'=>'warning','message'=>$message,'tables'=>$tables]);
 		}catch(Exception $error){
 			return response()->json(['status'=>false,'message'=>'Ocurrió un error al eliminar el usuario. Error ' . $error->getMessage() ]);
 		}

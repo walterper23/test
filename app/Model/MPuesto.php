@@ -13,6 +13,8 @@ class MPuesto extends BaseModel {
     protected $primaryKey     = 'PUES_PUESTO';
     public    $timestamps     = false;
 
+    protected $fieldEnabled   = 'PUES_ENABLED';
+    protected $fieldDeleted   = 'PUES_DELETED';
 
     /** Relationships **/
 

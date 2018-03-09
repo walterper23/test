@@ -63,6 +63,7 @@ var Helper = function(){
 							}
 
 							AppAlert.notify({
+								type    : data.type,
 								message : data.message
 							})
 						}else{

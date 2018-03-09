@@ -7,8 +7,7 @@ class BaseModel extends Model {
 
     use BaseModelTrait;
 
-	protected $fieldCreatedBy;
-	protected $fieldUpdated;
+    public $timestamps   = false;
 
     public function __construct(){
         parent::__construct();
@@ -19,7 +18,7 @@ class BaseModel extends Model {
         parent::boot();
 
         static::creating(function($model){
-        	$model -> fieldCreatedBy();
+        	//$model -> fieldCreatedBy();
         });
 
         static::updating(function($model){

@@ -82,6 +82,7 @@ var AppForm = new function(){
 	};
 
 	this.successSubmitHandler = function( data ){
+		console.log(data)
 		if( data.status ){
 			AppForm.closeContext()
 
@@ -90,7 +91,7 @@ var AppForm = new function(){
 			}
 
 			AppAlert.notify({
-				type : 'info',
+				type : data.type,
 				message : data.message
 			})
 		}else{
@@ -121,12 +122,13 @@ var AppForm = new function(){
 				title : 'Descartar cambios',
 				text  : '¿Desea descartar los cambios realizados?',
 				okBtnText : 'Descartar',
+				cancelBtnText : 'Regresar',
 				then  : function(){
 					AppForm.resetForm().closeContext();
 				}
 			});
 		}else{
-			this.closeContext();
+			AppForm.resetForm().closeContext();
 		}
 	};
 

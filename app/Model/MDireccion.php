@@ -9,12 +9,11 @@ use App\Presenters\MDireccionPresenter;
 
 class MDireccion extends BaseModel {
     
-    protected $table          = 'cat_direcciones';
-    protected $primaryKey     = 'DIRE_DIRECCION';
-    public    $timestamps     = false;
-
-    protected $fieldEnabled   = 'DIRE_ENABLED';
-
+    protected $table        = 'cat_direcciones';
+    protected $primaryKey   = 'DIRE_DIRECCION';
+    
+    protected $fieldEnabled = 'DIRE_ENABLED';
+    protected $fieldDeleted = 'DIRE_DELETED';
 
     /* Relationships */
 

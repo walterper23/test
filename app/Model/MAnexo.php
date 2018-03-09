@@ -9,11 +9,11 @@ use App\Presenters\MAnexoPresenter;
 
 class MAnexo extends BaseModel {
     
-	protected $table          = 'cat_anexos';
-	protected $primaryKey     = 'ANEX_ANEXO';
-	public    $timestamps     = false;
-
+	protected $table        = 'cat_anexos';
+	protected $primaryKey   = 'ANEX_ANEXO';
+	
 	protected $fieldEnabled = 'ANEX_ENABLED';
+	protected $fieldDeleted = 'ANEX_DELETED';
 
     /* Presenter */    
     public function presenter(){

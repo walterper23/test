@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Monolog\Logger;
@@ -9,7 +8,6 @@ class BaseController extends Controller {
 
 	public function __construct( $data = [] ){
         
-    
     }
 
     public function setLog( $file = 'log' ){
@@ -120,6 +118,35 @@ class BaseController extends Controller {
                 break;
         }
         $this->monolog->log( $loglevel, $message, $data );
+    }
+
+    protected function responseSuccessJSON( $message = '', $type = 'success', $tables = '' ){
+        $values = $this -> mergeValues(['status'=>true,'type'=>$type,'tables'=>$tables], $message);
+        return response() -> json( $values );
+    }
+
+    protected function responseInfoJSON( $message = '', $type = 'info', $tables = '' ){
+        $values = $this -> mergeValues(['status'=>true,'type'=>$type,'tables'=>$tables], $message);
+        return response() -> json( $values );
+    }
+
+    protected function responseWarningJSON( $message = '', $type = 'warning', $tables = '' ){
+        $values = $this -> mergeValues(['status'=>true,'type'=>$type,'tables'=>$tables], $message);
+        return response() -> json( $values );
+    }
+
+    protected function responseErrorJSON( $message = '', $type = 'danger', $tables = '' ){
+        $values = $this -> mergeValues(['status'=>false,'type'=>$type,'tables'=>$tables], $message);
+        return response() -> json( $values );
+    }
+
+    private function mergeValues( $values, $message ){
+        if( is_array($message) ){
+            array_merge($values, $message);
+        }else{
+            $values['message'] = $message;
+        }
+        return $values;
     }
 
 }

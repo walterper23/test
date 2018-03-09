@@ -19,9 +19,9 @@
 
         <!-- Icons -->
         <!-- The following icons can be replaced with your own, they are used by desktop and mobile browsers -->
-        <link rel="shortcut icon" href="/assets/img/favicons/favicon.png">
-        <link rel="icon" type="image/png" sizes="192x192" href="/assets/img/favicons/favicon-192x192.png">
-        <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicons/apple-touch-icon-180x180.png">
+        <link rel="shortcut icon" href="{{ asset('img/favicons/favicon.ico') }}">
+        <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('img/favicon/favicon-192x192.png') }}">
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('img/favicon/apple-touch-icon-180x180.png') }}">
         <!-- END Icons -->
 
         <!-- Stylesheets -->
@@ -52,7 +52,10 @@
 
                         <!-- Header -->
                         <div class="py-30 px-5 text-center">
-                            <h1 class="h2 font-w700 mt-50 mb-10">Sistema Gestor de Documentos</h1>
+                            <h1 class="h2 font-w700 mt-30 mb-10">
+                                Sistema Gestor de Documentos<br>
+                                {{ Html::image('img/favicon/logo.png','',['width'=>'60']) }}
+                            </h1>
                             <h2 class="h4 font-w400 text-muted mb-0">Iniciar sesi&oacute;n</h2>
                         </div>
                         <!-- END Header -->
@@ -66,7 +69,7 @@
                                     <div class="form-group row">
                                         <div class="col-12">
                                             <div class="form-material floating open">
-                                                {{ Form::text('username',old('username'),['id'=>'username','class'=>'form-control text-center','autofocus','autocomplete'=>'off']) }}
+                                                {{ Form::text('username',old('username'),['id'=>'username','class'=>'form-control text-center','autofocus']) }}
                                                 {{ Form::label('username','Usuario') }}
                                             </div>
                                         </div>
@@ -120,8 +123,7 @@
 
         <!-- Codebase Core JS -->
         {{ Html::script('js/core/jquery.min.js') }}
-        {{ Html::script('js/core/popper.min.js') }}
-        {{ Html::script('js/core/bootstrap.min.js') }}
+        {{ Html::script('js/core/bootstrap.bundle.min.js') }}
         {{ Html::script('js/core/jquery.slimscroll.min.js') }}
         {{ Html::script('js/core/jquery.scrollLock.min.js') }}
         {{ Html::script('js/core/jquery.appear.min.js') }}

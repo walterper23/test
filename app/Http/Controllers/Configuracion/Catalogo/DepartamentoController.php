@@ -121,9 +121,12 @@ class DepartamentoController extends BaseController {
 			$departamento -> DEPA_DIRECCION = $request -> direccion;
 			$departamento -> save();
 
+			$message = sprintf('<i class="fa fa-fw fa-check"></i> Departamento <b>%s</b> modificado',$departamento -> getCodigo());
+
 			$tables = 'dataTableBuilder';
 
-			return response() -> json(['status'=>true, 'message'=>'Los cambios se guardaron correctamente','tables'=>$tables]);
+			return $this -> responseSuccessJSON($message);
+
 		}catch(Exception $error){
 
 		}
@@ -135,13 +138,16 @@ class DepartamentoController extends BaseController {
 			$departamento = MDepartamento::find( $request -> id );
 			
 			if( $departamento -> cambiarDisponibilidad() -> disponible() ){
-				$message = 'El departamento ha sido activado';
+				$type = 'info';
+				$message = sprintf('<i class="fa fa-fw fa-check"></i> Departamento <b>%s</b> activado',$departamento -> getCodigo());
 			}else{
-				$message = 'El departamento ha sido desactivado';
+				$type = 'warning';
+				$message = sprintf('<i class="fa fa-fw fa-warning"></i> Departamento <b>%s</b> desactivado',$departamento -> getCodigo());
 			}
+
 			$departamento -> save();
 
-			return response() -> json(['status'=>true,'message'=>$message]);
+			return $this -> responseSuccessJSON($message,$type);
 		}catch(Exception $error){
 			return response() -> json(['status'=>false,'message'=>'Ocurrió un error al guardar los cambios. Error ' . $error->getCode() ]);
 		}
@@ -152,14 +158,14 @@ class DepartamentoController extends BaseController {
 		try{
 			$departamento = MDepartamento::find( $request -> id );
 			
-			$departamento -> DEPA_DELETED    = 1;
-			$departamento -> DEPA_DELETED_AT = Carbon::now();
-			$departamento -> save();
+			$departamento -> eliminar() -> save();
 
 			// Lista de tablas que se van a recargar automáticamente
 			$tables = 'dataTableBuilder';
 
-			return response() -> json(['status'=>true,'message'=>'El departamento se eliminó correctamente','tables'=>$tables]);
+			$message = sprintf('<i class="fa fa-fw fa-warning"></i> Departamento <b>%s</b> eliminado',$departamento -> getCodigo());
+
+			return $this -> responseWarningJSON($message,'danger',$tables);
 		}catch(Exception $error){
 			return response() -> json(['status'=>false,'message'=>'Ocurrió un error al eliminar el anexo. Error ' . $error->getMessage() ]);
 		}

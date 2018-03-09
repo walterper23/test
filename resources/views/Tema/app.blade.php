@@ -20,9 +20,9 @@
 
         <!-- Icons -->
         <!-- The following icons can be replaced with your own, they are used by desktop and mobile browsers -->
-        <link rel="shortcut icon" href="{{ asset('img/favicons/favicon.png') }}">
-        <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('img/favicons/favicon-192x192.png') }}">
-        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('img/favicons/apple-touch-icon-180x180.png') }}">
+        <link rel="shortcut icon" href="{{ asset('img/favicons/favicon.ico') }}">
+        <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('img/favicon/favicon-192x192.png') }}">
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('img/favicon/apple-touch-icon-180x180.png') }}">
         <!-- END Icons -->
         
         <!-- Stylesheets -->
@@ -39,7 +39,7 @@
     </head>
     <body>
         <!-- Page Container -->
-        <div id="page-container" class="side-scroll page-header-modern page-header-fixed">
+        <div id="page-container" class="sidebar-o side-scroll page-header-modern page-header-fixed">
 
             <!-- Sidebar -->
            <nav id="sidebar">
@@ -71,7 +71,9 @@
                                 <!-- Logo -->
                                 <div class="content-header-item">
                                     <a class="link-effect font-w700" href="/">
-                                        <span class="font-size-xl text-dual-primary-dark">SIG</span><span class="font-size-xl text-primary">ESD</span>
+                                        <span class="font-size-xl text-dual-primary-dark">
+                                            {{ Html::image('img/favicon/logo.png','Logo',['class'=>'mb-5','width'=>'30']) }} SIGESD
+                                        </span>
                                     </a>
                                 </div>
                                 <!-- END Logo -->

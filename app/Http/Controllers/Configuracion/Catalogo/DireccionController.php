@@ -139,7 +139,7 @@ class DireccionController extends BaseController {
 
 			$direccion -> save();
 
-			return response()->json(['status'=>true,'type'=>$type,'message'=>$message]);
+			return $this -> responseSuccessJSON($message,$type);
 		}catch(Exception $error){
 			return response()->json(['status'=>false,'message'=>'Ocurrió un error al guardar los cambios. Error ' . $error->getCode() ]);
 		}
@@ -149,14 +149,14 @@ class DireccionController extends BaseController {
 		try{
 			$direccion = MDireccion::find( $request -> id );
 			
-			$direccion -> DIRE_DELETED    = 1;
-			$direccion -> DIRE_DELETED_AT = Carbon::now();
-			$direccion -> save();
+			$direccion -> eliminar() -> save();
 
 			// Lista de tablas que se van a recargar automáticamente
 			$tables = 'dataTableBuilder';
 
-			return response()->json(['status'=>true,'message'=>'La dirección se eliminó correctamente','tables'=>$tables]);
+			$message = sprintf('<i class="fa fa-fw fa-warning"></i> Dirección <b>%s</b> eliminada',$direccion -> getCodigo());
+
+			return $this -> responseWarningJSON($message,'danger',$tables);
 		}catch(Exception $error){
 			return response()->json(['status'=>false,'message'=>'Ocurrió un error al eliminar la dirección. Error ' . $error->getMessage() ]);
 		}
