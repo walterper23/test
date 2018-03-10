@@ -8,7 +8,7 @@
 ?>
 <div class="content-side content-side-full">
     <ul class="nav-main">
-        <li class="nav-main-heading"><span class="sidebar-mini-visible">Recepci&oacute;n</span><span class="sidebar-mini-hidden">Recepci&oacute;n</span></li>
+        <li class="nav-main-heading"><span class="sidebar-mini-visible">R</span><span class="sidebar-mini-hidden">Recepci&oacute;n</span></li>
         <li {!! activeMenu('recepcion','documentos') !!}>
             <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="fa fa-files-o"></i><span class="sidebar-mini-hide">Documentos</span></a>
             <ul>
@@ -25,7 +25,7 @@
         </li>
     </ul>
     <ul class="nav-main">
-        <li class="nav-main-heading"><span class="sidebar-mini-visible">Panel de trabajo</span><span class="sidebar-mini-hidden">Panel de trabajo</span></li>
+        <li class="nav-main-heading"><span class="sidebar-mini-visible">P</span><span class="sidebar-mini-hidden">Panel de trabajo</span></li>
         <li {!! activeMenu('panel','documentos') !!}>
             <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-docs"></i><span class="sidebar-mini-hide">Documentos</span></a>
             <ul>
@@ -59,7 +59,7 @@
         </li>
     </ul>
     <ul class="nav-main">
-        <li class="nav-main-heading"><span class="sidebar-mini-visible">UI</span><span class="sidebar-mini-hidden">Configuraci&oacute;n</span></li>
+        <li class="nav-main-heading"><span class="sidebar-mini-visible">C</span><span class="sidebar-mini-hidden">Configuraci&oacute;n</span></li>
         <li {!! activeMenu('configuracion','catalogos') !!}>
             <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="fa fa-cubes"></i><span class="sidebar-mini-hide">Cat&aacute;logos</span></a>
             <ul>

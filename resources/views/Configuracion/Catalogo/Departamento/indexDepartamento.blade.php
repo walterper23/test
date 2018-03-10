@@ -1,7 +1,7 @@
 @extends('Tema.app')
 
 @section('title')
-    SIGESD :: Cat&aacute;logos - Departamentos
+@component('Tema.Title') Configuración de Departamentos @endcomponent
 @endsection
 
 @push('css-style')

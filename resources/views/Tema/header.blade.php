@@ -15,15 +15,19 @@
                 {{ Auth::user()->getNombre() }}<i class="fa fa-angle-down ml-5"></i>
             </button>
             <div class="dropdown-menu dropdown-menu-right min-width-150" aria-labelledby="page-header-user-dropdown">
-                <a class="dropdown-item" href="{{ url('perfil') }}">
+                <a class="dropdown-item" href="{{ url('usuario/perfil') }}">
                     <i class="si si-user mr-5"></i> Perfil
                 </a>
                 <div class="dropdown-divider"></div>
 
                 <!-- Toggle Side Overlay -->
                 <!-- Layout API, functionality initialized in Codebase() -> uiApiLayout() -->
-                <a class="dropdown-item" href="{{ url('configuracion/preferencias') }}" data-toggle="layout" data-action="side_overlay_toggle">
+                <a class="dropdown-item" href="{{ url('usuario/preferencias') }}" data-toggle="layout" data-action="side_overlay_toggle">
                     <i class="si si-wrench mr-5"></i> Preferencias
+                </a>
+
+                <a class="dropdown-item" href="javascript:void(0);" data-toggle="layout" data-action="sidebar_mini_toggle">
+                    <i class="si si-list mr-5"></i> Mini Menú
                 </a>
                 <!-- END Side Overlay -->
 

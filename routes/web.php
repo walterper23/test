@@ -6,9 +6,9 @@ DB::listen(function($query){
 
 Route::middleware('preventBackHistory')->group(function(){
 
-	Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
+	Route::get('login',  'Auth\LoginController@showLoginForm') -> name('login');
 	Route::post('login', 'Auth\LoginController@login');
-	Route::get('logout', 'Auth\LoginController@logout')->name('logout');
+	Route::get('logout', 'Auth\LoginController@logout') -> name('logout');
 
 	// Password Reset Routes...
 	Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
@@ -20,8 +20,19 @@ Route::middleware('preventBackHistory')->group(function(){
 
 		Route::get('/', 'Dashboard\DashboardController@index');
 
-		Route::prefix('perfil')->namespace('Dashboard')->group(function(){
-			Route::get('/', 'PerfilController@index');
+		Route::prefix('usuario')->namespace('Dashboard')->group(function(){
+
+			Route::prefix('perfil')->group(function(){
+
+				Route::get('/', 'PerfilController@index');
+
+			});
+
+			Route::prefix('preferencias')->group(function(){
+
+				Route::get('/', 'PerfilController@index');
+				
+			});
 		});
 
 		Route::prefix('recepcion')->namespace('Recepcion')->group(function(){

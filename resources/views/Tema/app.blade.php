@@ -7,20 +7,17 @@
 
         <title>@yield('title')</title>
         
-        <meta name="description" content="Sistema Gestor de Documentos :: PPA">
-        <meta name="author" content="Instituto Tecnológico de Chetumal">
         <meta name="robots" content="noindex, nofollow">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <!-- Open Graph Meta -->
-        <meta property="og:title" content="Sistema Gestor de Documentos">
-        <meta property="og:site_name" content="SIGESD">
-        <meta property="og:description" content="Sistema Gestor de Documentos creado por Instituto Tecnológico de Chetumal">
+        <meta property="og:site_name" content="{{ config_var('Sistema.Nombre') }}">
+        <meta property="og:description" content="Sistema creado por Instituto Tecnológico de Chetumal 2017 - 2018">
         <meta property="og:type" content="webapp">
 
         <!-- Icons -->
         <!-- The following icons can be replaced with your own, they are used by desktop and mobile browsers -->
-        <link rel="shortcut icon" href="{{ asset('img/favicons/favicon.ico') }}">
+        <link rel="shortcut icon" href="{{ asset(config_var('Sistema.Icono')) }}">
         <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('img/favicon/favicon-192x192.png') }}">
         <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('img/favicon/apple-touch-icon-180x180.png') }}">
         <!-- END Icons -->
@@ -39,7 +36,7 @@
     </head>
     <body>
         <!-- Page Container -->
-        <div id="page-container" class="sidebar-o side-scroll page-header-modern page-header-fixed">
+        <div id="page-container" class="sidebar-o side-scroll page-header-modern page-header-fixed site-trans-enabled">
 
             <!-- Sidebar -->
            <nav id="sidebar">
@@ -52,8 +49,8 @@
                             <!-- Mini Mode -->
                             <div class="content-header-section sidebar-mini-visible-b">
                                 <!-- Logo -->
-                                <span class="content-header-item font-w700 font-size-xl float-left animated fadeIn">
-                                    <span class="text-dual-primary-dark">c</span><span class="text-primary">b</span>
+                                <span class="content-header-item font-w700 font-size-xl float-left">
+                                    {{ Html::image(config_var('Sistema.Logo'),'Logo',['class'=>'mb-5','width'=>'25']) }}
                                 </span>
                                 <!-- END Logo -->
                             </div>
@@ -72,7 +69,7 @@
                                 <div class="content-header-item">
                                     <a class="link-effect font-w700" href="/">
                                         <span class="font-size-xl text-dual-primary-dark">
-                                            {{ Html::image('img/favicon/logo.png','Logo',['class'=>'mb-5','width'=>'30']) }} SIGESD
+                                            {{ Html::image('img/favicon/logo.png','Logo',['class'=>'mb-5','width'=>'30']) }} {{ config_var('Sistema.Siglas') }}
                                         </span>
                                     </a>
                                 </div>

@@ -1,0 +1,1 @@
+{{ config_var('Sistema.Siglas') }} :: {{ $slot }}
