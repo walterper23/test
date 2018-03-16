@@ -45,7 +45,7 @@ class FieldBuilder {
     private function makeField(){
 
         $this->buildAttributes();
-        
+
         if( $this->_buildLabel() ) // Si se debe crear el label
             $config['label'] = $this->buildLabel();
 
@@ -130,6 +130,21 @@ class FieldBuilder {
         return '';
     }
 
+    // Método para saber si se debe crear el icono de requerido
+    private function _buildRequired(){
+
+        if( in_array('required',$this->attributes) && is_numeric(array_search('required', $this->attributes)) ){
+            return true;
+        }
+
+        if( isset($this->attributes['required']) ){
+            $required = $this->attributes['required'];
+            if( is_bool($required) && $required == false )
+                return false;
+            return true;
+        }
+    }
+
     // Método para saber si se debe crear el Label
     private function _buildLabel(){
         if( isset($this->attributes['label']) ){
@@ -156,7 +171,12 @@ class FieldBuilder {
 
             unset($this->attributes['label']); // Removemos el atributo label
 
-            return Form::label($for, $label, ['class' => $this->buildClass['labelClass']]);
+            $attributes = ['class' => $this->buildClass['labelClass']];
+            
+            if( $this->_buildRequired() ) // Si se debe crear el icono de requerido
+                $attributes[] = 'required';
+
+            return Form::label($for, $label, $attributes);
         }
 
         return '';
@@ -183,8 +203,8 @@ class FieldBuilder {
                 return Form::checkbox($this->name, $this->value, $checked);
             case 'textarea':
                 return Form::textarea($this->name, $this->value, $this->attributes);
-            case 'date':
-                $this->attributes['class'] .= ' datepicker';
+            case 'datepicker':
+                $this->attributes['class'] .= ' js-datepicker';
                 return Form::text($this->name, $this->value, $this->attributes);
             case 'hidden':
                 return Form::hidden($this->name, $this->value, $this->attributes);

@@ -68,3 +68,13 @@ a {
 .block.block-themed>.block-header>.block-title {
 	color: #FFFFFF;
 }
+
+[required]:after {
+    content: '*';
+    color: red;
+    padding-left: 3px;
+}
+
+[noresize] {
+	resize: none;
+}

@@ -20,6 +20,10 @@ class MSistemaTipoDocumento extends BaseModel {
     	return $this -> attributes['SYTD_NOMBRE_TIPO'];
     }
 
+    public function getEtiqueta(){
+        return $this -> attributes['SYTD_ETIQUETA_NUMERO'];
+    }
+
     /* Relationships */
 
     public function documentos(){

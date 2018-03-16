@@ -23,16 +23,13 @@ Route::middleware('preventBackHistory')->group(function(){
 		Route::prefix('usuario')->namespace('Dashboard')->group(function(){
 
 			Route::prefix('perfil')->group(function(){
-
 				Route::get('/', 'PerfilController@index');
-
 			});
 
 			Route::prefix('preferencias')->group(function(){
-
-				Route::get('/', 'PerfilController@index');
-				
+				Route::get('/', 'PreferenciasController@index');
 			});
+
 		});
 
 		Route::prefix('recepcion')->namespace('Recepcion')->group(function(){
@@ -43,7 +40,8 @@ Route::middleware('preventBackHistory')->group(function(){
 				Route::get('/',                'RecepcionController@index');
 				Route::get('recepcionados',    'RecepcionController@index');
 				Route::post('post-data',       'RecepcionController@postDataTable');
-				Route::get('nueva-recepcion',  'RecepcionController@nuevaRecepcion');
+				Route::get('nueva-recepcion',  'RecepcionController@formNuevaRecepcion');
+				Route::post('manager',     'RecepcionController@manager');
 				Route::get('seguimiento/{id}', 'RecepcionController@verSeguimiento');
 				Route::get('en-captura',       'RecepcionController@index');
 				Route::get('{id}',             'RecepcionController@verDocumentoRecepcionado');
@@ -176,9 +174,6 @@ Route::middleware('preventBackHistory')->group(function(){
 
 		});
 
-		Route::post('modal-cambio', 'Recepcion\RecepcionController@modalCambio');
-		Route::post('guardar-cambio', 'Recepcion\RecepcionController@guardarCambio');
-	
 	});
 
 });

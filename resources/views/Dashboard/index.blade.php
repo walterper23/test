@@ -1,5 +1,5 @@
 @extends('Tema.app')
 
 @section('title')
-	SIGESD :: Inicio
+	@component('Tema.Title')Inicio @endcomponent
 @endsection

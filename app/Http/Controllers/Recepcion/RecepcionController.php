@@ -2,10 +2,12 @@
 namespace App\Http\Controllers\Recepcion;
 
 use Illuminate\Http\Request;
-use App\Http\Requests\ManagerAnexoRequest;
+use App\Http\Requests\ManagerRecepcionRequest;
 use Illuminate\Support\Facades\Input;
 use Carbon\Carbon;
 use Validator;
+use Exception;
+use DB;
 
 /* Controllers */
 use App\Http\Controllers\BaseController;
@@ -13,7 +15,10 @@ use App\DataTables\DocumentosDataTable;
 
 /* Models */
 use App\Model\MDocumento;
+use App\Model\MDenuncia;
 use App\Model\MSeguimiento;
+use App\Model\MMunicipio;
+use App\Model\MDetalle;
 use App\Model\Catalogo\MAnexo;
 use App\Model\Catalogo\MEstadoDocumento;
 use App\Model\Catalogo\MDireccion;
@@ -21,27 +26,44 @@ use App\Model\Sistema\MSistemaTipoDocumento;
 
 class RecepcionController extends BaseController {
 
-	public function __construct(){
-
-	}
-
 	public function index(DocumentosDataTable $dataTables){
 		return view('Recepcion.indexRecepcion')->with('table', $dataTables);
+	}
+
+	public function manager(ManagerRecepcionRequest $request){
+
+		switch ($request -> action) {
+			case 0: // Guardar recepción en captura
+				$response = $this -> capturarRecepcion( $request );
+			case 1: // Nueva recepción
+				$response = $this -> nuevaRecepcion( $request );
+				break;
+			case 2: // Editar
+				$response = $this -> editarAnexo( $request );
+				break;
+			case 3: // Activar / Desactivar
+				$response = $this -> activarAnexo( $request );
+				break;
+			case 4: // Eliminar
+				$response = $this -> eliminarAnexo( $request );
+				break;
+			default:
+				return response()->json(['message'=>'Petición no válida'],404);
+				break;
+		}
+		return $response;
 	}
 
 	public function postDataTable(DocumentosDataTable $dataTables){
 		return $dataTables->getData();
 	}
 
-	public function nuevaRecepcion(){
+	public function formNuevaRecepcion(){
 
 		$data = [];
 
-		$data['tipos_documentos'] = MSistemaTipoDocumento::select('SYTD_TIPO_DOCUMENTO','SYTD_NOMBRE_TIPO')
-									->where('SYTD_ENABLED',1)
-									->orderBy('SYTD_NOMBRE_TIPO')
-									->pluck('SYTD_NOMBRE_TIPO','SYTD_TIPO_DOCUMENTO')
-									->toArray();
+		$data['tipos_documentos'] = MSistemaTipoDocumento::select('SYTD_NOMBRE_TIPO','SYTD_TIPO_DOCUMENTO','SYTD_ETIQUETA_NUMERO')
+									-> where('SYTD_ENABLED',1) -> get();
 
 		$data['anexos'] = MAnexo::select('ANEX_ANEXO','ANEX_NOMBRE')
 									->where('ANEX_ENABLED',1)
@@ -50,15 +72,57 @@ class RecepcionController extends BaseController {
 									->pluck('ANEX_NOMBRE','ANEX_ANEXO')
 									->toArray();
 
+		$data['municipios'] = MMunicipio::selectRaw('MUNI_MUNICIPIO AS id, CONCAT(MUNI_CLAVE," - ",MUNI_NOMBRE) AS nombre') -> where('MUNI_ENABLED',1)
+							-> pluck('nombre','id') -> toArray();
+
 		$data['context']       = 'context-form-recepcion';
 		$data['form_id']       = 'form-recepcion';
-		$data['url_send_form'] = url('recepcion/documentos/recepcionar');
+		$data['url_send_form'] = url('recepcion/documentos/manager');
 
-		$data['form'] = view('Recepcion.formNuevaRecepcion')->with($data);
+		$data['form'] = view('Recepcion.formNuevaRecepcion') -> with($data);
 
 		unset($data['tipos_documentos']);
 
-		return view('Recepcion.nuevaRecepcion')->with($data);
+		return view('Recepcion.nuevaRecepcion') -> with($data);
+
+	}
+
+	public function nuevaRecepcion( $request ){
+
+		try{
+
+			DB::beginTransaction();
+
+			$detalle = new MDetalle;
+			$detalle -> DETA_MUNICIPIO            = $request -> municipio;
+			$detalle -> DETA_FECHA_RECEPCION = $request -> recepcion;
+			$detalle -> DETA_DESCRIPCION          = $request -> descripcion;
+			$detalle -> DETA_RESPONSABLE          = $request -> responsable;
+			$detalle -> DETA_ANEXOS               = $request -> anexos;
+			$detalle -> DETA_OBSERVACIONES        = $request -> observaciones;
+			$detalle -> save();
+
+			$documento = new MDocumento;
+			$documento -> DOCU_SYSTEM_TIPO_DOCTO   = $request -> tipo_documento;
+			$documento -> DOCU_SYSTEM_ESTADO_DOCTO = 2; // Documento recepcionado
+			$documento -> DOCU_DETALLE             = $detalle -> getKey();
+			$documento -> DOCU_NUMERO_DOCUMENTO    = $request -> numero;
+			$documento -> save();
+
+			if( $request -> tipo_documento == 1 ){ // Denuncia
+				$denuncia = new MDenuncia;
+				$denuncia -> DENU_DOCUMENTO = $documento -> getKey();
+				$denuncia -> save();
+			}
+			
+			DB::commit();
+
+			return $this -> responseSuccessJSON();
+
+		}catch(Exception $error){
+			DB::rollback();
+			dd( $error->getMessage() );
+		}
 
 	}
 

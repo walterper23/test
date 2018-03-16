@@ -1317,6 +1317,7 @@ var Codebase = function() {
      *
      */
     var uiHelperDatepicker = function(){
+
         // Init datepicker (with .js-datepicker and .input-daterange class)
         jQuery('.js-datepicker:not(.js-datepicker-enabled)').add('.input-daterange:not(.js-datepicker-enabled)').each(function(){
             var el = jQuery(this);
@@ -1327,9 +1328,11 @@ var Codebase = function() {
             // Init
             el.datepicker({
                 weekStart: el.data('week-start') || 0,
-                autoclose: el.data('autoclose') || false,
-                todayHighlight: el.data('today-highlight') || false,
-                orientation: 'bottom' // Position issue when using BS4, set it to bottom until officially supported
+                autoclose: el.data('autoclose') || true,
+                todayHighlight: el.data('today-highlight') || true,
+                format: el.data('date-format') || 'yyyy-mm-dd',
+                orientation: 'bottom', // Position issue when using BS4, set it to bottom until officially supported
+                language: 'es'
             });
         });
     };

@@ -82,7 +82,7 @@ var AppForm = new function(){
 	};
 
 	this.successSubmitHandler = function( data ){
-		console.log(data)
+
 		if( data.status ){
 			AppForm.closeContext()
 

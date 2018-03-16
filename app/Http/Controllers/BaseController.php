@@ -12,7 +12,7 @@ class BaseController extends Controller {
 
     public function setLog( $file = 'log' ){
 
-        $logFile = storage_path($file);
+        $logFile = storage_path( 'logs/' . $file);
         $this->monolog = new Logger('log');
         $this->monolog->pushHandler(new StreamHandler($logFile), Logger::INFO);
         return $this;

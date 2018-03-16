@@ -6,6 +6,7 @@
 
 @push('css-style')
     {{ Html::style('js/plugins/sweetalert2/sweetalert2.min.css') }}
+    {{ Html::style('js/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css') }}
 @endpush
 
 @section('breadcrumb')
@@ -60,6 +61,8 @@
 
 @push('js-script')
     {{ Html::script('js/plugins/jquery-validation/jquery.validate.min.js') }}
+    {{ Html::script('js/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}
+    {{ Html::script('js/plugins/bootstrap-datepicker/locales/bootstrap-datepicker.es.min.js') }}
     {{ Html::script('js/helpers/recepcion.helper.js') }}
     {{ Html::script('js/app-form.js') }}
     {{ Html::script('js/app-alert.js') }}
@@ -70,30 +73,40 @@
     'use strict';
     $.extend(AppForm, new function(){
 
-        this.context   = $('#{{ $context }}')
-        this.form      = $('#{{ $form_id }}')
-        this.btnOk     = this.context.find('#btn-ok')
-        this.btnCancel = this.context.find('#btn-cancel')
+        this.context_   = '#{{ $context }}';
+        this.form_      = '#{{ $form_id }}';
+        this.btnOk_     = '#btn-ok';
+        this.btnCancel_ = '#btn-cancel';
 
         this.start = function(){
             var self = this;
 
-            this.textRepresentante = this.form.find('#representante').closest('.form-group');
+            Codebase.helper('datepicker');
+
+            this.labelNumero = $('label[for=numero]');
+
+            this.txtAnexo = this.form.find('#anexos');
 
             this.selectTipoDocumento = this.form.find('#tipo_documento').on('change',function(e){
-                self.changeForm( this.value )
+                self.labelNumero.text( $(this).find('option:selected').data('label') );
+            });
+
+            this.selectAnexo = this.form.find('#anexo').on('change',function(e){
+                if( this.value.length ){
+                    self.addAnexo( $(this).find('option:selected').text() )
+                }
+            });
+
+            $('#addAnexo').on('click',function(){
+                self.selectAnexo.trigger('change');
             })
 
         }
 
-        this.changeForm = function( option ){
-            this.textRepresentante.hide()
-            if( option == 1 ){
-            }else{
-                this.textRepresentante.fadeIn(200)
-            }
+        this.addAnexo = function( anexo ){
+            this.txtAnexo.val( this.txtAnexo.val() + anexo + '\n');
         }
-    
+
         this.submitHandler = function(form){
             if(!$(form).valid()){
                 return false;
@@ -106,57 +119,49 @@
                 okBtnText : 'Continuar',
                 cancelBtnText : 'Regresar',
                 then : function(){
-                    location.href = '/recepcion/documentos/'
-                },
-                dismiss : function(){
-                    alert('alert cancelado')
-                }
-
-            })
-            /*
-            App.ajaxRequest({
-                url  : $(form).attr('action'),
-                data : $(form).serialize(),
-                before : function(){
-                    
-                },
-                success : function(data){
-                    if( data.status ){
-                        AppAlert.notify({
-                            type : 'info',
-                            message : data.message
-                        })
-                    }else{
-
-                        if( data.errors != undefined){
-                            $.each(data.errors,function(index, value){
-                                error = $('<div/>').addClass('invalid-feedback').attr('id',index+'-error').text(value[0]);
-                                $('#'+index).closest('.form-group').removeClass('is-invalid').addClass('is-invalid');
-                                $('#'+index).parents('.form-group > div').append(error);
-                            })
-                        }
-
-
-                        
-                    }
+                    App.ajaxRequest({
+                        url        : $(form).attr('action'),
+                        data       : $(form).serialize(),
+                        beforeSend : AppForm.beforeSubmitHandler,
+                        success    : AppForm.successSubmitHandler
+                    });
                 }
             })
-            */
+        }
+
+        this.successSubmitHandler = function( data ){
+            if( data.status ){
+
+                location.href = '{{ url('recepcion/documentos') }}';
+
+            }else{
+
+            }
         }
 
         this.rules = function(){
             return {
                 tipo_documento : { required : true },
-                no_oficio      : { required : true },
-                anio : { required : true }
+                numero  : { required : true },
+                recepcion : { required : true, date : true },
+                municipio : { required : true },
+                descripcion : { required : true },
+                responsable : { required : true },
+
             }
         }
 
         this.messages = function(){
             return {
                 tipo_documento : { required : 'Seleccione el tipo de documento' },
-                no_oficio      : { required : 'Introduzca el número de oficio' },
-                anio   : { required : 'Introduzca el año' }
+                numero : { required : 'Introduzca el número del documento' },
+                recepcion : {
+                    required : 'Introduzca la fecha de recepción',
+                    date : 'La fecha de recepción no es válida'
+                },
+                municipio : { required : 'Seleccione un municipio' },
+                descripcion : { required : 'Introduzca el asunto o descripción' },
+                responsable : { required : 'Introduzca el nombre del responsable' },
             }
         }
     }).init().start();

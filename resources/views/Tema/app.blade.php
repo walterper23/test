@@ -36,7 +36,7 @@
     </head>
     <body>
         <!-- Page Container -->
-        <div id="page-container" class="sidebar-o side-scroll page-header-modern page-header-fixed site-trans-enabled">
+        <div id="page-container" class="side-scroll page-header-modern page-header-fixed site-trans-enabled">
 
             <!-- Sidebar -->
            <nav id="sidebar">
@@ -147,14 +147,6 @@
 
         @stack('js-script')
 
-        <script type="text/javascript">
-            if( jQuery.fn.dataTable != undefined ){
-                jQuery.extend( jQuery.fn.dataTable.ext.classes, {
-                    sWrapper: "dataTables_wrapper dt-bootstrap4"
-                });
-            }
-        </script>
-        
         @stack('js-custom')
 
     </body>
