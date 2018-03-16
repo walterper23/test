@@ -12,9 +12,9 @@
             <li class="nav-item">
                 <a class="nav-link" href="#wizard-progress-step2" data-toggle="tab">Información personal</a>
             </li>
-            <li class="nav-item">
+            <!--li class="nav-item">
                 <a class="nav-link" href="#wizard-progress-step3" data-toggle="tab">Extra</a>
-            </li>
+            </li-->
         </ul>
         <!-- END Step Tabs -->
 
@@ -33,19 +33,19 @@
             <div class="block-content block-content-full tab-content" style="min-height: 265px;">
                 <!-- Step 1 -->
                 <div class="tab-pane active show" id="wizard-progress-step1" role="tabpanel">
-                    {!! Field::email('usuario','',['label'=>'Usuario','addClass'=>'text-lowercase','autofocus']) !!}
-    			    {!! Field::password('password','',['label'=>'Contraseña']) !!}
-    			    {!! Field::password('password_confirmation','',['label'=>'Confirmar contraseña']) !!}
+                    {!! Field::email('usuario','',['label'=>'Usuario','addClass'=>'text-lowercase','autofocus','required']) !!}
+    			    {!! Field::password('password','',['label'=>'Contraseña','required']) !!}
+    			    {!! Field::password('password_confirmation','',['label'=>'Confirmar contraseña','required']) !!}
                 </div>
                 <!-- END Step 1 -->
 
                 <!-- Step 2 -->
                 <div class="tab-pane" id="wizard-progress-step2" role="tabpanel">
-                    {!! Field::text('descripcion','',['label'=>'Descripción','placeholder'=>'Ej. Director de Operaciones y Vigilancia']) !!}
-    			    {!! Field::select('genero','',['label'=>'Género'],['HOMBRE'=>'HOMBRE','MUJER'=>'MUJER']) !!}
-    			    {!! Field::text('nombres','',['label'=>'Nombre(s)']) !!}
-    			    {!! Field::text('apellidos','',['label'=>'Apellido(s)']) !!}
-    			    {!! Field::email('email','',['label'=>'E-mail','placeholder'=>'usuario@micorreo.com']) !!}
+                    {!! Field::text('descripcion','',['label'=>'Descripción','placeholder'=>'Ej. Director de Operaciones y Vigilancia','required']) !!}
+    			    {!! Field::select('genero','',['label'=>'Género','required'],['HOMBRE'=>'HOMBRE','MUJER'=>'MUJER']) !!}
+    			    {!! Field::text('nombres','',['label'=>'Nombre(s)','required']) !!}
+    			    {!! Field::text('apellidos','',['label'=>'Apellido(s)','required']) !!}
+    			    {!! Field::email('email','',['label'=>'E-mail','placeholder'=>'usuario@micorreo.com','required']) !!}
     			    {!! Field::text('teléfono','',['label'=>'Teléfono','placeholder'=>'Opcional']) !!}
                 </div>
                 <!-- END Step 2 -->
@@ -92,57 +92,23 @@
 	
 	$.extend(AppForm, new function(){
 
-		this.context = $('#modal-{{ $form_id }}')
-		this.form = $('#{{$form_id}}')
+		this.context_ = '#modal-{{ $form_id }}';
+		this.form_    = '#{{$form_id}}';
 
         this.start = function(){
             console.log(this.context)
         }
 	
-		this.submitHandler = function(form){
-			console.log(form)
-			if(!$(form).valid()) return false;
-			App.ajaxRequest({
-				url  : $(form).attr('action'),
-				data : $(form).serialize(),
-				before : function(){
-					Codebase.blocks( AppForm.context.find('div.modal-content'), 'state_loading')
-				},
-				success : function(data){
-					if( data.status ){
-						AppForm.closeContext()
-
-						if(data.tables != undefined){
-							App.reloadTable(data.tables)
-						}
-
-						AppAlert.notify({
-							type : 'info',
-							message : data.message
-						})
-					}else{
-
-						if( data.errors != undefined){
-							$.each(data.errors,function(index, value){
-								error = $('<div/>').addClass('invalid-feedback').attr('id',index+'-error').text(value[0]);
-								$('#'+index).closest('.form-group').removeClass('is-invalid').addClass('is-invalid');
-								$('#'+index).parents('.form-group > div').append(error);
-							})
-						}
-					}
-				}
-			})
-		}
-
-
 		this.rules = function(){
 			return {
                 usuario : { required : true, email : true, maxlength : 255 },
 				password : { required : true, minlength: 6, maxlength : 20 },
                 password_confirmation : { required : true, minlength: 6, maxlength : 20, equalTo : '#password' },
-
-
-
+                descripcion : { required : true },
+                genero : { required : true },
+                nombres : { required : true },
+                apellidos : { required : true },
+                email : { required : true, email : true }
 			}
 		}
 
@@ -163,6 +129,21 @@
                     minlength : 'Mínimo {0} caracteres',
                     maxlength : 'Máximo {0} caracteres',
                     equalTo : 'Las contraseñas no coinciden',
+                },
+                descripcion : {
+                    required : 'Introduzca la descripción del usuario'
+                },
+                genero : {
+                    required : 'Seleccione un género'
+                },
+                nombres : {
+                    required : 'Introduzca el nombre(s) del usuario',
+                },
+                apellidos : {
+                    required : 'Introduzca los apellidos del usuario',
+                },
+                email : {
+                    required : 'Introduzca el correo electrónico del usuario'
                 }
 			}
 		}

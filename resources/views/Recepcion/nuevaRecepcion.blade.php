@@ -81,6 +81,8 @@
         this.start = function(){
             var self = this;
 
+            $('#modal-slideright').modal('show')
+
             Codebase.helper('datepicker');
 
             this.labelNumero = $('label[for=numero]');
@@ -104,7 +106,8 @@
         }
 
         this.addAnexo = function( anexo ){
-            this.txtAnexo.val( this.txtAnexo.val() + anexo + '\n');
+            anexo = ((this.txtAnexo.val()).trim() + '\n' + anexo).trim();
+            this.txtAnexo.val( anexo );
         }
 
         this.submitHandler = function(form){
@@ -112,6 +115,8 @@
                 return false;
             }
 
+            //var formData = new FormData($(form)[0]);
+            
             AppAlert.waiting({
                 type  : 'info',
                 title : 'Recepcionar documento',
@@ -119,9 +124,12 @@
                 okBtnText : 'Continuar',
                 cancelBtnText : 'Regresar',
                 then : function(){
+
                     App.ajaxRequest({
                         url        : $(form).attr('action'),
                         data       : $(form).serialize(),
+                        cache      : false,
+                        processData: false,
                         beforeSend : AppForm.beforeSubmitHandler,
                         success    : AppForm.successSubmitHandler
                     });
@@ -132,7 +140,7 @@
         this.successSubmitHandler = function( data ){
             if( data.status ){
 
-                location.href = '{{ url('recepcion/documentos') }}';
+                //location.href = '{{ url('recepcion/documentos') }}';
 
             }else{
 

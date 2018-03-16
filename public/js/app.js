@@ -3,15 +3,17 @@
 var App = function(){
 
 	var _defaultAjaxRequest = {
-		data       : {},
-		type       : 'POST',
-		beforeSend : function(){},
-		success    : function(){},
-		complete   : function(){},
-		error      : function(){},
-		fail       : function(){},
-		statusCode : {
-			422  : function( error ){
+		type        : 'POST',
+		data        : {},
+		processData : true,
+		cache       : true,
+		beforeSend  : function(){},
+		success     : function(){},
+		complete    : function(){},
+		error       : function(){},
+		fail        : function(){},
+		statusCode  : {
+			422 : function( error ){
 				console.log(error)
 			}
 		}
@@ -31,14 +33,16 @@ var App = function(){
 
 	var _ajaxRequest = function( options ){
 		$.ajax($.extend({},_defaultAjaxRequest,{
-			url        : options.url,
-			data       : options.data,
-			type       : options.type,
-			beforeSend : options.beforeSend,
-			success    : options.success,
-			complete   : options.complete,
-			error      : options.error,
-			fail       : options.fail,
+			url         : options.url,
+			type        : options.type,
+			data        : options.data,
+			processData : options.processData,
+			cache       : options.cache,
+			beforeSend  : options.beforeSend,
+			success     : options.success,
+			complete    : options.complete,
+			error       : options.error,
+			fail        : options.fail,
 		}));
 	};
 

@@ -91,14 +91,17 @@ class RecepcionController extends BaseController {
 
 		try{
 
+			$anexos = preg_replace('/\r|\n/','\n',$request -> anexos);
+			$anexos = str_replace('\n\n','\n',$anexos);
+
 			DB::beginTransaction();
 
 			$detalle = new MDetalle;
 			$detalle -> DETA_MUNICIPIO            = $request -> municipio;
-			$detalle -> DETA_FECHA_RECEPCION = $request -> recepcion;
+			$detalle -> DETA_FECHA_RECEPCION      = $request -> recepcion;
 			$detalle -> DETA_DESCRIPCION          = $request -> descripcion;
 			$detalle -> DETA_RESPONSABLE          = $request -> responsable;
-			$detalle -> DETA_ANEXOS               = $request -> anexos;
+			$detalle -> DETA_ANEXOS               = $anexos;
 			$detalle -> DETA_OBSERVACIONES        = $request -> observaciones;
 			$detalle -> save();
 

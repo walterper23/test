@@ -1,4 +1,4 @@
-{{ Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) }}
+{{ Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id,'files'=>true]) }}
     {{ Form::hidden('action',1) }}
     <div class="row">
         <div class="col-md-7">
@@ -50,6 +50,47 @@
                 </div>
             </div>
             {!! Field::textarea('anexos','',['label'=>'Anexos','placeholder'=>'Opcional','size'=>'20x11','noresize']) !!}
+            <button type="button" class="btn btn-danger btn-rounded btn-sm" data-toggle="modal" data-target="#modal-slideright"><i class="fa fa-fw fa-file-pdf-o"></i> Escaneos <span class="badge badge-pill badge-secondary">3</span></button>
         </div>
     </div>
+
+
+
+
+
+    <div class="modal fade" id="modal-slideright" tabindex="-1" role="dialog" aria-labelledby="modal-slideright" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-slideright" role="document">
+            <div class="modal-content">
+                <div class="block block-themed block-transparent mb-0">
+                    <div class="block-header bg-pulse">
+                        <h3 class="block-title"><i class="fa fa-fw fa-file-pdf-o"></i> Escaneos</h3>
+                        <div class="block-options">
+                            <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                                <i class="si si-close"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="block-content">
+                        <ul>
+                            <li>Agregue archivos <b>PDF</b> al archivo que esta recepcionando.</li>
+                            <li>Cada archivo no debe ser mayor a <b>3 Mb</b>.</li>
+                        </ul>
+                        <div class="col-8">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="example-file-multiple-input-custom" name="example_file" multiple="">
+                                <label class="custom-file-label" for="example-file-multiple-input-custom">Choose files</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
 {{ Form::close() }}
