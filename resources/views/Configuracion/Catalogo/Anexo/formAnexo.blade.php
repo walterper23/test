@@ -14,13 +14,14 @@
 
 @push('js-custom')
 <script type="text/javascript">
-	
+	'use strict';
 	$.extend(AppForm, new function(){
 
 		this.context_ = '#modal-{{ $form_id }}';
 		this.form_    = '#{{$form_id}}';
 
 		this.start = function(){
+
 		};
 	
 		this.rules = function(){

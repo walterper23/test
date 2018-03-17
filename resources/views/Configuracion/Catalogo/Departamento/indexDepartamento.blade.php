@@ -1,7 +1,7 @@
 @extends('Tema.app')
 
 @section('title')
-@component('Tema.Title') Configuración de Departamentos @endcomponent
+    {{ title('Configuración de Departamentos') }}
 @endsection
 
 @push('css-style')

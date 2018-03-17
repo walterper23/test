@@ -1,7 +1,7 @@
 @extends('Tema.app')
 
 @section('title')
-    SIGESD :: Cat&aacute;logos - Tipos de documentos
+    {{ title('Configuración de tipos de documentos') }}
 @endsection
 
 @push('css-style')

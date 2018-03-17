@@ -101,7 +101,7 @@ class PanelController extends BaseController {
 		}
 
 
-		return view('Panel.Documentos.index')->with($data);
+		return view('Panel.Documentos.index') -> with($data);
 
 	}
 

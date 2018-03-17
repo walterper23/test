@@ -22,3 +22,16 @@ if (! function_exists('config_var')) {
 
     }
 }
+
+if (! function_exists('title')) {
+    /**
+     * Recuperar las variables de configuración del sistema
+     *
+     * @param  array  $array
+     * @return array
+     */
+    function title( $title = '' )
+    {
+        return sprintf('%s :: %s',config_var('Sistema.Siglas'), $title);
+    }
+}

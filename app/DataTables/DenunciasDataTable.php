@@ -3,10 +3,10 @@ namespace App\DataTables;
 
 use App\Model\MDocumento;
 
-class DocumentosDataTable extends CustomDataTable{
+class DenunciasDataTable extends CustomDataTable {
     
     protected function setSourceData(){
-        $this->sourceData = MDocumento::select('DOCU_DOCUMENTO','DOCU_NUMERO_FICHA','DOCU_NUMERO_OFICIO','DOCU_FECHA_RECEPCION','DOCU_ANIO','DOCU_DESCRIPCION','DOCU_ENABLED','DOCU_CREATED_AT')->orderBy('DOCU_NUMERO_OFICIO','DESC')
+        $this -> sourceData = MDocumento::select('DOCU_DOCUMENTO','DOCU_NUMERO_FICHA','DOCU_NUMERO_OFICIO','DOCU_FECHA_RECEPCION','DOCU_ANIO','DOCU_DESCRIPCION','DOCU_ENABLED','DOCU_CREATED_AT')->orderBy('DOCU_NUMERO_OFICIO','DESC')
                             ->where('DOCU_DELETED',0);
     }
 

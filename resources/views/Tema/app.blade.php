@@ -3,7 +3,7 @@
 <!--[if gt IE 9]><!--> <html lang="es" class="no-focus"> <!--<![endif]-->
     <head>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.5, user-scalable=1">
 
         <title>@yield('title')</title>
         

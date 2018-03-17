@@ -71,7 +71,8 @@
 @push('js-custom')
 <script type="text/javascript">
     'use strict';
-    $.extend(AppForm, new function(){
+    var formRecepcion = AppForm;
+    $.extend(formRecepcion, new function(){
 
         this.context_   = '#{{ $context }}';
         this.form_      = '#{{ $form_id }}';
@@ -80,8 +81,6 @@
 
         this.start = function(){
             var self = this;
-
-            $('#modal-slideright').modal('show')
 
             Codebase.helper('datepicker');
 

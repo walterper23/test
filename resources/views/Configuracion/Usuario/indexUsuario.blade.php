@@ -1,7 +1,7 @@
 @extends('Tema.app')
 
 @section('title')
-    SIGESD :: Usuarios
+    {{ title('Configuración de usuarios') }}
 @endsection
 
 @push('css-style')

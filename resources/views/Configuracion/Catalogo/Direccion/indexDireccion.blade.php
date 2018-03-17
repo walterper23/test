@@ -1,7 +1,7 @@
 @extends('Tema.app')
 
 @section('title')
-    SIGESD :: Cat&aacute;logos - Direcciones
+    {{ title('Configuración de direcciones') }}
 @endsection
 
 @push('css-style')

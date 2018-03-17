@@ -11,7 +11,6 @@ use DB;
 
 /* Controllers */
 use App\Http\Controllers\BaseController;
-use App\DataTables\DocumentosDataTable;
 
 /* Models */
 use App\Model\MDocumento;
@@ -24,10 +23,22 @@ use App\Model\Catalogo\MEstadoDocumento;
 use App\Model\Catalogo\MDireccion;
 use App\Model\Sistema\MSistemaTipoDocumento;
 
+/* DataTables */
+use App\DataTables\DenunciasDataTable;
+use App\DataTables\DocumentosDenunciasDataTable;
+use App\DataTables\DocumentosDataTable;
+
 class RecepcionController extends BaseController {
 
-	public function index(DocumentosDataTable $dataTables){
-		return view('Recepcion.indexRecepcion')->with('table', $dataTables);
+	public function index(){
+
+		$tabla = new DenunciasDataTable();
+
+		$data['table1'] = $tabla;
+		//$data['table2'] = new DocumentosDenunciasDataTable();
+		//$data['table3'] = new DocumentosDataTable();
+
+		return view('Recepcion.indexRecepcion') -> with($data);
 	}
 
 	public function manager(ManagerRecepcionRequest $request){

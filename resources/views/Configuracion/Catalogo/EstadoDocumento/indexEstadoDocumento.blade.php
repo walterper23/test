@@ -1,7 +1,7 @@
 @extends('Tema.app')
 
 @section('title')
-	SIGESD :: Cat&aacute;logos - Anexos
+	{{ title('Configuración de estados de documentos') }}
 @endsection
 
 @push('css-style')

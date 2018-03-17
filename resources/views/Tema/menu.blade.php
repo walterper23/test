@@ -87,9 +87,6 @@
                     <a {!! activeItemMenu('configuracion/usuarios') !!} href="{{ url('configuracion/usuarios') }}">Ver usuarios</a>
                 </li>
                 <li>
-                    <a {!! activeItemMenu('configuracion/usuarios/nuevo') !!} href="{{ url('configuracion/usuarios/nuevo') }}">Nuevo usuario</a>
-                </li>
-                <li>
                     <a {!! activeItemMenu('configuracion/usuarios/roles') !!} href="{{ url('configuracion/usuarios/roles') }}">Roles</a>
                 </li>
             </ul>

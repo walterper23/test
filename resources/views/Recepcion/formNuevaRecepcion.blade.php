@@ -42,7 +42,7 @@
                             <button type="button" class="btn btn-alt-danger" id="addAnexo">
                                 <i class="fa fa-fw fa-arrow-down"></i>
                             </button>
-                            <button type="button" class="btn btn-alt-primary" tabindex="-1" onclick="App.openModal({})">
+                            <button type="button" class="btn btn-alt-primary" tabindex="-1" onclick="hRecepcion.new('form-anexo','{{ url('configuracion/catalogos/anexos/nuevo') }}')">
                                 <i class="fa fa-fw fa-plus"></i> Nuevo
                             </button>
                         </div>
@@ -53,10 +53,6 @@
             <button type="button" class="btn btn-danger btn-rounded btn-sm" data-toggle="modal" data-target="#modal-slideright"><i class="fa fa-fw fa-file-pdf-o"></i> Escaneos <span class="badge badge-pill badge-secondary">3</span></button>
         </div>
     </div>
-
-
-
-
 
     <div class="modal fade" id="modal-slideright" tabindex="-1" role="dialog" aria-labelledby="modal-slideright" aria-hidden="true">
         <div class="modal-dialog modal-dialog-slideright" role="document">

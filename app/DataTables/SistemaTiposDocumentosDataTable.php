@@ -6,7 +6,7 @@ use App\Model\Sistema\MSistemaTipoDocumento;
 class SistemaTiposDocumentosDataTable extends CustomDataTable{
 
     protected function setSourceData(){
-        $this->sourceData = MSistemaTipoDocumento::select('SYTD_TIPO_DOCUMENTO','SYTD_NOMBRE_TIPO','SYTD_CREATED_AT','SYTD_VALIDAR','SYTD_ENABLED')
+        $this -> sourceData = MSistemaTipoDocumento::select('SYTD_TIPO_DOCUMENTO','SYTD_NOMBRE_TIPO','SYTD_CREATED_AT','SYTD_ENABLED')
                             ->orderBy('SYTD_CREATED_AT','DESC');
     }
 

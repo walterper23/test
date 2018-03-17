@@ -47,7 +47,7 @@ var App = function(){
 	};
 
 	var _defaultOpenModal = {
-		id : 'modal-app',
+		id : 'app',
 		size : 'modal-md',
 		footer : true,
 		btnOk : true,

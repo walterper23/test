@@ -2,15 +2,15 @@
 
 var AppForm = new function(){
 
-	var self = this;
-	
 	this.context_   = 'body';
 	this.form_ 	    = 'form';
 	this.btnOk_     = '#modal-btn-ok';
 	this.btnCancel_ = '#modal-btn-cancel';
 	this.btnClose_  = '[data="close-modal"]';
+	this.form       = null;
 
 	this.init = function(){
+		var self = this;
 
 		this.context   = $( this.context_ );
 		this.form 	   = $( this.form_ );
@@ -33,9 +33,9 @@ var AppForm = new function(){
         return this;
 	};
 
-	this.submit = function(){
-		console.log(self)
-		self.form.submit()
+	this.submit = function(form){
+		var form = form || this.form
+		form.submit()
 	};
 
 	this.formSubmit = function( form ){
@@ -55,9 +55,7 @@ var AppForm = new function(){
 	        },
 			rules : this.rules(),
 			messages : this.messages(),
-			submitHandler: function(){
-				self.submitHandler( form )
-			}
+			submitHandler: this.submitHandler
 		})
 	};
 
@@ -79,14 +77,15 @@ var AppForm = new function(){
 		App.ajaxRequest({
 			url        : $(form).attr('action'),
 			data       : $(form).serialize(),
-			beforeSend : self.beforeSubmitHandler,
-			success    : self.successSubmitHandler
+			beforeSend : this.beforeSubmitHandler,
+			success    : this.successSubmitHandler
 		});
 	};
 
 	this.successSubmitHandler = function( data ){
+		console.log(data)
 		if( data.status ){
-			self.closeContext()
+			this.closeContext()
 
 			if(data.tables != undefined){
 				App.reloadTable(data.tables)
@@ -98,16 +97,17 @@ var AppForm = new function(){
 			})
 		}else{
 
+
 		}
 	};
 
 	this.beforeSubmitHandler = function(){
-		Codebase.blocks( self.context.find('div.modal-content>div.block'), 'state_loading');
+		Codebase.blocks( this.context.find('div.modal-content>div.block'), 'state_loading');
 	};
 
 	this.displayErrors = function( errors ){
 		if( errors != undefined ){
-			$.each(data.errors, self.displayError);
+			$.each(data.errors, this.displayError);
 		}
 	};
 
@@ -118,7 +118,8 @@ var AppForm = new function(){
 	};
 
 	this.onClose = function(){
-		if(	self.cloneForm.serialize() != self.form.serialize() ){
+		if(	this.cloneForm.serialize() != this.form.serialize() ){
+			var self = this;
 			AppAlert.confirm({
 				title : 'Descartar cambios',
 				text  : '¿Desea descartar los cambios realizados?',
@@ -129,12 +130,12 @@ var AppForm = new function(){
 				}
 			});
 		}else{
-			self.resetForm().closeContext();
+			this.resetForm().closeContext();
 		}
 	};
 
 	this.closeContext = function(){
-		self.context.modal('hide');
+		this.context.modal('hide');
 	};
 
 }

@@ -1,7 +1,7 @@
 @extends('Tema.app')
 
 @section('title')
-	SIGESD :: Roles
+	{{ title('Configuración de roles') }}
 @endsection
 
 @push('css-style')
