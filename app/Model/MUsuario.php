@@ -2,19 +2,22 @@
 namespace App\Model;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Yajra\Acl\Traits\HasRole;
 
 use App\Presenters\MUsuarioPresenter;
 
 class MUsuario extends Authenticatable {
 
-    use HasRole, BaseModelTrait;
+    use BaseModelTrait;
     
     protected $table          = 'usuarios';
     protected $primaryKey     = 'USUA_USUARIO';
     public    $timestamps     = false;
 
     protected $fieldEnabled   = 'USUA_ENABLED';
+
+    public function isSuperAdmin(){
+        return $this -> getKey() == 1;
+    }
 
     public function getAuthUsername(){
         return $this -> attributes['USUA_USERNAME'];
@@ -53,7 +56,7 @@ class MUsuario extends Authenticatable {
     }
 
     public function setRememberToken($value){
-        $this -> USUA_REMEMBER_TOKEN = $value;
+        $this -> attributes['USUA_REMEMBER_TOKEN'] = $value;
     }
 
     /* Relationships */
@@ -74,12 +77,12 @@ class MUsuario extends Authenticatable {
         return $this -> belongsToMany('App\Model\Catalogo\MPuesto','usuarios_asignaciones','USAS_USUARIO','USAS_PUESTO');
     }
 
-    public function Rol(){
-    	return $this -> hasOne('App\Model\Acl\MRol','ROLE_ROL','USUA_ROL');
-    }
-
     public function UsuarioDetalle(){
         return $this -> hasOne('App\Model\MUsuarioDetalle','USDE_USUARIO',$this -> getKeyName());
+    }
+
+    public function Permisos(){
+        return $this -> belongsToMany('App\Model\Acl\MPermiso','usuarios_permisos','USPE_USUARIO','USPE_PERMISO');
     }
 
     /* Presenter */

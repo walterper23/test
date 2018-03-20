@@ -1,7 +1,7 @@
 @extends('Tema.app')
 
 @section('title')
-	SIGESD :: Nueva recepción
+	{{ title('Nueva recepción de documento') }}
 @endsection
 
 @push('css-style')
@@ -29,10 +29,7 @@
                             <button type="button" class="btn-block-option dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cog"></i> Opciones</button>
                             <div class="dropdown-menu dropdown-menu-right">
                                 <a class="dropdown-item" href="javascript:void(0)">
-                                    <i class="fa fa-fw fa-check mr-5"></i>Validar
-                                </a>
-                                <a class="dropdown-item" href="javascript:void(0)">
-                                    <i class="fa fa-fw fa-save mr-5"></i>Guardar
+                                    <i class="fa fa-fw fa-save mr-5"></i>Guardar captura
                                 </a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item text-danger" onclick="hRecepcion.cancelar()">

@@ -7,7 +7,7 @@ class BaseModel extends Model {
 
     use BaseModelTrait;
 
-    public $timestamps   = false;
+    public $timestamps = false;
 
     public function __construct(){
         parent::__construct();

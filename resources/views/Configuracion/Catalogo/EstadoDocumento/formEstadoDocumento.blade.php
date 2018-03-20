@@ -7,9 +7,9 @@
     {!! Form::model($modelo,['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) !!}
 	    {!! Form::hidden('action',$action) !!}
 	    {!! Form::hidden('id',$id) !!}
-        {!! Field::selectTwo('direccion',(is_null($modelo) ? '' : $modelo->ESDO_DIRECCION),['label'=>'Dirección'],$direcciones) !!}
-        {!! Field::selectTwo('departamento',(is_null($modelo) ? '' : $modelo->ESDO_DEPARTAMENTO),['label'=>'Departamento'],$departamentos) !!}
-        {!! Field::text('nombre',(is_null($modelo) ? '' : $modelo->ESDO_NOMBRE),['label'=>'Nombre','placeholder'=>'Nombre del estado de documento']) !!}
+        {!! Field::selectTwo('direccion',(optional($modelo) -> ESDO_DIRECCION),['label'=>'Dirección'],$direcciones) !!}
+        {!! Field::selectTwo('departamento',(optional($modelo) -> ESDO_DEPARTAMENTO),['label'=>'Departamento'],$departamentos) !!}
+        {!! Field::text('nombre',(optional($modelo) -> ESDO_NOMBRE),['label'=>'Nombre','placeholder'=>'Nombre del estado de documento']) !!}
 	{!! Form::close() !!}
 	@endcomponent
 @endsection

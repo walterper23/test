@@ -7,6 +7,7 @@
     }
 ?>
 <div class="content-side content-side-full">
+    @can('REC.DOCUMENTO')
     <ul class="nav-main">
         <li class="nav-main-heading"><span class="sidebar-mini-visible">R</span><span class="sidebar-mini-hidden">Recepci&oacute;n</span></li>
         <li {!! activeMenu('recepcion','documentos') !!}>
@@ -24,6 +25,7 @@
             </ul>
         </li>
     </ul>
+    @endcan
     <ul class="nav-main">
         <li class="nav-main-heading"><span class="sidebar-mini-visible">P</span><span class="sidebar-mini-hidden">Panel de trabajo</span></li>
         <li {!! activeMenu('panel','documentos') !!}>
@@ -60,6 +62,7 @@
     </ul>
     <ul class="nav-main">
         <li class="nav-main-heading"><span class="sidebar-mini-visible">C</span><span class="sidebar-mini-hidden">Configuraci&oacute;n</span></li>
+        @can('SIS.ADMIN.CATALOGOS')
         <li {!! activeMenu('configuracion','catalogos') !!}>
             <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="fa fa-cubes"></i><span class="sidebar-mini-hide">Cat&aacute;logos</span></a>
             <ul>
@@ -80,17 +83,24 @@
                 </li>
             </ul>
         </li>
+        @endcan
+        @can('SIS.ADMIN.USUARIOS')
         <li {!! activeMenu('configuracion','usuarios') !!}>
             <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="fa fa-users"></i><span class="sidebar-mini-hidden">Usuarios</span></a>
             <ul>
                 <li>
                     <a {!! activeItemMenu('configuracion/usuarios') !!} href="{{ url('configuracion/usuarios') }}">Ver usuarios</a>
                 </li>
+                
+                @can('USU.ADMIN.PERMISOS')
                 <li>
-                    <a {!! activeItemMenu('configuracion/usuarios/roles') !!} href="{{ url('configuracion/usuarios/roles') }}">Roles</a>
+                    <a {!! activeItemMenu('configuracion/usuarios/permisos') !!} href="{{ url('configuracion/usuarios/roles') }}">Permisos</a>
                 </li>
+                @endcan
             </ul>
         </li>
+        @endcan
+        @can('SIS.ADMIN.CONFIG')
         <li {!! activeMenu('configuracion','sistema') !!}>
             <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="fa fa-cogs"></i><span class="sidebar-mini-hidden">Sistema</span></a>
             <ul>
@@ -108,6 +118,7 @@
                 </li>
             </ul>
         </li>
+        @endcan
     </ul>
 
 </div>

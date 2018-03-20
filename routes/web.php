@@ -1,7 +1,7 @@
 <?php
 
 DB::listen(function($query){
-	//echo "<pre style=\"z-index:500\">{$query->sql}</pre>";
+	//echo "<pre style=\"z-index:5000\">{$query->sql}</pre>";
 });
 
 Route::middleware('preventBackHistory')->group(function(){
@@ -18,6 +18,8 @@ Route::middleware('preventBackHistory')->group(function(){
 
 	Route::middleware('auth')->group(function(){
 
+
+		
 		Route::get('/', 'Dashboard\DashboardController@index');
 
 		Route::prefix('usuario')->namespace('Dashboard')->group(function(){
@@ -73,7 +75,7 @@ Route::middleware('preventBackHistory')->group(function(){
 				Route::get('/', 'CatalogoManagerController@index');
 
 				// Catálogo de anexos
-				Route::prefix('anexos')->group(function(){
+				Route::prefix('anexos')->middleware('can:SIS.ADMIN.ANEXOS')->group(function(){
 					Route::get('/',                'AnexoController@index');
 					Route::post('post-data',       'AnexoController@postDataTable');
 					Route::post('nuevo',           'AnexoController@formNuevoAnexo');

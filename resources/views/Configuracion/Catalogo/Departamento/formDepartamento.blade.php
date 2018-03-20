@@ -7,8 +7,8 @@
     {!! Form::model($modelo,['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) !!}
     	{!! Form::hidden('action',$action) !!}
 		{!! Form::hidden('id',$id) !!}
-	    {!! Field::select('direccion',(is_null($modelo) ? null : $modelo->DEPA_DIRECCION),['label'=>'Direccion'],$direcciones) !!}
-		{!! Field::text('nombre',(is_null($modelo) ? '' : $modelo->DEPA_NOMBRE),['label'=>'Nombre','placeholder'=>'Nombre del departamento','autofocus']) !!}
+	    {!! Field::select('direccion',(optional($modelo) -> DEPA_DIRECCION),['label'=>'Direccion'],$direcciones) !!}
+		{!! Field::text('nombre',(optional($modelo) -> DEPA_NOMBRE),['label'=>'Nombre','placeholder'=>'Nombre del departamento','autofocus']) !!}
 	{!! Form::close() !!}
 	@endcomponent
 @endsection

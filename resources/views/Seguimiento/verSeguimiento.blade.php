@@ -1,7 +1,7 @@
 @extends('Tema.app')
 
 @section('title')
-	SIGESD :: Seguimiento de documento
+	{{ title('Seguimiento de documento') }}
 @endsection
 
 @section('breadcrumb')

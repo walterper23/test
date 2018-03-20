@@ -1,7 +1,7 @@
 @extends('Tema.app')
 
 @section('title')
-	SIGESD :: {{ $title }}
+	{{ title($title) }}
 @endsection
 
 @push('css-style')

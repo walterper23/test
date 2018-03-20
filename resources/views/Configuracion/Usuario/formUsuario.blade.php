@@ -41,11 +41,11 @@
 
                 <!-- Step 2 -->
                 <div class="tab-pane" id="wizard-progress-step2" role="tabpanel">
-                    {!! Field::text('descripcion','',['label'=>'Descripción','placeholder'=>'Ej. Director de Operaciones y Vigilancia','required']) !!}
+                    {!! Field::text('descripcion','',['label'=>'Descripción','placeholder'=>'Ej. Director de Operaciones','required']) !!}
     			    {!! Field::select('genero','',['label'=>'Género','required'],['HOMBRE'=>'HOMBRE','MUJER'=>'MUJER']) !!}
     			    {!! Field::text('nombres','',['label'=>'Nombre(s)','required']) !!}
     			    {!! Field::text('apellidos','',['label'=>'Apellido(s)','required']) !!}
-    			    {!! Field::email('email','',['label'=>'E-mail','placeholder'=>'usuario@micorreo.com','required']) !!}
+    			    {!! Field::email('email','',['label'=>'E-mail','required']) !!}
     			    {!! Field::text('teléfono','',['label'=>'Teléfono','placeholder'=>'Opcional']) !!}
                 </div>
                 <!-- END Step 2 -->

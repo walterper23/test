@@ -1,7 +1,7 @@
 @extends('Tema.app')
 
 @section('title')
-	SIGESD :: Ver documento
+    {{ title('Ver documento') }}
 @endsection
 
 @section('breadcrumb')

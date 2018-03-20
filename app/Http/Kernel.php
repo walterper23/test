@@ -57,10 +57,5 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'preventBackHistory' => \App\Http\Middleware\PreventBackHistory::class,
-        
-        'canAtLeast' => \Yajra\Acl\Middleware\CanAtLeastMiddleware::class,
-        'permission' => \Yajra\Acl\Middleware\PermissionMiddleware::class,
-        'role'       => \Yajra\Acl\Middleware\RoleMiddleware::class,
-
     ];
 }

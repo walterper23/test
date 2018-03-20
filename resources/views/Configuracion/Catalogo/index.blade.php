@@ -1,7 +1,7 @@
 @extends('Tema.app')
 
 @section('title')
-	SIGESD :: Catálogos
+	{{ title('Catálogos') }}
 @endsection
 
 @section('breadcrumb')

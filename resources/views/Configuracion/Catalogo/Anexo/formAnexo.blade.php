@@ -7,7 +7,7 @@
     {!! Form::model($modelo,['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) !!}
 	    {!! Form::hidden('action',$action) !!}
 	    {!! Form::hidden('id',$id) !!}
-        {!! Field::text('nombre',(is_null($modelo) ? '' : $modelo->ANEX_NOMBRE),['label'=>'Nombre','placeholder'=>'Nombre del anexo','autofocus']) !!}
+        {!! Field::text('nombre',(optional($modelo) -> ANEX_NOMBRE),['label'=>'Nombre','placeholder'=>'Nombre del anexo','autofocus']) !!}
 	{!! Form::close() !!}
 	@endcomponent
 @endsection

@@ -183,7 +183,6 @@ return [
         Yajra\DataTables\DataTablesServiceProvider::class,
         Yajra\DataTables\HtmlServiceProvider::class,
         Yajra\DataTables\ButtonsServiceProvider::class,
-        Yajra\Acl\AclServiceProvider::class,
         App\Providers\FieldServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
 
