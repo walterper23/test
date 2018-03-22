@@ -7,12 +7,14 @@
 
         <title>@yield('title')</title>
         
+        <meta name="description" content="{{ config_var('Sistema.Nombre') }}">
+        <meta name="author" content="Instituto Tecnológico de Chetumal 2017 - 2018">
         <meta name="robots" content="noindex, nofollow">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <!-- Open Graph Meta -->
         <meta property="og:site_name" content="{{ config_var('Sistema.Nombre') }}">
-        <meta property="og:description" content="Sistema creado por Instituto Tecnológico de Chetumal 2017 - 2018">
+        <meta property="og:description" content="Instituto Tecnológico de Chetumal 2017 - 2018">
         <meta property="og:type" content="webapp">
 
         <!-- Icons -->
@@ -36,7 +38,7 @@
     </head>
     <body>
         <!-- Page Container -->
-        <div id="page-container" class="side-scroll page-header-modern page-header-fixed site-trans-enabled">
+        <div id="page-container" class="sidebar-o side-scroll page-header-modern page-header-fixed site-trans-enabled">
 
             <!-- Sidebar -->
            <nav id="sidebar">

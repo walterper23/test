@@ -24,9 +24,11 @@ if (! function_exists('title')) {
 }
 
 if (! function_exists('permisoUsuario')) {
-    // Helper para recuperar las variables de configuración del sistema
+    // Helper para recuperar todos los permisos del usuario
+
     function permisoUsuario( $permiso )
     {
+        Cache::flush('PermisosUsuario');
         $permisos = Cache::remember('PermisosUsuario',120,function(){
             return \Auth::user() -> Permisos() -> pluck('SYPE_CODIGO') -> toArray();
         });

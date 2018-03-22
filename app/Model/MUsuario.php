@@ -59,6 +59,16 @@ class MUsuario extends Authenticatable {
         $this -> attributes['USUA_REMEMBER_TOKEN'] = $value;
     }
 
+    public function canAtLeast(){
+        $permisos = func_get_args();
+        foreach ($permisos as $permiso) {
+            if ($this -> can($permiso)) {
+                return true;
+            }   
+        }
+        return false;
+    }
+
     /* Relationships */
 
     public function UsuarioAsignaciones(){

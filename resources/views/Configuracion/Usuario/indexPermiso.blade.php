@@ -1,7 +1,7 @@
 @extends('Tema.app')
 
 @section('title')
-
+	{{ title('Configuración de permisos de usuarios') }}
 @endsection
 
 @section('breadcrumb')
