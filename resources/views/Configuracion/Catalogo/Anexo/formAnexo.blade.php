@@ -15,15 +15,13 @@
 @push('js-custom')
 <script type="text/javascript">
 	'use strict';
-	$.extend(AppForm, new function(){
+	var formAnexo = AppForm;
+	$.extend(formAnexo, new function(){
 
+		this.caller   = formAnexo;
 		this.context_ = '#modal-{{ $form_id }}';
 		this.form_    = '#{{$form_id}}';
 
-		this.start = function(){
-
-		};
-	
 		this.rules = function(){
 			return {
 				nombre : { required : true, maxlength : 255 }
@@ -35,7 +33,6 @@
 				nombre : { required : 'Introduzca un nombre' }
 			}
 		}
-	}).init().start()
-
+	}).init();
 </script>
 @endpush

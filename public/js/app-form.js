@@ -3,7 +3,8 @@
 var AppForm = new function(){
 
 	var self = this;
-	
+
+	this.caller     = null;
 	this.context_   = 'body';
 	this.form_ 	    = 'form';
 	this.btnOk_     = '#modal-btn-ok';
@@ -12,11 +13,14 @@ var AppForm = new function(){
 
 	this.init = function(){
 
+		this.caller    = AppForm;
 		this.context   = $( this.context_ );
 		this.form 	   = $( this.form_ );
 		this.btnOk     = this.context.find( this.btnOk_ );
 		this.btnCancel = this.context.find( this.btnCancel_ );
 		this.btnClose  = this.context.find( this.btnClose_ );
+
+		console.log(this.btnOk)
 
 		this.formSubmit(this.form)
 
@@ -33,9 +37,9 @@ var AppForm = new function(){
         return this;
 	};
 
-	this.submit = function(){
-		console.log(self)
-		self.form.submit()
+	this.submit = function( form ){
+		var form = form || this.form
+		form.submit()
 	};
 
 	this.formSubmit = function( form ){
@@ -125,16 +129,16 @@ var AppForm = new function(){
 				okBtnText : 'Descartar',
 				cancelBtnText : 'Regresar',
 				then  : function(){
-					self.resetForm().closeContext();
+					self.caller.resetForm().closeContext();
 				}
 			});
 		}else{
-			self.resetForm().closeContext();
+			self.caller.resetForm().closeContext();
 		}
 	};
 
 	this.closeContext = function(){
-		self.context.modal('hide');
+		self.caller.context.modal('hide');
 	};
 
 }

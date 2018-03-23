@@ -71,13 +71,13 @@
     var formRecepcion = AppForm;
     $.extend(formRecepcion, new function(){
 
+        this.caller     = formRecepcion;
         this.context_   = '#{{ $context }}';
         this.form_      = '#{{ $form_id }}';
         this.btnOk_     = '#btn-ok';
         this.btnCancel_ = '#btn-cancel';
 
         this.start = function(){
-            var self = this;
 
             Codebase.helper('datepicker');
 
@@ -135,9 +135,7 @@
 
         this.successSubmitHandler = function( data ){
             if( data.status ){
-
                 //location.href = '{{ url('recepcion/documentos') }}';
-
             }else{
 
             }
