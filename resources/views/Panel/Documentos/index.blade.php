@@ -13,7 +13,7 @@
 @section('breadcrumb')
     <nav class="breadcrumb bg-body-light mb-0">
         <a class="breadcrumb-item" href="javascript:void(0)"><i class="fa fa-server"></i> Panel de trabajo</a>
-        <a class="breadcrumb-item" href="{{ url('panel/documentos/recibidos') }}">Documentos</a>
+        <a class="breadcrumb-item" href="{{ url('panel/documentos') }}">Documentos</a>
         <span class="breadcrumb-item active">Recibidos</span>
     </nav>
 @endsection
@@ -25,87 +25,6 @@
             {!! $conteoDocumentos !!}
             <!-- END Collapsible Inbox Navigation -->
 
-            <!-- Recent Contacts -->
-            <div class="block d-none d-md-block">
-                <div class="block-header block-header-default">
-                    <h3 class="block-title">Últimos cambios a documentos</h3>
-                    <div class="block-options">
-                        <div class="dropdown">
-                            <button type="button" class="btn-block-option" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fa fa-fw fa-ellipsis-v"></i>
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <a class="dropdown-item active" href="javascript:void(0)">
-                                    <i class="fa fa-fw fa-users mr-5"></i> All
-                                </a>
-                                <a class="dropdown-item" href="javascript:void(0)">
-                                    <i class="fa fa-fw fa-circle text-success mr-5"></i> Online
-                                </a>
-                                <a class="dropdown-item" href="javascript:void(0)">
-                                    <i class="fa fa-fw fa-circle text-danger mr-5"></i> Busy
-                                </a>
-                                <a class="dropdown-item" href="javascript:void(0)">
-                                    <i class="fa fa-fw fa-circle text-warning mr-5"></i> Away
-                                </a>
-                                <a class="dropdown-item" href="javascript:void(0)">
-                                    <i class="fa fa-fw fa-circle text-muted mr-5"></i> Offline
-                                </a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="javascript:void(0)">
-                                    <i class="fa fa-fw fa-cogs mr-5"></i>Manage
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="block-content block-content-full">
-                    <ul class="nav-users">
-                        <li>
-                            <a href="be_pages_generic_profile.html">
-                                <img class="img-avatar" src="assets/img/avatars/avatar8.jpg" alt="">
-                                <i class="fa fa-circle text-success"></i> Andrea Gardner
-                                <div class="font-w400 font-size-xs text-muted"><i class="fa fa-location-arrow"></i> New York</div>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="be_pages_generic_profile.html">
-                                <img class="img-avatar" src="assets/img/avatars/avatar13.jpg" alt="">
-                                <i class="fa fa-circle text-success"></i> Thomas Riley
-                                <div class="font-w400 font-size-xs text-muted"><i class="fa fa-location-arrow"></i> San Fransisco</div>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="be_pages_generic_profile.html">
-                                <img class="img-avatar" src="assets/img/avatars/avatar6.jpg" alt="">
-                                <i class="fa fa-circle text-warning"></i> Sara Fields
-                                <div class="font-w400 font-size-xs text-muted"><i class="fa fa-location-arrow"></i> Beijing</div>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="be_pages_generic_profile.html">
-                                <img class="img-avatar" src="assets/img/avatars/avatar11.jpg" alt="">
-                                <i class="fa fa-circle text-warning"></i> Wayne Garcia
-                                <div class="font-w400 font-size-xs text-muted"><i class="fa fa-location-arrow"></i> Tokyo</div>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="be_pages_generic_profile.html">
-                                <img class="img-avatar" src="assets/img/avatars/avatar12.jpg" alt="">
-                                <i class="fa fa-circle text-danger"></i> Scott Young
-                                <div class="font-w400 font-size-xs text-muted"><i class="fa fa-location-arrow"></i> London</div>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="be_pages_generic_profile.html">
-                                <img class="img-avatar" src="assets/img/avatars/avatar8.jpg" alt="">
-                                <i class="fa fa-circle text-danger"></i> Lori Moore
-                                <div class="font-w400 font-size-xs text-muted"><i class="fa fa-location-arrow"></i> Rio De Janeiro</div>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <!-- END Recent Contacts -->
         </div>
         <div class="col-md-7 col-xl-9">
             <!-- Message List -->

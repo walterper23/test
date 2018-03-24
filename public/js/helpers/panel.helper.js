@@ -1,25 +1,25 @@
 'use strict';
 
-var hRol;
+var hPanel;
 
 App.loadScript('/js/helpers/helper.js', function(){
-	hRol = $.extend({}, Helper, function(){
+	hPanel = $.extend({}, Helper, function(){
 		return {
 			manager : function(){
-				return '/configuracion/usuarios/manager'
+				return '/configuracion/catalogos/puestos/manager'
 			},
 
 			edit_ : function(id){
 				this.edit({
 					modal : 'form-puesto',
-					url   : '/configuracion/usuarios/editar',
+					url   : '/configuracion/catalogos/puestos/editar',
 					id
 				})
 			},
 
 			delete_ : function(id){
 				this.delete({
-					id, title : 'Eliminar rol'
+					id, title : 'Eliminar puesto'
 				})
 			}
 

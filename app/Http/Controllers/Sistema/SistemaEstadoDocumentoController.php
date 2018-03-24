@@ -15,15 +15,17 @@ use App\DataTables\SistemaEstadosDocumentosDataTable;
 /* Models */
 use App\Model\Sistema\MSistemaEstadoDocumento;
 
-class SistemaEstadoDocumentoController extends BaseController {
-
+class SistemaEstadoDocumentoController extends BaseController
+{
 	private $form_id;
 
-	public function __construct(){
+	public function __construct()
+	{
 		$this -> form_id = 'form-estado-documento';
 	}
 
-	public function index(SistemaEstadosDocumentosDataTable $dataTables){
+	public function index(SistemaEstadosDocumentosDataTable $dataTables)
+	{
 
 		$data['table']    = $dataTables;
 		$data['form_id']  = $this -> form_id;
@@ -32,8 +34,8 @@ class SistemaEstadoDocumentoController extends BaseController {
 		return view('Configuracion.Sistema.EstadoDocumento.indexEstadoDocumento') -> with($data);
 	}
 
-	public function manager(ManagerSistemaEstadoDocumentoRequest $request){
-
+	public function manager(ManagerSistemaEstadoDocumentoRequest $request)
+	{
 		switch ($request -> action) {
 			case 2: // Editar
 				$response = $this -> editarEstadoDocumento( $request );
@@ -42,45 +44,49 @@ class SistemaEstadoDocumentoController extends BaseController {
 				return response()->json(['message'=>'Petición no válida'],404);
 				break;
 		}
+
 		return $response;
 	}
 
-	public function postDataTable(SistemaEstadosDocumentosDataTable $dataTables){
+	public function postDataTable(SistemaEstadosDocumentosDataTable $dataTables)
+	{
 		return $dataTables->getData();
 	}
 
-	public function formEditarestadoDocumento(Request $request){
+	public function formEditarestadoDocumento(Request $request)
+	{
 		try{
 
 			$data['title']         = 'Editar estado de documento';
 			$data['form_id']       = $this -> form_id;
 			$data['url_send_form'] = url('configuracion/sistema/estados-documentos/manager');
 			$data['action']        = 2;
-			$data['model']         = MSistemaestadoDocumento::find( $request -> id );
+			$data['model']         = MSistemaEstadoDocumento::find( $request -> id );
 			$data['id']            = $request -> id;
 
 			return view('Configuracion.Sistema.EstadoDocumento.formEstadoDocumento') -> with($data);
-		}catch(Exception $error){
+		} catch(Exception $error) {
 
 		}
 	}
 
-	public function editarEstadoDocumento( $request ){
-		try{
+	public function editarEstadoDocumento( $request )
+	{
+		try {
 
-			$estadoDocumento = MSistemaestadoDocumento::findOrFail( $request -> id );
+			$estadoDocumento = MSistemaEstadoDocumento::findOrFail( $request -> id );
 			$estadoDocumento -> SYED_NOMBRE = $request -> nombre;
 			$estadoDocumento -> save();
 
 			// Lista de tablas que se van a recargar automáticamente
 			$tables = 'dataTableBuilder';
 
-			$message = sprintf('<i class="fa fa-fw fa-check"></i> estado de documento <b>%s</b> modificado',$estadoDocumento -> getCodigo());
+			$message = sprintf('<i class="fa fa-fw fa-check"></i> Estado de documento <b>%s</b> modificado',$estadoDocumento -> getCodigo());
 
 			return $this -> responseSuccessJSON($message,$tables);
 
-		}catch(Exception $error){
-			return response()->json(['status'=>false,'message'=>'Ocurrió un error al editar el estado de documento. Error ' . $error->getMessage() ]);
+		} catch(Exception $error) {
+			return response()->json(['status'=>false,'message'=>'Ocurrió un error al editar el Estado de Documento. Error ' . $error->getMessage() ]);
 		}
 	}
 

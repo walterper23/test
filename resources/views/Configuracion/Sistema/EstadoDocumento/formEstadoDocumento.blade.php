@@ -14,8 +14,8 @@
 
 @push('js-custom')
 <script type="text/javascript">
-	var formEstadoDocumento = AppForm;
-	$.extend(formEstadoDocumento, new function(){
+	'use strict';
+	$.extend(new AppForm, new function(){
 
 		this.context_ = '#modal-{{ $form_id }}';
 		this.form_    = '#{{ $form_id }}';
@@ -35,7 +35,6 @@
 				}
 			};
 		}
-	}).init()
-
+	}).init();
 </script>
 @endpush

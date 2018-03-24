@@ -1,9 +1,9 @@
 'use strict';
 
-var hTipoDocumento;
+var hSistemaTipoDocumento;
 
 App.loadScript('/js/helpers/helper.js', function(){
-	hTipoDocumento = $.extend({}, Helper, function(){
+	hSistemaTipoDocumento = $.extend({}, Helper, function(){
 		return {
 			manager : function(){
 				return '/configuracion/sistema/tipos-documentos/manager'

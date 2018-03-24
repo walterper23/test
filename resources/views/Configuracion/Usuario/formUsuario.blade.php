@@ -12,9 +12,6 @@
             <li class="nav-item">
                 <a class="nav-link" href="#wizard-progress-step2" data-toggle="tab">Información personal</a>
             </li>
-            <!--li class="nav-item">
-                <a class="nav-link" href="#wizard-progress-step3" data-toggle="tab">Extra</a>
-            </li-->
         </ul>
         <!-- END Step Tabs -->
 
@@ -89,8 +86,8 @@
 
 @push('js-custom')
 <script type="text/javascript">
-	
-	$.extend(AppForm, new function(){
+	'use strict';
+	$.extend(new AppForm, new function(){
 
 		this.context_ = '#modal-{{ $form_id }}';
 		this.form_    = '#{{$form_id}}';

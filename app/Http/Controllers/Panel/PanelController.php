@@ -3,26 +3,19 @@ namespace App\Http\Controllers\Panel;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\ManagerUsuarioRequest;
-use Illuminate\Support\Facades\Input;
 use Validator;
 
 /* Controllers */
 use App\Http\Controllers\BaseController;
-use App\DataTables\UsuariosDataTable;
 
 /* Models */
 use App\Model\MUsuario;
 
+class PanelController extends BaseController
+{
+	public function index(Request $request){
 
-class PanelController extends BaseController {
-
-	public function __construct(){
-
-	}
-
-	public function index(){
-
-		$type = Input::get('type','all');
+		$type = $request -> get('type','all');
 
 		$asignaciones = user() -> UsuarioAsignaciones;
 
@@ -37,14 +30,14 @@ class PanelController extends BaseController {
 			'finalizados' => [],
 		];
 
-		// El usuario sólo puede ver documentos de ciertos departamentos que tiene asignado
-		if( $departamentos->count() > 0 ){
+		// El usuario sólo puede ver documentos de los departamentos que tiene asignado
+		if ($departamentos -> count() > 0)
+		{
 
 			foreach ($departamentos as $departamento) {
-
 				foreach ($departamento->seguimientos as $seguimiento) {
 					
-					$documento = $seguimiento->documento;
+					$documento = $seguimiento -> documento;
 
 					$documentos['todos'][] = [
 						'doc'         => $documento,
@@ -55,12 +48,13 @@ class PanelController extends BaseController {
 
 			}
 
-		}else{ // El usuario puede ver documentos de todos los departamentos de la dirección
+		}
+		else
+		{ // El usuario puede ver documentos de todos los departamentos de la dirección
 
 			foreach ($direcciones as $direccion) {
-
-				foreach ($direccion->seguimientos as $seguimiento) {
-					$documento = $seguimiento->documento;
+				foreach ($direccion -> seguimientos as $seguimiento) {
+					$documento = $seguimiento -> documento;
 					$documentos['todos'][] = [
 						'doc'         => $documento,
 						'seguimiento' => $seguimiento
