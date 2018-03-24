@@ -16,8 +16,8 @@
 
 @push('js-custom')
 <script type="text/javascript">
-	
-	$.extend(AppForm, new function(){
+	'use strict';
+	$.extend(new AppForm, new function(){
 
 		this.context_ = '#modal-{{ $form_id }}';
 		this.form_    = '#{{$form_id}}';
@@ -37,7 +37,6 @@
 				nombre : { required : 'Introduzca un nombre' }
 			}
 		}
-	}).init()
-
+	}).init();
 </script>
 @endpush

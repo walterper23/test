@@ -15,10 +15,9 @@
 @push('js-custom')
 <script type="text/javascript">
 	'use strict';
-	var formAnexo = AppForm;
+	var formAnexo = new AppForm;
 	$.extend(formAnexo, new function(){
 
-		this.caller   = formAnexo;
 		this.context_ = '#modal-{{ $form_id }}';
 		this.form_    = '#{{$form_id}}';
 

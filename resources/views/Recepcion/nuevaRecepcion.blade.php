@@ -68,10 +68,9 @@
 @push('js-custom')
 <script type="text/javascript">
     'use strict';
-    var formRecepcion = AppForm;
+    var formRecepcion = new AppForm;
     $.extend(formRecepcion, new function(){
 
-        this.caller     = formRecepcion;
         this.context_   = '#{{ $context }}';
         this.form_      = '#{{ $form_id }}';
         this.btnOk_     = '#btn-ok';

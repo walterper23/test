@@ -1,6 +1,6 @@
 @extends('vendor.templateModal')
 
-@section('title')<i class="fa fa-fw fa-users"></i> {!! $title !!}@endsection
+@section('title')<i class="fa fa-fw fa-user-secret"></i> {!! $title !!}@endsection
 
 @section('content')
 	@component('vendor.contentModal')
@@ -33,8 +33,8 @@
 
 @push('js-custom')
 <script type="text/javascript">
-	
-	$.extend(AppForm, new function(){
+	'use strict';
+	$.extend(new AppForm, new function(){
 
 		this.context_ = '#modal-{{ $form_id }}';
 		this.form_    = '#{{ $form_id }}';	
@@ -57,6 +57,7 @@
 
 		this.rules = function(){
 			return {
+				direccion : { required : true },
 				departamento : { required : true },
 				nombre : { required : true, minlength : 3, maxlength : 255 },
 			}
@@ -64,7 +65,7 @@
 
 		this.messages = function(){
 			return {
-				direccion : { required : 'Especifique una direccion' },
+				direccion : { required : 'Especifique una dirección' },
 				departamento : { required : 'Especifique un departamento' },
 				nombre : {
 					required  : 'Introduzca un nombre',
@@ -75,6 +76,5 @@
 		};
 
 	}).init().start();
-
 </script>
 @endpush

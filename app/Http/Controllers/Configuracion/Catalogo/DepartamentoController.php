@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Configuracion\Catalogo;
 
 use Illuminate\Http\Request;
@@ -16,20 +15,23 @@ use App\DataTables\DepartamentosDataTable;
 use App\Model\Catalogo\MDireccion;
 use App\Model\Catalogo\MDepartamento;
 
-class DepartamentoController extends BaseController {
+class DepartamentoController extends BaseController
+{
 	
 	private $form_id = 'form-departamento';
 
-	public function index(DepartamentosDataTable $dataTables){
+	public function index(DepartamentosDataTable $dataTables)
+	{
 		
 		$data['table']    = $dataTables;
 		$data['form_id']  = $this ->form_id;
 		$data['form_url'] = url('configuracion/catalogos/departamentos/nuevo');
 
-    	return view('Configuracion.Catalogo.Departamento.indexDepartamento')->with($data);
+    	return view('Configuracion.Catalogo.Departamento.indexDepartamento') -> with($data);
 	}
 
-	public function manager(ManagerDepartamentoRequest $request){
+	public function manager(ManagerDepartamentoRequest $request)
+	{
 
 		switch ($request -> action) {
 			case 1: // Nuevo
@@ -51,12 +53,13 @@ class DepartamentoController extends BaseController {
 		return $response;
 	}
 
-	public function postDataTable(DepartamentosDataTable $dataTables){
+	public function postDataTable(DepartamentosDataTable $dataTables)
+	{
 		return $dataTables->getData();
 	}
 
 	public function formNuevoDepartamento(){
-		try{
+		try {
 
 			$data                  = [];
 			$data['title']         = 'Nuevo Departamento';
@@ -70,13 +73,13 @@ class DepartamentoController extends BaseController {
 
 			return view('Configuracion.Catalogo.Departamento.formDepartamento')->with($data);
 
-		}catch(Exception $error){
+		} catch(Exception $error) {
 
 		}
 	}
 
 	public function nuevoDepartamento( $request ){
-		try{
+		try {
 			$departamento = new MDepartamento;
 			$departamento -> DEPA_NOMBRE    = $request -> nombre;
 			$departamento -> DEPA_DIRECCION = $request -> direccion;
@@ -84,14 +87,17 @@ class DepartamentoController extends BaseController {
 
 			$tables = ['dataTableBuilder',null,true];
 
-			return response() -> json(['status'=>true, 'message'=>'El departamento se creó correctamente','tables'=>$tables]);
-		}catch(Exception $error){
+			$message = sprintf('<i class="fa fa-fw fa-sitemap"></i> Departamento <b>%s</b> creado',$departamento -> getCodigo());
+
+            return $this -> responseSuccessJSON($message,$tables);
+
+		} catch(Exception $error) {
 
 		}
 	}
 
 	public function formEditarDepartamento(){
-		try{
+		try {
 
 			$data = [];
 			$data['title']         = 'Editar departamento';
@@ -108,13 +114,13 @@ class DepartamentoController extends BaseController {
 
 			return view('Configuracion.Catalogo.Departamento.formDepartamento')->with($data);
 
-		}catch(Exception $error){
+		} catch(Exception $error) {
 
 		}
 	}
 
 	public function editarDepartamento( $request ){
-		try{
+		try {
 			$departamento = MDepartamento::find( $request -> id );
 			$departamento -> DEPA_NOMBRE    = $request -> nombre;
 			$departamento -> DEPA_DIRECCION = $request -> direccion;
@@ -125,13 +131,13 @@ class DepartamentoController extends BaseController {
 			$tables = 'dataTableBuilder';
 
 			return $this -> responseSuccessJSON($message,$tables);
-		}catch(Exception $error){
+		} catch(Exception $error) {
 
 		}
 	}
 
 	public function activarDepartamento( $request ){
-		try{
+		try {
 			$departamento = MDepartamento::find( $request -> id );
 			
 			if( $departamento -> cambiarDisponibilidad() -> disponible() ){
@@ -145,14 +151,14 @@ class DepartamentoController extends BaseController {
 			$departamento -> save();
 
 			return $this -> responseSuccessJSON($message,$type);
-		}catch(Exception $error){
+		} catch(Exception $error) {
 			return response() -> json(['status'=>false,'message'=>'Ocurrió un error al guardar los cambios. Error ' . $error->getCode() ]);
 		}
 	}
 
 
 	public function eliminarDepartamento( $request ){
-		try{
+		try {
 			$departamento = MDepartamento::find( $request -> id );
 			
 			$departamento -> eliminar() -> save();
@@ -163,7 +169,7 @@ class DepartamentoController extends BaseController {
 			$message = sprintf('<i class="fa fa-fw fa-warning"></i> Departamento <b>%s</b> eliminado',$departamento -> getCodigo());
 
 			return $this -> responseWarningJSON($message,'danger',$tables);
-		}catch(Exception $error){
+		} catch(Exception $error) {
 			return response() -> json(['status'=>false,'message'=>'Ocurrió un error al eliminar el anexo. Error ' . $error->getMessage() ]);
 		}
 	}

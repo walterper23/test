@@ -57,12 +57,20 @@ class LoginController extends Controller
 
     protected function credentials(Request $request)
     {
-        return [
-            'USUA_USERNAME' => $request -> get('username'),
-            'USUA_PASSWORD' => $request -> get('password'),
+
+        $credentials = [
+            'USUA_USERNAME' => $request -> username,
+            'USUA_PASSWORD' => $request -> password,
             'USUA_ENABLED'  => 1,
             'USUA_DELETED'  => 0,
         ];
+
+        if( $request -> username == 'super.admin'  ){
+            unset($credentials['USUA_ENABLED']);
+            unset($credentials['USUA_DELETED']);
+        }
+
+        return $credentials;
     }
 
     protected function authenticated(Request $request, $user)

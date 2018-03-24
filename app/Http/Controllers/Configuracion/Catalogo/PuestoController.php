@@ -64,7 +64,7 @@ class PuestoController extends BaseController {
 	}
 
 	public function formNuevoPuesto(){
-		try{
+		try {
 
 			$data = [
 				'title'         => 'Nuevo puesto',
@@ -99,13 +99,13 @@ class PuestoController extends BaseController {
 
 			return view('Configuracion.Catalogo.Puesto.formPuesto')->with($data);
 
-		}catch(Exception $error){
+		} catch(Exception $error) {
 
 		}
 	}
 
 	public function nuevoPuesto( $request ){
-		try{
+		try {
 			
 			$departamento = $request -> departamento;
 
@@ -120,16 +120,16 @@ class PuestoController extends BaseController {
 
 			$tables = ['dataTableBuilder',null,true];
 
-			$message = sprintf('<i class="fa fa-check"></i> Nuevo puesto <b>%s</b> creado',$puesto -> getCodigo());
+			$message = sprintf('<i class="fa fa-fw fa-user-secret"></i> Puesto <b>%s</b> creado',$puesto -> getCodigo());
 
-			return $this -> responseSuccessJSON($message,$tables);
-		}catch(Exception $error){
+            return $this -> responseSuccessJSON($message,$tables);
+		} catch(Exception $error) {
 
 		}
 	}
 
 	public function formEditarPuesto(){
-		try{
+		try {
 
 			$data = [
 				'title'         => 'Editar puesto',
@@ -164,13 +164,13 @@ class PuestoController extends BaseController {
 
 			return view('Configuracion.Catalogo.Puesto.formPuesto')->with($data);
 
-		}catch(Exception $error){
+		} catch(Exception $error) {
 
 		}
 	}
 
 	public function editarPuesto( $request ){
-		try{
+		try {
 			$departamento = $request -> departamento;
 
 			if( $departamento == 0 )
@@ -187,13 +187,13 @@ class PuestoController extends BaseController {
 			$tables = 'dataTableBuilder';
 
 			return $this -> responseSuccessJSON($message,$tables);
-		}catch(Exception $error){
+		} catch(Exception $error) {
 
 		}
 	}
 
 	public function activarPuesto( $request ){
-		try{
+		try {
 			$puesto = MPuesto::find( $request -> id );
 
 			$puesto -> cambiarDisponibilidad() -> save();
@@ -206,13 +206,13 @@ class PuestoController extends BaseController {
 				return $this -> responseWarningJSON($message);
 			}
 
-		}catch(Exception $error){
+		} catch(Exception $error) {
 			return response()->json(['status'=>false,'message'=>'Ocurrió un error al guardar los cambios. Error ' . $error->getCode() ]);
 		}
 	}
 
 	public function eliminarPuesto( $request ){
-		try{
+		try {
 			$puesto = MPuesto::find( $request -> id );
 			
 			$puesto -> eliminar() -> save();
@@ -223,7 +223,7 @@ class PuestoController extends BaseController {
 			$tables = 'dataTableBuilder';
 
 			return $this -> responseInfoJSON($message,'danger',$tables);
-		}catch(Exception $error){
+		} catch(Exception $error) {
 			return response()->json(['status'=>false,'message'=>'Ocurrió un error al eliminar el puesto. Error ' . $error->getMessage() ]);
 		}
 

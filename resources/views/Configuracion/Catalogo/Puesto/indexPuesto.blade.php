@@ -21,7 +21,7 @@
 @section('content')
 	<div class="block block-themed block-mode-loading-refresh">
         <div class="block-header bg-corporate-dark">
-            <h3 class="block-title"><i class="fa fa-fw fa-users mr-5"></i> Puestos</h3>
+            <h3 class="block-title"><i class="fa fa-fw fa-user-secret mr-5"></i> Puestos</h3>
             <div class="block-options">
                 <button type="button" class="btn-block-option" onclick="hPuesto.new('{{ $form_id}}', '{{$form_url}}')">
                     <i class="fa fa-plus"></i> Nuevo

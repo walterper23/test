@@ -66,31 +66,33 @@ class DireccionController extends BaseController {
 
 		 	return view('Configuracion.Catalogo.Direccion.formDireccion')->with($data);
 
-		}catch(Exception $error){
+		} catch(Exception $error) {
 
 		}
 	}
 
 	public function nuevaDireccion( $request ){
-		try{
+		try {
 
 			$direccion = new MDireccion;
-			$direccion -> DIRE_NOMBRE      = $request -> nombre;
-			$direccion -> DIRE_CREATED_AT  = Carbon::now();
+			$direccion -> DIRE_NOMBRE     = $request -> nombre;
+			$direccion -> DIRE_CREATED_AT = Carbon::now();
 			$direccion -> save();
 
 			// Lista de tablas que se van a recargar automáticamente
 			$tables = ['dataTableBuilder',null,true];
 
-			return response()->json(['status'=>true,'message'=>'La dirección se creó correctamente','tables'=>$tables]);
+			$message = sprintf('<i class="fa fa-fw fa-sitemap"></i> Dirección <b>%s</b> creada',$direccion -> getCodigo());
+
+            return $this -> responseSuccessJSON($message,$tables);
 		
-		}catch(Exception $error){
+		} catch(Exception $error) {
 			return response()->json(['status'=>false,'message'=>'Ocurrió un error al crear la dirección. Error ' . $error->getMessage() ]);
 		}
 	}
 
 	public function formEditarDireccion(){
-		try{
+		try {
 
 			$data = [
 	 			'title'         =>'Editar dirección',
@@ -103,7 +105,7 @@ class DireccionController extends BaseController {
 			
 			return view('configuracion.Catalogo.Direccion.formDireccion')-> with ($data);
 
-		}catch(Exception $error){
+		} catch(Exception $error) {
 
 		}
 	}
@@ -120,7 +122,7 @@ class DireccionController extends BaseController {
 
 			return response()->json(['status'=>true,'message'=>'Los cambios se guardaron correctamente','tables'=>$tables]);
 		
-		}catch(Exception $error){
+		} catch(Exception $error) {
 			return response()->json(['status'=>false,'message'=>'Ocurrió un error al guardar los cambios. Error ' . $error->getMessage() ]);
 		}
 	}
@@ -140,7 +142,7 @@ class DireccionController extends BaseController {
 			$direccion -> save();
 
 			return $this -> responseSuccessJSON($message,$type);
-		}catch(Exception $error){
+		} catch(Exception $error) {
 			return response()->json(['status'=>false,'message'=>'Ocurrió un error al guardar los cambios. Error ' . $error->getCode() ]);
 		}
 	}
@@ -157,7 +159,7 @@ class DireccionController extends BaseController {
 			$message = sprintf('<i class="fa fa-fw fa-warning"></i> Dirección <b>%s</b> eliminada',$direccion -> getCodigo());
 
 			return $this -> responseWarningJSON($message,'danger',$tables);
-		}catch(Exception $error){
+		} catch(Exception $error) {
 			return response()->json(['status'=>false,'message'=>'Ocurrió un error al eliminar la dirección. Error ' . $error->getMessage() ]);
 		}
 

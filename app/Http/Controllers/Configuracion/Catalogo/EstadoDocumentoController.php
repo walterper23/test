@@ -54,7 +54,7 @@ class EstadoDocumentoController extends BaseController {
 	}
 
 	public function formNuevoEstadoDocumento(){
-		try{
+		try {
 
 			$data = [];
 
@@ -90,13 +90,13 @@ class EstadoDocumentoController extends BaseController {
 
 			return view('Configuracion.Catalogo.EstadoDocumento.formEstadoDocumento')->with($data);
 
-		}catch(Exception $error){
+		} catch(Exception $error) {
 
 		}
 	}
 
 	public function nuevoEstadoDocumento( $request ){
-		try{
+		try {
 
 			$departamento = $request -> departamento;
 
@@ -111,17 +111,17 @@ class EstadoDocumentoController extends BaseController {
 
 			$tables = ['dataTableBuilder',null,true];
 
-			$message = sprintf('<i class="fa fa-check"></i> Nuevo estado de documento <b>%s</b> creado',$estadoDocumento -> getCodigo());
+			$message = sprintf('<i class="fa fa-tags"></i> Estado de documento <b>%s</b> creado',$estadoDocumento -> getCodigo());
 
 			return $this -> responseSuccessJSON($message,$tables);
 		
-		}catch(Exception $error){
+		} catch(Exception $error) {
 
 		}
 	}
 
 	public function formEditarEstadoDocumento(){
-		try{
+		try {
 			$data['title']         = 'Editar estado de documento';
 			$data['url_send_form'] = url('configuracion/catalogos/estados-documentos/manager');
 			$data['form_id']       = $this -> form_id;
@@ -150,13 +150,13 @@ class EstadoDocumentoController extends BaseController {
 
 			return view('Configuracion.Catalogo.EstadoDocumento.formEstadoDocumento') -> with($data);
 
-		}catch(Exception $error){
+		} catch(Exception $error) {
 
 		}
 	}
 
 	public function editarEstadoDocumento( $request ){
-		try{
+		try {
 			$estadoDocumento = MEstadoDocumento::find( $request -> id );
 			$estadoDocumento -> ESDO_NOMBRE       = $request -> nombre;
 			$estadoDocumento -> ESDO_DEPARTAMENTO = $request -> departamento;
@@ -168,13 +168,13 @@ class EstadoDocumentoController extends BaseController {
 
 			return $this -> responseSuccessJSON($message,$tables);
 
-		}catch(Exception $error){
+		} catch(Exception $error) {
 			
 		}
 	}
 
 	public function activarEstadoDocumento( $request ){
-		try{
+		try {
 			$estadoDocumento = MEstadoDocumento::find( $request -> id );
 			
 			if( $estadoDocumento -> ESDO_ENABLED == 1 ){
@@ -187,14 +187,14 @@ class EstadoDocumentoController extends BaseController {
 			$estadoDocumento -> save();
 
 			return response()->json(['status'=>true,'message'=>$message]);
-		}catch(Exception $error){
+		} catch(Exception $error) {
 			return response()->json(['status'=>false,'message'=>'Ocurrió un error al guardar los cambios. Error ' . $error->getCode() ]);
 		}
 	}
 
 
 	public function eliminarEstadoDocumento(){
-		try{
+		try {
 			$estadoDocumento = MEstadoDocumento::find( Input::get('id') );
 			
 			$estadoDocumento -> ESDO_DELETED    = 1;
@@ -205,7 +205,7 @@ class EstadoDocumentoController extends BaseController {
 			$tables = 'dataTableBuilder';
 
 			return response()->json(['status'=>true,'message'=>'El estado de documento se eliminó correctamente','tables'=>$tables]);
-		}catch(Exception $error){
+		} catch(Exception $error) {
 			return response()->json(['status'=>false,'message'=>'Ocurrió un error al eliminar el estado de documento. Error ' . $error->getMessage() ]);
 		}
 	}
