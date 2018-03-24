@@ -9,12 +9,8 @@ class BaseModel extends Model {
 
     public $timestamps = false;
 
-    public function __construct(){
-        parent::__construct();
-    }
-
-	protected static function boot(){
-
+	protected static function boot()
+    {
         parent::boot();
 
         static::creating(function($model){
@@ -24,24 +20,23 @@ class BaseModel extends Model {
         static::updating(function($model){
         	//$model -> fieldUpdated();
         });
-
     }
 
-    private function fieldCreatedBy(){
-        if( isset($this -> fieldCreatedBy) ){
-        	$user = \Auth::user();
-    		$this -> attributes[ $this -> fieldCreatedBy ] = json_encode(['id' => $user -> getKey(),'usuario' => $user -> getAuthUsername()]);
+    private function fieldCreatedBy()
+    {
+        if (isset($this -> fieldCreatedBy))
+        {
+    		$this -> attributes[ $this -> fieldCreatedBy ] = json_encode(['id' => user() -> getKey(),'usuario' => user() -> getAuthUsername()]);
 	    }
     }
 
     /* Método aun no terminado */
     private function fieldUpdated(){
-	    if( isset($this -> fieldUpdated) ){
-            
+	    if (isset($this -> fieldUpdated))
+        {
             $updated = $this -> attributes[ $this -> fieldUpdated ] ?? json_encode([]);
 
-        	$user = \Auth::user();
-        	$info = ['id' => $user -> getKey(),'usuario' => $user -> getAuthUsername()];
+        	$info = ['id' => user() -> getKey(),'usuario' => user() -> getAuthUsername()];
             
             array_push($info,json_decode($updated,true));
 

@@ -82,11 +82,11 @@
                         <!-- END Side Header -->
 
                         <!-- Side User -->
-                        @include('Tema.side_user', ['user'=>auth()->user()])
+                        @include('Tema.side_user')
                         <!-- END Side User -->
 
                         <!-- Side Navigation -->
-                        @include('Tema.menu', ['user'=>auth()->user()])
+                        @include('Tema.menu')
                         <!-- END Side Navigation -->
                     </div>
                     <!-- Sidebar Content -->
@@ -98,7 +98,7 @@
             <!-- Header -->
             <header id="page-header">
                 <!-- Header Content -->
-                 @include('Tema.header',['user'=>auth()->user()])
+                 @include('Tema.header')
                 <!-- END Header Content -->
 
                 <!-- Header Loader -->

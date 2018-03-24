@@ -17,7 +17,7 @@
 @push('js-custom')
 <script type="text/javascript">
 	
-	$.extend(AppForm, new function(){
+	$.extend(new AppForm, new function(){
 
 		this.context_ = '#modal-{{ $form_id }}';
 		this.form_    = '#{{$form_id}}';

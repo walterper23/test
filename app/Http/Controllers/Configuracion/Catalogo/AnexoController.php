@@ -147,7 +147,6 @@ class AnexoController extends BaseController {
     public function eliminarAnexo( $request ){
         try{
             $anexo = MAnexo::find( $request -> id );
-            
             $anexo -> eliminar() -> save();
 
             $tables = 'dataTableBuilder';

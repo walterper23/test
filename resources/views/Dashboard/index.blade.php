@@ -1,5 +1,5 @@
 @extends('Tema.app')
 
 @section('title')
-	@component('Tema.Title')Inicio @endcomponent
+	{{ title('Inicio') }}
 @endsection

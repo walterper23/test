@@ -80,29 +80,30 @@
 
             Codebase.helper('datepicker');
 
-            this.labelNumero = $('label[for=numero]');
+            var labelNumero = $('label[for=numero]');
+            var txtAnexo = this.form.find('#anexos');
 
-            this.txtAnexo = this.form.find('#anexos');
-
-            this.selectTipoDocumento = this.form.find('#tipo_documento').on('change',function(e){
-                self.labelNumero.text( $(this).find('option:selected').data('label') );
+            var selectTipoDocumento = this.form.find('#tipo_documento').on('change',function(e){
+                labelNumero.text( $(this).find('option:selected').data('label') );
             });
 
-            this.selectAnexo = this.form.find('#anexo').on('change',function(e){
+            var selectAnexo = this.form.find('#anexo').on('change',function(e){
                 if( this.value.length ){
-                    self.addAnexo( $(this).find('option:selected').text() )
+                    var anexo = $(this).find('option:selected').text();
+                    anexo = ((txtAnexo.val()).trim() + '\n' + anexo).trim();
+                    txtAnexo.val( anexo );
                 }
             });
-
+            
             $('#addAnexo').on('click',function(){
-                self.selectAnexo.trigger('change');
-            })
+                selectAnexo.trigger('change');
+            });
+            
 
         }
 
         this.addAnexo = function( anexo ){
-            anexo = ((this.txtAnexo.val()).trim() + '\n' + anexo).trim();
-            this.txtAnexo.val( anexo );
+            
         }
 
         this.submitHandler = function(form){

@@ -14,6 +14,7 @@ class MUsuario extends Authenticatable {
     public    $timestamps     = false;
 
     protected $fieldEnabled   = 'USUA_ENABLED';
+    protected $fieldDeleted   = 'USUA_DELETED';
 
     public function isSuperAdmin(){
         return $this -> getKey() == 1;

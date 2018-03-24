@@ -2,7 +2,8 @@
 
 use Illuminate\Support\Facades\Cache;
 
-if (! function_exists('config_var')) {
+if (! function_exists('config_var'))
+{
     // Helper para recuperar las variables de configuración del sistema
     function config_var( $key_var, $default = '' )
     {
@@ -15,7 +16,8 @@ if (! function_exists('config_var')) {
     }
 }
 
-if (! function_exists('title')) {
+if (! function_exists('title'))
+{
     // Helper para mostrar el título de la página
     function title( $title = '' )
     {
@@ -23,16 +25,26 @@ if (! function_exists('title')) {
     }
 }
 
-if (! function_exists('permisoUsuario')) {
+if (! function_exists('permisoUsuario'))
+{
     // Helper para recuperar todos los permisos del usuario
 
     function permisoUsuario( $permiso )
     {
         Cache::flush('PermisosUsuario');
         $permisos = Cache::remember('PermisosUsuario',120,function(){
-            return \Auth::user() -> Permisos() -> pluck('SYPE_CODIGO') -> toArray();
+            return user() -> Permisos() -> pluck('SYPE_CODIGO') -> toArray();
         });
 
         return in_array($permiso, $permisos);
+    }
+}
+
+if (! function_exists('user'))
+{
+    // Helper para recuperar al usuario en sesión
+    function user()
+    {
+        return \Auth::user();
     }
 }

@@ -2,7 +2,7 @@
 
 var AppForm = function(){
 
-	var self = this;
+	var self;
 
 	this.context_   = 'body';
 	this.form_ 	    = 'form';
@@ -12,6 +12,7 @@ var AppForm = function(){
 
 	this.init = function(){
 
+		self = this;
 		this.context   = $( this.context_ );
 		this.form 	   = $( this.form_ );
 		this.btnOk     = this.context.find( this.btnOk_ );

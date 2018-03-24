@@ -24,10 +24,10 @@ class PanelController extends BaseController {
 
 		$type = Input::get('type','all');
 
-		$asignaciones = \Auth::user() -> UsuarioAsignaciones;
+		$asignaciones = user() -> UsuarioAsignaciones;
 
-		$direcciones = \Auth::user() -> Direcciones;
-		$departamentos = \Auth::user() -> Departamentos;
+		$direcciones = user() -> Direcciones;
+		$departamentos = user() -> Departamentos;
 
 		$documentos = [
 			'nuevos'      => [],

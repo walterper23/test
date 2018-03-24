@@ -78,3 +78,7 @@ a {
 [noresize] {
 	resize: none;
 }
+
+.table-sm td, .table-sm th {
+	padding: 3px 4px;
+}

@@ -51,8 +51,8 @@ class UsuariosDataTable extends CustomDataTable {
                 'title' => 'Opciones',
                 'render' => function($query){
                     $buttons = sprintf('
-                        <button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-warning" onclick="hUsuario.password(%d)" title="Cambiar contraseña"><i class="fa fa-key"></i></button>
-                        <button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hUsuario.delete_(%d)"><i class="fa fa-trash"></i></button>',
+                        <button type="button" class="btn btn-sm btn-circle btn-alt-warning" onclick="hUsuario.password(%d)" title="Cambiar contraseña"><i class="fa fa-key"></i></button>
+                        <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hUsuario.delete_(%d)"><i class="fa fa-trash"></i></button>',
                         $query -> getKey(), $query -> getKey()
                     );
                     

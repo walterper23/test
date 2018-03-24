@@ -1,13 +1,13 @@
 @php
-    function activeMenu( $menu_a, $menu_b ){
+    function activeMenu( $menu_a, $menu_b )
+    {
         return (request() -> segment(1) == $menu_a && request() -> segment(2) == $menu_b) ? 'class="open"' : '';
     }
-    function activeItemMenu( $item ){
+    
+    function activeItemMenu( $item )
+    {
         return request() -> is($item) ? 'class="active"' : '';
     }
-
-    $user = auth() -> user();
-
 @endphp
 <div class="content-side content-side-full">
     @can('REC.DOCUMENTO')
@@ -65,7 +65,7 @@
     </ul>
     <ul class="nav-main">
         <li class="nav-main-heading"><span class="sidebar-mini-visible">C</span><span class="sidebar-mini-hidden">Configuraci&oacute;n</span></li>
-        @if( $user -> canAtLeast('SIS.ADMIN.ANEXOS','SIS.ADMIN.DIRECC','SIS.ADMIN.DEPTOS','SIS.ADMIN.PUESTOS','SIS.ADMIN.ESTA.DOC') )
+        @if( user() -> canAtLeast('SIS.ADMIN.ANEXOS','SIS.ADMIN.DIRECC','SIS.ADMIN.DEPTOS','SIS.ADMIN.PUESTOS','SIS.ADMIN.ESTA.DOC') )
         <li {!! activeMenu('configuracion','catalogos') !!}>
             <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="fa fa-fw fa-cubes"></i><span class="sidebar-mini-hide">Cat&aacute;logos</span></a>
             <ul>
@@ -97,7 +97,7 @@
             </ul>
         </li>
         @endif
-        @if( $user -> canAtLeast('USU.ADMIN.USUARIOS','USU.ADMIN.PERMISOS') )
+        @if( user() -> canAtLeast('USU.ADMIN.USUARIOS','USU.ADMIN.PERMISOS') )
         <li {!! activeMenu('configuracion','usuarios') !!}>
             <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="fa fa-users"></i><span class="sidebar-mini-hidden">Usuarios</span></a>
             <ul>

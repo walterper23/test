@@ -12,7 +12,7 @@
         <!-- User Dropdown -->
         <div class="btn-group" role="group">
             <button type="button" class="btn btn-rounded btn-dual-primary" id="page-header-user-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                {{ Auth::user()->getNombre() }}<i class="fa fa-angle-down ml-5"></i>
+                {{ user() -> getNombre() }}<i class="fa fa-angle-down ml-5"></i>
             </button>
             <div class="dropdown-menu dropdown-menu-right min-width-150" aria-labelledby="page-header-user-dropdown">
                 <a class="dropdown-item" href="{{ url('usuario/perfil') }}">

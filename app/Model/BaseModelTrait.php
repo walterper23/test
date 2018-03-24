@@ -5,39 +5,48 @@ use Carbon\Carbon;
 
 trait BaseModelTrait {
 
-    public function getCodigo( $size = 3, $str = '0', $direction = STR_PAD_LEFT ){
+    public function getCodigo( $size = 3, $str = '0', $direction = STR_PAD_LEFT)
+    {
         return str_pad($this -> attributes[ $this -> getKeyName() ], $size, $str, $direction);
     }
 
-    public function disponible(){
-        if( isset($this -> fieldEnabled) )
+    public function disponible()
+    {
+        if (isset($this -> fieldEnabled))
             return ($this -> attributes[ $this -> fieldEnabled ] == 1);
         return false;
     }
 
     public function cambiarDisponibilidad(){
-        if( isset($this -> fieldEnabled) ){
+        if (isset($this -> fieldEnabled))
+        {
             $this -> attributes[ $this -> fieldEnabled ] = $this -> attributes[ $this -> fieldEnabled ] * -1 + 1;
         }
+
         return $this;
     }
 
-    public function eliminar(){
-        if( isset($this -> fieldDeleted) ){
+    public function isAttribute( $attribute ) {
+        return array_key_exists($attribute, $this -> attributes);
+    }
+
+    public function eliminar()
+    {
+        if (isset($this -> fieldDeleted))
+        {
             $this -> attributes[ $this -> fieldDeleted ] = 1;
 
             $fieldDeletedAt = sprintf('%s_AT',$this->fieldDeleted);
             $fieldDeletedBy = sprintf('%s_BY',$this->fieldDeleted);
 
-            $usuario = \Auth::user();
-
-            if( array_key_exists($fieldDeletedAt, $this -> attributes) ){
+            if ($this -> isAttribute($fieldDeletedAt))
+            {
                 $this -> attributes[ $fieldDeletedAt ] = Carbon::now();
             }
 
-            if( array_key_exists($fieldDeletedBy, $this -> attributes) ){
-                $this -> attributes[ $fieldDeletedBy ] = json_encode(['id' => $usuario -> getKey(),'username' => $usuario -> getAuthUsername()]);
-                
+            if ($this -> isAttribute($fieldDeletedBy))
+            {
+                $this -> attributes[ $fieldDeletedBy ] = json_encode(['id' => user() -> getKey(),'username' => user() -> getAuthUsername()]);
             }
         }
 

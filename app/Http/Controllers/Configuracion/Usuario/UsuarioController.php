@@ -163,17 +163,13 @@ class UsuarioController extends BaseController {
 	public function eliminarUsuario( $request ){
 		try{
 			$usuario = MUsuario::find( $request -> id );
-			
-			$usuario -> USUA_DELETED    = 1;
-			$usuario -> USUA_DELETED_AT = Carbon::now();
-			$usuario -> save();
+			$usuario -> eliminar() -> save();
 
-			$message = sprintf('<i class="fa fa-warning"></i> Usuario <b>%s</b> eliminado',$usuario -> getCodigo());
-
-			// Lista de tablas que se van a recargar automáticamente
 			$tables = 'dataTableBuilder';
 
-			return response()->json(['status'=>true,'type'=>'warning','message'=>$message,'tables'=>$tables]);
+            $message = sprintf('<i class="fa fa-fw fa-warning"></i> Usuario <b>%s</b> eliminado',$usuario -> getCodigo());
+
+            return $this -> responseWarningJSON($message,'danger',$tables);
 		}catch(Exception $error){
 			return response()->json(['status'=>false,'message'=>'Ocurrió un error al eliminar el usuario. Error ' . $error->getMessage() ]);
 		}
