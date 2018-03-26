@@ -6,7 +6,7 @@ use App\Model\MUsuario;
 class UsuariosDataTable extends CustomDataTable {
     
     protected function setSourceData(){
-        $this->sourceData = MUsuario::with('usuarioDetalle')->select('USUA_USUARIO','USUA_NOMBRE','USUA_RECENT_LOGIN','USUA_CREATED_AT','USUA_ENABLED')
+        $this->sourceData = MUsuario::with('usuarioDetalle')->select('USUA_USUARIO','USUA_USERNAME','USUA_NOMBRE','USUA_RECENT_LOGIN','USUA_CREATED_AT','USUA_ENABLED')
                             ->where('USUA_DELETED',0);
     }
 
@@ -19,20 +19,20 @@ class UsuariosDataTable extends CustomDataTable {
                 }
             ],
             [
+                'title' => 'Usuario',
+                'render' => function($query){
+                    return sprintf('<a href="%s">%s</a>',url('configuracion/usuarios/ver',[$query -> USUA_USUARIO]),$query -> getAuthUsername());
+                },
+            ],
+            [
                 'title' => 'Nombre',
                 'render' => function($query){
-                    return sprintf('<a href="%s">%s</a>',url('configuracion/usuarios/ver',[$query -> USUA_USUARIO]),$query -> UsuarioDetalle -> presenter() -> nombreCompleto());
+                    return $query -> UsuarioDetalle -> presenter() -> nombreCompleto();
                 },
             ],
             [
                 'title' => 'Descripción',
                 'data' => 'USUA_NOMBRE'
-            ],
-            [
-                'title' => 'E-mail',
-                'render' => function($query){
-                    return $query -> UsuarioDetalle -> USDE_EMAIL;
-                },
             ],
             [
                 'title' => 'Último acceso',
@@ -52,8 +52,9 @@ class UsuariosDataTable extends CustomDataTable {
                 'render' => function($query){
                     $buttons = sprintf('
                         <button type="button" class="btn btn-sm btn-circle btn-alt-warning" onclick="hUsuario.password(%d)" title="Cambiar contraseña"><i class="fa fa-key"></i></button>
+                        <button type="button" class="btn btn-sm btn-circle btn-alt-success" onclick="hUsuario.password(%d)" title="Permisos"><i class="fa fa-lock"></i></button>
                         <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hUsuario.delete_(%d)"><i class="fa fa-trash"></i></button>',
-                        $query -> getKey(), $query -> getKey()
+                        $query -> getKey(), $query -> getKey(), $query -> getKey()
                     );
                     
                     return $buttons;

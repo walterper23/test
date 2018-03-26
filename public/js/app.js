@@ -56,9 +56,8 @@ var App = function(){
 		btnCancelText : 'Cancelar'
 	};
 
-	var _openModal = function( config ){
-
-		var config = $.extend({},_defaultOpenModal,config);
+	var _openModal = function( config_modal ){
+		var config = $.extend({},_defaultOpenModal,config_modal);
 		var modal = $('#modal-' + config.id );
 		modal = modal.length > 0 ? modal : $('<div/>').addClass('modal fade').attr('id','modal-'+config.id).attr('role','dialog');
 
@@ -69,7 +68,7 @@ var App = function(){
 	    if( config.footer ){
 	        html +=    `<div class="modal-footer">`;
 	        if( config.btnOk )     html += `<button type="button" class="btn btn-alt-primary" id="modal-btn-ok">`+config.btnOkText+`</button>`;
-	        if( config.btnCancel ) html += `<button type="button" class="btn btn-alt-default" data="close-modal" id="modal-btn-cancel">`+config.btnCancelText+`</button>`;
+	        if( config.btnCancel ) html += `<button type="button" class="btn btn-alt-default" data-close="modal" id="modal-btn-cancel">`+config.btnCancelText+`</button>`;
 	        html +=    `</div>`;
 	    }
 	    

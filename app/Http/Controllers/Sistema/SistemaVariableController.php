@@ -16,10 +16,6 @@ class SistemaVariableController extends BaseController {
 
 	private $form_id;
 
-	public function __construct(){
-
-	}
-
 	public function index(){
 
 		$data['form_id']  = $this -> form_id;

@@ -8,7 +8,7 @@ var AppForm = function(){
 	this.form_ 	    = 'form';
 	this.btnOk_     = '#modal-btn-ok';
 	this.btnCancel_ = '#modal-btn-cancel';
-	this.btnClose_  = '[data="close-modal"]';
+	this.btnClose_  = '[data-close="modal"]';
 
 	this.init = function(){
 
@@ -56,7 +56,6 @@ var AppForm = function(){
 	        },
 			rules : this.rules(),
 			messages : this.messages(),
-			submitHandler: self.submitHandler
 		})
 	};
 

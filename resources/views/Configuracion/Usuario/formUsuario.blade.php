@@ -3,7 +3,7 @@
 @section('title')<i class="fa fa-fw fa-user-plus"></i> {!! $title !!}@endsection
 
 @section('content')
-    <div class="js-wizard-simple block">
+    <div class="js-wizard-validation-form block">
         <!-- Step Tabs -->
         <ul class="nav nav-tabs nav-tabs-block nav-fill" role="tablist">
             <li class="nav-item">
@@ -30,9 +30,9 @@
             <div class="block-content block-content-full tab-content" style="min-height: 265px;">
                 <!-- Step 1 -->
                 <div class="tab-pane active show" id="wizard-progress-step1" role="tabpanel">
-                    {!! Field::email('usuario','',['label'=>'Usuario','addClass'=>'text-lowercase','autofocus','required']) !!}
-    			    {!! Field::password('password','',['label'=>'Contraseña','required']) !!}
-    			    {!! Field::password('password_confirmation','',['label'=>'Confirmar contraseña','required']) !!}
+                    {!! Field::email('usuario','crroee@dsas.owss',['label'=>'Usuario','addClass'=>'text-lowercase','autofocus','required']) !!}
+    			    {!! Field::password('password','123456',['label'=>'Contraseña','required']) !!}
+    			    {!! Field::password('password_confirmation','123456',['label'=>'Confirmar contraseña','required']) !!}
                 </div>
                 <!-- END Step 1 -->
 
@@ -47,11 +47,6 @@
                 </div>
                 <!-- END Step 2 -->
 
-                <!-- Step 3 -->
-                <div class="tab-pane" id="wizard-progress-step3" role="tabpanel">
-                    
-                </div>
-                <!-- END Step 3 -->
             </div>
             <!-- END Steps Content -->
 
@@ -59,11 +54,12 @@
             <div class="block-content block-content-sm block-content-full bg-body-light">
                 <div class="row">
                     <div class="col-6">
+                        <button type="button" class="btn btn-alt-secondary" data-close="modal">Cancelar</button>
+                    </div>
+                    <div class="col-6 text-right">
                         <button type="button" class="btn btn-alt-secondary disabled" data-wizard="prev">
                             <i class="fa fa-angle-left mr-5"></i> Anterior
                         </button>
-                    </div>
-                    <div class="col-6 text-right">
                         <button type="button" class="btn btn-alt-secondary" data-wizard="next">
                             Siguiente <i class="fa fa-angle-right ml-5"></i>
                         </button>
@@ -81,19 +77,59 @@
 
 @push('js-script')
 {{ Html::script('js/plugins/bootstrap-wizard/jquery.bootstrap.wizard.min.js') }}
-{{ Html::script('js/pages/be_forms_wizard.js') }}
 @endpush
 
 @push('js-custom')
 <script type="text/javascript">
 	'use strict';
-	$.extend(new AppForm, new function(){
+    var formUser = new AppForm;
+	$.extend(formUser, new function(){
 
 		this.context_ = '#modal-{{ $form_id }}';
 		this.form_    = '#{{$form_id}}';
 
         this.start = function(){
-            console.log(this.context)
+            $.fn.bootstrapWizard.defaults.tabClass         = 'nav nav-tabs';
+            $.fn.bootstrapWizard.defaults.nextSelector     = '[data-wizard="next"]';
+            $.fn.bootstrapWizard.defaults.previousSelector = '[data-wizard="prev"]';
+            $.fn.bootstrapWizard.defaults.finishSelector   = '[data-wizard="finish"]';
+
+            this.form.on('keyup keypress', function (e) {
+                var code = e.keyCode || e.which;
+
+                if (code === 13) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            // Init classic wizard with validation
+            $('.js-wizard-validation-form').bootstrapWizard({
+                tabClass: '',
+                onTabShow: function(tab, navigation, index) {
+                    var percent = ((index + 1) / navigation.find('li').length) * 100;
+
+                    // Get progress bar
+                    var progress = navigation.parents('.block').find('[data-wizard="progress"] > .progress-bar');
+
+                    // Update progress bar if there is one
+                    if (progress.length) {
+                        progress.css({ width: percent + 1 + '%' });
+                    }
+                },
+                onNext: function(tab, navigation, index) {
+                    if( !formUser.form.valid() ) {
+                        formUser.form.validate().focusInvalid();
+                        return false;
+                    }
+                    return true;
+                },
+                onTabClick: function(tab, navigation, index) {
+                    $('a', navigation).blur();
+                    return false;
+                }
+            });
+
         }
 	
 		this.rules = function(){
@@ -112,20 +148,20 @@
 		this.messages = function(){
 			return {
 				usuario : {
-                    required : 'Introduzca un nombre usuario',
-                    email : 'Introduzca un correo electrónico válido',
+                    required  : 'Introduzca un nombre usuario',
+                    email     : 'Introduzca un correo electrónico válido',
                     maxlength : 'Máximo {0} caracteres'
                 },
                 password : {
-                    required : 'Introduzca una contraseña',
+                    required  : 'Introduzca una contraseña',
                     minlength : 'Mínimo {0} caracteres',
                     maxlength : 'Máximo {0} caracteres'
                 },
                 password_confirmation : {
-                    required : 'Confirme la contraseña',
+                    required  : 'Confirme la contraseña',
                     minlength : 'Mínimo {0} caracteres',
                     maxlength : 'Máximo {0} caracteres',
-                    equalTo : 'Las contraseñas no coinciden',
+                    equalTo   : 'Las contraseñas no coinciden',
                 },
                 descripcion : {
                     required : 'Introduzca la descripción del usuario'
@@ -140,7 +176,8 @@
                     required : 'Introduzca los apellidos del usuario',
                 },
                 email : {
-                    required : 'Introduzca el correo electrónico del usuario'
+                    required : 'Introduzca el correo electrónico del usuario',
+                    email    : 'Introduzca un correo electrónico válido',
                 }
 			}
 		}

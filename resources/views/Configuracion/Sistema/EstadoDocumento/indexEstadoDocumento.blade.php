@@ -20,7 +20,7 @@
 
 @section('content')
     <div class="block block-themed block-mode-loading-refresh">
-        <div class="block-header bg-corporate-dark">
+        <div class="block-header bg-corporate-darker">
             <h3 class="block-title"><i class="fa fa-fw fa-flash mr-5"></i> Estados de documentos</h3>
             <div class="block-options">
                 <div class="dropdown">

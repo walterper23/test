@@ -20,7 +20,7 @@
 
 @section('content')
     <div class="block block-themed block-mode-loading-refresh">
-        <div class="block-header bg-corporate-dark">
+        <div class="block-header bg-corporate-darker">
             <h3 class="block-title"><i class="fa fa-fw fa-sitemap mr-5"></i> Departamentos</h3>
             <div class="block-options">
                 <button type="button" class="btn-block-option" onclick="hDepartamento.new('{{ $form_id}}', '{{$form_url}}')">
