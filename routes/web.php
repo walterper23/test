@@ -2,10 +2,10 @@
 
 DB::listen(function($query){
     //echo "<pre style=\"z-index:5000\">{$query->sql}</pre>";
+
 });
 
 Route::middleware('preventBackHistory') -> group(function(){
-
     Route::get('login',  'Auth\LoginController@showLoginForm') -> name('login');
     Route::post('login', 'Auth\LoginController@login');
     Route::get('logout', 'Auth\LoginController@logout') -> name('logout');

@@ -123,13 +123,6 @@ class RecepcionController extends BaseController {
 			$documento -> DOCU_NUMERO_DOCUMENTO    = $request -> numero;
 			$documento -> save();
 
-			if ($request -> tipo_documento == 1) // Si el tipo de documento es denuncia ...
-			{
-				$denuncia = new MDenuncia; // ... crear el registro de la denuncia
-				$denuncia -> DENU_DOCUMENTO = $documento -> getKey();
-				$denuncia -> save();
-			}
-
 			$seguimiento = new MSeguimiento;
 			$seguimiento -> SEGU_USUARIO              = userKey();
 			$seguimiento -> SEGU_DOCUMENTO            = $documento -> getKey();
@@ -139,10 +132,18 @@ class RecepcionController extends BaseController {
 			$seguimiento -> SEGU_DEPARTAMENTO_DESTINO = config_var('Sistema.Depto.Destino'); // Departamento del procurador, por default
 			$seguimiento -> SEGU_ESTADO_DOCUMENTO     = 1; // Documento recepcionado. Estado de documento por default
 			$seguimiento -> save();
+			
+			if ($request -> tipo_documento == 1) // Si el tipo de documento es denuncia ...
+			{
+				$denuncia = new MDenuncia; // ... crear el registro de la denuncia
+				$denuncia -> DENU_DOCUMENTO = $documento -> getKey();
+				$denuncia -> save();
+			}
+
 
 			DB::commit();
 
-			return $this -> responseSuccessJSON();
+			return redirect('recepcion/documentos/recepcionados');
 
 		}catch(Exception $error){
 			DB::rollback();

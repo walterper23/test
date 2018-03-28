@@ -31,7 +31,6 @@ if (! function_exists('permisoUsuario'))
 
     function permisoUsuario( $permiso )
     {
-        Cache::flush('PermisosUsuario');
         $permisos = Cache::remember('PermisosUsuario',120,function(){
             return user() -> Permisos() -> pluck('SYPE_CODIGO') -> toArray();
         });

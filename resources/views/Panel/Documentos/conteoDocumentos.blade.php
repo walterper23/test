@@ -46,7 +46,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link d-flex align-items-center justify-content-between @if($type=='important') {{ 'active' }} @endif" href="{{ url('panel/documentos/?type=important') }}">
+                    <a class="nav-link d-flex align-items-center justify-content-between @if($type=='archived') {{ 'active' }} @endif" href="{{ url('panel/documentos/?type=archived') }}">
                         <span><i class="fa fa-fw fa-archive mr-5"></i> Archivados</span>
                         {!! badge(sizeof($importantes)) !!}
                     </a>

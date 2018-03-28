@@ -7,34 +7,39 @@ use App\Model\BaseModel;
 /* Presenter */
 use App\Presenters\MEstadoDocumentoPresenter;
 
-class MEstadoDocumento extends BaseModel {
-    
-    protected $table          = 'cat_estados_documentos';
-    protected $primaryKey     = 'ESDO_ESTADO_DOCUMENTO';
-    public    $timestamps     = false;
+class MEstadoDocumento extends BaseModel
+{
+    protected $table        = 'cat_estados_documentos';
+    protected $primaryKey   = 'ESDO_ESTADO_DOCUMENTO';
+    protected $prefix       = 'ESDO';
 
-    public function getNombre(){
+    public function getNombre()
+    {
     	return $this -> attributes['ESDO_NOMBRE'];
     }
 
 
     /* Relationships */
 
-    public function Documentos(){
+    public function Documentos()
+    {
         return $this -> hasMany('App\Model\MDocumento','DOCU_STATUS',$this -> getKey());
     }
     
-    public function Direccion(){
+    public function Direccion()
+    {
         return $this -> belongsTo('App\Model\Catalogo\MDireccion','ESDO_DIRECCION','DIRE_DIRECCION');
     }
     
-    public function Departamento(){
+    public function Departamento()
+    {
         return $this -> belongsTo('App\Model\Catalogo\MDepartamento','ESDO_DEPARTAMENTO','DEPA_DEPARTAMENTO');
     }
 
     /* Presenter */
 
-    public function presenter(){
+    public function presenter()
+    {
         return new MEstadoDocumentoPresenter($this);
     }
 

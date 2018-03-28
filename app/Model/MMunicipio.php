@@ -2,17 +2,17 @@
 namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 
-class MMunicipio extends Model {
-    
+class MMunicipio extends Model
+{
     protected $table          = 'municipios';
     protected $primaryKey     = 'MUNI_MUNICIPIO';
+    protected $prefix         = 'MUNI';
     public    $timestamps     = false;
 
-
-    public function getNombre(){
-    	return $this->attributes[ 'MUNI_NOMBRE' ]; 
+    public function getNombre()
+    {
+    	return $this -> attributes['MUNI_NOMBRE']; 
     }
 
 }

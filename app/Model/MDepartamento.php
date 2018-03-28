@@ -11,9 +11,7 @@ class MDepartamento extends BaseModel {
     
     protected $table        = 'cat_departamentos';
     protected $primaryKey   = 'DEPA_DEPARTAMENTO';
-
-    protected $fieldEnabled = 'DEPA_ENABLED';
-    protected $fieldDeleted = 'DEPA_DELETED';
+    protected $prefix       = 'DEPA';
 
     public function getNombre(){
         return $this -> attributes['DEPA_NOMBRE'];

@@ -20,9 +20,9 @@
 
 @section('content')
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-0">
             <!-- Collapsible Inbox Navigation -->
-            {!! $conteoDocumentos !!}
+            {{-- $conteoDocumentos --}}
             <!-- END Collapsible Inbox Navigation -->
 
         </div>
@@ -30,7 +30,7 @@
             <!-- Message List -->
             <div class="block">
                 <div class="block-header block-header-default">
-                    <div class="block-title">
+                    <!--div class="block-title">
                         <div class="push">
                             <button type="button" class="btn btn-rounded btn-alt-secondary">
                                 <i class="fa fa-times text-danger mx-5"></i>
@@ -45,7 +45,7 @@
                                 <span class="d-none d-sm-inline"> Star</span>
                             </button>
                         </div>
-                    </div>
+                    </div-->
                     <div class="block-options">
                         <strong>1 - 10</strong> de <strong>23</strong>
                         <button type="button" class="btn-block-option" data-toggle="block-option">
@@ -57,7 +57,6 @@
                         <button type="button" class="btn-block-option" data-toggle="block-option" data-action="state_toggle" data-action-mode="demo">
                             <i class="si si-refresh"></i>
                         </button>
-                        <button type="button" class="btn-block-option" data-toggle="block-option" data-action="fullscreen_toggle"></button>
                     </div>
                 </div>
             </div>
@@ -67,8 +66,33 @@
                 <div class="block">
                     <div class="block-content block-content-full ribbon ribbon-primary">
                         <div class="ribbon-box">Tipo de Documento</div>
-                        <p class="font-w600">{{ $documento -> getNumero() }}</p>
-                        <p>{{ $documento -> Detalle -> getDescripcion() }}</p>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="font-w600">{{ $documento -> getNumero() }}</p>
+                                <p>{{ $documento -> Detalle -> getDescripcion() }}</p>
+                                <button type="button" class="btn btn-sm btn-alt-primary" data-toggle="block-option">
+                                    <i class="fa fa-fw fa-clipboard"></i> Anexos
+                                </button>
+                                <button type="button" class="btn btn-sm btn-alt-danger" data-toggle="block-option">
+                                    <i class="fa fa-fw fa-file-pdf-o"></i> Escaneos <span class="badge badge-pill badge-danger">3</span>
+                                </button>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="font-w600">ÚLTIMO ESTADO:</p>
+                                <p>Documento recepcionado por oficialía de partes</p>
+                                <p>Documento recepcionado por oficialía de partes</p>
+                            </div>
+                            <div class="col-md-6">
+                                <hr>
+                                <div class="font-size-sm text-muted"><i class="fa fa-fw fa-sitemap"></i> Nombre de la dirección</div>
+                                <div class="font-size-sm text-muted"><i class="fa fa-fw fa-sitemap"></i> Nombre del departamento</div>
+                            </div>
+                            <div class="col-md-6">
+                                <hr>
+                                <div class="font-size-sm text-muted"><i class="fa fa-fw fa-user"></i> Nombre de la persona</div>
+                                <div class="font-size-sm text-muted"><i class="fa fa-fw fa-calendar"></i> {{ date('Y-m-d h:i:s a') }}</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

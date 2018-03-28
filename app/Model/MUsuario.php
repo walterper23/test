@@ -9,12 +9,10 @@ class MUsuario extends Authenticatable {
 
     use BaseModelTrait;
     
-    protected $table          = 'usuarios';
-    protected $primaryKey     = 'USUA_USUARIO';
-    public    $timestamps     = false;
-
-    protected $fieldEnabled   = 'USUA_ENABLED';
-    protected $fieldDeleted   = 'USUA_DELETED';
+    protected $table        = 'usuarios';
+    protected $primaryKey   = 'USUA_USUARIO';
+    protected $prefix       = 'USUA';
+    public    $timestamps   = false;
 
     public function isSuperAdmin(){
         return $this -> getKey() == 1;
