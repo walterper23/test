@@ -10,6 +10,7 @@ use App\Http\Controllers\BaseController;
 
 /* Models */
 use App\Model\MUsuario;
+use App\Model\MDocumento;
 
 class PanelController extends BaseController
 {
@@ -90,9 +91,12 @@ class PanelController extends BaseController
 				break;
 			
 			default:
-				$data['title'] = 'Documentos nuevos';$data['documentos'] = $documentos['todos'];
+				$data['title'] = 'Documentos nuevos';
+				$data['documentos'] = $documentos['todos'];
 				break;
 		}
+
+		$data['documentos2'] = MDocumento::all();
 
 
 		return view('Panel.Documentos.index') -> with($data);

@@ -19,9 +19,9 @@
 
         <!-- Icons -->
         <!-- The following icons can be replaced with your own, they are used by desktop and mobile browsers -->
-        <link rel="shortcut icon" href="{{ asset('img/favicons/favicon.ico') }}">
-        <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('img/favicon/favicon-192x192.png') }}">
-        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('img/favicon/apple-touch-icon-180x180.png') }}">
+        <link rel="shortcut icon" href="img/favicons/favicon.ico">
+        <link rel="icon" type="image/png" sizes="192x192" href="img/favicon/favicon-192x192.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon-180x180.png">
         <!-- END Icons -->
 
         <!-- Stylesheets -->

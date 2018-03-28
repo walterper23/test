@@ -82,3 +82,15 @@ a {
 .table-sm td, .table-sm th {
 	padding: 3px 4px;
 }
+
+.content .push {
+	margin-bottom: 0;
+}
+
+.content .block {
+	margin-bottom: 3px;
+}
+
+.block-content p {
+	margin-bottom: 0;
+}

@@ -12,8 +12,8 @@ class MDocumento extends BaseModel {
     }
 
 
-    public function documentoDetalle(){
-        return $this -> haOne('App\Model\MDocumentoDetalle','DODE_DOCUMENTO',$this -> getKey());
+    public function Detalle(){
+        return $this -> hasOne('App\Model\MDetalle','DETA_DETALLE','DOCU_DETALLE');
     }
 
     public function seguimientos(){

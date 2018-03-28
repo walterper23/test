@@ -48,3 +48,12 @@ if (! function_exists('user'))
         return \Auth::user();
     }
 }
+
+if (! function_exists('userKey'))
+{
+    // Helper para recuperar el ID del usuario en sesión
+    function userKey()
+    {
+        return user() -> getKey();
+    }
+}
