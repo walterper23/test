@@ -20,9 +20,19 @@ class MDocumento extends BaseModel
         return $this -> hasOne('App\Model\MDetalle','DETA_DETALLE','DOCU_DETALLE');
     }
 
+    public function EstadoDocumento()
+    {
+        return $this -> hasOne('App\Model\Sistema\MSistemaEstadoDocumento','SYED_ESTADO_DOCUMENTO','DOCU_SYSTEM_ESTADO_DOCTO');
+    }
+
     public function Seguimientos()
     {
         return $this -> hasMany('App\Model\MSeguimiento','SEGU_DOCUMENTO',$this -> getKeyName());
+    }
+
+    public function TipoDocumento()
+    {
+        return $this -> hasOne('App\Model\Sistema\MSistemaTipoDocumento','SYTD_TIPO_DOCUMENTO','DOCU_SYSTEM_TIPO_DOCTO');
     }
 
 }

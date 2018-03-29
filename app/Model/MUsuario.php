@@ -14,11 +14,13 @@ class MUsuario extends Authenticatable {
     protected $prefix       = 'USUA';
     public    $timestamps   = false;
 
-    public function isSuperAdmin(){
+    public function isSuperAdmin()
+    {
         return $this -> getKey() == 1;
     }
 
-    public function getAuthUsername(){
+    public function getAuthUsername()
+    {
         return $this -> attributes['USUA_USERNAME'];
     }    
 
@@ -26,31 +28,38 @@ class MUsuario extends Authenticatable {
         $this -> attributes['USUA_PASSWORD'] = bcrypt($password);
     }
 
-    public function getAuthPassword(){
+    public function getAuthPassword()
+    {
         return $this -> attributes['USUA_PASSWORD'];
     }
     
-    public function getNombre(){
+    public function getNombre()
+    {
         return $this -> attributes['USUA_NOMBRE'];
     }
 
-    public function getAvatarSmall(){
+    public function getAvatarSmall()
+    {
         return $this -> attributes['USUA_AVATAR_SMALL'];
     }
 
-    public function getAvatarFull(){
+    public function getAvatarFull()
+    {
         return $this -> attributes['USUA_AVATAR_FULL'];
     }
     
-    public function getRecentLogin(){
+    public function getRecentLogin()
+    {
         return $this -> attributes['USUA_RECENT_LOGIN'];
     }
 
-    public function getLastLogin(){
+    public function getLastLogin()
+    {
         return $this -> attributes['USUA_LAST_LOGIN'];
     }
 
-    public function getRememberTokenName(){
+    public function getRememberTokenName()
+    {
         return $this -> attributes['USUA_REMEMBER_TOKEN'];
     }
 
@@ -58,10 +67,13 @@ class MUsuario extends Authenticatable {
         $this -> attributes['USUA_REMEMBER_TOKEN'] = $value;
     }
 
-    public function canAtLeast(){
+    public function canAtLeast()
+    {
         $permisos = func_get_args();
-        foreach ($permisos as $permiso) {
-            if ($this -> can($permiso)) {
+        foreach ($permisos as $permiso)
+        {
+            if ($this -> can($permiso))
+            {
                 return true;
             }   
         }
@@ -70,33 +82,40 @@ class MUsuario extends Authenticatable {
 
     /* Relationships */
 
-    public function UsuarioAsignaciones(){
+    public function UsuarioAsignaciones()
+    {
         return $this -> hasMany('App\Model\MUsuarioAsignacion','USAS_USUARIO',$this -> getKeyName());
     }
 
-    public function Direcciones(){
+    public function Direcciones()
+    {
         return $this -> belongsToMany('App\Model\Catalogo\MDireccion','usuarios_asignaciones','USAS_USUARIO','USAS_DIRECCION');
     }
 
-    public function Departamentos(){
+    public function Departamentos()
+    {
         return $this -> belongsToMany('App\Model\Catalogo\MDepartamento','usuarios_asignaciones','USAS_USUARIO','USAS_DEPARTAMENTO');
     }
 
-    public function Puestos(){
+    public function Puestos()
+    {
         return $this -> belongsToMany('App\Model\Catalogo\MPuesto','usuarios_asignaciones','USAS_USUARIO','USAS_PUESTO');
     }
 
-    public function UsuarioDetalle(){
-        return $this -> hasOne('App\Model\MUsuarioDetalle','USDE_USUARIO',$this -> getKeyName());
+    public function UsuarioDetalle()
+    {
+        return $this -> hasOne('App\Model\MUsuarioDetalle','USDE_USUARIO_DETALLE','USUA_DETALLE');
     }
 
-    public function Permisos(){
-        return $this -> belongsToMany('App\Model\Acl\MPermiso','usuarios_permisos','USPE_USUARIO','USPE_PERMISO');
+    public function Permisos()
+    {
+        return $this -> belongsToMany('App\Model\MPermiso','usuarios_permisos','USPE_USUARIO','USPE_PERMISO');
     }
 
     /* Presenter */
 
-    public function presenter(){
+    public function presenter()
+    {
         return new MUsuarioPresenter($this);
     }
 }

@@ -20,9 +20,9 @@
 
 @section('content')
     <div class="row">
-        <div class="col-md-0">
+        <div class="col-md-3">
             <!-- Collapsible Inbox Navigation -->
-            {{-- $conteoDocumentos --}}
+            {!! $conteoDocumentos !!}
             <!-- END Collapsible Inbox Navigation -->
 
         </div>
@@ -30,22 +30,30 @@
             <!-- Message List -->
             <div class="block">
                 <div class="block-header block-header-default">
-                    <!--div class="block-title">
+                    <div class="block-title d-none d-md-inline">
                         <div class="push">
                             <button type="button" class="btn btn-rounded btn-alt-secondary">
-                                <i class="fa fa-times text-danger mx-5"></i>
-                                <span class="d-none d-sm-inline"> Delete</span>
+                                <i class="fa fa-inbox mx-5"></i>
+                                <span class="d-none d-sm-inline"> Nuevos</span>
+                            </button>
+                            <button type="button" class="btn btn-rounded btn-alt-primary">
+                                <i class="fa fa-cubes mx-5"></i>
+                                <span class="d-none d-sm-inline"> Todos</span>
                             </button>
                             <button type="button" class="btn btn-rounded btn-alt-secondary">
-                                <i class="fa fa-archive text-primary mx-5"></i>
-                                <span class="d-none d-sm-inline"> Archive</span>
+                                <i class="fa fa-star mx-5"></i>
+                                <span class="d-none d-sm-inline"> Importantes</span>
                             </button>
                             <button type="button" class="btn btn-rounded btn-alt-secondary">
-                                <i class="fa fa-star text-warning mx-5"></i>
-                                <span class="d-none d-sm-inline"> Star</span>
+                                <i class="fa fa-archive mx-5"></i>
+                                <span class="d-none d-sm-inline"> Archivados</span>
+                            </button>
+                            <button type="button" class="btn btn-rounded btn-alt-secondary">
+                                <i class="fa fa-flag-checkered mx-5"></i>
+                                <span class="d-none d-sm-inline"> Finalizados</span>
                             </button>
                         </div>
-                    </div-->
+                    </div>
                     <div class="block-options">
                         <strong>1 - 10</strong> de <strong>23</strong>
                         <button type="button" class="btn-block-option" data-toggle="block-option">
@@ -64,11 +72,11 @@
             @foreach( $documentos2 as $documento )
                     
                 <div class="block">
-                    <div class="block-content block-content-full ribbon ribbon-primary">
-                        <div class="ribbon-box">Tipo de Documento</div>
+                    <div class="block-content block-content-full ribbon ribbon-bookmark ribbon-{{ $documento -> TipoDocumento -> presenter() -> getColorRibbon() }}">
+                        <div class="ribbon-box">{{ $documento -> TipoDocumento -> getNombre() }}</div>
                         <div class="row">
                             <div class="col-md-6">
-                                <p class="font-w600">{{ $documento -> getNumero() }}</p>
+                                <p class="font-w700">{{ $documento -> getNumero() }}</p>
                                 <p>{{ $documento -> Detalle -> getDescripcion() }}</p>
                                 <button type="button" class="btn btn-sm btn-alt-primary" data-toggle="block-option">
                                     <i class="fa fa-fw fa-clipboard"></i> Anexos
@@ -78,9 +86,9 @@
                                 </button>
                             </div>
                             <div class="col-md-6">
-                                <p class="font-w600">ÚLTIMO ESTADO:</p>
+                                <p class="font-w700">ÚLTIMO ESTADO:</p>
                                 <p>Documento recepcionado por oficialía de partes</p>
-                                <p>Documento recepcionado por oficialía de partes</p>
+                                <p><span class="font-w600">Observaciones:</span> Faltó un documento por entregar</p>
                             </div>
                             <div class="col-md-6">
                                 <hr>
@@ -100,22 +108,6 @@
 
             <div class="block">
                 <div class="block-content">
-                    <!-- Messages Options -->
-                    <div class="push">
-                        <button type="button" class="btn btn-rounded btn-alt-secondary float-right">
-                            <i class="fa fa-times text-danger mx-5"></i>
-                            <span class="d-none d-sm-inline"> Delete</span>
-                        </button>
-                        <button type="button" class="btn btn-rounded btn-alt-secondary">
-                            <i class="fa fa-archive text-primary mx-5"></i>
-                            <span class="d-none d-sm-inline"> Archive</span>
-                        </button>
-                        <button type="button" class="btn btn-rounded btn-alt-secondary">
-                            <i class="fa fa-star text-warning mx-5"></i>
-                            <span class="d-none d-sm-inline"> Star</span>
-                        </button>
-                    </div>
-                    <!-- END Messages Options -->
 
                     <!-- Messages -->
                     <!-- Checkable Table (.js-table-checkable class is initialized in Codebase() -> uiHelperTableToolsCheckable()) -->

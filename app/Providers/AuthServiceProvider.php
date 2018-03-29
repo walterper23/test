@@ -41,7 +41,7 @@ class AuthServiceProvider extends ServiceProvider
 
         //$permisos = Cache::remember('Permisos.Sistema')
 
-        $permisos = \App\Model\Acl\MPermiso::select('SYPE_CODIGO') -> get();
+        $permisos = \App\Model\MPermiso::select('SYPE_CODIGO') -> get();
         foreach ($permisos as $permiso) {
             GateContract::define($permiso -> getCodigo(), function($user) use ($permiso){
                 return permisoUsuario( $permiso -> getCodigo() );

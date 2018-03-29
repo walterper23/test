@@ -6,7 +6,7 @@ use App\Model\MUsuario;
 class UsuariosDataTable extends CustomDataTable {
     
     protected function setSourceData(){
-        $this->sourceData = MUsuario::with('usuarioDetalle')->select('USUA_USUARIO','USUA_USERNAME','USUA_NOMBRE','USUA_RECENT_LOGIN','USUA_CREATED_AT','USUA_ENABLED')
+        $this->sourceData = MUsuario::with('UsuarioDetalle')->select('USUA_USUARIO','USUA_USERNAME','USUA_NOMBRE','USUA_RECENT_LOGIN','USUA_CREATED_AT','USUA_ENABLED')
                             ->where('USUA_DELETED',0);
     }
 

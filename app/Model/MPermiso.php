@@ -1,14 +1,16 @@
 <?php
-namespace App\Model\Acl;
+namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class MPermiso extends Model {
+class MPermiso extends Model
+{
 
-    protected $table          = 'system_permisos';
-    protected $primaryKey     = 'SYPE_PERMISO';
+    protected $table       = 'system_permisos';
+    protected $primaryKey  = 'SYPE_PERMISO';
 
-    public function getCodigo(){
+    public function getCodigo()
+    {
     	return $this -> attributes['SYPE_CODIGO'];
     }
 
