@@ -1,4 +1,4 @@
-<div class="block-header bg-primary-dark">
+<div class="block-header {{ $headerColor or 'bg-primary-dark' }}">
     <h3 class="block-title">@yield('title')</h3>
     <div class="block-options">
         <button type="button" class="btn-block-option" data-close="modal" aria-label="Close">

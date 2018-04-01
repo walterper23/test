@@ -13,14 +13,16 @@ use DB;
 use App\Http\Controllers\BaseController;
 
 /* Models */
-use App\Model\MDocumento;
+use App\Model\MArchivo;
 use App\Model\MDenuncia;
-use App\Model\MSeguimiento;
-use App\Model\MMunicipio;
 use App\Model\MDetalle;
+use App\Model\MDocumento;
+use App\Model\MEscaneo;
+use App\Model\MMunicipio;
+use App\Model\MSeguimiento;
 use App\Model\Catalogo\MAnexo;
-use App\Model\Catalogo\MEstadoDocumento;
 use App\Model\Catalogo\MDireccion;
+use App\Model\Catalogo\MEstadoDocumento;
 use App\Model\Sistema\MSistemaTipoDocumento;
 
 /* DataTables */
@@ -102,11 +104,14 @@ class RecepcionController extends BaseController {
 
 		try{
 
+			// Reemplazamos los saltos de línea, por "\n"
 			$anexos = preg_replace('/\r|\n/','\n',$request -> anexos);
+			// Reemplazamos las "\n" repetidas
 			$anexos = str_replace('\n\n','\n',$anexos);
 
 			DB::beginTransaction();
 
+			// Guardamos los detalles del documento
 			$detalle = new MDetalle;
 			$detalle -> DETA_MUNICIPIO            = $request -> municipio;
 			$detalle -> DETA_FECHA_RECEPCION      = $request -> recepcion;
@@ -116,6 +121,7 @@ class RecepcionController extends BaseController {
 			$detalle -> DETA_OBSERVACIONES        = $request -> observaciones;
 			$detalle -> save();
 
+			// Guardamos el documento
 			$documento = new MDocumento;
 			$documento -> DOCU_SYSTEM_TIPO_DOCTO   = $request -> tipo_documento;
 			$documento -> DOCU_SYSTEM_ESTADO_DOCTO = 2; // Documento recepcionado
@@ -123,6 +129,7 @@ class RecepcionController extends BaseController {
 			$documento -> DOCU_NUMERO_DOCUMENTO    = $request -> numero;
 			$documento -> save();
 
+			// Guardamos el primer seguimiento del documento
 			$seguimiento = new MSeguimiento;
 			$seguimiento -> SEGU_USUARIO              = userKey();
 			$seguimiento -> SEGU_DOCUMENTO            = $documento -> getKey();
@@ -140,6 +147,11 @@ class RecepcionController extends BaseController {
 				$denuncia -> save();
 			}
 
+			// Guardamos los archivos o escaneos que se hayan agregado al archivo
+
+
+
+
 
 			DB::commit();
 
@@ -147,8 +159,31 @@ class RecepcionController extends BaseController {
 
 		}catch(Exception $error){
 			DB::rollback();
-			dd( $error->getMessage() );
 		}
+
+	}
+
+	// Método para agregar un nuevo archivo a un documento
+	public function nuevoEscaneo(MDocumento $documento, $file, $data)
+	{
+
+		$filename = sprintf('escaneo_docto_%d_%s.pdf',$documento -> getKey(),time());
+
+		$archivo = new MArchivo;
+		$archivo -> ARCH_FOLDER   = '';
+		$archivo -> ARCH_FILENAME = $filename;
+		$archivo -> ARCH_PATH     = '';
+		$archivo -> ARCH_TYPE     = '';
+		$archivo -> ARCH_MIME     = '';
+		$archivo -> ARCH_SIZE     = '';
+		$archivo -> save();
+
+		$escaneo = new MEscaneo;
+		$escaneo -> ESCA_ARCHIVO     = $archivo -> getKey(); 
+		$escaneo -> ESCA_DOCUMENTO   = $documento -> getKey(); 
+		$escaneo -> ESCA_NOMBRE      = $data['escaneo_nombre']; 
+		$escaneo -> ESCA_DESCRIPCION = $data['escaneo_descripcion']; 
+		$escaneo -> save();
 
 	}
 
@@ -160,56 +195,6 @@ class RecepcionController extends BaseController {
 
 		return view('Recepcion.verDocumento')->with($data);
 
-	}
-
-	public function verSeguimiento( $id ){
-
-		$data['documento'] = MDocumento::find( $id );
-
-		return view('Seguimiento.verSeguimiento')->with($data);
-	}
-
-
-
-	public function modalCambio(){
-
-		$data = [
-			'title'         => 'Cambio de Estado de Documento',
-			'url_send_form' => url('guardar-cambio'),
-			'form_id'       => 'modal-cambio',
-			'modelo'        => MDocumento::find(1),
-			'action'        => 1,
-			'id'            => 1
-		];
-
-		$direcciones = MDireccion::with('departamentos')
-							->select('DIRE_DIRECCION','DIRE_NOMBRE')
-							->where('DIRE_ENABLED',1)
-							->orderBy('DIRE_NOMBRE')
-							->get();
-
-		$data['direcciones'] = $direcciones->pluck('DIRE_NOMBRE','DIRE_DIRECCION')->toArray();
-
-		$data['departamentos'] = [];
-
-		foreach ($direcciones as $direccion) {
-
-			$nombre_direccion = $direccion->DIRE_NOMBRE;
-			foreach($direccion->departamentos as $departamento){
-				$id_departamento      = $departamento->DEPA_DEPARTAMENTO;
-				$nombre_departamento  = $departamento->DEPA_NOMBRE;
-				$data['departamentos'][ $nombre_direccion ][ $id_departamento ] = $nombre_departamento;
-			}
-
-		}
-
-		$data['departamentos'][0] = '- Ninguno -';
-
-		$estados = MEstadoDocumento::all()->pluck('ESDO_NOMBRE','ESDO_ESTADO_DOCUMENTO')->toArray();
-
-		$data['estados'] = $estados;
-
-		return view('modalCambio')->with($data);
 	}
 
 	public function guardarCambio(){

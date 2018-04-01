@@ -1,10 +1,15 @@
 @php
-    function badge( $size ){
+    function badge( $size )
+    {
         return $size > 0 ? sprintf('<span class="badge badge-pill badge-secondary">%d</span>',$size) : '';
     }
 
+    function active( $view, $toView )
+    {
+        return $view == $toView ? 'active' : '';
+    }
 @endphp
-<div class="js-inbox-nav d-none d-md-block">
+<div class="js-inbox-nav d-none d-lg-block">
     <div class="block">
         <div class="block-header block-header-default">
             <h3 class="block-title">Menú</h3>
@@ -28,31 +33,31 @@
         <div class="block-content">
             <ul class="nav nav-pills flex-column push">
                 <li class="nav-item">
-                    <a class="nav-link d-flex align-items-center justify-content-between @if($type=='news') {{ 'active' }} @endif" href="{{ url('panel/documentos/?type=news') }}">
-                        <span><i class="fa fa-fw fa-inbox mr-5"></i> Nuevos</span>
-                        {!! badge(sizeof($nuevos)) !!}
+                    <a class="nav-link d-flex align-items-center justify-content-between {{ active($view, 'recents') }}" href="{{ url('panel/documentos/?type=recents') }}">
+                        <span><i class="fa fa-fw fa-inbox mr-5"></i> Recientes</span>
+                        {!! badge(sizeof($recientes)) !!}
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link d-flex align-items-center justify-content-between @if($type=='all') {{ 'active' }} @endif" href="{{ url('panel/documentos/?type=all') }}">
+                    <a class="nav-link d-flex align-items-center justify-content-between {{ active($view, 'all') }}" href="{{ url('panel/documentos/?type=all') }}">
                         <span><i class="fa fa-fw fa-cubes mr-5"></i> Todos</span>
                         {!! badge(sizeof($todos)) !!}
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link d-flex align-items-center justify-content-between @if($type=='important') {{ 'active' }} @endif" href="{{ url('panel/documentos/?type=important') }}">
+                    <a class="nav-link d-flex align-items-center justify-content-between {{ active($view, 'important') }}" href="{{ url('panel/documentos/?type=important') }}">
                         <span><i class="fa fa-fw fa-star mr-5"></i> Importantes</span>
                         {!! badge(sizeof($importantes)) !!}
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link d-flex align-items-center justify-content-between @if($type=='archived') {{ 'active' }} @endif" href="{{ url('panel/documentos/?type=archived') }}">
+                    <a class="nav-link d-flex align-items-center justify-content-between {{ active($view, 'archived') }}" href="{{ url('panel/documentos/?type=archived') }}">
                         <span><i class="fa fa-fw fa-archive mr-5"></i> Archivados</span>
                         {!! badge(sizeof($importantes)) !!}
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link d-flex align-items-center justify-content-between @if($type=='finished') {{ 'active' }} @endif" href="{{ url('panel/documentos/?type=finished') }}">
+                    <a class="nav-link d-flex align-items-center justify-content-between {{ active($view, 'finished') }}" href="{{ url('panel/documentos/?type=finished') }}">
                         <span><i class="fa fa-fw fa-flag-checkered mr-5"></i> Finalizados</span>
                         {!! badge(sizeof($finalizados)) !!}
                     </a>

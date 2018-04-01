@@ -13,6 +13,13 @@ class MDireccion extends BaseModel
     protected $primaryKey   = 'DIRE_DIRECCION';
     protected $prefix       = 'DIRE';
     
+    /* Methods */
+
+    public function getNombre()
+    {
+        return $this -> attributes['DIRE_NOMBRE'];
+    }
+
     /* Relationships */
 
     public function Departamentos()

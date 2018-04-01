@@ -25,6 +25,11 @@ class MDocumento extends BaseModel
         return $this -> hasOne('App\Model\Sistema\MSistemaEstadoDocumento','SYED_ESTADO_DOCUMENTO','DOCU_SYSTEM_ESTADO_DOCTO');
     }
 
+    public function Marcadores()
+    {
+        return $this -> hasOne('App\Model\MMarcador','DOMA_DOCUMENTO',$this -> getKeyName());
+    }
+
     public function Seguimientos()
     {
         return $this -> hasMany('App\Model\MSeguimiento','SEGU_DOCUMENTO',$this -> getKeyName());

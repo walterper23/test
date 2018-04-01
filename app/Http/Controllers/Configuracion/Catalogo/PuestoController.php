@@ -85,16 +85,17 @@ class PuestoController extends BaseController {
 
 			$data['departamentos'] = [];
 
-			foreach ($direcciones as $direccion) {
+			foreach ($direcciones as $direccion)
+			{
 				$departamentos = $direccion -> Departamentos() -> where('DEPA_ENABLED',1) -> get();
-				foreach($departamentos as $departamento){
+				foreach ($departamentos as $departamento)
+				{
 					$data['departamentos'][] = [
 						$direccion -> getKey(),
 						$departamento -> getKey(),
 						$departamento -> getNombre()
 					];
 				}
-
 			}
 
 			return view('Configuracion.Catalogo.Puesto.formPuesto')->with($data);

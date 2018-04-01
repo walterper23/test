@@ -7,11 +7,11 @@
 	{{ Form::model($modelo,['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) }}
 		{{ Form::hidden('action',$action) }}	
 		{{ Form::hidden('id',$id) }}
-		{!! Field::select('direccion',(is_null($modelo) ? null : $modelo->PUES_DIRECCION),['label'=>'Dirección'],$direcciones) !!}
+		{!! Field::select('direccion',optional($modelo) -> PUES_DIRECCION,['label'=>'Dirección'],$direcciones) !!}
 		<div class="form-group row">
             <label class="col-sm-3 col-form-label" for="departamento">Departamento</label>
             <div class="col-sm-9">
-            	<select name="departamento" id="departamento" class="form-control" placeholder="Seleccione una opción">
+            	<select name="departamento" id="departamento" class="form-control">
 					<option value="">Seleccione una opción</option>
             		@foreach( $departamentos as $depto )
 						{!! sprintf('<option data-direccion="%d" value="%d">%s</option>',$depto[0],$depto[1],$depto[2]) !!}					
@@ -24,7 +24,7 @@
 		<div class="form-group row">
 			<label class="col-sm-3 col-form-label" for="nombre">Nombre</label>
 			<div class="col-sm-9">
-				{{ Form::text('nombre',(is_null($modelo) ? '' : $modelo->PUES_NOMBRE),['id'=>'nombre','class'=>'form-control','placeholder'=>'Nombre del puesto','autofocus']) }}
+				{{ Form::text('nombre',optional($modelo) -> getNombre(),['id'=>'nombre','class'=>'form-control','placeholder'=>'Nombre del puesto','autofocus']) }}
             </div>
         </div>
 	{{ Form::close() }}

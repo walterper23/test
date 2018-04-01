@@ -16,6 +16,12 @@ class MPuesto extends BaseModel {
     protected $fieldEnabled   = 'PUES_ENABLED';
     protected $fieldDeleted   = 'PUES_DELETED';
 
+    /* Methods */
+    public function getNombre()
+    {
+        return $this -> attributes['PUES_NOMBRE'];
+    }
+
     /** Relationships **/
 
     public function Direccion(){

@@ -17,12 +17,19 @@ class MSistemaTipoDocumento extends BaseModel {
     protected $fieldUpdated   = 'SYTD_UPDATED';
 
     public function getNombre(){
-    	return $this -> attributes['SYTD_NOMBRE_TIPO'];
+    	return $this -> attributes['SYTD_NOMBRE'];
     }
 
     public function getEtiqueta(){
         return $this -> attributes['SYTD_ETIQUETA_NUMERO'];
     }
+
+    public function getRibbonColor()
+    {
+        return $this -> attributes['SYTD_RIBBON_COLOR'];
+    }
+
+
 
     /* Relationships */
 

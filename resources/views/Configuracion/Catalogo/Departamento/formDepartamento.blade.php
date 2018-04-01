@@ -26,7 +26,7 @@
 				direccion : { required : true },
 				nombre : { required : true, maxlength : 255 }
 			}
-		}
+		};
 
 		this.messages = function(){
 			return {
@@ -35,8 +35,8 @@
 					maxlength : 'Máximo {0} caracteres'
 				},
 				direccion : { required : 'Especifique una dirección' }
-			}
-		}
-	}).init()
+			};
+		};
+	}).init();
 </script>
 @endpush

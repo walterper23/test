@@ -35,19 +35,19 @@
             <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="fa fa-file-pdf-o"></i><span class="sidebar-mini-hide">Documentos</span></a>
             <ul>
                 <li>
-                    <a {!! activeItemMenu('panel/documentos/nuevos') !!} href="{{ url('panel/documentos/nuevos') }}">Nuevos</a>
+                    <a {!! activeItemMenu('panel/documentos/?view=recents') !!} href="{{ url('panel/documentos/?view=recents') }}">Recientes</a>
                 </li>
                 <li>
-                    <a {!! activeItemMenu('panel/documentos/todos') !!} href="{{ url('panel/documentos/todos') }}">Todos</a>
+                    <a {!! activeItemMenu('panel/documentos/?view=all') !!} href="{{ url('panel/documentos/?view=all') }}">Todos</a>
                 </li>
                 <li>
-                    <a {!! activeItemMenu('panel/documentos/importantes') !!} href="{{ url('panel/documentos/importantes') }}">Importantes</a>
+                    <a {!! activeItemMenu('panel/documentos/?view=important') !!} href="{{ url('panel/documentos/?view=important') }}">Importantes</a>
                 </li>
                 <li>
-                    <a {!! activeItemMenu('panel/documentos/archivados') !!} href="{{ url('panel/documentos/archivados') }}">Archivados</a>
+                    <a {!! activeItemMenu('panel/documentos/?view=archived') !!} href="{{ url('panel/documentos/?view=archived') }}">Archivados</a>
                 </li>
                 <li>
-                    <a {!! activeItemMenu('panel/documentos/finalizados') !!} href="{{ url('panel/documentos/finalizados') }}">Finalizados</a>
+                    <a {!! activeItemMenu('panel/documentos/?view=finished') !!} href="{{ url('panel/documentos/?view=finished') }}">Finalizados</a>
                 </li>
             </ul>
         </li>

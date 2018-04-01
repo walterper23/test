@@ -13,6 +13,16 @@ class MSeguimiento extends BaseModel
 
     /* Methods */
 
+    public function getInstruccion()
+    {
+        return $this -> attributes['SEGU_INSTRUCCION'];
+    }
+
+    public function getObservacion()
+    {
+        return $this -> attributes['SEGU_OBSERVACION'];
+    }
+
     // Función para añadir el ID del usuario a la lista de usuarios que han leido el Seguimiento
     public function marcarComoLeido()
     {
@@ -20,7 +30,7 @@ class MSeguimiento extends BaseModel
 
         if (! strpos($lecturas,userKey())) // Si el usuario no ha leido el seguimiento ...
         {
-            if (! empty($lecturas)) // Si ya hay usuarios que han leido el Seguimiento, añadimos una coma
+            if (! empty($lecturas)) // Si ya hay usuarios que han leido el seguimiento, añadimos una coma
             {
                 $lecturas .= ',';
             }
@@ -30,17 +40,33 @@ class MSeguimiento extends BaseModel
         }
     }
 
+    public function seguimientoLeido()
+    {
+        $lecturas = $this -> attributes['SEGU_LEIDO']; // Recuperamos la lista de usuarios que han leido el seguimiento
+        return strpos($lecturas,userKey()); // Devolver el usuario ha leido el seguimiento
+    }
+
 
     /* Relationships */
 
-    public function Direccion()
+    public function DireccionOrigen()
     {
-        return $this -> belongsTo('App\Model\Catalogo\MDireccion','SEGU_DIRECCION','DIRE_DIRECCION');
+        return $this -> belongsTo('App\Model\Catalogo\MDireccion','SEGU_DIRECCION_ORIGEN','DIRE_DIRECCION');
     }
 
-    public function Departamento()
+    public function DepartamentoOrigen()
     {
-        return $this -> belongsTo('App\Model\Catalogo\MDepartamento','SEGU_DEPARTAMENTO','DEPA_DEPARTAMENTO');
+        return $this -> belongsTo('App\Model\Catalogo\MDepartamento','SEGU_DEPARTAMENTO_ORIGEN','DEPA_DEPARTAMENTO');
+    }
+
+    public function DireccionDestino()
+    {
+        return $this -> belongsTo('App\Model\Catalogo\MDireccion','SEGU_DIRECCION_DESTINO','DIRE_DIRECCION');
+    }
+
+    public function DepartamentoDestino()
+    {
+        return $this -> belongsTo('App\Model\Catalogo\MDepartamento','SEGU_DEPARTAMENTO_DESTINO','DEPA_DEPARTAMENTO');
     }
 
     public function Documento()
@@ -48,15 +74,16 @@ class MSeguimiento extends BaseModel
         return $this -> belongsTo('App\Model\MDocumento','SEGU_DOCUMENTO','DOCU_DOCUMENTO');
     }
 
+    public function EstadoDocumento()
+    {
+        return $this -> belongsTo('App\Model\Catalogo\MEstadoDocumento','SEGU_ESTADO_DOCUMENTO','ESDO_ESTADO_DOCUMENTO');
+    }
+    
     public function Usuario()
     {
         return $this -> belongsTo('App\Model\MUsuario','SEGU_USUARIO','USUA_USUARIO');
     }
 
-    public function EstadoDocumento()
-    {
-        return $this -> belongsTo('App\Model\Catalogo\MEstadoDocumento','SEGU_ESTADO_DOCUMENTO','ESDO_ESTADO_DOCUMENTO');
-    }
 
     /* Presenter */
 

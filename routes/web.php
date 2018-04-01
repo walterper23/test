@@ -2,7 +2,6 @@
 
 DB::listen(function($query){
     //echo "<pre style=\"z-index:5000\">{$query->sql}</pre>";
-
 });
 
 Route::middleware('preventBackHistory') -> group(function(){
@@ -49,19 +48,17 @@ Route::middleware('preventBackHistory') -> group(function(){
 
         });
 
-        Route::prefix('panel') -> namespace('Panel') -> group(function(){
+
+        // Panel de trabajo del personal de las direcciones y departamentos
+        Route::redirect('panel', 'panel/documentos?view=all');
+        Route::prefix('panel/documentos') -> namespace('Panel') -> group(function(){
+            Route::get('/',                'PanelController@index');
+            Route::post('manager',         'PanelController@manager');
             
-            Route::get('/',  'PanelController@index');
-            
-            Route::group(['prefix'=>'documentos'], function(){
-                Route::get('/',                'PanelController@index');
-                Route::get('nuevos',           'PanelController@index');
-                Route::get('todos',            'PanelController@index');
-                Route::get('importantes',      'PanelController@index');
-                Route::get('archivados',       'PanelController@index');
-                Route::get('finalizados',      'PanelController@index');
+            Route::prefix('seguimiento') -> namespace('Seguimiento') -> group(function(){
+
+                Route::get('/',      'SeguimientoController@index');
             });
-            
         });
         
         Route::prefix('configuracion') -> namespace('Configuracion') -> group(function(){
