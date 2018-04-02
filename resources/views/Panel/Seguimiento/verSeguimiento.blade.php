@@ -17,7 +17,7 @@
 	<!-- Timeline Activity -->
     <div class="block">
         <div class="block-header block-header-default">
-            <h3 class="block-title">Historial de Estados del Documento</h3>
+            <h3 class="block-title"><i class="fa fa-fw fa-history"></i> Historial de Cambios de Estados del Documento</h3>
             <div class="block-options">
                 <button type="button" class="btn-block-option" data-toggle="block-option" data-action="fullscreen_toggle"></button>
                 <!--button type="button" class="btn-block-option" data-toggle="block-option" data-action="state_toggle" data-action-mode="demo">
@@ -41,7 +41,7 @@
                                     <span class="text-primary"># {{ $seguimiento -> getCodigo(5) }}</span>
                                     {{ $seguimiento -> EstadoDocumento -> getNombre() }}
                                 </p>
-                                <i class="fa fa-fw fa-commenting"></i> <span class="font-w600">Observaciones:</span> {{ $seguimiento -> getObservacion() }}
+                                <i class="fa fa-fw fa-comment-o"></i> <span class="font-w600">Observaciones:</span> {{ $seguimiento -> getObservacion() }}
                                 <div class="font-size-sm text-muted"><i class="fa fa-fw fa-user"></i> {{ trim(sprintf('%s %s',$seguimiento -> USDE_NOMBRES,$seguimiento -> USDE_APELLIDOS)) }}</div>
                             </div>
                             <div class="col-md-6">

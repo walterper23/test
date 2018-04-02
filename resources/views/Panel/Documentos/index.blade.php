@@ -105,7 +105,7 @@
                             <div class="row">
                                 <div class="col-12">
                                     <p class="font-w700">{{ $seguimiento -> Documento -> getNumero() }}</p>
-                                    <p>{{ $seguimiento -> DETA_DESCRIPCION }}. Puede ser un tema extenso o una descripcion algo corta</p>
+                                    <p>{{ $seguimiento -> DETA_DESCRIPCION }}</p>
                                 </div>
                                 <div class="col-12">
 

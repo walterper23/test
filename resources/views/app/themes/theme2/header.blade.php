@@ -16,7 +16,9 @@
     <!-- Middle Section -->
     <div class="content-header-section d-none d-lg-block">
         <!-- Header Navigation -->
-        @include('app.themes.theme2.menu')
+        <ul class="nav-main-header">
+            @include('app.themes.theme2.menu')
+        </ul>
         <!-- END Header Navigation -->
     </div>
     <!-- END Middle Section -->
@@ -38,10 +40,6 @@
                 <!-- Layout API, functionality initialized in Codebase() -> uiApiLayout() -->
                 <a class="dropdown-item" href="{{ url('usuario/preferencias') }}" data-toggle="layout" data-action="side_overlay_toggle">
                     <i class="si si-wrench mr-5"></i> Preferencias
-                </a>
-
-                <a class="dropdown-item" href="javascript:void(0);" data-toggle="layout" data-action="sidebar_mini_toggle">
-                    <i class="si si-list mr-5"></i> Mini Menú
                 </a>
                 <!-- END Side Overlay -->
 

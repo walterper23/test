@@ -5,7 +5,10 @@ If you would like to use the same navigation in both mobiles and desktops, you c
 If your sidebar menu includes headings, they won't be visible in your header navigation by default
 If your sidebar menu includes icons and you would like to hide them, you can add the class 'nav-main-header-no-icons'
 -->
-<ul class="nav-main-header">
+
+    <li>
+        <a href="{{ url('/') }}"><i class="si si-home"></i>Inicio</a>
+    </li>
     @can('REC.DOCUMENTO')
     <li>
         <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="fa fa-fw fa-files-o"></i>Recepción</a>
@@ -131,4 +134,3 @@ If your sidebar menu includes icons and you would like to hide them, you can add
     <li>
         <a href="{{ url() -> previous() }}"><i class="si si-action-undo"></i>Regresar</a>
     </li>
-</ul>
