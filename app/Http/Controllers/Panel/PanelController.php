@@ -25,7 +25,8 @@ class PanelController extends BaseController
 		$this -> setLog('PanelController.log');
 	}
 
-	public function index(Request $request){
+	public function index(Request $request)
+	{
 
 		$view = $request -> get('view','all');
 
@@ -81,6 +82,7 @@ class PanelController extends BaseController
 			// Si el usuario no ha leido el seguimiento, lo añadimos a Recientes
 			if (! $seguimiento -> seguimientoLeido() )
 			{
+				$seguimiento -> leido = false;
 				$documentos['recientes'][] = $seguimiento;
 			}
 
@@ -113,7 +115,7 @@ class PanelController extends BaseController
 				$data['documentos'] = $documentos['recientes'];
 				break;
 			case 'all':
-				$data['title']      = 'Documentos';
+				$data['title']      = 'Documentos recibidos';
 				$data['documentos'] = $documentos['todos'];
 				break;
 			case 'important':
@@ -128,9 +130,8 @@ class PanelController extends BaseController
 				$data['title']      = 'Documentos finalizados';
 				$data['documentos'] = $documentos['finalizados'];
 				break;
-			
 			default:
-				$data['title'] = 'Documentos recientes';
+				$data['title'] = 'Documentos recibidos';
 				$data['documentos'] = $documentos['todos'];
 				break;
 		}
@@ -145,7 +146,8 @@ class PanelController extends BaseController
 
 	}
 
-	public function manager(Request $request){
+	public function manager(Request $request)
+	{
 
         switch ($request -> action) {
             case 1: // Formulario de cambio de estado
@@ -172,7 +174,7 @@ class PanelController extends BaseController
 			'url_send_form' => url('panel/documentos/manager'),
 			'form_id'       => 'form-cambio-estado-documento',
 			'action'        => 2,
-			'id' => 2,
+			'seguimiento'   => $request -> seguimiento,
 		];
 
 
@@ -218,7 +220,24 @@ class PanelController extends BaseController
 		}
 	
 		// Obtener los estados de documentos de sus direcciones y departamentos
-		$estados = MEstadoDocumento::all()->pluck('ESDO_NOMBRE','ESDO_ESTADO_DOCUMENTO')->toArray();
+		$estados = MEstadoDocumento::select('ESDO_NOMBRE','ESDO_ESTADO_DOCUMENTO')
+					-> where('ESDO_ENABLED',1)
+					-> where('ESDO_DELETED',0)
+					-> where(function($query){
+
+						// Recuperar las direcciones asignadas al usuario
+						$direcciones = user() -> Direcciones;
+						$ids_direcciones = $direcciones -> pluck('DIRE_DIRECCION') -> toArray();
+
+						// Recuperar los departamentos asignados al usuario
+						$departamentos = user() -> Departamentos;
+						$ids_departamentos = $departamentos -> pluck('DEPA_DEPARTAMENTO') -> toArray();
+
+						$query -> orWhereIn('ESDO_DIRECCION',$ids_direcciones);
+						$query -> orWhereIn('ESDO_DEPARTAMENTO',$ids_departamentos);
+					})
+					-> pluck('ESDO_NOMBRE','ESDO_ESTADO_DOCUMENTO')
+					-> toArray();
 
 		$data['estados'] = $estados;
 
@@ -228,6 +247,22 @@ class PanelController extends BaseController
 	// Método para cambiar el estado de un documento
 	public function cambiarEstadoDocumento( $request )
 	{
+
+		$anterior = MSeguimiento::find( $request -> seguimiento );
+		
+		$seguimiento = new MSeguimiento;
+		$seguimiento -> SEGU_USUARIO              = userKey();
+		$seguimiento -> SEGU_DOCUMENTO            = $anterior -> SEGU_DOCUMENTO;
+		$seguimiento -> SEGU_DIRECCION_ORIGEN     = $request -> direccion_origen;
+		$seguimiento -> SEGU_DEPARTAMENTO_ORIGEN  = $request -> departamento_origen;
+		$seguimiento -> SEGU_DIRECCION_DESTINO    = $request -> direccion_destino;
+		$seguimiento -> SEGU_DEPARTAMENTO_DESTINO = $request -> departamento_destino;
+		$seguimiento -> SEGU_ESTADO_DOCUMENTO     = $request -> estado;
+		$seguimiento -> SEGU_OBSERVACION          = $request -> observacion;
+		$seguimiento -> SEGU_INSTRUCCION          = $request -> instruccion;
+		$seguimiento -> save();
+
+		return $this -> responseSuccessJSON();
 
 	}
 

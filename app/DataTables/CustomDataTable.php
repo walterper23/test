@@ -10,12 +10,13 @@ use Exception;
 class CustomDataTable {
 
 	private $instanceTable;
-	private $builderHtml;
+	protected $builderHtml;
 
 	protected $sourceData;
 	private $columns;
 
-	public function __construct(){
+	public function __construct()
+	{
 		$datatables = new DataTables;
 		$this->instanceTable = $datatables;
 		$this->builderHtml   = $datatables->getHtmlBuilder();
@@ -23,27 +24,32 @@ class CustomDataTable {
 		$this->initInstance()->initConfig();
 	}
 
-	protected function setSourceData(){
+	protected function setSourceData()
+	{
 		$this->sourceData = collect([]);
 	}
 
-	protected function getSourceData(){
+	protected function getSourceData()
+	{
 		return $this->sourceData;
 	}
 	
-	private function initInstance(){
+	private function initInstance()
+	{
 		$this->instanceTable = $this->instanceTable->of( $this->getSourceData() );
 		return $this;
 	}
 
-	private function initConfig(){
+	private function initConfig()
+	{
 		$this->columns = [];
 		$this->readColumsTable()
 				->setRawColumns();
 
 	}
 
-	private function readColumsTable(){
+	private function readColumsTable()
+	{
 		foreach ($this->columnsTable() as $key => $column) {
 			$config = [];
 
@@ -70,7 +76,8 @@ class CustomDataTable {
 		return $this;
 	}
 
-	protected function columnsTable(){
+	protected function columnsTable()
+	{
 		return [
             ['data' => 'id', 'name' => 'id', 'title' => 'Id'],
             ['data' => 'name', 'name' => 'name', 'title' => 'Name'],
@@ -105,12 +112,14 @@ class CustomDataTable {
 		return $this;
 	}
 
-	protected function setRawColumns(){
+	protected function setRawColumns()
+	{
 		$this->instanceTable = $this->instanceTable->rawColumns( $this->rawColumns );
 		return $this;
 	}
 
-	protected function removeColumns(){
+	protected function removeColumns()
+	{
 		$this->instanceTable = $this->instanceTable->removeColumn( $this->removeColumns() );
 		return $this;
 	}
@@ -123,37 +132,44 @@ class CustomDataTable {
 
 	/********************* B U I L D E R ***************************/
 	
-	private function buildOptionsParameters(){
+	private function buildOptionsParameters()
+	{
 		$this->builderHtml = $this->builderHtml->parameters( $this->optionsParameters() );
 		return $this;
 	}
 
-	private function buildAjaxParameters(){
+	private function buildAjaxParameters()
+	{
 		$this->builderHtml = $this->builderHtml->ajax( $this->ajaxParameters() );
 		return $this;
 	}
 	
-	private function buildTable(){
+	private function buildTable()
+	{
 		$this->builderHtml = $this->builderHtml->columns($this->columns);
 		return $this;
 	}
 
-	protected function optionsParameters(){
+	protected function optionsParameters()
+	{
 		return config('datatables-html.options');
 	}
 
-	protected function ajaxParameters(){
+	protected function ajaxParameters()
+	{
 		return [
 			'method' => $this->getMethodAjax(),
 			'url'    => $this->getUrlAjax()
 		];
 	}
 
-	protected function getMethodAjax(){
+	protected function getMethodAjax()
+	{
 		return 'POST';
 	}
 
-	protected function getUrlAjax(){
+	protected function getUrlAjax()
+	{
 		return '/';
 	}
 
@@ -165,7 +181,8 @@ class CustomDataTable {
 					->table();
 	}
 
-	public function javascript(){
+	public function javascript()
+	{
 		return $this->builderHtml->scripts();
 	}
 

@@ -23,6 +23,18 @@
     {
         return $size > 0 ? sprintf('<span class="badge badge-pill badge-primary">%d</span>',$size) : '';
     }
+
+    function url_ver_seguimiento( $seguimiento )
+    {
+        $url = sprintf('panel/documentos/seguimiento?search=%d',$seguimiento -> getKey());
+
+        if ($seguimiento -> leido === false)
+        {
+            $url = sprintf('%s&read=1',$url);
+        }
+
+        return url( $url );
+    }
 @endphp
 
 @section('content')
@@ -114,7 +126,7 @@
                                     <p><span class="font-w600">Observaciones:</span> {{ $seguimiento -> getObservacion() }}</p>
                                 </div>
                                 <div class="col-12">
-                                    <a class="btn btn-sm btn-success pull-right" href="{{ url('panel/documentos/seguimiento?search='. $seguimiento -> getKey() ) }}">
+                                    <a class="btn btn-sm btn-success pull-right" href="{{ url_ver_seguimiento( $seguimiento ) }}">
                                         <i class="fa fa-fw fa-paper-plane"></i> Ver seguimiento
                                     </a>
                                     @can('SEG.CAMBIAR.ESTADO')

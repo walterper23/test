@@ -20,8 +20,12 @@ class SeguimientoController extends BaseController
 	{
 
 		$search = $request -> get('search');
+		$read   = $request -> get('read',0);
 
 		$seguimiento = MSeguimiento::with('Documento') -> find( $search );
+
+		if ($read == 1)
+			$seguimiento -> marcarComoLeido() -> save();
 
 		$data['seguimiento']  = $seguimiento;
 		$data['documento']    = $seguimiento -> Documento;

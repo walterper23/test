@@ -30,15 +30,18 @@ use App\DataTables\DenunciasDataTable;
 use App\DataTables\DocumentosDenunciasDataTable;
 use App\DataTables\DocumentosDataTable;
 
-class RecepcionController extends BaseController {
+class RecepcionController extends BaseController
+{
 
 	public function index(){
 
-		$tabla = new DenunciasDataTable();
+		$tabla1 = new DenunciasDataTable();
+		$tabla2 = new DocumentosDenunciasDataTable();
+		$tabla3 = new DocumentosDataTable();
 
-		$data['table1'] = $tabla;
-		//$data['table2'] = new DocumentosDenunciasDataTable();
-		//$data['table3'] = new DocumentosDataTable();
+		$data['table1'] = $tabla1;
+		$data['table2'] = $tabla2;
+		$data['table3'] = $tabla3;
 
 		return view('Recepcion.indexRecepcion') -> with($data);
 	}
@@ -48,6 +51,7 @@ class RecepcionController extends BaseController {
 		switch ($request -> action) {
 			case 0: // Guardar recepción en captura
 				$response = $this -> capturarRecepcion( $request );
+				break;
 			case 1: // Nueva recepción
 				$response = $this -> nuevaRecepcion( $request );
 				break;
@@ -67,19 +71,37 @@ class RecepcionController extends BaseController {
 		return $response;
 	}
 
-	public function postDataTable(DocumentosDataTable $dataTables){
-		return $dataTables->getData();
+	public function postDataTable(Request $request){
+
+		$type = $request -> get('type');
+
+		switch ($type) {
+			case 'denuncias' :
+				$dataTables = new DenunciasDataTable;
+				break;
+			case 'documentos-denuncias':
+				$dataTables = new DocumentosDenunciasDataTable;
+				break;
+			case 'documentos':
+				$dataTables  = new DocumentosDataTable;
+				break;
+			default:
+				$dataTables  = new DocumentosDataTable;
+				break;
+		}
+
+
+		return $dataTables -> getData();
 	}
 
 	public function formNuevaRecepcion(){
 
 		$data = [];
 
-		$data['tipos_documentos'] = MSistemaTipoDocumento::select('SYTD_NOMBRE_TIPO','SYTD_TIPO_DOCUMENTO','SYTD_ETIQUETA_NUMERO')
-									-> where('SYTD_ENABLED',1) -> get();
+		// Recuperamos los tipos de documentsos que se pueden recepcionar
+		$data['tipos_documentos'] = MSistemaTipoDocumento::where('SYTD_ENABLED',1) -> get();
 
-		$data['anexos'] = MAnexo::select('ANEX_ANEXO','ANEX_NOMBRE')
-									->where('ANEX_ENABLED',1)
+		$data['anexos'] = MAnexo::where('ANEX_ENABLED',1)
 									->where('ANEX_DELETED',0)
 									->orderBy('ANEX_NOMBRE')
 									->pluck('ANEX_NOMBRE','ANEX_ANEXO')
@@ -149,16 +171,13 @@ class RecepcionController extends BaseController {
 
 			// Guardamos los archivos o escaneos que se hayan agregado al archivo
 
-
-
-
-
 			DB::commit();
 
 			return redirect('recepcion/documentos/recepcionados');
 
 		}catch(Exception $error){
 			DB::rollback();
+			dd($error->getMessage());
 		}
 
 	}

@@ -22,6 +22,7 @@ If your sidebar menu includes icons and you would like to hide them, you can add
         </ul>
     </li>
     @endcan
+    @can('SEG.PANEL.TRABAJO')
     <li>
         <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="fa fa-server"></i>Panel de trabajo</a>
         <ul>
@@ -42,6 +43,7 @@ If your sidebar menu includes icons and you would like to hide them, you can add
             </li>
         </ul>
     </li>
+    @endcan
     <li>
         <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="fa fa-file-pdf-o"></i>Reportes</a>
         <ul>
@@ -104,6 +106,7 @@ If your sidebar menu includes icons and you would like to hide them, you can add
                 </ul>
             </li>
             @endif
+            @can('SIS.ADMIN.CONFIG')
             <li>
                 <a class="nav-submenu" data-toggle="nav-submenu" href="#">Sistema</a>
                 <ul>
@@ -121,6 +124,7 @@ If your sidebar menu includes icons and you would like to hide them, you can add
                     </li>
                 </ul>
             </li>
+            @endcan
         </ul>
     </li>
     @endif

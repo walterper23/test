@@ -5,9 +5,9 @@
 @section('content')
     @component('vendor.contentModal')
     {{ Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) }}
-        {{ Form::hidden('action',$action) }}    
-        {{ Form::hidden('id',$id) }}
-        {!! Field::select('direccion_origen',null,['label'=>'Dirección origen','autofocus'],$direcciones_origen) !!}
+        <input type="hidden" name="action" value="{{ $action }}"> 
+        {{ Form::hidden('seguimiento',$seguimiento) }}
+        {!! Field::select('direccion_origen',null,['label'=>'Dirección origen','required','autofocus'],$direcciones_origen) !!}
         <div class="form-group row">
             <label class="col-sm-3 col-form-label" for="departamento_origen">Departamento origen</label>
             <div class="col-sm-9">
@@ -33,8 +33,9 @@
             	</select>
             </div>
         </div>
-        {!! Field::select('estado','',['label'=>'Estado de Documento'],$estados) !!}
-        {!! Field::textarea('observacion','',['label'=>'Observaciones','size'=>'20x5','placeholder'=>'Opcional']) !!}
+        {!! Field::select('estado','',['label'=>'Estado de Documento','required'],$estados) !!}
+        {!! Field::textarea('observacion','',['label'=>'Observaciones','size'=>'20x4','placeholder'=>'Opcional']) !!}
+        {!! Field::textarea('instruccion','',['label'=>'Instrucción','size'=>'20x4','placeholder'=>'Instrucción al destino']) !!}
     {{ Form::close() }}
     @endcomponent
 @endsection
@@ -74,23 +75,24 @@
 
 		};
 
+		this.successSubmitHandler = function( data ){
+			if( data.status ){
+				location.reload();
+			}else{
+				location.reload();
+			}
+		};
+
 		this.rules = function(){
 			return {
-				nombre : { required : true, minlength : 3, maxlength : 255 },
-				direccion : { required : true },
-				departamento : { required : true },
+				direccion_origen : { required : true },
 				estado : { required : true }
 			};
 		};
 
 		this.messages = function(){
 			return {
-				nombre : {
-					required  : 'Introduzca un nombre',
-					minlength : 'Introduzca mínimo {0} carácteres',
-				},
-				direccion : { required : 'Especifique una dirección' },
-				departamento : { required : 'Especifique un departamento' },
+				direccion_origen : { required : 'Especifique una dirección de origen' },
 				estado : { required : 'Especifique un estado de documento' }
 			};
 		};

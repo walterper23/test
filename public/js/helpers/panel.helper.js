@@ -7,6 +7,7 @@ var hPanel = function(){
 	var _cambiarEstado = function(id){
 		App.openModal({
 			id : 'form-cambio-estado-documento',
+			size : 'modal-lg',
 			url : manager,
 			data : { action : 1, seguimiento : id }
 		});

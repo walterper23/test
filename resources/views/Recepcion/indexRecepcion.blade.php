@@ -54,14 +54,20 @@
         </li>
     </ul>
     <div class="block-content tab-content">
-        <div class="tab-pane active" id="btabswo-static-home" role="tabpanel">
+        <div class="tab-pane active" id="btabswo-static-one" role="tabpanel">
             <div class="table-responsive">
-                {{ $table1->html() }}
+                {{ $table1 -> html() }}
             </div>
         </div>
-        <div class="tab-pane" id="btabswo-static-profile" role="tabpanel">
-            <h4 class="font-w400">Profile Content</h4>
-            <p>...</p>
+        <div class="tab-pane" id="btabswo-static-two" role="tabpanel">
+            <div class="table-responsive">
+                {{ $table2 -> html() }}
+            </div>
+        </div>
+        <div class="tab-pane" id="btabswo-static-three" role="tabpanel">
+            <div class="table-responsive">
+                {{ $table3 -> html() }}
+            </div>
         </div>
     </div>
 </div>
@@ -77,5 +83,7 @@
 @endpush
 
 @push('js-custom')
-    {{ $table1->javascript() }}
+    {{ $table1 -> javascript() }}
+    {{ $table2 -> javascript() }}
+    {{ $table3 -> javascript() }}
 @endpush

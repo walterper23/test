@@ -27,13 +27,13 @@ class BaseModel extends Model
     private function fieldCreated()
     {
         $fieldCreatedAt = $this -> getField('CREATED_AT');
-        if (! is_null($fieldCreatedAt))
+        if ($this -> existsField($fieldCreatedAt))
         {
             $this -> attributes[ $fieldCreatedAt ] = Carbon::now(); // Guardar la fecha de creación
         }
 
         $fielCreatedBy = $this -> getField('CREATED_BY');
-        if (! is_null($fielCreatedBy))
+        if ($this -> existsField($fielCreatedBy))
         {
     		$this -> attributes[ $fielCreatedBy ] = json_encode(['k' => userKey(),'u' => user() -> getAuthUsername()]); // Información del usuario
 	    }
@@ -43,7 +43,7 @@ class BaseModel extends Model
     private function fieldUpdated(){
         $fieldUpdated = $this -> getField('UPDATED');
 
-	    if (! is_null($fieldUpdated))
+	    if ($this -> existsField($fieldUpdated))
         {
             $updated = $this -> attributes[ $fieldUpdated ];
 

@@ -11,6 +11,11 @@ trait BaseModelTrait
         return sprintf('%s_%s',$this -> prefix, $field);
     }
 
+    // Método para saber si existe el campo en los atributos del modelo
+    public function existsField( $field ){
+        return array_key_exists($field, $this -> attributes);
+    }
+
     // Método para devolver el ID del registro como un código de longitud indicada
     public function getCodigo( $size = 3, $str = '0', $direction = STR_PAD_LEFT)
     {
@@ -21,7 +26,7 @@ trait BaseModelTrait
     public function cambiarDisponibilidad()
     {
         $fieldEnabled = $this -> getField('ENABLED');
-        if (! is_null($fieldEnabled))
+        if ($this -> existsField($fieldEnabled))
         {
             $this -> attributes[ $fieldEnabled ] = $this -> attributes[ $fieldEnabled ] * -1 + 1;
         }
@@ -33,7 +38,7 @@ trait BaseModelTrait
     public function disponible()
     {   
         $fieldEnabled = $this -> getField('ENABLED');
-        if (! is_null($fieldEnabled))
+        if ($this -> existsField($fieldEnabled))
             return ($this -> attributes[ $fieldEnabled ] == 1);
         return false;
     }

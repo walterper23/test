@@ -24,6 +24,7 @@ var AppForm = function(){
 		this.cloneForm = this.form.clone()
 
         this.btnOk.on('click', function(e){
+        	e.preventDefault();
         	self.submit()
         });
 
@@ -56,6 +57,7 @@ var AppForm = function(){
 	        },
 			rules : this.rules(),
 			messages : this.messages(),
+			submitHandler : this.submitHandler
 		})
 	};
 
@@ -74,6 +76,7 @@ var AppForm = function(){
 
 	this.submitHandler = function( form ){
 		if(!$(form).valid()) return false;
+
 		App.ajaxRequest({
 			url        : $(form).attr('action'),
 			data       : $(form).serialize(),

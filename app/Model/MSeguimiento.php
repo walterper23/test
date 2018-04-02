@@ -10,6 +10,7 @@ class MSeguimiento extends BaseModel
 {
     protected $table       = 'seguimiento';
     protected $primaryKey  = 'SEGU_SEGUIMIENTO';
+    protected $prefix      = 'SEGU';
 
     /* Methods */
 
@@ -36,8 +37,8 @@ class MSeguimiento extends BaseModel
             }
 
             $this -> attributes['SEGU_LEIDO'] = $lecturas . userKey(); // ... añadimos al usuario a la lista
-            $this -> save();
         }
+        return $this;
     }
 
     public function seguimientoLeido()

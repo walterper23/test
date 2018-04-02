@@ -22,6 +22,11 @@ class MDocumento extends BaseModel
 
     /* Relationships */
 
+    public function Denuncia()
+    {
+        return $this -> hasOne('App\Model\MDenuncia','DENU_DOCUMENTO',$this -> getKeyName());
+    }
+
     public function Detalle()
     {
         return $this -> hasOne('App\Model\MDetalle','DETA_DETALLE','DOCU_DETALLE');

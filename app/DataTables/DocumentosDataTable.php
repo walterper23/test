@@ -3,42 +3,41 @@ namespace App\DataTables;
 
 use App\Model\MDocumento;
 
-class DocumentosDataTable extends CustomDataTable{
+class DocumentosDataTable extends CustomDataTable
+{
+    public function __construct()
+    {
+        parent::__construct();
+        $this -> builderHtml -> setTableId('documentos-datatable');
+    }
     
     protected function setSourceData(){
-        $this->sourceData = MDocumento::select('DOCU_DOCUMENTO','DOCU_NUMERO_FICHA','DOCU_NUMERO_OFICIO','DOCU_FECHA_RECEPCION','DOCU_ANIO','DOCU_DESCRIPCION','DOCU_ENABLED','DOCU_CREATED_AT')->orderBy('DOCU_NUMERO_OFICIO','DESC')
-                            ->where('DOCU_DELETED',0);
+        $this->sourceData = MDocumento::with('Detalle') -> select('DOCU_DOCUMENTO','DOCU_NUMERO_DOCUMENTO','DOCU_DETALLE') -> where('DOCU_DELETED',0) -> whereNotIn('DOCU_SYSTEM_TIPO_DOCTO',[1,2]); // Denuncias, Documentos de denuncias
     }
 
     protected function columnsTable(){
         return [
             [
-                'title'  => '# FICHA',
+                'title'  => '#',
                 'render' => function($query){
-                    return "<a href='".url('recepcion/documentos', $query->DOCU_DOCUMENTO)."'>
-                                <i class='fa fa-file'></i> {$query->DOCU_NUMERO_FICHA}
-                            </a>";
+                    return $query -> getCodigo();
                 }
             ],
             [
-                'title'  => 'OFICIO',
+                'title'  => 'NÓ. DOCUMENTO',
+                'data'   => 'DOCU_NUMERO_DOCUMENTO'
+            ],
+            [
+                'title'  => 'ASUNTO',
                 'render' => function($query){
-                    return "<a href='".url('recepcion/documentos', $query->DOCU_DOCUMENTO)."'>
-                                {$query->DOCU_NUMERO_OFICIO}
-                            </a>";
+                    return $query -> Detalle -> getDescripcion();
                 }
-            ],
-            [
-                'title' => 'Año',
-                'data'  => 'DOCU_ANIO'
-            ],
-            [
-                'title' => 'Descripción',
-                'data'  => 'DOCU_DESCRIPCION'
             ],
             [
                 'title' => 'Recepción',
-                'data'  => 'DOCU_FECHA_RECEPCION'
+                'render' => function($query){
+                    return $query -> Detalle -> getFechaRecepcion();
+                }
             ],
             [
                 'title'  => 'Opciones',
@@ -49,8 +48,6 @@ class DocumentosDataTable extends CustomDataTable{
 
                     $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hTipoDocumento.delete('.$query->DOCU_DOCUMENTO.')"><i class="fa fa-file-pdf-o"></i></button>';
 
-                    /*$buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hTipoDocumento.delete('.$query->DOCU_DOCUMENTO.')"><i class="fa fa-trash"></i></button>';*/
-                    
                     return $buttons;
                 }
             ]
@@ -58,7 +55,7 @@ class DocumentosDataTable extends CustomDataTable{
     }
 
     protected function getUrlAjax(){
-        return url('recepcion/documentos/post-data');
+        return url('recepcion/documentos/post-data?type=documentos');
     }
 
 }

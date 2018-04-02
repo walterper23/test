@@ -102,10 +102,6 @@
 
         }
 
-        this.addAnexo = function( anexo ){
-            
-        }
-
         this.submitHandler = function(form){
             if(!$(form).valid()){
                 return false;
@@ -120,25 +116,9 @@
                 okBtnText : 'Continuar',
                 cancelBtnText : 'Regresar',
                 then : function(){
-
-                    App.ajaxRequest({
-                        url        : $(form).attr('action'),
-                        data       : $(form).serialize(),
-                        cache      : false,
-                        processData: false,
-                        beforeSend : AppForm.beforeSubmitHandler,
-                        success    : AppForm.successSubmitHandler
-                    });
+                    $(form).unbind('submit').submit();
                 }
             })
-        }
-
-        this.successSubmitHandler = function( data ){
-            if( data.status ){
-                //location.href = '{{ url('recepcion/documentos') }}';
-            }else{
-
-            }
         }
 
         this.rules = function(){

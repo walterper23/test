@@ -45,8 +45,8 @@ class DireccionesDataTable extends CustomDataTable{
                 'title'  => 'Opciones',
                 'render' => function($query){
                     $buttons = sprintf('
-                        <button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hDireccion.edit_(%d)"><i class="fa fa-pencil"></i></button>
-                        <button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hDireccion.delete_(%d)"><i class="fa fa-trash"></i></button>',
+                        <button type="button" class="btn btn-sm btn-circle btn-alt-success" onclick="hDireccion.edit_(%d)"><i class="fa fa-pencil"></i></button>
+                        <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hDireccion.delete_(%d)"><i class="fa fa-trash"></i></button>',
                         $query -> getKey(), $query -> getKey()
                     );
                     

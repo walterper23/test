@@ -41,7 +41,6 @@ Route::middleware('preventBackHistory') -> group(function(){
                 Route::post('post-data',       'RecepcionController@postDataTable');
                 Route::get('nueva-recepcion',  'RecepcionController@formNuevaRecepcion');
                 Route::post('manager',         'RecepcionController@manager');
-                Route::get('seguimiento/{id}', 'RecepcionController@verSeguimiento');
                 Route::get('en-captura',       'RecepcionController@documentosEnCaptura');
                 Route::get('{id}',             'RecepcionController@verDocumentoRecepcionado');
             });

@@ -3,42 +3,41 @@ namespace App\DataTables;
 
 use App\Model\MDocumento;
 
-class DocumentosDenunciasDataTable extends CustomDataTable {
-    
+class DocumentosDenunciasDataTable extends CustomDataTable
+{
+    public function __construct()
+    {
+        parent::__construct();
+        $this -> builderHtml -> setTableId('documentos-denuncias-datatable');
+    }
+
     protected function setSourceData(){
-        $this->sourceData = MDocumento::select('DOCU_DOCUMENTO','DOCU_NUMERO_FICHA','DOCU_NUMERO_OFICIO','DOCU_FECHA_RECEPCION','DOCU_ANIO','DOCU_DESCRIPCION','DOCU_ENABLED','DOCU_CREATED_AT')->orderBy('DOCU_NUMERO_OFICIO','DESC')
-                            ->where('DOCU_DELETED',0);
+        $this -> sourceData = MDocumento::with('Detalle') -> select('DOCU_DOCUMENTO','DOCU_NUMERO_DOCUMENTO','DOCU_DETALLE') -> where('DOCU_DELETED',0) -> where('DOCU_SYSTEM_TIPO_DOCTO',2); // Documentos de denuncias
     }
 
     protected function columnsTable(){
         return [
             [
-                'title'  => '# FICHA',
+                'title'  => '#',
                 'render' => function($query){
-                    return "<a href='".url('recepcion/documentos', $query->DOCU_DOCUMENTO)."'>
-                                <i class='fa fa-file'></i> {$query->DOCU_NUMERO_FICHA}
-                            </a>";
+                    return $query -> getCodigo();
                 }
             ],
             [
-                'title'  => 'OFICIO',
+                'title'  => 'NÓ. DOCUMENTO',
+                'data'   => 'DOCU_NUMERO_DOCUMENTO'
+            ],
+            [
+                'title'  => 'ASUNTO',
                 'render' => function($query){
-                    return "<a href='".url('recepcion/documentos', $query->DOCU_DOCUMENTO)."'>
-                                {$query->DOCU_NUMERO_OFICIO}
-                            </a>";
+                    return $query -> Detalle -> getDescripcion();
                 }
             ],
             [
-                'title' => 'Año',
-                'data'  => 'DOCU_ANIO'
-            ],
-            [
-                'title' => 'Descripción',
-                'data'  => 'DOCU_DESCRIPCION'
-            ],
-            [
-                'title' => 'Recepción',
-                'data'  => 'DOCU_FECHA_RECEPCION'
+                'title' => 'RECEPCIÓN',
+                'render' => function($query){
+                    return $query -> Detalle -> getFechaRecepcion();
+                }
             ],
             [
                 'title'  => 'Opciones',
@@ -58,7 +57,7 @@ class DocumentosDenunciasDataTable extends CustomDataTable {
     }
 
     protected function getUrlAjax(){
-        return url('recepcion/documentos/post-data');
+        return url('recepcion/documentos/post-data?type=documentos-denuncias');
     }
 
 }
