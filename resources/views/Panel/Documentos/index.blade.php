@@ -12,16 +12,16 @@
 
 @section('breadcrumb')
     <nav class="breadcrumb bg-body-light mb-0">
-        <a class="breadcrumb-item" href="javascript:void(0)"><i class="fa fa-server"></i> Panel de trabajo</a>
-        <a class="breadcrumb-item" href="{{ url('panel/documentos') }}">Documentos</a>
-        <span class="breadcrumb-item active">Recibidos</span>
+        <a class="breadcrumb-item" href="{{ url() -> previous() }}"><i class="fa fa-server"></i> Panel de trabajo</a>
+        <a class="breadcrumb-item" href="{{ url() -> previous() }}">Documentos</a>
+        <span class="breadcrumb-item active">{{ $title }}</span>
     </nav>
 @endsection
 
 @php
     function badge( $size )
     {
-        return $size > 0 ? sprintf('<span class="badge badge-pill badge-secondary">%d</span>',$size) : '';
+        return $size > 0 ? sprintf('<span class="badge badge-pill badge-primary">%d</span>',$size) : '';
     }
 @endphp
 
@@ -33,45 +33,44 @@
                 <div class="block-header block-header-default">
                     <div class="block-title">
                         <div class="push">
-                            <div class="btn-group" role="group" aria-label="Documentos a visualizar">
-                                <div class="btn-group show" role="group">
-                                    <button type="button" class="btn btn-alt-secondary dropdown-toggle" id="btnGroupDrop1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ver documentos</button>
-                                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 34px, 0px); top: 0px; left: 0px; will-change: transform;">
-                                        <a class="dropdown-item" href="{{ url('panel/documentos?view=recents') }}">
-                                            <i class="fa fa-inbox mx-5"></i> Recientes {!! badge($recientes) !!}
-                                        </a>
-                                        <a class="dropdown-item" href="{{ url('panel/documentos?view=all') }}">
-                                            <i class="fa fa-fw fa-cubes mr-5"></i> Todos {!! badge($todos) !!}
-                                        </a>
-                                        <a class="dropdown-item" href="{{ url('panel/documentos?view=important') }}">
-                                            <i class="fa fa-fw fa-star mr-5"></i> Importantes {!! badge($importantes) !!}
-                                        </a>
-                                        <a class="dropdown-item" href="{{ url('panel/documentos?view=archived') }}">
-                                            <i class="fa fa-fw fa-archive mr-5"></i> Archivados {!! badge($archivados) !!}
-                                        </a>
-                                        <a class="dropdown-item" href="{{ url('panel/documentos?view=finished') }}">
-                                            <i class="fa fa-fw fa-flag-checkered mr-5"></i> Finalizados {!! badge($finalizados) !!}
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            <form>
-                                <div class="form-group row">
-                                    <div class="col-md-4">
-                                        <div class="input-group">
-                                            <input type="search" class="form-control" id="search" name="search" placeholder="Nó. documento, Nó. expediente, Asunto, Descripción...">
-                                            <div class="input-group-append">
-                                                <button type="button" class="btn btn-secondary"><i class="fa fa-search"></i></button>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <div class="btn-group" role="group" aria-label="Documentos a visualizar">
+                                        <div class="btn-group show" role="group">
+                                            <button type="button" class="btn btn-alt-secondary dropdown-toggle" id="btnGroupDrop1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ver documentos</button>
+                                            <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 34px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                                <a class="dropdown-item" href="{{ url('panel/documentos?view=recents') }}">
+                                                    <i class="fa fa-inbox mx-5"></i> Recientes {!! badge($recientes) !!}
+                                                </a>
+                                                <a class="dropdown-item" href="{{ url('panel/documentos?view=all') }}">
+                                                    <i class="fa fa-fw fa-cubes mr-5"></i> Todos {!! badge($todos) !!}
+                                                </a>
+                                                <a class="dropdown-item" href="{{ url('panel/documentos?view=important') }}">
+                                                    <i class="fa fa-fw fa-star mr-5"></i> Importantes {!! badge($importantes) !!}
+                                                </a>
+                                                <a class="dropdown-item" href="{{ url('panel/documentos?view=archived') }}">
+                                                    <i class="fa fa-fw fa-archive mr-5"></i> Archivados {!! badge($archivados) !!}
+                                                </a>
+                                                <a class="dropdown-item" href="{{ url('panel/documentos?view=finished') }}">
+                                                    <i class="fa fa-fw fa-flag-checkered mr-5"></i> Finalizados {!! badge($finalizados) !!}
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </form>
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <input type="search" class="form-control" id="search" name="search" placeholder="Nó. documento, Nó. expediente, Asunto, Descripción...">
+                                        <div class="input-group-append">
+                                            <button type="button" class="btn btn-secondary"><i class="fa fa-search"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-
                     </div>
                     <div class="block-options">
-                        <strong>1 - 10</strong> de <strong>{{ sizeof($documentos) }}</strong>
+                        <strong>1 - {{ sizeof($documentos) }}</strong> de <strong>{{ sizeof($documentos) }}</strong>
                         <button type="button" class="btn-block-option" data-toggle="block-option">
                             <i class="si si-arrow-left"></i>
                         </button>
@@ -119,7 +118,7 @@
                                         <i class="fa fa-fw fa-paper-plane"></i> Ver seguimiento
                                     </a>
                                     @can('SEG.CAMBIAR.ESTADO')
-                                    <button class="btn btn-sm btn-danger pull-right mr-5" onclick="hPanel.cambiarEstado({{ 1 }})"><i class="fa fa-fw fa-flash"></i> Cambiar estado</button>
+                                    <button class="btn btn-sm btn-danger pull-right mr-5" onclick="hPanel.cambiarEstado({{ $seguimiento -> getKey() }})"><i class="fa fa-fw fa-flash"></i> Cambiar estado</button>
                                     @endcan
                                 </div>
                             </div>
@@ -138,7 +137,16 @@
                                 </div>
                                 <div class="col-md-2">
                                     <hr>
-                                    <div class="font-size-sm text-muted text-right"><i class="fa fa-fw fa-files-o"></i> # {{ $seguimiento -> Documento -> getCodigo() }}</div>
+                                    <div class="font-size-sm text-muted text-right">
+                                        <a href="javascript:void(0)" onclick="hPanel.marcarImportante({{ $seguimiento -> Documento -> getKey() }})">
+                                            @if ($seguimiento -> importante)
+                                                <i class="fa fa-fw fa-star text-warning"></i>
+                                            @else
+                                                <i class="fa fa-fw fa-star-o"></i>
+                                            @endif
+                                        </a>
+                                        <i class="fa fa-fw fa-files-o"></i> # {{ $seguimiento -> Documento -> getCodigo() }}
+                                    </div>
                                     <div class="font-size-sm text-muted text-right"><i class="fa fa-fw fa-flash"></i> # {{ $seguimiento -> getCodigo(5) }}</div>
                                 </div>
                             </div>

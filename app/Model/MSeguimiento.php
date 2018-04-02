@@ -28,7 +28,7 @@ class MSeguimiento extends BaseModel
     {
         $lecturas = $this -> attributes['SEGU_LEIDO']; // Recuperamos la lista de usuarios que han leido el seguimiento
 
-        if (! strpos($lecturas,userKey())) // Si el usuario no ha leido el seguimiento ...
+        if (! strpos($lecturas,strval(userKey()))) // Si el usuario no ha leido el seguimiento ...
         {
             if (! empty($lecturas)) // Si ya hay usuarios que han leido el seguimiento, añadimos una coma
             {

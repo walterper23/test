@@ -11,6 +11,7 @@ use App\Http\Controllers\BaseController;
 /* Models */
 use App\Model\MUsuario;
 use App\Model\MDocumento;
+use App\Model\MMarcador;
 use App\Model\MSeguimiento;
 use App\Model\Catalogo\MDireccion;
 use App\Model\Catalogo\MEstadoDocumento;
@@ -84,13 +85,14 @@ class PanelController extends BaseController
 			}
 
 			// Si el usuario tiene marcado el documento como Importante, lo añadimos a Importantes
-			if (strpos($seguimiento -> DOMA_IMPORTANTE,userKey()) !== false)
+			if (strpos($seguimiento -> DOMA_IMPORTANTE,strval(userKey())) !== false)
 			{
+				$seguimiento -> importante = true;
 				$documentos['importantes'][] = $seguimiento;
 			}
 
 			// Si el usuario tiene marcado el documento como Archivado, lo añadimos a Archivados
-			if (strpos($seguimiento -> DOMA_ARCHIVADO,userKey()) !== false)
+			if (strpos($seguimiento -> DOMA_ARCHIVADO,strval(userKey())) !== false)
 			{
 				$documentos['archivados'][] = $seguimiento;
 			}
@@ -152,6 +154,9 @@ class PanelController extends BaseController
             case 2: // Nuevo cambio de estado de documento
                 $response = $this -> cambiarEstadoDocumento( $request );
                 break;
+            case 3: // Marcar documento como importante
+                $response = $this -> marcarDocumentoImportante( $request );
+                break;
             default:
                 return response()->json(['message'=>'Petición no válida'],404);
                 break;
@@ -159,7 +164,7 @@ class PanelController extends BaseController
         return $response;
     }
 
-
+    // Formulario para realizar el cambio de estado de un documento
 	public function formCambioEstadoDocumento( $request )
 	{
 		$data = [
@@ -218,6 +223,41 @@ class PanelController extends BaseController
 		$data['estados'] = $estados;
 
 		return view('Panel.Documentos.formCambioEstadoDocumento') -> with($data);
+	}
+
+	// Método para cambiar el estado de un documento
+	public function cambiarEstadoDocumento( $request )
+	{
+
+	}
+
+	// Método para marcar como Importante un documento para el usuario
+	public function marcarDocumentoImportante( $request )
+	{
+		try {
+
+			$documento = MDocumento::with('Marcadores') -> find( $request ->  documento );
+			$marcadores = $documento -> Marcadores;
+
+			if (is_null($marcadores))
+			{
+				$marcadores = new MMarcador;
+				$marcadores -> DOMA_DOCUMENTO  = $documento -> getKey();
+				$marcadores -> DOMA_IMPORTANTE = userKey();
+			}
+			else
+			{
+				$marcadores -> marcarImportante();
+			}
+			
+			$marcadores -> save();
+
+			return $this -> responseSuccessJSON();
+
+		} catch(Exception $error) {
+
+		}
+
 	}
 
 }
