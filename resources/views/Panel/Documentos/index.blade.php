@@ -1,4 +1,4 @@
-@extends('Tema.app')
+@extends('app.layoutMaster')
 
 @section('title')
 	{{ title($title) }}
@@ -18,6 +18,13 @@
     </nav>
 @endsection
 
+@php
+    function badge( $size )
+    {
+        return $size > 0 ? sprintf('<span class="badge badge-pill badge-secondary">%d</span>',$size) : '';
+    }
+@endphp
+
 @section('content')
     <div class="row">
         <div class="col-12">
@@ -31,23 +38,19 @@
                                     <button type="button" class="btn btn-alt-secondary dropdown-toggle" id="btnGroupDrop1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ver documentos</button>
                                     <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 34px, 0px); top: 0px; left: 0px; will-change: transform;">
                                         <a class="dropdown-item" href="{{ url('panel/documentos?view=recents') }}">
-                                            <i class="fa fa-inbox mx-5"></i> Recientes
+                                            <i class="fa fa-inbox mx-5"></i> Recientes {!! badge($recientes) !!}
                                         </a>
                                         <a class="dropdown-item" href="{{ url('panel/documentos?view=all') }}">
-                                            <i class="fa fa-fw fa-cubes mr-5"></i> Todos
+                                            <i class="fa fa-fw fa-cubes mr-5"></i> Todos {!! badge($todos) !!}
                                         </a>
                                         <a class="dropdown-item" href="{{ url('panel/documentos?view=important') }}">
-                                            <i class="fa fa-fw fa-star mr-5"></i> Importantes
+                                            <i class="fa fa-fw fa-star mr-5"></i> Importantes {!! badge($importantes) !!}
                                         </a>
                                         <a class="dropdown-item" href="{{ url('panel/documentos?view=archived') }}">
-                                            <i class="fa fa-fw fa-archive mr-5"></i> Archivados
+                                            <i class="fa fa-fw fa-archive mr-5"></i> Archivados {!! badge($archivados) !!}
                                         </a>
                                         <a class="dropdown-item" href="{{ url('panel/documentos?view=finished') }}">
-                                            <i class="fa fa-fw fa-flag-checkered mr-5"></i> Finalizados
-                                        </a>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="javascript:void(0)">
-                                            <i class="fa fa-fw fa-pencil mr-5"></i>Edit Profile
+                                            <i class="fa fa-fw fa-flag-checkered mr-5"></i> Finalizados {!! badge($finalizados) !!}
                                         </a>
                                     </div>
                                 </div>
@@ -82,7 +85,7 @@
                 </div>
             </div>
 
-            @foreach ($documentos as $seguimiento)
+            @forelse ($documentos as $seguimiento)
             <div class="block">
                 <div class="block-content block-content-full ribbon ribbon-bookmark ribbon-{{ $seguimiento -> SYTD_RIBBON_COLOR }}">
                     <div class="ribbon-box">{{ $seguimiento -> SYTD_NOMBRE }}</div>
@@ -113,28 +116,45 @@
                                 </div>
                                 <div class="col-12">
                                     <a class="btn btn-sm btn-success pull-right" href="{{ url('panel/documentos/seguimiento?search='. $seguimiento -> getKey() ) }}">
-                                        <i class="fa fa-fw fa-paper-plane"></i> Seguimiento
+                                        <i class="fa fa-fw fa-paper-plane"></i> Ver seguimiento
                                     </a>
                                     @can('SEG.CAMBIAR.ESTADO')
-                                    <button class="btn btn-sm btn-danger pull-right mr-5" onclick="hPanel.cambiarEstado({{ 1 }})"><i class="fa fa-fw fa-flash"></i></button>
+                                    <button class="btn btn-sm btn-danger pull-right mr-5" onclick="hPanel.cambiarEstado({{ 1 }})"><i class="fa fa-fw fa-flash"></i> Cambiar estado</button>
                                     @endcan
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-5">
-                            <hr>
-                            <div class="font-size-sm text-muted"><i class="fa fa-fw fa-sitemap"></i> {{ $seguimiento -> DireccionOrigen -> getNombre() }}</div>
-                            <div class="font-size-sm text-muted"><i class="fa fa-fw fa-sitemap"></i> {{ optional($seguimiento -> DepartamentoOrigen) -> getNombre() }}</div>
-                        </div>
-                        <div class="col-md-7">
-                            <hr>
-                            <div class="font-size-sm text-muted"><i class="fa fa-fw fa-user"></i> {{ trim(sprintf('%s %s',$seguimiento -> USDE_NOMBRES,$seguimiento -> USDE_APELLIDOS)) }}</div>
-                            <div class="font-size-sm text-muted"><i class="fa fa-fw fa-calendar"></i> {{ $seguimiento -> presenter() -> getFechaSeguimiento() }}</div>
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <hr>
+                                    <div class="font-size-sm text-muted"><i class="fa fa-fw fa-sitemap"></i> {{ $seguimiento -> DireccionOrigen -> getNombre() }}</div>
+                                    <div class="font-size-sm text-muted"><i class="fa fa-fw fa-sitemap"></i> {{ optional($seguimiento -> DepartamentoOrigen) -> getNombre() }}</div>
+                                </div>
+                                <div class="col-md-5">
+                                    <hr>
+                                    <div class="font-size-sm text-muted"><i class="fa fa-fw fa-user"></i> {{ trim(sprintf('%s %s',$seguimiento -> USDE_NOMBRES,$seguimiento -> USDE_APELLIDOS)) }}</div>
+                                    <div class="font-size-sm text-muted"><i class="fa fa-fw fa-calendar"></i> {{ $seguimiento -> presenter() -> getFechaSeguimiento() }}</div>
+                                </div>
+                                <div class="col-md-2">
+                                    <hr>
+                                    <div class="font-size-sm text-muted text-right"><i class="fa fa-fw fa-files-o"></i> # {{ $seguimiento -> Documento -> getCodigo() }}</div>
+                                    <div class="font-size-sm text-muted text-right"><i class="fa fa-fw fa-flash"></i> # {{ $seguimiento -> getCodigo(5) }}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            @endforeach
+            @empty
+            <div class="block">
+                <div class="block-content block-content-full">
+                    <div class="font-size-h3 font-w600 py-30 mb-20 text-center border-b">
+                        No se encontraron documentos
+                    </div>
+                </div>
+            </div>
+            @endforelse
             <!-- END Message List -->
         </div>
     </div>

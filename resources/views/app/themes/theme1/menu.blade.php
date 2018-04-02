@@ -97,7 +97,7 @@
             </ul>
         </li>
         @endif
-        @if( user() -> canAtLeast('USU.ADMIN.USUARIOS','USU.ADMIN.PERMISOS') )
+        @if( user() -> canAtLeast('USU.ADMIN.USUARIOS','USU.ADMIN.PERMISOS.ASIG') )
         <li {!! activeMenu('configuracion','usuarios') !!}>
             <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="fa fa-users"></i><span class="sidebar-mini-hidden">Usuarios</span></a>
             <ul>
@@ -106,9 +106,9 @@
                     <a {!! activeItemMenu('configuracion/usuarios') !!} href="{{ url('configuracion/usuarios') }}">Ver usuarios</a>
                 </li>
                 @endcan
-                @can('USU.ADMIN.PERMISOS')
+                @can('USU.ADMIN.PERMISOS.ASIG')
                 <li>
-                    <a {!! activeItemMenu('configuracion/usuarios/permisos') !!} href="{{ url('configuracion/usuarios/permisos') }}">Permisos</a>
+                    <a {!! activeItemMenu('configuracion/usuarios/permisos-asignaciones') !!} href="{{ url('configuracion/usuarios/permisos-asignaciones') }}">Permisos y Asignaciones</a>
                 </li>
                 @endcan
             </ul>

@@ -43,7 +43,7 @@ class MSeguimiento extends BaseModel
     public function seguimientoLeido()
     {
         $lecturas = $this -> attributes['SEGU_LEIDO']; // Recuperamos la lista de usuarios que han leido el seguimiento
-        return strpos($lecturas,userKey()); // Devolver el usuario ha leido el seguimiento
+        return strpos($lecturas,strval(userKey())) !== false; // Devolver si el usuario ha leido el seguimiento
     }
 
 

@@ -38,21 +38,27 @@ class PanelController extends BaseController
 
 		/* 
 		*  Recuperar los seguimientos que hayan pasado por las direcciones y departamentos anteriores
-		*  Los seguimientos nos darán documentos, y si estos se repiten, se deberá recuperar el documento
-		*  con el seguimiento más reciente
+		*  Los seguimientos nos darán los documentos en los cuáles ha participado el usuario
 		*/
-		$seguimientos = MSeguimiento::
-						with('Documento','DireccionOrigen','DireccionDestino','DepartamentoOrigen','DepartamentoDestino','EstadoDocumento')
-						-> distinct('SEGU_DOCUMENTO')
+
+		$documentos = MSeguimiento::selectRaw('distinct(SEGU_DOCUMENTO) as id_documento')
+						-> whereIn('SEGU_DIRECCION_ORIGEN',$ids_direcciones)
+						-> orWhereIn('SEGU_DIRECCION_DESTINO',$ids_direcciones)
+						-> orWhereIn('SEGU_DEPARTAMENTO_ORIGEN',$ids_departamentos)
+						-> orWhereIn('SEGU_DEPARTAMENTO_DESTINO',$ids_departamentos)
+						-> pluck('id_documento')
+						-> toArray();
+
+		// Recuperar el último seguimiento de cada documento
+		$seguimientos = MSeguimiento::with('Documento','DireccionOrigen','DireccionDestino','DepartamentoOrigen','DepartamentoDestino','EstadoDocumento')
 						-> leftJoin('documentos','SEGU_DOCUMENTO','=','DOCU_DOCUMENTO')
 						-> leftJoin('system_tipos_documentos','SYTD_TIPO_DOCUMENTO','=','DOCU_SYSTEM_TIPO_DOCTO')
 						-> leftJoin('detalles','DETA_DETALLE','=','DOCU_DETALLE')
 						-> leftJoin('usuarios','USUA_USUARIO','=','SEGU_USUARIO')
 						-> leftJoin('usuarios_detalles','USDE_USUARIO_DETALLE','=','USUA_DETALLE')
-						-> whereIn('SEGU_DIRECCION_ORIGEN',$ids_direcciones)
-						-> orWhereIn('SEGU_DIRECCION_DESTINO',$ids_direcciones)
-						-> orWhereIn('SEGU_DEPARTAMENTO_ORIGEN',$ids_departamentos)
-						-> orWhereIn('SEGU_DEPARTAMENTO_DESTINO',$ids_departamentos)
+						-> leftJoin('documentos_marcadores','DOMA_DOCUMENTO','=','DOCU_DOCUMENTO')
+						-> whereIn('SEGU_DOCUMENTO',$documentos)
+						-> whereRaw('SEGU_SEGUIMIENTO in (select max(SEGU_SEGUIMIENTO) from seguimiento group by SEGU_DOCUMENTO order by SEGU_SEGUIMIENTO desc)')
 						-> orderBy('SEGU_SEGUIMIENTO','DESC')
 						-> get();
 
@@ -77,13 +83,28 @@ class PanelController extends BaseController
 				$documentos['recientes'][] = $seguimiento;
 			}
 
+			// Si el usuario tiene marcado el documento como Importante, lo añadimos a Importantes
+			if (strpos($seguimiento -> DOMA_IMPORTANTE,userKey()) !== false)
+			{
+				$documentos['importantes'][] = $seguimiento;
+			}
+
+			// Si el usuario tiene marcado el documento como Archivado, lo añadimos a Archivados
+			if (strpos($seguimiento -> DOMA_ARCHIVADO,userKey()) !== false)
+			{
+				$documentos['archivados'][] = $seguimiento;
+			}
+
+			// Si el documento ya está resuelto
+			if ($seguimiento -> Documento -> resuelto())
+			{
+				$documentos['finalizados'][] = $seguimiento;
+			}
+
+
 		}
-		//
-
-		//
-
-		//
-			
+		
+		// 
 		switch ($view) {
 			case 'recents':
 				$data['title']      = 'Documentos recientes';
@@ -112,6 +133,11 @@ class PanelController extends BaseController
 				break;
 		}
 
+		$data['recientes']   = sizeof($documentos['recientes']);
+		$data['todos']       = sizeof($documentos['todos']);
+		$data['importantes'] = sizeof($documentos['importantes']);
+		$data['archivados']  = sizeof($documentos['archivados']);
+		$data['finalizados'] = sizeof($documentos['finalizados']);
 
 		return view('Panel.Documentos.index') -> with($data);
 
@@ -133,26 +159,6 @@ class PanelController extends BaseController
         return $response;
     }
 
-
-	public function documentosRecientes()
-	{
-
-	}
-
-	public function documentosTodos()
-	{
-		
-	}
-
-	public function documentosImportantes()
-	{
-
-	}
-
-	public function documentosFinalizados()
-	{
-
-	}
 
 	public function formCambioEstadoDocumento( $request )
 	{

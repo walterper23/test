@@ -1,4 +1,4 @@
-@extends('Tema.app')
+@extends('app.layoutMaster')
 
 @section('title')
     {{ title('Configuración de estados de documentos') }}

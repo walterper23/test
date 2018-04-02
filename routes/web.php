@@ -126,12 +126,12 @@ Route::middleware('preventBackHistory') -> group(function(){
                 Route::post('password',   'UsuarioController@formPassword');
                 Route::post('manager',    'UsuarioController@manager');
 
-                Route::prefix('permisos') -> middleware('can:USU.ADMIN.PERMISOS') -> group(function(){
-                    Route::get('/',           'PermisoController@index');
-                    Route::post('post-data',  'PermisoController@postDataTable');
-                    Route::get('nuevo',       'PermisoController@formUsuario');
-                    Route::get('editar',      'PermisoController@editarUsuario');
-                    Route::post('manager',    'PermisoController@manager');
+                Route::prefix('permisos-asignaciones') -> middleware('can:USU.ADMIN.PERMISOS.ASIG') -> group(function(){
+                    Route::get('/',           'PermisoAsignacionController@index');
+                    Route::post('post-data',  'PermisoAsignacionController@postDataTable');
+                    Route::get('nuevo',       'PermisoAsignacionController@formUsuario');
+                    Route::get('editar',      'PermisoAsignacionController@editarUsuario');
+                    Route::post('manager',    'PermisoAsignacionController@manager');
                 });
 
             });

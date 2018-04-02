@@ -13,11 +13,16 @@ use App\Model\Catalogo\MTipoDocumento;
 use App\Model\MDocumento;
 
 
-class PermisoController extends BaseController {
-
+class PermisoAsignacionController extends BaseController
+{
+	public function __construct()
+	{
+		parent::__construct();
+		$this -> setLog('PermisoAsignacionController.log');
+	}
 
 	public function index(){
-		return view('Configuracion.Usuario.indexPermiso');
+		return view('Configuracion.Usuario.indexPermisoAsignacion');
 	}
 
 

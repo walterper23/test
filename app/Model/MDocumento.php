@@ -12,6 +12,13 @@ class MDocumento extends BaseModel
         return $this -> attributes['DOCU_NUMERO_DOCUMENTO'];
     }
 
+    /* Methods */
+
+    public function resuelto()
+    {
+        return $this -> attributes['DOCU_SYSTEM_ESTADO_DOCTO'] == 4; // Documento resuelto
+    }
+
 
     /* Relationships */
 
