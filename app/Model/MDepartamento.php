@@ -31,6 +31,10 @@ class MDepartamento extends BaseModel {
         return $this -> hasMany('App\Model\MDocumento','DOCU_DOCUMENTO','');
     }
 
+    public function Puestos(){
+        return $this -> hasMany('App\Model\Catalogo\MPuesto','PUES_DEPARTAMENTO',$this -> getKeyName());
+    }
+
     /* Presenter */
     public function presenter(){
     	return new MDepartamentoPresenter($this);

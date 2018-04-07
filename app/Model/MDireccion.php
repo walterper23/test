@@ -24,7 +24,11 @@ class MDireccion extends BaseModel
 
     public function Departamentos()
     {
-        return $this -> hasMany('App\Model\Catalogo\MDepartamento','DEPA_DIRECCION',$this -> getKeyName()) -> where('DEPA_DELETED',0);
+        return $this -> hasMany('App\Model\Catalogo\MDepartamento','DEPA_DIRECCION',$this -> getKeyName());
+    }
+
+    public function Puestos(){
+        return $this -> hasMany('App\Model\Catalogo\MPuesto','PUES_DIRECCION',$this -> getKeyName());
     }
 
     public function Seguimientos()

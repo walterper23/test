@@ -1,28 +1,32 @@
 <?php
 namespace App\Model;
 
-/* Presenter */
-use App\Presenters\MAnexoPresenter;
-
 class MDetalle extends BaseModel
 {
 	protected $table        = 'detalles';
 	protected $primaryKey   = 'DETA_DETALLE';
-    protected $prefix       = 'DETA';	
+    protected $prefix       = 'DETA';
 
+    /* Methods */
+
+    public function getAnexos()
+    {
+        return $this -> attributes['DETA_ANEXOS'];
+    }
+    
+    public function getDescripcion()
+    {
+        return $this -> attributes['DETA_DESCRIPCION'];
+    }
+    
     public function getFechaRecepcion()
     {
         return $this -> attributes['DETA_FECHA_RECEPCION'];
     }
 
-    public function getDescripcion()
+    public function getObservaciones()
     {
-        return $this -> attributes['DETA_DESCRIPCION'];
-    }
-
-    public function getAnexos()
-    {
-        return $this -> attributes['DETA_ANEXOS'];
+        return $this -> attributes['DETA_OBSERVACIONES'];
     }
 
     public function getResponsable()
@@ -32,16 +36,9 @@ class MDetalle extends BaseModel
 
     /* Relationships */
 
-	public function municipio()
+	public function Municipio()
     {
         return $this -> hasOne('App\Model\MMunicipio', 'MUNI_MUNICIPIO', 'DETA_MUNICIPIO');
-    }
-
-
-    /* Presenter */    
-    public function presenter()
-    {
-        return new MAnexoPresenter($this);
     }
 
 }
