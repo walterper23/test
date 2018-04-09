@@ -190,11 +190,15 @@ class FieldBuilder {
             case 'email':
                 return Form::email($this->name, $this->value, $this->attributes);
             case 'select':
+                if (is_null($this->value) && sizeof($this->options) == 1)
+                    $this->value = key( $this->options );
                 return Form::select($this->name, $this->options, $this->value, $this->attributes);
             case 'selectTwo':
                 $this->attributes['class'] .= ' select2 selectTwo';
                 $this->attributes['style'] = 'width:100%;';
                 $this->attributes['lang']  = 'es';
+                if (is_null($this->value) && sizeof($this->options) == 1)
+                    $this->value = key( $this->options );
                 return Form::select($this->name, $this->options, $this->value, $this->attributes);
             case 'password':
                 return Form::password($this->name, $this->attributes);

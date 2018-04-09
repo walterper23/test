@@ -1,6 +1,7 @@
 <?php
 
 DB::listen(function($query){
+    //\Illuminate\Support\Facades\Log::info($query -> sql);
     //echo "<pre style=\"z-index:5000\">{$query->sql}</pre>";
 });
 
@@ -140,6 +141,7 @@ Route::middleware('preventBackHistory') -> group(function(){
                 Route::prefix('tipos-documentos') -> group(function(){
                     Route::get('/',          'SistemaTipoDocumentoController@index');
                     Route::post('post-data', 'SistemaTipoDocumentoController@postDataTable');
+                    Route::post('nuevo',     'SistemaTipoDocumentoController@formNuevoTipoDocumento');
                     Route::post('editar',    'SistemaTipoDocumentoController@formEditarTipoDocumento');
                     Route::post('manager',   'SistemaTipoDocumentoController@manager');
                 });

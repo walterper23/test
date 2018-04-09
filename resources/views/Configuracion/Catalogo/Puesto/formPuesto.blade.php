@@ -7,9 +7,9 @@
 	{{ Form::model($modelo,['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) }}
 		{{ Form::hidden('action',$action) }}	
 		{{ Form::hidden('id',$id) }}
-		{!! Field::select('direccion',optional($modelo) -> PUES_DIRECCION,['label'=>'Dirección'],$direcciones) !!}
+		{!! Field::select('direccion',optional($modelo) -> PUES_DIRECCION,['label'=>'Dirección','required'],$direcciones) !!}
 		<div class="form-group row">
-            <label class="col-sm-3 col-form-label" for="departamento">Departamento</label>
+            <label class="col-sm-3 col-form-label" for="departamento" required>Departamento</label>
             <div class="col-sm-9">
             	<select name="departamento" id="departamento" class="form-control">
 					<option value="">Seleccione una opción</option>
@@ -20,13 +20,7 @@
             	</select>
             </div>
         </div>
-
-		<div class="form-group row">
-			<label class="col-sm-3 col-form-label" for="nombre">Nombre</label>
-			<div class="col-sm-9">
-				{{ Form::text('nombre',optional($modelo) -> getNombre(),['id'=>'nombre','class'=>'form-control','placeholder'=>'Nombre del puesto','autofocus']) }}
-            </div>
-        </div>
+        {!! Field::text('nombre',optional($modelo) -> getNombre(),['label'=>'Nombre','placeholder'=>'Nombre del puesto','required','autofocus']) !!}
 	{{ Form::close() }}
 	@endcomponent
 @endsection

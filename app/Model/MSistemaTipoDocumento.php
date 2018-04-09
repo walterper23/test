@@ -9,18 +9,17 @@ use App\Presenters\MSistemaTipoDocumentoPresenter;
 
 class MSistemaTipoDocumento extends BaseModel {
     
-    protected $table          = 'system_tipos_documentos';
-    protected $primaryKey     = 'SYTD_TIPO_DOCUMENTO';
-    public    $timestamps     = false;
+    protected $table       = 'system_tipos_documentos';
+    protected $primaryKey  = 'SYTD_TIPO_DOCUMENTO';
+    protected $prefix      = 'SYTD';
 
-    protected $fieldEnabled   = 'SYTD_ENABLED';
-    protected $fieldUpdated   = 'SYTD_UPDATED';
-
-    public function getNombre(){
+    public function getNombre()
+    {
     	return $this -> attributes['SYTD_NOMBRE'];
     }
 
-    public function getEtiqueta(){
+    public function getEtiqueta()
+    {
         return $this -> attributes['SYTD_ETIQUETA_NUMERO'];
     }
 
@@ -30,10 +29,10 @@ class MSistemaTipoDocumento extends BaseModel {
     }
 
 
-
     /* Relationships */
 
-    public function documentos(){
+    public function Documentos()
+    {
         return $this -> hasMany('App\Model\MDocumento','DOCU_TIPO_DOCUMENTO',$this -> getKey());
     }
 
@@ -41,7 +40,8 @@ class MSistemaTipoDocumento extends BaseModel {
 
     /* Presenter */
 
-    public function presenter(){
+    public function presenter()
+    {
         return new MSistemaTipoDocumentoPresenter($this);
     }
 

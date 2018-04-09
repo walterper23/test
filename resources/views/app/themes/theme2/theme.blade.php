@@ -39,7 +39,7 @@
     </head>
     <body>
         <!-- Page Container -->
-        <div id="page-container" class="sidebar-inverse side-scroll page-header-fixed page-header-inverse main-content-boxed">
+        <div id="page-container" class="sidebar-inverse side-scroll page-header-fixed page-header-inverse">
             <!-- Sidebar -->
             <nav id="sidebar">
                 <!-- Sidebar Scroll Container -->

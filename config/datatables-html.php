@@ -13,10 +13,9 @@ return [
     ],
 
     'options' => [
-    	//'dom'       => '<"row"<"col-4"l><"col-4"r><"col-4"f>><"row"<"col-12"t>><"row"<"col-6"i><"col-6"p>>',
+    	'dom'       => '<"row"<"col-4"l><"col-4"r><"col-4"f>><"row"<"col-12"t>><"row"<"col-6"i><"col-6"p>>',
     	'pagingType' => 'full_numbers',
     	//'processing' => true,
-		'buttons'   => ['reload','export'],
 		'saveState' => true,
 		'pageLength' => '100',
         //'scrollY'=> '300',
@@ -24,7 +23,7 @@ return [
         //'pageResize' => true,
 		'lengthMenu' => [[10, 20, 50, 100, -1],[10, 20, 50, 100, '- Todo -']],
 		'language'  => [
-			'url' => '/js/plugins/datatables/language/i18n.spanish.json'
+            'url' => '/js/plugins/datatables/language/i18n.spanish.json'
 		]
 	],
 

@@ -21,7 +21,7 @@
 @section('content')
     <div class="block block-themed block-mode-loading-refresh">
         <div class="block-header bg-corporate-darker">
-            <h3 class="block-title"><i class="fa fa-fw fa-flash mr-5"></i> Estados de documentos</h3>
+            <h3 class="block-title"><i class="fa fa-fw fa-tags mr-5"></i> Estados de documentos</h3>
             <div class="block-options">
                 <div class="dropdown">
                     <button type="button" class="btn-block-option dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cog"></i> Opciones</button>

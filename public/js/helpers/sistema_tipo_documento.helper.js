@@ -21,14 +21,7 @@ App.loadScript('/js/helpers/helper.js', function(){
 				this.delete({
 					id, title : 'Eliminar tipo de documento'
 				})
-			},
-
-			validate_ : function(id){
-				this.active({
-					data : { action : 5, id }
-				})
 			}
-
-		}
-	}())
-})
+		};
+	}());
+});

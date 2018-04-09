@@ -6,8 +6,8 @@ use App\Model\MUsuario;
 class UsuariosDataTable extends CustomDataTable {
     
     protected function setSourceData(){
-        $this->sourceData = MUsuario::with('UsuarioDetalle')->select('USUA_USUARIO','USUA_USERNAME','USUA_NOMBRE','USUA_RECENT_LOGIN','USUA_CREATED_AT','USUA_ENABLED')
-                            ->where('USUA_DELETED',0);
+        $this->sourceData = MUsuario::with('UsuarioDetalle')->select('USUA_USUARIO','USUA_DETALLE','USUA_USERNAME','USUA_NOMBRE','USUA_RECENT_LOGIN','USUA_CREATED_AT','USUA_ENABLED')
+                            -> where('USUA_DELETED',0);
     }
 
     protected function columnsTable(){
@@ -52,10 +52,11 @@ class UsuariosDataTable extends CustomDataTable {
                 'render' => function($query){
                     $buttons = sprintf('
                         <button type="button" class="btn btn-sm btn-circle btn-alt-warning" onclick="hUsuario.password(%d)" title="Cambiar contraseña"><i class="fa fa-key"></i></button>
-                        <button type="button" class="btn btn-sm btn-circle btn-alt-success" onclick="hUsuario.password(%d)" title="Permisos"><i class="fa fa-lock"></i></button>
-                        <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hUsuario.delete_(%d)"><i class="fa fa-trash"></i></button>',
-                        $query -> getKey(), $query -> getKey(), $query -> getKey()
+                        <button type="button" class="btn btn-sm btn-circle btn-alt-success" onclick="hUsuario.password(%d)" title="Permisos"><i class="fa fa-lock"></i></button>', $query -> getKey(), $query -> getKey()
                     );
+
+                    if( $query -> getKey() != userKey() )
+                        $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hUsuario.delete_(%d)"><i class="fa fa-trash"></i></button>',$query -> getKey());
                     
                     return $buttons;
                 }

@@ -47,6 +47,7 @@ If your sidebar menu includes icons and you would like to hide them, you can add
         </ul>
     </li>
     @endcan
+    @can('REPO.GENERAR.REPORTE')
     <li>
         <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="fa fa-file-pdf-o"></i>Reportes</a>
         <ul>
@@ -58,6 +59,7 @@ If your sidebar menu includes icons and you would like to hide them, you can add
             </li>
         </ul>
     </li>
+    @endcan
     @if( user() -> canAtLeast('SIS.ADMIN.ANEXOS','SIS.ADMIN.DIRECC','SIS.ADMIN.DEPTOS','SIS.ADMIN.PUESTOS','SIS.ADMIN.ESTA.DOC') )
     <li>
         <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="fa fa-fw fa-cogs"></i>Configuración</a>

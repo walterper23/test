@@ -14,9 +14,15 @@ use App\DataTables\AnexosDataTable;
 /* Models */
 use App\Model\Catalogo\MAnexo;
 
-class AnexoController extends BaseController {
-
+class AnexoController extends BaseController
+{
     private $form_id = 'form-anexo';
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this -> setLog('AnexoController.log');
+    }
 
     public function index(AnexosDataTable $dataTables){
 
@@ -72,9 +78,9 @@ class AnexoController extends BaseController {
         }
     }
 
-    public function nuevoAnexo( $request ){
-        try{
-
+    public function nuevoAnexo( $request )
+    {
+        try {
             $anexo = new MAnexo;
             $anexo -> ANEX_NOMBRE = $request -> nombre;
             $anexo -> save();            
@@ -85,7 +91,7 @@ class AnexoController extends BaseController {
 
             return $this -> responseSuccessJSON($message,$tables);
 
-        }catch(Exception $error){
+        } catch(Exception $error) {
 
         }
     }
@@ -106,8 +112,9 @@ class AnexoController extends BaseController {
         }
     }
 
-    public function editarAnexo( $request ){
-        try{
+    public function editarAnexo( $request )
+    {
+        try {
             $anexo = MAnexo::where('ANEX_DELETED',0) -> find( $request -> id );
             $anexo -> ANEX_NOMBRE = $request -> nombre;
             $anexo -> save();
@@ -118,44 +125,48 @@ class AnexoController extends BaseController {
 
             return $this -> responseSuccessJSON($message,$tables);
 
-        }catch(Exception $error){
+        } catch(Exception $error) {
             
         }
     }
 
-    public function activarAnexo( $request ){
-        try{
+    public function activarAnexo( $request )
+    {
+        try {
             $anexo = MAnexo::find( $request -> id );
+            $anexo -> cambiarDisponibilidad() -> save();
             
-            if( $anexo -> cambiarDisponibilidad() -> disponible() ){
-                $type = 'info';
+            if ( $anexo -> disponible() )
+            {
                 $message = sprintf('<i class="fa fa-fw fa-check"></i> Anexo <b>%s</b> activado',$anexo -> getCodigo());
-            }else{
-                $type = 'warning';
+                return $this -> responseInfoJSON($message);
+            }
+            else
+            {
                 $message = sprintf('<i class="fa fa-fw fa-warning"></i> Anexo <b>%s</b> desactivado',$anexo -> getCodigo());
+                return $this -> responseWarningJSON($message);
             }
 
-            $anexo -> save();
+            return $this -> responseTypeJSON($message,$type);
 
-            return $this -> responseSuccessJSON($message,$type);
-
-        }catch(Exception $error){
+        } catch(Exception $error) {
             return response()->json(['status'=>false,'message'=>'Ocurrió un error al guardar los cambios. Error ' . $error->getCode() ]);
         }
     }
 
-    public function eliminarAnexo( $request ){
-        try{
+    public function eliminarAnexo( $request )
+    {
+        try {
             $anexo = MAnexo::find( $request -> id );
             $anexo -> eliminar() -> save();
 
+            // Lista de tablas que se van a recargar automáticamente
             $tables = 'dataTableBuilder';
 
-            // Lista de tablas que se van a recargar automáticamente
             $message = sprintf('<i class="fa fa-fw fa-warning"></i> Anexo <b>%s</b> eliminado',$anexo -> getCodigo());
 
             return $this -> responseWarningJSON($message,'danger',$tables);
-        }catch(Exception $error){
+        } catch(Exception $error) {
             return response()->json(['status'=>false,'message'=>'Ocurrió un error al eliminar el anexo. Error ' . $error->getMessage() ]);
         }
     }

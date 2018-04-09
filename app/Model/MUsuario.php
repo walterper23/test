@@ -5,8 +5,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 use App\Presenters\MUsuarioPresenter;
 
-class MUsuario extends Authenticatable {
-
+class MUsuario extends Authenticatable
+{
     use BaseModelTrait;
     
     protected $table        = 'usuarios';

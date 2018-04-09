@@ -53,9 +53,10 @@ class PuestosDataTable extends CustomDataTable{
                 'title' => 'Opciones',
                 'render' => function($query){
                     $buttons = sprintf('
-                        <button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hPuesto.edit_(%d)"><i class="fa fa-pencil"></i></button>
-                        <button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hPuesto.delete_(%d)"><i class="fa fa-trash"></i></button>',
-                        $query -> getKey(), $query -> getKey()
+                        <button type="button" class="btn btn-sm btn-circle btn-alt-primary" onclick="hPuesto.view(%d)"><i class="fa fa-eye"></i></button>
+                        <button type="button" class="btn btn-sm btn-circle btn-alt-success" onclick="hPuesto.edit_(%d)"><i class="fa fa-pencil"></i></button>
+                        <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hPuesto.delete_(%d)"><i class="fa fa-trash"></i></button>',
+                        $query -> getKey(), $query -> getKey(), $query -> getKey()
                     );
                     
                     return $buttons;

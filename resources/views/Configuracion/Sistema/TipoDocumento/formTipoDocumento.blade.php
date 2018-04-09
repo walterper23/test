@@ -7,7 +7,7 @@
     {{ Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) }}
 	    {{ Form::hidden('action',$action) }}
 	    {{ Form::hidden('id',$id) }}
-		{!! Field::text('nombre',$model -> SYTD_NOMBRE_TIPO,['label'=>'Nombre','placeholder'=>'Nombre del tipo de documento','autofocus']) !!}
+		{!! Field::text('nombre',optional($model) -> SYTD_NOMBRE,['label'=>'Nombre','placeholder'=>'Nombre del tipo de documento','autofocus']) !!}
 	{{ Form::close() }}
 	@endcomponent
 @endsection
@@ -24,13 +24,17 @@
 			return {
 				nombre : { required : true, maxlength : 255 }
 			}
-		}
+		};
 
 		this.messages = function(){
 			return {
-				nombre : { required : 'Introduzca un nombre' }
-			}
-		}
+				nombre : {
+					required : 'Introduzca un nombre',
+					maxlength : 'Máximo {0} caracteres'
+				}
+			};
+		};
+
 	}).init();
 </script>
 @endpush

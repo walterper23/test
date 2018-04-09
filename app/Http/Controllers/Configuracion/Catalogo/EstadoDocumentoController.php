@@ -14,11 +14,12 @@ use App\DataTables\EstadosDocumentosDataTable;
 use App\Model\Catalogo\MDireccion;
 use App\Model\Catalogo\MEstadoDocumento;
 
-class EstadoDocumentoController extends BaseController {
-
+class EstadoDocumentoController extends BaseController
+{
 	private $form_id = 'form-estado-documento';
 
-	public function index(EstadosDocumentosDataTable $dataTables){
+	public function index(EstadosDocumentosDataTable $dataTables)
+	{
 
 		$data['table']    = $dataTables;
 		$data['form_id']  = $this -> form_id;
@@ -27,8 +28,8 @@ class EstadoDocumentoController extends BaseController {
 		return view('Configuracion.Catalogo.EstadoDocumento.indexEstadoDocumento')->with($data);
 	}
 
-	public function manager(ManagerEstadoDocumentoRequest $request){
-
+	public function manager(ManagerEstadoDocumentoRequest $request)
+	{
 		switch ($request -> action) {
 			case 1: // Nuevo
 				$response = $this -> nuevoEstadoDocumento( $request );
@@ -49,11 +50,13 @@ class EstadoDocumentoController extends BaseController {
 		return $response;
 	}
 
-	public function postDataTable(EstadosDocumentosDataTable $dataTables){
+	public function postDataTable(EstadosDocumentosDataTable $dataTables)
+	{
 		return $dataTables->getData();
 	}
 
-	public function formNuevoEstadoDocumento(){
+	public function formNuevoEstadoDocumento()
+	{
 		try {
 
 			$data = [];
@@ -65,28 +68,29 @@ class EstadoDocumentoController extends BaseController {
 			$data['action']		   = 1;
 			$data['id']		       = null;
 
-			$direcciones = MDireccion::with('departamentos')
-									->select('DIRE_DIRECCION','DIRE_NOMBRE')
-									->where('DIRE_ENABLED',1)
-									->orderBy('DIRE_NOMBRE')
-									->get();
+			$direcciones = MDireccion::with('Departamentos')
+									-> select('DIRE_DIRECCION','DIRE_NOMBRE')
+									-> where('DIRE_ENABLED',1)
+									-> where('DIRE_DELETED',0)
+									-> orderBy('DIRE_NOMBRE')
+									-> limit(1) -> get();
 
-			$data['direcciones'] = $direcciones->pluck('DIRE_NOMBRE','DIRE_DIRECCION')->toArray();
+			$data['direcciones'] = $direcciones -> pluck('DIRE_NOMBRE','DIRE_DIRECCION') -> toArray();
 
 			$data['departamentos'] = [];
 
-			foreach ($direcciones as $direccion) {
-
-				$nombre_direccion = $direccion->DIRE_NOMBRE;
-				foreach($direccion->departamentos as $departamento){
-					$id_departamento      = $departamento->DEPA_DEPARTAMENTO;
-					$nombre_departamento  = $departamento->DEPA_NOMBRE;
-					$data['departamentos'][ $nombre_direccion ][ $id_departamento ] = $nombre_departamento;
+			foreach ($direcciones as $direccion)
+			{
+				$departamentos = $direccion -> Departamentos() -> where('DEPA_ENABLED',1) -> get();
+				foreach ($departamentos as $departamento)
+				{
+					$data['departamentos'][] = [
+						$direccion -> getKey(),
+						$departamento -> getKey(),
+						$departamento -> getNombre()
+					];
 				}
-
 			}
-
-			$data['departamentos'][0] = '- Ninguno -';
 
 			return view('Configuracion.Catalogo.EstadoDocumento.formEstadoDocumento')->with($data);
 
@@ -95,7 +99,8 @@ class EstadoDocumentoController extends BaseController {
 		}
 	}
 
-	public function nuevoEstadoDocumento( $request ){
+	public function nuevoEstadoDocumento( $request )
+	{
 		try {
 
 			$departamento = $request -> departamento;
@@ -111,7 +116,7 @@ class EstadoDocumentoController extends BaseController {
 
 			$tables = ['dataTableBuilder',null,true];
 
-			$message = sprintf('<i class="fa fa-tags"></i> Estado de documento <b>%s</b> creado',$estadoDocumento -> getCodigo());
+			$message = sprintf('<i class="fa fa-fw fa-flash"></i> Estado de documento <b>%s</b> creado',$estadoDocumento -> getCodigo());
 
 			return $this -> responseSuccessJSON($message,$tables);
 		
@@ -120,7 +125,8 @@ class EstadoDocumentoController extends BaseController {
 		}
 	}
 
-	public function formEditarEstadoDocumento(){
+	public function formEditarEstadoDocumento()
+	{
 		try {
 			$data['title']         = 'Editar estado de documento';
 			$data['url_send_form'] = url('configuracion/catalogos/estados-documentos/manager');
@@ -140,7 +146,8 @@ class EstadoDocumentoController extends BaseController {
 			foreach ($direcciones as $direccion) {
 
 				$nombre_direccion = $direccion->DIRE_NOMBRE;
-				foreach($direccion->departamentos as $departamento){
+				foreach($direccion->departamentos as $departamento)
+				{
 					$id_departamento      = $departamento->DEPA_DEPARTAMENTO;
 					$nombre_departamento  = $departamento->DEPA_NOMBRE;
 					$data['departamentos'][ $nombre_direccion ][ $id_departamento ] = $nombre_departamento;
@@ -155,16 +162,24 @@ class EstadoDocumentoController extends BaseController {
 		}
 	}
 
-	public function editarEstadoDocumento( $request ){
+	public function editarEstadoDocumento( $request )
+	{
 		try {
+
+			$departamento = $request -> departamento;
+
+			if( $departamento == 0 )
+				$departamento = null;
+
 			$estadoDocumento = MEstadoDocumento::find( $request -> id );
 			$estadoDocumento -> ESDO_NOMBRE       = $request -> nombre;
-			$estadoDocumento -> ESDO_DEPARTAMENTO = $request -> departamento;
+			$estadoDocumento -> ESDO_DIRECCION    = $request -> direccion;
+			$estadoDocumento -> ESDO_DEPARTAMENTO = $departamento;
 			$estadoDocumento -> save();			
 
 			$tables = 'dataTableBuilder';
 
-			$message = sprintf('<i class="fa fa-check"></i> Estado de documento <b>%s</b> modificado',$estadoDocumento -> getCodigo());
+			$message = sprintf('<i class="fa fa-fw fa-flash"></i> Estado de documento <b>%s</b> modificado',$estadoDocumento -> getCodigo());
 
 			return $this -> responseSuccessJSON($message,$tables);
 
@@ -173,38 +188,42 @@ class EstadoDocumentoController extends BaseController {
 		}
 	}
 
-	public function activarEstadoDocumento( $request ){
+	public function activarEstadoDocumento( $request )
+	{
 		try {
 			$estadoDocumento = MEstadoDocumento::find( $request -> id );
-			
-			if( $estadoDocumento -> ESDO_ENABLED == 1 ){
-				$estadoDocumento -> ESDO_ENABLED = 0;
-				$message = 'El estado de documento se desactivó correctamente';
-			}else{
-				$estadoDocumento -> ESDO_ENABLED = 1;
-				$message = 'El estado de documento se activó correctamente';
-			}
-			$estadoDocumento -> save();
+            $estadoDocumento -> cambiarDisponibilidad() -> save();
+            
+            if ( $estadoDocumento -> disponible() )
+            {
+                $message = sprintf('<i class="fa fa-fw fa-check"></i> Estado de Documento <b>%s</b> activado',$estadoDocumento -> getCodigo());
+                return $this -> responseInfoJSON($message);
+            }
+            else
+            {
+                $message = sprintf('<i class="fa fa-fw fa-warning"></i> Estado de Documento <b>%s</b> desactivado',$estadoDocumento -> getCodigo());
+                return $this -> responseWarningJSON($message);
+            }
 
-			return response()->json(['status'=>true,'message'=>$message]);
+            return $this -> responseTypeJSON($message,$type);
 		} catch(Exception $error) {
 			return response()->json(['status'=>false,'message'=>'Ocurrió un error al guardar los cambios. Error ' . $error->getCode() ]);
 		}
 	}
 
 
-	public function eliminarEstadoDocumento(){
+	public function eliminarEstadoDocumento( $request )
+	{
 		try {
-			$estadoDocumento = MEstadoDocumento::find( Input::get('id') );
-			
-			$estadoDocumento -> ESDO_DELETED    = 1;
-			$estadoDocumento -> ESDO_DELETED_AT = Carbon::now();
-			$estadoDocumento -> save();
+			$estadoDocumento = MEstadoDocumento::find( $request -> id );
+			$estadoDocumento -> eliminar() -> save();
 
 			// Lista de tablas que se van a recargar automáticamente
 			$tables = 'dataTableBuilder';
 
-			return response()->json(['status'=>true,'message'=>'El estado de documento se eliminó correctamente','tables'=>$tables]);
+			$message = sprintf('<i class="fa fa-fw fa-warning"></i> Estado de Documento <b>%s</b> eliminado',$estadoDocumento -> getCodigo());
+
+            return $this -> responseWarningJSON($message,'danger',$tables);
 		} catch(Exception $error) {
 			return response()->json(['status'=>false,'message'=>'Ocurrió un error al eliminar el estado de documento. Error ' . $error->getMessage() ]);
 		}

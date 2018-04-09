@@ -7,11 +7,13 @@ use Monolog\Handler\StreamHandler;
 class BaseController extends Controller
 {
 
-	public function __construct( $data = [] ){
+	public function __construct( $data = [] )
+    {
         
     }
 
-    public function setLog( $file = 'log' ){
+    public function setLog( $file = 'log' )
+    {
 
         $logFile = storage_path( 'logs/' . $file);
         $this->monolog = new Logger('log');
@@ -23,7 +25,8 @@ class BaseController extends Controller
      * Enable or disable the autocommit transaccion
      * @param bool|true $commit
      */
-    public function setAutocommit($commit=true){
+    public function setAutocommit($commit=true)
+    {
         $this->autoCommit = $commit;
     }
 
@@ -121,46 +124,61 @@ class BaseController extends Controller
         $this->monolog->log( $loglevel, $message, $data );
     }
 
-    protected function responseSuccessJSON( $message = '', $type = null, $tables = null ){
+    protected function responseSuccessJSON( $message = '', $type = null, $tables = null )
+    {
         return $this -> buildValues(true, $message, 'success', $type, $tables);
     }
 
-    protected function responseInfoJSON( $message = '', $type = null, $tables = null ){
+    protected function responseInfoJSON( $message = '', $type = null, $tables = null )
+    {
         return $this -> buildValues(true, $message, 'info', $type, $tables);
     }
 
-    protected function responseWarningJSON( $message = '', $type = null, $tables = null ){
+    protected function responseWarningJSON( $message = '', $type = null, $tables = null )
+    {
         return $this -> buildValues(true, $message, 'warning', $type, $tables);
     }
 
-    protected function responseErrorJSON( $message = '', $type = null, $tables = null ){
+    protected function responseErrorJSON( $message = '', $type = null, $tables = null )
+    {
         return $this -> buildValues(false, $message, 'danger', $type, $tables);
     }
 
-    protected function responseJSON( $status, $message, $type, $tables = null ){
+    protected function responseTypeJSON( $message = '', $type )
+    {
+        $values = $this -> mergeValues(['status'=>true,'type'=>$type], $message);
+        return response() -> json( $values );
+    }
 
+    protected function responseJSON( $status, $message, $type, $tables = null )
+    {
         $values = $this -> mergeValues(['status'=>$status,'type'=>$type,'tables'=>$tables], $message);
         return response() -> json( $values );
     }
 
-    private function buildValues( $status, $message, $type, $type2, $tables ){
-        if( is_null($tables) ){
+    private function buildValues( $status, $message, $type, $type2, $tables )
+    {
+        if( is_null($tables) )
+        {
             $tables = $type2;
-        }else if( !is_null($type2) ){
+        }else if( !is_null($type2) )
+        {
             $type = $type2;
         }
 
         return $this -> responseJSON( $status, $message, $type, $tables );
     }
 
-    private function mergeValues( $values, $message ){
-        if( is_array($message) ){
+    private function mergeValues( $values, $message )
+    {
+        if( is_array($message) )
+        {
             array_merge($values, $message);
         }else{
             $values['message'] = $message;
         }
 
-        if( is_null($values['tables']) )
+        if( isset($values['tables']) && is_null($values['tables']) )
             unset($values['tables']);
 
         return $values;

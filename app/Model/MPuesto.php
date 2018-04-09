@@ -7,14 +7,11 @@ use App\Model\BaseModel;
 /* Presenter */
 use App\Presenters\MPuestoPresenter;
 
-class MPuesto extends BaseModel {
-    
-    protected $table          = 'cat_puestos';
-    protected $primaryKey     = 'PUES_PUESTO';
-    public    $timestamps     = false;
-
-    protected $fieldEnabled   = 'PUES_ENABLED';
-    protected $fieldDeleted   = 'PUES_DELETED';
+class MPuesto extends BaseModel
+{    
+    protected $table       = 'cat_puestos';
+    protected $primaryKey  = 'PUES_PUESTO';
+    protected $prefix      = 'PUES';
 
     /* Methods */
     public function getNombre()

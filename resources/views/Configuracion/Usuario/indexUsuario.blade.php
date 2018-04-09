@@ -19,7 +19,7 @@
 
 @section('content')
 	<div class="block block-themed block-mode-loading-refresh">
-        <div class="block-header bg-gd-emerald">
+        <div class="block-header bg-earth">
             <h3 class="block-title"><i class="fa fa-fw fa-users mr-5"></i> Usuarios</h3>
             <div class="block-options">
                 <button type="button" class="btn-block-option d-none d-sm-inline" onclick="hUsuario.new_('{{$form_id}}','{{$form_url}}')">
