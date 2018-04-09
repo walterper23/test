@@ -39,10 +39,11 @@ class AuthServiceProvider extends ServiceProvider
             }
         });
 
-        //$permisos = Cache::remember('Permisos.Sistema')
+        $permisosSistema = Cache::rememberForever('Permisos.Sistema',function(){
+            return \App\Model\MPermiso::with('Recurso') -> get();
+        });
 
-        $permisos = \App\Model\MPermiso::select('SYPE_CODIGO') -> get();
-        foreach ($permisos as $permiso) {
+        foreach ($permisosSistema as $permiso) {
             GateContract::define($permiso -> getCodigo(), function($user) use ($permiso){
                 return permisoUsuario( $permiso -> getCodigo() );
             });

@@ -9,18 +9,34 @@ If your sidebar menu includes icons and you would like to hide them, you can add
     <li>
         <a href="{{ url('/') }}"><i class="si si-home"></i>Inicio</a>
     </li>
-    @can('REC.DOCUMENTO')
+    @can('REC.DOCUMENTO.LOCAL')
     <li>
         <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="fa fa-fw fa-files-o"></i>Recepción</a>
         <ul>
+            <li>
+                <a href="{{ url('recepcion/documentos/recepcionados') }}">Recepcionados</a>
+            </li>
             <li>
                 <a href="{{ url('recepcion/documentos/nueva-recepcion') }}">Nueva recepci&oacute;n</a>
             </li>
             <li>
                 <a href="{{ url('recepcion/documentos/en-captura') }}">En captura</a>
             </li>
+        </ul>
+    </li>
+    @endcan
+    @can('REC.DOCUMENTO.FORANEO')
+    <li>
+        <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="fa fa-fw fa-files-o"></i>Recepción foránea</a>
+        <ul>
             <li>
-                <a href="{{ url('recepcion/documentos/recepcionados') }}">Recepcionados</a>
+                <a href="{{ url('recepcion/documentos-foraneos/recepcionados') }}">Recepcionados</a>
+            </li>
+            <li>
+                <a href="{{ url('recepcion/documentos-foraneos/nueva-recepcion') }}">Nueva recepci&oacute;n</a>
+            </li>
+            <li>
+                <a href="{{ url('recepcion/documentos-foraneos/en-captura') }}">En captura</a>
             </li>
         </ul>
     </li>

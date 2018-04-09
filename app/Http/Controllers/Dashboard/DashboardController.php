@@ -14,9 +14,6 @@ class DashboardController extends BaseController
 
         // Verificar si el usuario tiene acceso a reportes y gráficas
         // Este apartado incluye dentro las notificaciones
-
-
-        // Verificar si hay notificaciones que mostrar
         if ( user() -> can('REPO.GENERAR.REPORTE') )
         {
 

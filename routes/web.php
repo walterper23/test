@@ -6,20 +6,22 @@ DB::listen(function($query){
 });
 
 Route::middleware('preventBackHistory') -> group(function(){
+
     Route::get('login',  'Auth\LoginController@showLoginForm') -> name('login');
     Route::post('login', 'Auth\LoginController@login');
     Route::get('logout', 'Auth\LoginController@logout') -> name('logout');
 
     // Password Reset Routes...
-    Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm') -> name('password.request');
-    Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail') -> name('password.email');
+    Route::get('password/reset',         'Auth\ForgotPasswordController@showLinkRequestForm') -> name('password.request');
+    Route::post('password/email',        'Auth\ForgotPasswordController@sendResetLinkEmail') -> name('password.email');
     Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm') -> name('password.reset');
-    Route::post('password/reset', 'Auth\ResetPasswordController@reset');
+    Route::post('password/reset',        'Auth\ResetPasswordController@reset');
 
     Route::middleware('auth') -> group(function(){
 
         Route::get('/', 'Dashboard\DashboardController@index');
 
+        // Perfil del usuario y configuración de preferencias
         Route::prefix('usuario') -> namespace('Dashboard') -> group(function(){
 
             Route::prefix('perfil') -> group(function(){
@@ -32,11 +34,13 @@ Route::middleware('preventBackHistory') -> group(function(){
 
         });
 
+        // Recepcion de documentos locales y foráneos
         Route::prefix('recepcion') -> namespace('Recepcion') -> group(function(){
             
             Route::get('/',  'RecepcionController@index');
             
-            Route::group(['prefix'=>'documentos'], function(){
+            // Recepción de documentos locales
+            Route::middleware('can:REC.DOCUMENTO.LOCAL') -> prefix('documentos') -> group(function(){
                 Route::get('/',                'RecepcionController@index');
                 Route::get('recepcionados',    'RecepcionController@index');
                 Route::post('post-data',       'RecepcionController@postDataTable');
@@ -46,19 +50,31 @@ Route::middleware('preventBackHistory') -> group(function(){
                 Route::get('{id}',             'RecepcionController@verDocumentoRecepcionado');
             });
 
+            // Recepción de documentos foráneos
+            Route::middleware('can:REC.DOCUMENTO.FORANEO') -> prefix('documentos-foraneos') -> group(function(){
+                Route::get('/',                'RecepcionForaneaController@index');
+                Route::get('recepcionados',    'RecepcionForaneaController@index');
+                Route::post('post-data',       'RecepcionForaneaController@postDataTable');
+                Route::get('nueva-recepcion',  'RecepcionForaneaController@formNuevaRecepcion');
+                Route::post('manager',         'RecepcionForaneaController@manager');
+                Route::get('en-captura',       'RecepcionForaneaController@documentosEnCaptura');
+                Route::get('{id}',             'RecepcionForaneaController@verDocumentoRecepcionado');
+            });
+
         });
 
 
         // Panel de trabajo del personal de las direcciones y departamentos
         Route::redirect('panel', 'panel/documentos?view=all');
         Route::prefix('panel/documentos') -> namespace('Panel') -> group(function(){
+            
             Route::get('/',                'PanelController@index');
             Route::post('manager',         'PanelController@manager');
             
             Route::prefix('seguimiento') -> namespace('Seguimiento') -> group(function(){
-
                 Route::get('/',      'SeguimientoController@index');
             });
+
         });
         
         Route::prefix('configuracion') -> namespace('Configuracion') -> group(function(){
@@ -116,6 +132,7 @@ Route::middleware('preventBackHistory') -> group(function(){
 
             });
 
+            // Administración de usuarios, sus permisos y asignaciones
             Route::prefix('usuarios') -> middleware('can:USU.ADMIN.USUARIOS') -> namespace('Usuario') -> group(function(){
                 
                 Route::get('/',           'UsuarioController@index');
@@ -136,7 +153,8 @@ Route::middleware('preventBackHistory') -> group(function(){
 
             });
 
-            Route::prefix('sistema') -> namespace('Sistema') -> group(function(){
+            // Administración de las configuraciones del sistema
+            Route::prefix('sistema') -> middleware('can:SIS.ADMIN.CONFIG') -> namespace('Sistema') -> group(function(){
                 
                 Route::prefix('tipos-documentos') -> group(function(){
                     Route::get('/',          'SistemaTipoDocumentoController@index');

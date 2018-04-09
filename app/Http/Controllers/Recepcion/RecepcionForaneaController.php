@@ -21,29 +21,21 @@ use App\Model\MEscaneo;
 use App\Model\MMunicipio;
 use App\Model\MSeguimiento;
 use App\Model\Catalogo\MAnexo;
-use App\Model\Catalogo\MDireccion;
-use App\Model\Catalogo\MEstadoDocumento;
 use App\Model\Sistema\MSistemaTipoDocumento;
 
 /* DataTables */
-use App\DataTables\DenunciasDataTable;
-use App\DataTables\DocumentosDenunciasDataTable;
-use App\DataTables\DocumentosDataTable;
+use App\DataTables\DocumentosForaneosDataTable;
 
-class RecepcionController extends BaseController
+class RecepcionForaneaController extends BaseController
 {
 
 	public function index(){
 
-		$tabla1 = new DenunciasDataTable();
-		$tabla2 = new DocumentosDenunciasDataTable();
-		$tabla3 = new DocumentosDataTable();
+		$tabla1 = new DocumentosForaneosDataTable();
 
-		$data['table1'] = $tabla1;
-		$data['table2'] = $tabla2;
 		$data['table3'] = $tabla3;
 
-		return view('Recepcion.indexRecepcion') -> with($data);
+		return view('Recepcion.indexRecepcionForanea') -> with($data);
 	}
 
 	public function manager(ManagerRecepcionRequest $request){
@@ -218,7 +210,7 @@ class RecepcionController extends BaseController
 
 
 
-	
+
 
 
 

@@ -27,13 +27,14 @@ if (! function_exists('title'))
 if (! function_exists('permisoUsuario'))
 {
     // Helper para recuperar todos los permisos del usuario
-
     function permisoUsuario( $permiso )
     {
-        Cache::flush('PermisosUsuario');
-        $permisos = Cache::rememberForever('PermisosUsuario',function(){
-            return user() -> Permisos() -> pluck('SYPE_CODIGO') -> toArray();
+        Cache::flush('Permisos.Usuario.Actual');
+        $permisos = Cache::rememberForever('Permisos.Usuario.Actual',function(){
+            return user() -> Permisos;
         });
+
+        $permisos = $permisos -> pluck('SYPE_CODIGO') -> toArray();
 
         return in_array($permiso, $permisos);
     }

@@ -24,7 +24,8 @@ class AnexoController extends BaseController
         $this -> setLog('AnexoController.log');
     }
 
-    public function index(AnexosDataTable $dataTables){
+    public function index(AnexosDataTable $dataTables)
+    {
 
         $data['table']    = $dataTables;
         $data['form_id']  = $this -> form_id;
@@ -33,8 +34,8 @@ class AnexoController extends BaseController
         return view('Configuracion.Catalogo.Anexo.indexAnexo')->with($data);
     }
 
-    public function manager(ManagerAnexoRequest $request){
-
+    public function manager(ManagerAnexoRequest $request)
+    {
         switch ($request -> action) {
             case 1: // Nuevo
                 $response = $this -> nuevoAnexo( $request );
@@ -52,15 +53,17 @@ class AnexoController extends BaseController
                 return response()->json(['message'=>'Petición no válida'],404);
                 break;
         }
+
         return $response;
     }
 
-    public function postDataTable(AnexosDataTable $dataTables){
+    public function postDataTable(AnexosDataTable $dataTables)
+    {
         return $dataTables->getData();
     }
 
     public function formNuevoAnexo(){
-        try{
+        try {
 
             $data = [];
 
@@ -73,7 +76,7 @@ class AnexoController extends BaseController
 
             return view('Configuracion.Catalogo.Anexo.formAnexo')->with($data);
 
-        }catch(Exception $error){
+        } catch(Exception $error) {
 
         }
     }
@@ -97,17 +100,17 @@ class AnexoController extends BaseController
     }
 
     public function formEditarAnexo(){
-        try{
+        try {
             $data['title']         = 'Editar anexo';
             $data['url_send_form'] = url('configuracion/catalogos/anexos/manager');
             $data['form_id']       = $this -> form_id;
-            $data['modelo']           = MAnexo::find( Input::get('id') );
-            $data['action']           = 2;
-            $data['id']               = Input::get('id');
+            $data['modelo']        = MAnexo::find( Input::get('id') );
+            $data['action']        = 2;
+            $data['id']            = Input::get('id');
 
             return view('Configuracion.Catalogo.Anexo.formAnexo')->with($data);
 
-        }catch(Exception $error){
+        } catch(Exception $error) {
 
         }
     }
@@ -115,7 +118,7 @@ class AnexoController extends BaseController
     public function editarAnexo( $request )
     {
         try {
-            $anexo = MAnexo::where('ANEX_DELETED',0) -> find( $request -> id );
+            $anexo = MAnexo::find( $request -> id );
             $anexo -> ANEX_NOMBRE = $request -> nombre;
             $anexo -> save();
 
