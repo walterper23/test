@@ -11,8 +11,11 @@ use App\DataTables\PermisosDataTable;
 
 /* Models */
 use App\Model\Catalogo\MTipoDocumento;
+use App\Model\Catalogo\MDireccion;
 use App\Model\MDocumento;
 use App\Model\MPermiso;
+use App\Model\MRecurso;
+use App\Model\MUsuario;
 
 
 class PermisoAsignacionController extends BaseController
@@ -26,19 +29,25 @@ class PermisoAsignacionController extends BaseController
 	public function index()
 	{
 
+		// Recuperar todos los recursos y permisos del sistema
+		$data['recursos'] = MRecurso::with(['Permisos' => function($q){
+			return $q -> orderBy('SYPE_DESCRIPCION','ASC');
+		}]) -> get();
 
-		// Recuperar todos los permisos del sistema
-		$permisos = Cache::get('Permisos.Sistema');
-
-		// Recuperar todos las direcciones y departamentos disponibles en el sistemas
+		// Recuperar todos las direcciones y departamentos disponibles en el sistema
+		$data['direcciones'] = MDireccion::with('DepartamentosExistentes') -> existente() -> get();
 
 		// Recuperar la lista de usuarios del sistema
+		$data['usuarios'] = MUsuario::existente() -> pluck('USUA_USERNAME','USUA_USUARIO') -> toArray();
 
-		// Recuperar los permisos del usuario en sesión, para cargarlos en la interfaz
-		$permisosUsuario = Cache::get('Permisos.Usuario.Actual') ?? collect();
-		dd($permisos, $permisosUsuario, user() -> Permisos, userKey());
+		$userKey = request() -> get('user', userKey()); // Recuperamos el ID del usuario enviado por la URL, si no, recuperamos le ID del usuario en sesión
+		$usuario = MUsuario::where('USUA_USUARIO',$userKey) -> existente() -> first(); // Comprobamos que exista el usuario
+		$data['userKey'] = !is_null($usuario) ? $userKey : userKey(); // Almacenamos el ID del usuario si existe. Si no, almacenamos el ID del usuario en sesión
 
-		return view('Configuracion.Usuario.indexPermisoAsignacion');
+		// Recuperar los permisos del usuario, para cargarlos en la interfaz
+		$data['permisosUsuario'] = !is_null($usuario) ? $usuario -> Permisos -> pluck('SYPE_PERMISO') -> toArray() : [];
+		
+		return view('Configuracion.Usuario.indexPermisoAsignacion') -> with($data);
 	}
 
 	public function manager(Request $request)

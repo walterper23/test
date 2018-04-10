@@ -28,7 +28,7 @@
     </div>
     <div class="row">
         <div class="col-md-7">
-            {!! Field::textarea('descripcion','',['label'=>'Asunto / Descripción','placeholder'=>'Introduzca una descripción del documento','size'=>'20x5','required','noresize']) !!}
+            {!! Field::textarea('descripcion','',['label'=>'Asunto / Descripción','placeholder'=>'Introduzca una descripción del documento','size'=>'20x3','required','noresize']) !!}
             {!! Field::text('responsable','',['label'=>'Responsable','required']) !!}
             {!! Field::textarea('observaciones','',['label'=>'Observaciones','placeholder'=>'Opcional','size'=>'20x4','noresize']) !!}
         </div>
@@ -50,11 +50,18 @@
                 </div>
             </div>
             {!! Field::textarea('anexos','',['label'=>'Anexos','placeholder'=>'Opcional','size'=>'20x11','noresize']) !!}
-            <button type="button" class="btn btn-danger btn-rounded btn-sm" data-toggle="modal" data-target="#modal-slideright"><i class="fa fa-fw fa-file-pdf-o"></i> Escaneos <span class="badge badge-pill badge-secondary">3</span></button>
+        </div>
+        <div class="col-md-7">
+            <div class="form-group row">
+                <div class="col-md-9 ml-auto">
+                    <button type="button" class="btn btn-danger btn-rounded btn-sm" data-toggle="modal" data-target="#modal-escaneos"><i class="fa fa-fw fa-file-pdf-o"></i> Escaneos <span class="badge badge-pill badge-secondary" id="conteo-escaneos"></span></button>
+                    <button type="button" class="btn btn-success btn-rounded btn-sm" data-toggle="modal" data-target="#modal-entrega"><i class="fa fa-fw fa-vcard"></i> Quién entrega</span></button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="modal fade" id="modal-slideright" tabindex="-1" role="dialog" aria-labelledby="modal-slideright" aria-hidden="true">
+    <div class="modal fade" id="modal-escaneos" tabindex="-1" role="dialog" aria-labelledby="modal-escaneos" aria-hidden="true">
         <div class="modal-dialog modal-dialog-slideright" role="document">
             <div class="modal-content">
                 <div class="block block-themed block-transparent mb-0">
@@ -77,6 +84,35 @@
                                 <label class="custom-file-label" for="example-file-multiple-input-custom">Choose files</label>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-entrega" tabindex="-1" role="dialog" aria-labelledby="modal-entrega" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-slideright" role="document">
+            <div class="modal-content">
+                <div class="block block-themed block-transparent mb-0">
+                    <div class="block-header bg-success">
+                        <h3 class="block-title"><i class="fa fa-fw fa-vcard"></i> Quién entrega</h3>
+                        <div class="block-options">
+                            <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                                <i class="si si-close"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="block-content">
+                        <p class="mb-10">Agregue información de contacto de quién entrega el documento. Esta información será reflejada opcionalmente en el Acuse de Recepción.</p>
+
+                        {!! Field::text('nombre','',['label'=>'Nombre','placeholder'=>'Opcional']) !!}
+                        {!! Field::text('telefono','',['label'=>'Teléfono','placeholder'=>'Opcional']) !!}
+                        {!! Field::text('e-mail','',['label'=>'E-mail','placeholder'=>'Opcional']) !!}
+                        {!! Field::text('identificacion','',['label'=>'Identificación','placeholder'=>'Opcional']) !!}
+
                     </div>
                 </div>
                 <div class="modal-footer">

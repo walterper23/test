@@ -142,4 +142,28 @@ trait BaseModelTrait
         return $this;
     }
 
+    // Scope para incluir solamente los registros que tengan la marca de Disponible
+    public function scopeDisponible($query)
+    {
+        $fieldEnabled = $this -> getField('ENABLED');
+        if ($this -> existsAttribute($fieldEnabled))
+            return $query -> where($fieldEnabled,1);
+        return $query;
+    }
+
+    // Scope para incluir solamente los registros que no tengan la marca de Eliminado
+    public function scopeExistente($query)
+    {
+        $fieldDeleted = $this -> getField('DELETED');
+        if ($this -> existsAttribute($fieldDeleted))
+            return $query -> where($fieldDeleted,0);
+        return $query;
+    }
+
+    // Scope para incluir solamente los registros que no tengan la marca de Eliminado y que tengan la marca de Disponible
+    public function scopeExistenteDisponible($query)
+    {
+        return $query -> existente() -> disponible();
+    }
+
 }

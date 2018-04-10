@@ -40,15 +40,12 @@
                     </div>
                 </div>
                 <div class="block-content" id="{{ $context }}">
-                    
                     {!! $form !!}
-
-                    <div class="form-group clearfix">
-                        <!--button class="btn btn-success"><i class="fa fa-check"></i> Validar</button-->
-                        <button class="btn btn-alt-primary" tabindex="-1"><i class="fa fa-save"></i> Guardar captura</button>
-                        <button class="btn btn-primary ml-20 pull-right" id="btn-ok">Recepcionar <i class="fa fa-fw fa-sign-out"></i></button>
-                        <button class="btn btn-default pull-right" id="btn-cancel" onclick="hRecepcion.cancelar()">Cancelar</button>
-                    </div>
+                </div>
+                <div class="block-content block-content-full block-content-sm bg-body-light">
+                    <button class="btn btn-default" id="btn-cancel" onclick="hRecepcion.cancelar()"><i class="fa fa-fw fa-times text-danger"></i> Cancelar</button>
+                    <button class="btn btn-primary ml-20 pull-right" id="btn-ok">Recepcionar <i class="fa fa-fw fa-sign-out"></i></button>
+                    <button class="btn btn-alt-primary pull-right" tabindex="-1"><i class="fa fa-save"></i> Guardar captura</button>
                 </div>
             </div>
             <!-- END Normal Form -->

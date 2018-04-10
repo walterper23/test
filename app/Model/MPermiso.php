@@ -16,7 +16,7 @@ class MPermiso extends Model
 
     public function getDescripcion()
     {
-    	return $this -> attributes['SYPE_CODIGO'];
+    	return $this -> attributes['SYPE_DESCRIPCION'];
     }
 
     /* Relationships */

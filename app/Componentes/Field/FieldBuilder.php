@@ -63,11 +63,16 @@ class FieldBuilder {
         if( !$this->_getId() ) // Si no se debe incluir el atributo ID al control...
             unset($this->attributes['id']); // ... lo removemos de los atributos
         
-        if( in_array($this->type,['select','selectTwo']) ){
+        if( $this->type == 'select' ){
             if( !isset($this->attributes['placeholder']) )
                 $this->attributes['placeholder'] = 'Seleccione una opción';
-            elseif( is_bool($this->attributes['placeholder']) && $this->attributes['placeholder'] == false )
+            else if( is_bool($this->attributes['placeholder']) && $this->attributes['placeholder'] == false )
                 unset($this->attributes['placeholder']); // Removemos el atributo Placeholder de los atributos
+        }else if( $this->type == 'selectTwo' ){
+            if( !isset($this->attributes['placeholder']) )
+                $this->attributes['data-placeholder'] = 'Seleccione una opción';
+            else if( is_bool($this->attributes['placeholder']) && $this->attributes['placeholder'] == false )
+                unset($this->attributes['data-placeholder']); // Removemos el atributo Placeholder de los atributos
         }
 
         $this->buildClass = $this->defaultClass;
@@ -194,9 +199,8 @@ class FieldBuilder {
                     $this->value = key( $this->options );
                 return Form::select($this->name, $this->options, $this->value, $this->attributes);
             case 'selectTwo':
-                $this->attributes['class'] .= ' select2 selectTwo';
+                $this->attributes['class'] .= ' js-select2';
                 $this->attributes['style'] = 'width:100%;';
-                $this->attributes['lang']  = 'es';
                 if (is_null($this->value) && sizeof($this->options) == 1)
                     $this->value = key( $this->options );
                 return Form::select($this->name, $this->options, $this->value, $this->attributes);

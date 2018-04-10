@@ -27,6 +27,11 @@ class MDireccion extends BaseModel
         return $this -> hasMany('App\Model\Catalogo\MDepartamento','DEPA_DIRECCION',$this -> getKeyName());
     }
 
+    public function DepartamentosExistentes()
+    {
+        return $this -> Departamentos() -> existente();
+    }
+
     public function Puestos()
     {
         return $this -> hasMany('App\Model\Catalogo\MPuesto','PUES_DIRECCION',$this -> getKeyName());

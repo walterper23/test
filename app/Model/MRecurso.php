@@ -14,4 +14,9 @@ class MRecurso extends Model
     	return $this -> attributes['SYRE_NOMBRE'];
     }
 
+    public function Permisos()
+    {
+    	return $this -> hasMany('App\Model\MPermiso','SYPE_RECURSO',$this -> getKeyName());
+    }
+
 }
