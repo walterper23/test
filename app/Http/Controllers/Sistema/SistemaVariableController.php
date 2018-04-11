@@ -12,7 +12,8 @@ use App\Http\Controllers\BaseController;
 /* Models */
 use App\Model\Sistema\MSistemaTipoDocumento;
 
-class SistemaVariableController extends BaseController {
+class SistemaVariableController extends BaseController
+{
 
 	private $form_id;
 

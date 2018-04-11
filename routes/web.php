@@ -133,7 +133,7 @@ Route::middleware('preventBackHistory') -> group(function(){
             });
 
             // Administración de usuarios, sus permisos y asignaciones
-            Route::prefix('usuarios') -> middleware('can:USU.ADMIN.USUARIOS') -> namespace('Usuario') -> group(function(){
+            Route::prefix('usuarios') -> namespace('Usuario') -> group(function(){
                 
                 Route::get('/',           'UsuarioController@index');
                 Route::post('post-data',  'UsuarioController@postDataTable');
@@ -143,7 +143,7 @@ Route::middleware('preventBackHistory') -> group(function(){
                 Route::post('password',   'UsuarioController@formPassword');
                 Route::post('manager',    'UsuarioController@manager');
 
-                Route::prefix('permisos-asignaciones') -> middleware('can:USU.ADMIN.PERMISOS.ASIG') -> group(function(){
+                Route::prefix('permisos-asignaciones') -> group(function(){
                     Route::get('/',           'PermisoAsignacionController@index');
                     Route::post('post-data',  'PermisoAsignacionController@postDataTable');
                     Route::get('nuevo',       'PermisoAsignacionController@formUsuario');
@@ -156,6 +156,7 @@ Route::middleware('preventBackHistory') -> group(function(){
             // Administración de las configuraciones del sistema
             Route::prefix('sistema') -> middleware('can:SIS.ADMIN.CONFIG') -> namespace('Sistema') -> group(function(){
                 
+                // Administración del catálogo de los tipos de documentos del sistema
                 Route::prefix('tipos-documentos') -> group(function(){
                     Route::get('/',          'SistemaTipoDocumentoController@index');
                     Route::post('post-data', 'SistemaTipoDocumentoController@postDataTable');
@@ -164,6 +165,7 @@ Route::middleware('preventBackHistory') -> group(function(){
                     Route::post('manager',   'SistemaTipoDocumentoController@manager');
                 });
 
+                // Administración del catálogo de estados de documentos del sistema
                 Route::prefix('estados-documentos') -> group(function(){
                     Route::get('/',          'SistemaEstadoDocumentoController@index');
                     Route::post('post-data', 'SistemaEstadoDocumentoController@postDataTable');
@@ -171,12 +173,17 @@ Route::middleware('preventBackHistory') -> group(function(){
                     Route::post('manager',   'SistemaEstadoDocumentoController@manager');
                 });
 
+                // Configuración de las variables del sistema
                 Route::prefix('variables') -> group(function(){
                     Route::get('/',          'SistemaVariableController@index');
+                    Route::post('manager',   'SistemaVariableController@manager');
                 });
 
+                // Administración de la bitácora del sistema
                 Route::prefix('bitacora') -> group(function(){
                     Route::get('/',          'SistemaBitacoraController@index');
+                    Route::post('manager',   'SistemaBitacoraController@manager');
+
                 });
 
             });

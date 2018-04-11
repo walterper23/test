@@ -23,7 +23,7 @@
             <h3 class="block-title"><i class="fa fa-fw fa-users mr-5"></i> Usuarios</h3>
             <div class="block-options">
                 <button type="button" class="btn-block-option d-none d-sm-inline" onclick="hUsuario.new_('{{$form_id}}','{{$form_url}}')">
-                    <i class="fa fa-plus"></i> Nuevo
+                    <i class="fa fa-user-plus"></i> Nuevo
                 </button>
                 <button type="button" class="btn-block-option d-none d-sm-inline" onclick="hUsuario.reload('dataTableBuilder')">
                     <i class="fa fa-refresh"></i> Actualizar
@@ -38,7 +38,7 @@
                         <a class="dropdown-item" href="javascript:void(0)" onclick="hUsuario.reload('dataTableBuilder')">
                             <i class="fa fa-fw fa-refresh mr-5"></i>Actualizar registros
                         </a>
-                        <a class="dropdown-item" href="javascript:void(0)">
+                        <a class="dropdown-item" href="{{ url('configuracion/sistema/bitacora/accesos') }}">
                             <i class="fa fa-fw fa-list-ul mr-5"></i>Bitácora de accesos
                         </a>
                     </div>

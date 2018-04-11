@@ -89,7 +89,7 @@ class MUsuario extends Authenticatable
 
     public function Direcciones()
     {
-        return $this -> belongsToMany('App\Model\Catalogo\MDireccion','usuarios_asignaciones','USAS_USUARIO','USAS_DIRECCION');
+        return $this -> belongsToMany('App\Model\Catalogo\MDireccion','usuarios_asignaciones','USAS_USUARIO','USAS_DIRECCION') -> whereNull('USAS_DEPARTAMENTO');
     }
 
     public function Departamentos()

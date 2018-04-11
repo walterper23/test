@@ -18,7 +18,7 @@
 @endsection
 
 @section('content')
-    <div class="block block-bordered" id="context-{{ $form_id }}">
+    <div class="block block-bordered block-mode-loading-refresh" id="context-{{ $form_id }}">
         <ul class="nav nav-tabs nav-tabs-alt nav-tabs-block align-items-center" data-toggle="tabs" role="tablist">
             <li class="nav-item">
                 <a class="nav-link active" href="#btabswo-static-one">Permisos</a>
@@ -29,7 +29,7 @@
             <li class="nav-item ml-auto">
                 <div class="block-options mr-15">
                 <a href="{{ url('recepcion/documentos/nueva-recepcion') }}" class="btn-block-option">
-                    <i class="fa fa-plus"></i> Nueva recepci&oacute;n
+                    <i class="fa fa-fw fa-user-plus"></i> Nuevo usuario
                 </a>
                 <div class="dropdown">
                     <button type="button" class="btn-block-option dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cog"></i> Opciones</button>
@@ -56,16 +56,21 @@
             </div>
             <div class="tab-pane active" id="btabswo-static-one" role="tabpanel">
                 <div class="row">
+                    <div class="col-12">
+                        <div class="alert alert-success" role="alert">
+                            <p class="mb-0">A continuación se enlistan los permisos disponibles para los usuarios. Seleccione uno o más permisos para asignarselos al usuario especificado.</p>
+                        </div>
+                    </div>
                     @foreach( $recursos as $recurso )
                     <div class="col-md-4">
                         <div class="form-group row">
-                            <label class="col-12 text-danger">{{ $recurso -> getNombre() }}</label>
+                            <label class="col-12"><p class="bg-success font-w700 text-white pl-5 pr-5">{{ $recurso -> getNombre() }}</p></label>
                             <div class="col-12">
-                                @foreach( $recurso -> permisos as $permiso )
+                                @foreach( $recurso -> Permisos() -> orderBy('SYPE_DESCRIPCION') -> get() as $permiso )
 
                                 @php $checked = in_array($permiso -> getKey(), $permisosUsuario) ? 'checked' : '' @endphp
 
-                                <div class="custom-control custom-checkbox mb-5">
+                                <div class="custom-control custom-checkbox mb-5 ml-20">
                                     <input class="custom-control-input" type="checkbox" name="permisos[]" id="permiso-{{ $permiso -> getKey() }}" value="{{ $permiso -> getKey() }}" {{ $checked }}>
                                     <label class="custom-control-label" for="permiso-{{ $permiso -> getKey() }}">{{ $permiso -> getDescripcion() }}</label>
                                 </div>
@@ -78,16 +83,22 @@
             </div>
             <div class="tab-pane" id="btabswo-static-two" role="tabpanel">
                 <div class="row">
+                    <div class="col-12">
+                        <div class="alert alert-info" role="alert">
+                            <p class="mb-0">A continuación se enlistan las direcciones y sus departamentos. Seleccione las direcciones y/o departamentos que desea asignarle al usuario especificado.</p>
+                            <p class="mb-o">Estas asignaciones permiten a los usuarios ver los documentos que llegan a las direcciones y/o departamentos que tenga asignado.</p>
+                        </div>
+                    </div>
                     @foreach( $direcciones as $direccion )
                     <div class="col-md-4">
                         <div class="form-group row">
                             <div class="col-12">
                                 <div class="custom-control custom-checkbox mb-5">
                                     <input class="custom-control-input" type="checkbox" name="direcciones[]" id="direccion-{{ $direccion -> getKey() }}" value="{{ $direccion -> getKey() }}">
-                                    <label class="custom-control-label text-danger" for="direccion-{{ $direccion -> getKey() }}">{{ $direccion -> getNombre() }}</label>
+                                    <label class="custom-control-label bg-primary font-w700 text-white pl-5 pr-5" for="direccion-{{ $direccion -> getKey() }}">{{ $direccion -> getNombre() }}</label>
                                 </div>
-                                @foreach( $direccion -> DepartamentosExistentes as $departamento )
-                                <div class="custom-control custom-checkbox mb-5 ml-20">
+                                @foreach( $direccion -> DepartamentosExistentes() -> orderBy('DEPA_NOMBRE') -> get() as $departamento )
+                                <div class="custom-control custom-checkbox mb-5 ml-30">
                                     <input class="custom-control-input" type="checkbox" name="departamentos[]" id="departamento-{{ $departamento -> getKey() }}" value="{{ $departamento -> getKey() }}">
                                     <label class="custom-control-label" for="departamento-{{ $departamento -> getKey() }}">{{ $departamento -> getNombre() }}</label>
                                 </div>
@@ -129,35 +140,45 @@
         this.btnOk_     = '#btn-ok';
         this.btnCancel_ = '#btn-cancel';
 
+        var checkboxPermisos      = $('input[name="permisos[]"]');
+        var checkboxDirecciones   = $('input[name="direcciones[]"]');
+        var checkboxDepartamentos = $('input[name="departamentos[]"]');
+
         this.start = function(){
             Codebase.helper('select2');
 
             var self = this;
-            var selectUsuario = $('#usuario');
-            selectUsuario.on('change',function(){
+            var selectUsuario = $('#usuario').on('change',function(){
                 if ( this.value.length ){
                     App.ajaxRequest({
                         url  : self.form.attr('action'),
-                        data : { action : 1, id : this.value },
+                        data : { action : 1, usuario : this.value },
+                        before : function(){
+                            checkboxPermisos.add(checkboxDirecciones).add(checkboxDepartamentos).prop('checked',false);
+                            Codebase.blocks( self.context, 'state_loading');
+                        },
                         success : function(result){
-                            console.log(result)
+                            
+
+                            $.each(result.permisos, function(index, permiso){
+                                console.log(checkboxPermisos)
+                                console.log(checkboxPermisos.filter('#permiso-'+permiso))
+                                checkboxPermisos.filter('#permiso-'+permiso).prop('checked',true);
+                            });
+
+                            $.each(result.direcciones, function(index, direccion){
+                                checkboxDirecciones.filter('#direccion-'+direccion).prop('checked',true);
+                            });
+
+                            $.each(result.departamentos, function(index, departamento){
+                                checkboxDepartamentos.filter('#departamento-'+departamento).prop('checked',true);
+                            });
+
                         }
                     });
                 }
             });
             
-        };
-
-        this.recuperarPermisos = function( id ){
-
-            App.ajaxRequest({
-                url  : self.form.attr('action'),
-                data : { action : 1, id },
-                success : function(result){
-                    console.log(result)
-                }
-            });
-
         };
 
         this.rules = function(){

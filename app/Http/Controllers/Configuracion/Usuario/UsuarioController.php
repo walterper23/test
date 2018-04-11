@@ -16,9 +16,16 @@ use App\DataTables\UsuariosDataTable;
 use App\Model\MUsuario;
 use App\Model\MUsuarioDetalle;
 
-class UsuarioController extends BaseController {
-
+class UsuarioController extends BaseController
+{
 	private $form_id = 'form-usuario';
+	
+	public function __construct()
+	{
+		$this -> middleware('can:USU.ADMIN.USUARIOS');
+		parent::__construct();
+		$this -> setLog('UsuarioController.log');
+	}
 
 	public function index(UsuariosDataTable $dataTables){
 

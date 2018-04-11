@@ -1,8 +1,8 @@
-@extends('vendor.templateModal')
+@extends('vendor.templateModal',['headerColor'=>'bg-earth'])
 
 @section('title')<i class="fa fa-fw fa-user-plus"></i> {!! $title !!}@endsection
 
-@section('content')
+@section('ghost')
     <div class="js-wizard-validation-form block">
         <!-- Step Tabs -->
         <ul class="nav nav-tabs nav-tabs-block nav-fill" role="tablist">
@@ -17,11 +17,11 @@
 
         <!-- Form -->
         {{ Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) }}
-    	{{ Form::hidden('action',1) }}
+        {{ Form::hidden('action',1) }}
             <!-- Wizard Progress Bar -->
             <div class="block-content block-content-sm">
                 <div class="progress" data-wizard="progress" style="height: 8px;">
-                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: 34.3333%;" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
             </div>
             <!-- END Wizard Progress Bar -->
@@ -31,19 +31,19 @@
                 <!-- Step 1 -->
                 <div class="tab-pane active show" id="wizard-progress-step1" role="tabpanel">
                     {!! Field::email('usuario','crroee@dsas.owss',['label'=>'Usuario','addClass'=>'text-lowercase','autofocus','required']) !!}
-    			    {!! Field::password('password','123456',['label'=>'Contraseña','required']) !!}
-    			    {!! Field::password('password_confirmation','123456',['label'=>'Confirmar contraseña','required']) !!}
+                    {!! Field::password('password','123456',['label'=>'Contraseña','required']) !!}
+                    {!! Field::password('password_confirmation','123456',['label'=>'Confirmar contraseña','required']) !!}
                 </div>
                 <!-- END Step 1 -->
 
                 <!-- Step 2 -->
                 <div class="tab-pane" id="wizard-progress-step2" role="tabpanel">
                     {!! Field::text('descripcion','',['label'=>'Descripción','placeholder'=>'Ej. Director de Operaciones','required']) !!}
-    			    {!! Field::select('genero','',['label'=>'Género','required'],['HOMBRE'=>'HOMBRE','MUJER'=>'MUJER']) !!}
-    			    {!! Field::text('nombres','',['label'=>'Nombre(s)','required']) !!}
-    			    {!! Field::text('apellidos','',['label'=>'Apellido(s)','required']) !!}
-    			    {!! Field::email('email','',['label'=>'E-mail','required']) !!}
-    			    {!! Field::text('teléfono','',['label'=>'Teléfono','placeholder'=>'Opcional']) !!}
+                    {!! Field::select('genero','',['label'=>'Género','required'],['HOMBRE'=>'HOMBRE','MUJER'=>'MUJER']) !!}
+                    {!! Field::text('nombres','',['label'=>'Nombre(s)','required']) !!}
+                    {!! Field::text('apellidos','',['label'=>'Apellido(s)','required']) !!}
+                    {!! Field::email('email','',['label'=>'E-mail','required']) !!}
+                    {!! Field::text('teléfono','',['label'=>'Teléfono','placeholder'=>'Opcional']) !!}
                 </div>
                 <!-- END Step 2 -->
 
@@ -75,11 +75,91 @@
     </div>
 @endsection
 
+@section('content')
+    <!-- Validation Wizard Classic -->
+    <div class="js-wizard-validation-classic block">
+        <!-- Step Tabs -->
+        <ul class="nav nav-tabs nav-tabs-block nav-fill" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" href="#wizard-validation-classic-step1" data-toggle="tab">1. Personal</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#wizard-validation-classic-step2" data-toggle="tab">2. Details</a>
+            </li>
+        </ul>
+        <!-- END Step Tabs -->
+
+        <!-- Wizard Progress Bar -->
+        <div class="block-content block-content-sm">
+            <div class="progress" data-wizard="progress" style="height: 8px;">
+                <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: 51%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+        <!-- END Wizard Progress Bar -->
+
+        <!-- Form -->
+        <form class="js-wizard-validation-classic-form" action="be_forms_wizard.html" method="post">
+            <!-- Steps Content -->
+            <div class="block-content block-content-full tab-content" style="min-height: 265px;">
+                <!-- Step 1 -->
+                <div class="tab-pane active" id="wizard-validation-classic-step1" role="tabpanel">
+                    <div class="form-group">
+                        <label for="wizard-validation-classic-firstname">First Name</label>
+                        <input class="form-control" type="text" id="wizard-validation-classic-firstname" name="wizard-validation-classic-firstname">
+                    </div>
+                    <div class="form-group">
+                        <label for="wizard-validation-classic-lastname">Last Name</label>
+                        <input class="form-control" type="text" id="wizard-validation-classic-lastname" name="wizard-validation-classic-lastname">
+                    </div>
+                    <div class="form-group">
+                        <label for="wizard-validation-classic-email">Email</label>
+                        <input class="form-control" type="email" id="wizard-validation-classic-email" name="wizard-validation-classic-email">
+                    </div>
+                </div>
+                <!-- END Step 1 -->
+
+                <!-- Step 2 -->
+                <div class="tab-pane" id="wizard-validation-classic-step2" role="tabpanel">
+                    <div class="form-group">
+                        <label for="wizard-validation-classic-bio">Bio</label>
+                        <textarea class="form-control" id="wizard-validation-classic-bio" name="wizard-validation-classic-bio" rows="9"></textarea>
+                    </div>
+                </div>
+                <!-- END Step 2 -->
+            </div>
+            <!-- END Steps Content -->
+
+            <!-- Steps Navigation -->
+            <div class="block-content block-content-sm block-content-full bg-body-light">
+                <div class="row">
+                    <div class="col-6">
+                        <button type="button" class="btn btn-alt-secondary" data-wizard="prev">
+                            <i class="fa fa-angle-left mr-5"></i> Previous
+                        </button>
+                    </div>
+                    <div class="col-6 text-right">
+                        <button type="button" class="btn btn-alt-secondary" data-wizard="next">
+                            Next <i class="fa fa-angle-right ml-5"></i>
+                        </button>
+                        <button type="submit" class="btn btn-alt-primary d-none" data-wizard="finish">
+                            <i class="fa fa-check mr-5"></i> Submit
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- END Steps Navigation -->
+        </form>
+        <!-- END Form -->
+    </div>
+    <!-- END Validation Wizard Classic -->
+@endsection
+
 @push('js-script')
 {{ Html::script('js/plugins/bootstrap-wizard/jquery.bootstrap.wizard.min.js') }}
+{{ Html::script('js/pages/be_forms_wizard.js') }}
 @endpush
 
-@push('js-custom')
+@push('js-customs')
 <script type="text/javascript">
 	'use strict';
     var formUser = new AppForm;

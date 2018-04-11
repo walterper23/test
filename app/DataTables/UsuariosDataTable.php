@@ -50,12 +50,16 @@ class UsuariosDataTable extends CustomDataTable {
             [
                 'title' => 'Opciones',
                 'render' => function($query){
-                    $buttons = sprintf('
-                        <button type="button" class="btn btn-sm btn-circle btn-alt-warning" onclick="hUsuario.password(%d)" title="Cambiar contraseña"><i class="fa fa-key"></i></button>
-                        <button type="button" class="btn btn-sm btn-circle btn-alt-success" onclick="hUsuario.password(%d)" title="Permisos"><i class="fa fa-lock"></i></button>', $query -> getKey(), $query -> getKey()
-                    );
 
-                    if( $query -> getKey() != userKey() )
+                    $buttons = sprintf('<button type="button" class="btn btn-sm btn-circle btn-alt-warning" onclick="hUsuario.password(%d)" title="Cambiar contraseña"><i class="fa fa-key"></i></button>',$query -> getKey());
+
+                    if (user() -> can('USU.ADMIN.PERMISOS.ASIG'))
+                    {
+                        $url = sprintf('configuracion/usuarios/permisos-asignaciones?user=%d', $query -> getKey());
+                        $buttons .= sprintf(' <a class="btn btn-sm btn-circle btn-alt-success" href="%s" title="Permisos y Asignaciones"><i class="fa fa-lock"></i></a>',url($url));
+                    }
+
+                    if ( $query -> getKey() != userKey() )
                         $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hUsuario.delete_(%d)"><i class="fa fa-trash"></i></button>',$query -> getKey());
                     
                     return $buttons;
