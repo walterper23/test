@@ -18,7 +18,7 @@
 @endsection
 
 @section('content')
-    <div class="block block-bordered">
+    <div class="block block-bordered" id="context-{{ $form_id }}">
         <ul class="nav nav-tabs nav-tabs-alt nav-tabs-block align-items-center" data-toggle="tabs" role="tablist">
             <li class="nav-item">
                 <a class="nav-link active" href="#btabswo-static-one">Permisos</a>
@@ -46,6 +46,8 @@
             </div>
             </li>
         </ul>
+        {{ Form::open(['url'=>$url_send_form,'id'=>$form_id,'method'=>'POST']) }}
+        {{ Form::hidden('action',2) }}
         <div class="block-content tab-content">
             <div class="row">
                 <div class="col-md-6">
@@ -97,11 +99,12 @@
                 </div>
             </div>
         </div>
+        {{ Form::close() }}
         <div class="block-content block-content-full block-content-sm bg-body-light">
             <div class="row">
                 <div class="col-md-12">
-                    <button class="btn btn-default"><i class="fa fa-fw fa-times text-danger"></i> Cancelar</button>
-                    <button class="btn btn-primary pull-right"><i class="fa fa-fw fa-floppy-o"></i> Guardar cambios</button>
+                    <button class="btn btn-default" id="btn-cancel"><i class="fa fa-fw fa-times text-danger"></i> Cancelar</button>
+                    <button class="btn btn-primary pull-right" id="btn-ok"><i class="fa fa-fw fa-floppy-o"></i> Guardar cambios</button>
                 </div>
             </div>
 
@@ -111,10 +114,63 @@
 
 @push('js-script')
     {{ Html::script('js/plugins/select2/select2.full.min.js') }}
+    {{ Html::script('js/plugins/jquery-validation/jquery.validate.min.js') }}
+    {{ Html::script('js/app-form.js') }}
+    {{ Html::script('js/app-alert.js') }}
 @endpush
 
 @push('js-custom')
-    <script type="text/javascript">
-        Codebase.helper('select2');
-    </script>
+<script type="text/javascript">
+    'use strict';
+    $.extend(new AppForm, new function(){
+
+        this.context_   = '#context-{{ $form_id }}';
+        this.form_      = '#{{$form_id}}';
+        this.btnOk_     = '#btn-ok';
+        this.btnCancel_ = '#btn-cancel';
+
+        this.start = function(){
+            Codebase.helper('select2');
+
+            var self = this;
+            var selectUsuario = $('#usuario');
+            selectUsuario.on('change',function(){
+                if ( this.value.length ){
+                    App.ajaxRequest({
+                        url  : self.form.attr('action'),
+                        data : { action : 1, id : this.value },
+                        success : function(result){
+                            console.log(result)
+                        }
+                    });
+                }
+            });
+            
+        };
+
+        this.recuperarPermisos = function( id ){
+
+            App.ajaxRequest({
+                url  : self.form.attr('action'),
+                data : { action : 1, id },
+                success : function(result){
+                    console.log(result)
+                }
+            });
+
+        };
+
+        this.rules = function(){
+            return {
+                usuario : { required : true }
+            }
+        };
+
+        this.messages = function(){
+            return {
+                usuario : { required : 'Especifique un usuario' }
+            }
+        };
+    }).init().start();
+</script>
 @endpush

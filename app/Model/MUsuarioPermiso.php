@@ -10,5 +10,14 @@ class MUsuarioPermiso extends BaseModel
 
     /* Relationships */
 
+    public function Usuario()
+    {
+    	return $this -> belongsTo('App\Model\MUsuario','USPE_USUARIO','USUA_USUARIO');
+    }
+
+    public function Permiso()
+    {
+    	return $this -> belongsTo('App\Model\MPermiso','USPE_PERMISO','USUA_PERMISO');
+    }
 
 }

@@ -4,7 +4,7 @@
 
 @section('content')
 	@component('vendor.contentModal')
-    {!! Form::model($modelo,['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) !!}
+    {!! Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) !!}
 	    {!! Form::hidden('action',$action) !!}
 	    {!! Form::hidden('id',$id) !!}
         {!! Field::text('nombre',(optional($modelo) -> ANEX_NOMBRE),['label'=>'Nombre','placeholder'=>'Nombre del anexo','autofocus']) !!}

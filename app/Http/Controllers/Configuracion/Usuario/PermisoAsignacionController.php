@@ -16,6 +16,7 @@ use App\Model\MDocumento;
 use App\Model\MPermiso;
 use App\Model\MRecurso;
 use App\Model\MUsuario;
+use App\Model\MUsuarioPermiso;
 
 
 class PermisoAsignacionController extends BaseController
@@ -47,24 +48,20 @@ class PermisoAsignacionController extends BaseController
 		// Recuperar los permisos del usuario, para cargarlos en la interfaz
 		$data['permisosUsuario'] = !is_null($usuario) ? $usuario -> Permisos -> pluck('SYPE_PERMISO') -> toArray() : [];
 		
+		$data['url_send_form'] = url('configuracion/usuarios/permisos-asignaciones/manager');
+		$data['form_id']       = 'form-usuario-asignacion-permiso';
+
 		return view('Configuracion.Usuario.indexPermisoAsignacion') -> with($data);
 	}
 
 	public function manager(Request $request)
 	{
-
         switch ($request -> action) {
             case 1: // Recuperar
                 $response = $this -> recuperarPermisosUsuario( $request );
                 break;
             case 2: // Editar
                 $response = $this -> editarPermisosUsuario( $request );
-                break;
-            case 3: // Activar / Desactivar
-                $response = $this -> activarAnexo( $request );
-                break;
-            case 4: // Eliminar
-                $response = $this -> eliminarAnexo( $request );
                 break;
             default:
                 return response()->json(['message'=>'Petición no válida'],404);
@@ -73,10 +70,49 @@ class PermisoAsignacionController extends BaseController
         return $response;
     }
 
+    public function recuperarPermisosUsuario( $request )
+    {
 
-	public function formUsuario()
-	{
-		return view('Configuracion.Usuario.formUsuario');
-	}
+    	$usuario = MUsuario::existente() -> find( $request -> usuario );
+    	dd($usuario);
+
+    }
+
+    public function editarPermisosUsuario( $request )
+    {
+    	// Recuperar el usuario y sus permisos
+    	$usuario = MUsuario::with('Permisos') -> existente() -> find( $request -> usuario );
+    	
+    	// Almacenar la lista de permisos del usuario
+    	$permisosUsuario = $usuario -> Permisos() -> pluck('USPE_PERMISO','USPE_USUARIO_PERMISO') -> toArray();
+
+    	// Recuperamos los permisos nuevos para el usuario
+    	$permisosNuevos = $request -> permisos;
+
+    	// Recorrer los permisos del usuario
+    	foreach ($permisosUsuario as $usuarioPermiso => $permisoActual) {
+    			
+    		// Si el permiso del usuario está en los permisos nuevos, no hacemos nada
+    		if ( in_array($permisoActual, $permisosNuevos) )
+    		{
+
+    		}
+    		else if (! in_array($permisoActual, $permisosNuevos) ) // Si el permiso del usuario no está en los permisos nuevos, se lo eliminamos al usuario
+    		{
+    			MUsuarioPermiso::find( $usuarioPermiso ) -> delete();
+    		}
+    		else
+    		{
+
+    		}
+
+    	}
+
+    	dd($permisosUsuario);
+    	dd($request -> permisos);
+
+    	dd($usuario);
+
+    }
 
 }
