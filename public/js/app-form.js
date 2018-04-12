@@ -19,7 +19,7 @@ var AppForm = function(){
 		this.btnCancel = this.context.find( this.btnCancel_ );
 		this.btnClose  = this.context.find( this.btnClose_ );
 
-		this.formSubmit(this.form)
+		this.initFormSubmit();
 
 		this.cloneForm = this.form.clone()
 
@@ -35,9 +35,8 @@ var AppForm = function(){
         return this;
 	};
 
-	this.submit = function( form ){
-		var form = form || this.form;
-		form.submit();
+	this.initFormSubmit = function(){
+		this.formSubmit(this.form)
 	};
 
 	this.formSubmit = function( form ){
@@ -59,6 +58,11 @@ var AppForm = function(){
 			messages : this.messages(),
 			submitHandler : this.submitHandler
 		})
+	};
+
+	this.submit = function( form ){
+		var form = form || this.form;
+		form.submit();
 	};
 
 	this.rules = function(){
