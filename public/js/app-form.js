@@ -19,7 +19,7 @@ var AppForm = function(){
 		this.btnCancel = this.context.find( this.btnCancel_ );
 		this.btnClose  = this.context.find( this.btnClose_ );
 
-		this.initFormSubmit();
+		this.formSubmit(this.form)
 
 		this.cloneForm = this.form.clone()
 
@@ -35,13 +35,8 @@ var AppForm = function(){
         return this;
 	};
 
-	this.initFormSubmit = function(){
-		this.formSubmit(this.form)
-	};
-
 	this.formSubmit = function( form ){
 		$(form).validate({
-			ignore: [],
 	        errorClass: 'invalid-feedback',
 	        errorElement: 'div',
 	        errorPlacement: function(error, e) {
@@ -85,7 +80,8 @@ var AppForm = function(){
 			url        : $(form).attr('action'),
 			data       : $(form).serialize(),
 			beforeSend : self.beforeSubmitHandler,
-			success    : self.successSubmitHandler
+			success    : self.successSubmitHandler,
+			code422    : self.displayErrors
 		});
 	};
 
@@ -97,10 +93,13 @@ var AppForm = function(){
 				App.reloadTable(data.tables)
 			}
 
-			AppAlert.notify({
-				type : data.type,
-				message : data.message
-			})
+			if(data.message != undefined){
+				AppAlert.notify({
+					icon : data.icon,
+					type : data.type,
+					message : data.message
+				})
+			}
 		}else{
 
 		}
@@ -110,14 +109,14 @@ var AppForm = function(){
 		Codebase.blocks( self.context.find('div.modal-content>div.block'), 'state_loading');
 	};
 
-	this.displayErrors = function( errors ){
-		if( errors != undefined ){
-			$.each(data.errors, self.displayError);
+	this.displayErrors = function( result ){
+		if( result.responseJSON.errors != undefined ){
+			$.each(result.responseJSON.errors, self.displayError);
 		}
 	};
 
 	this.displayError = function( index, value ){
-		error = $('<div/>').addClass('invalid-feedback').attr('id',index+'-error').text(value[0]);
+		var error = $('<div/>').addClass('invalid-feedback').attr('id',index+'-error').text(value[0]);
 		$('#'+index).closest('.form-group').removeClass('is-invalid').addClass('is-invalid');
 		$('#'+index).parents('.form-group > div').append(error);
 	};

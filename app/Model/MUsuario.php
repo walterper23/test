@@ -14,6 +14,18 @@ class MUsuario extends Authenticatable
     protected $prefix       = 'USUA';
     public    $timestamps   = false;
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function($model){
+            $model -> creatingRegister();
+        });
+
+    }
+
+    /* Methods */
+
     public function isSuperAdmin()
     {
         return $this -> getKey() == 1;

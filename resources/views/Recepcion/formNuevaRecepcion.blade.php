@@ -1,4 +1,4 @@
-{{ Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id,'files'=>true]) }}
+{{ Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id,'files'=>true,'target'=>'_blank']) }}
     {{ Form::hidden('action',1) }}
     <div class="row">
         <div class="col-md-7">
@@ -78,10 +78,31 @@
                             <li>Agregue archivos <b>PDF</b> al archivo que esta recepcionando.</li>
                             <li>Cada archivo no debe ser mayor a <b>3 Mb</b>.</li>
                         </ul>
-                        <div class="col-8">
-                            <div class="custom-file">
-                                <input type="file" class="custom-file-input" id="example-file-multiple-input-custom" name="example_file" multiple="">
-                                <label class="custom-file-label" for="example-file-multiple-input-custom">Choose files</label>
+                        <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="">Escaneo #1</label>
+                            <div class="col-8">
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="example-file-multiple-input-custom" name="escaneos[]" multiple="">
+                                    <label class="custom-file-label" for="example-file-multiple-input-custom">Choose files</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="">Escaneo #2</label>
+                            <div class="col-8">
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="example-file-multiple-input-custom" name="escaneos[]" multiple="">
+                                    <label class="custom-file-label" for="example-file-multiple-input-custom">Choose files</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-4 col-form-label" for="">Escaneo #3</label>
+                            <div class="col-8">
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="example-file-multiple-input-custom" name="escaneos[]" multiple="">
+                                    <label class="custom-file-label" for="example-file-multiple-input-custom">Choose files</label>
+                                </div>
                             </div>
                         </div>
                     </div>

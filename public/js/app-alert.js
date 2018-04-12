@@ -132,6 +132,7 @@ App.loadScript('/js/plugins/sweetalert2/sweetalert2.min.js', function(){
                     z_index : 1033,
                     delay   : 3000,
                     timer   : 300,
+                    onClose : function(){ }
 
                 }
 
@@ -148,7 +149,9 @@ App.loadScript('/js/plugins/sweetalert2/sweetalert2.min.js', function(){
                         placement : {
                             from  : options.from,
                             align : options.align
-                        }
+                        },
+                        z_index: options.z_index,
+                        onClose: options.onClose
                     });
                 }
 

@@ -4,14 +4,14 @@
 
 @section('content')
     <!-- Validation Wizard Classic -->
-    <div class="block" id="js-wizard-validation-form">
+    <div id="js-wizard-validation-form" class="block mb-0">
         <!-- Step Tabs -->
         <ul class="nav nav-tabs nav-tabs-block nav-fill" role="tablist">
             <li class="nav-item">
-                <a class="nav-link active" href="#wizard-validation-classic-step1" data-toggle="tab">1. Personal</a>
+                <a class="nav-link active" href="#wizard-validation-classic-step1" data-toggle="tab">Inicio de sesión</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#wizard-validation-classic-step2" data-toggle="tab">2. Details</a>
+                <a class="nav-link" href="#wizard-validation-classic-step2" data-toggle="tab">Datos personales</a>
             </li>
         </ul>
         <!-- END Step Tabs -->
@@ -31,18 +31,19 @@
             <div class="block-content block-content-full tab-content" style="min-height: 265px;">
                 <!-- Step 1 -->
                 <div class="tab-pane active" id="wizard-validation-classic-step1" role="tabpanel">
-                    {!! Field::email('usuario','crroee@dsas.owss',['label'=>'Usuario','addClass'=>'text-lowercase','autofocus','required']) !!}
-                    {!! Field::text('password','123456',['label'=>'Contraseña','required']) !!}
-                    {!! Field::text('password_confirmation','123456',['label'=>'Confirmar contraseña','required']) !!}
+                    {!! Field::email('usuario','',['label'=>'Usuario','addClass'=>'text-lowercase','autofocus','required']) !!}
+                    {!! Field::password('password','',['label'=>'Contraseña','required']) !!}
+                    {!! Field::password('password_confirmation','',['label'=>'Confirmar contraseña','required']) !!}
                 </div>
                 <!-- END Step 1 -->
 
                 <!-- Step 2 -->
                 <div class="tab-pane" id="wizard-validation-classic-step2" role="tabpanel">
+                    {!! Field::text('no_trabajador','',['label'=>'Nó. trabajador','placeholder'=>'Opcional']) !!}
                     {!! Field::text('descripcion','',['label'=>'Descripción','placeholder'=>'Ej. Director de Operaciones','required']) !!}
-                    {!! Field::select('genero','',['label'=>'Género','required'],['HOMBRE'=>'HOMBRE','MUJER'=>'MUJER']) !!}
                     {!! Field::text('nombres','',['label'=>'Nombre(s)','required']) !!}
                     {!! Field::text('apellidos','',['label'=>'Apellido(s)','required']) !!}
+                    {!! Field::select('genero','',['label'=>'Género','required'],['HOMBRE'=>'HOMBRE','MUJER'=>'MUJER']) !!}
                     {!! Field::email('email','',['label'=>'E-mail','required']) !!}
                     {!! Field::text('teléfono','',['label'=>'Teléfono','placeholder'=>'Opcional']) !!}
                 </div>
@@ -78,8 +79,6 @@
 
 @push('js-script')
 {{ Html::script('js/plugins/bootstrap-wizard/jquery.bootstrap.wizard.min.js') }}
-{{-- Html::script('js/pages/be_forms_wizard.js') --}}
-
 @endpush
 
 @push('js-custom')
@@ -112,25 +111,8 @@
                 }
             });
 
-            this.formSubmit(this.form);
-
             // Init form validation on classic wizard form
-            var validator = self.form.validate({
-                errorClass: 'invalid-feedback animated fadeInDown',
-                errorElement: 'div',
-                errorPlacement: function(error, e) {
-                    jQuery(e).parents('.form-group').append(error);
-                },
-                highlight: function(e) {
-                    jQuery(e).closest('.form-group').removeClass('is-invalid').addClass('is-invalid');
-                },
-                success: function(e) {
-                    jQuery(e).closest('.form-group').removeClass('is-invalid');
-                    jQuery(e).remove();
-                },
-                rules: self.rules(),
-                messages: self.messages()
-            });
+            var validator = self.form.validate();
 
             // Init classic wizard with validation
             jQuery('#js-wizard-validation-form').bootstrapWizard({
@@ -165,11 +147,13 @@
                 usuario : { required : true, email : true, maxlength : 255 },
 				password : { required : true, minlength: 6, maxlength : 20 },
                 password_confirmation : { required : true, minlength: 6, maxlength : 20, equalTo : '#password' },
-                descripcion : { required : true },
+                no_trabajador : { maxlength : 10 },
+                descripcion : { required : true, minlength : 3, maxlength : 255 },
+                nombres : { required : true, minlength : 1, maxlength : 255 },
+                apellidos : { required : true, minlength : 1, maxlength : 255 },
                 genero : { required : true },
-                nombres : { required : true },
-                apellidos : { required : true },
-                email : { required : true, email : true }
+                email : { required : true, email : true, minlength : 5, maxlength : 255 },
+                telefono : { minlength : 1, maxlength : 25 }
 			}
 		}
 
@@ -191,24 +175,49 @@
                     maxlength : 'Máximo {0} caracteres',
                     equalTo   : 'Las contraseñas no coinciden',
                 },
+                no_trabajador : {
+                    maxlength : 'Máximo {0} caracteres'
+                },
                 descripcion : {
-                    required : 'Introduzca la descripción del usuario'
+                    required : 'Introduzca la descripción del usuario',
+                    minlength : 'Mínimo {0} caracteres',
+                    maxlength : 'Máximo {0} caracteres'
+                },
+                nombres : {
+                    required : 'Introduzca el nombre(s) del usuario',
+                    minlength : 'Mínimo {0} caracteres',
+                    maxlength : 'Máximo {0} caracteres'
+                },
+                apellidos : {
+                    required : 'Introduzca los apellidos del usuario',
+                    minlength : 'Mínimo {0} caracteres',
+                    maxlength : 'Máximo {0} caracteres'
                 },
                 genero : {
                     required : 'Seleccione un género'
                 },
-                nombres : {
-                    required : 'Introduzca el nombre(s) del usuario',
-                },
-                apellidos : {
-                    required : 'Introduzca los apellidos del usuario',
-                },
                 email : {
                     required : 'Introduzca el correo electrónico del usuario',
                     email    : 'Introduzca un correo electrónico válido',
+                    minlength : 'Mínimo {0} caracteres',
+                    maxlength : 'Máximo {0} caracteres'
+                },
+                telefono : {
+                    minlength : 'Mínimo {0} caracteres',
+                    maxlength : 'Máximo {0} caracteres'
                 }
 			}
-		}
+		};
+
+        this.displayError = function( index, value ){
+            AppAlert.notify({
+                type    : 'warning',
+                icon    : 'fa fa-fw fa-warning',
+                message : value[0],
+                z_index : 9999
+            });
+        };
+
 	}).init().start();
 
 </script>

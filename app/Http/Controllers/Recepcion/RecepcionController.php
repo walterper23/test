@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Recepcion;
 use Illuminate\Http\Request;
 use App\Http\Requests\ManagerRecepcionRequest;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Filesystem\Filesystem;
 use Carbon\Carbon;
 use Validator;
 use Exception;
@@ -42,6 +43,27 @@ class RecepcionController extends BaseController
 		$data['table1'] = $tabla1;
 		$data['table2'] = $tabla2;
 		$data['table3'] = $tabla3;
+
+		$view = request() -> get('view','denuncias');
+
+		$data['tab_1'] = '';
+		$data['tab_2'] = '';
+		$data['tab_3'] = '';
+
+		switch ( $view ) {
+			case 'denuncias':
+				$data['tab_1'] = ' active';
+				break;
+			case 'documentos-denuncias':
+				$data['tab_2'] = ' active';
+				break;
+			case 'documentos':
+				$data['tab_3'] = ' active';
+				break;
+			default:
+				$data['tab_1'] = ' active';
+				break;
+		}
 
 		return view('Recepcion.indexRecepcion') -> with($data);
 	}
@@ -124,7 +146,11 @@ class RecepcionController extends BaseController
 
 	public function nuevaRecepcion( $request ){
 
-		try{
+		try {
+
+
+
+
 
 			// Reemplazamos los saltos de línea, por "\n"
 			$anexos = preg_replace('/\r|\n/','\n',$request -> anexos);
@@ -167,15 +193,24 @@ class RecepcionController extends BaseController
 				$denuncia = new MDenuncia; // ... crear el registro de la denuncia
 				$denuncia -> DENU_DOCUMENTO = $documento -> getKey();
 				$denuncia -> save();
+				$redirect = '?view=denuncias';
 			}
+			else if ( $request -> tipo_documento == 2 ) // Si el tipo de documentos es un documento para denuncia ...
+				$redirect = '?view=documentos-denuncias';
+			else
+				$redirect = '?view=documentos';
 
 			// Guardamos los archivos o escaneos que se hayan agregado al archivo
 
+			foreach ($request -> escaneos as $escaneo) {
+				$this -> nuevoEscaneo($documento, $escaneo,['escaneo_nombre'=>'A ver uno','escaneo_descripcion'=>'a ver dos']);
+			}
+
 			DB::commit();
 
-			return redirect('recepcion/documentos/recepcionados');
+			return redirect('recepcion/documentos/recepcionados' . $redirect);
 
-		}catch(Exception $error){
+		} catch(Exception $error) {
 			DB::rollback();
 			dd($error->getMessage());
 		}
@@ -185,16 +220,14 @@ class RecepcionController extends BaseController
 	// Método para agregar un nuevo archivo a un documento
 	public function nuevoEscaneo(MDocumento $documento, $file, $data)
 	{
-
-		$filename = sprintf('escaneo_docto_%d_%s.pdf',$documento -> getKey(),time());
-
 		$archivo = new MArchivo;
-		$archivo -> ARCH_FOLDER   = '';
-		$archivo -> ARCH_FILENAME = $filename;
+		$archivo -> ARCH_FOLDER   = 'storage/app/escaneos';
+		$archivo -> ARCH_FILENAME = '';
 		$archivo -> ARCH_PATH     = '';
-		$archivo -> ARCH_TYPE     = '';
-		$archivo -> ARCH_MIME     = '';
-		$archivo -> ARCH_SIZE     = '';
+		$archivo -> ARCH_TYPE     = $file -> extension();;
+		$archivo -> ARCH_MIME     = $file -> getMimeType();
+		$archivo -> ARCH_SIZE     = $file -> getClientSize();
+
 		$archivo -> save();
 
 		$escaneo = new MEscaneo;
@@ -204,6 +237,13 @@ class RecepcionController extends BaseController
 		$escaneo -> ESCA_DESCRIPCION = $data['escaneo_descripcion']; 
 		$escaneo -> save();
 
+		$filename = sprintf('docto_%d_scan_%d_arch_%d_%s.pdf',$documento -> getKey(), $escaneo -> getKey(), $archivo -> getKey(), time());
+		
+		$file -> storeAs('',$filename,'escaneos');
+		
+		$archivo -> ARCH_FILENAME = $filename;
+		$archivo -> ARCH_PATH     = 'storage/app/escaneos/' . $filename;
+		$archivo -> save();
 	}
 
 

@@ -157,7 +157,7 @@ class SistemaTipoDocumentoController extends BaseController
 
         	if( $request -> id == 1 ) // No permitir la eliminación del tipo de documento "Denuncia"
         	{
-            	return $this -> responseErrorJSON('<i class="fa fa-fw fa-warning"></i> No es posible eliminar el tipo de documento.');
+            	return $this -> responseDangerJSON('<i class="fa fa-fw fa-warning"></i> No es posible eliminar el tipo de documento.');
         	}
 
             $tipoDocumento = MSistemaTipoDocumento::find( $request -> id );

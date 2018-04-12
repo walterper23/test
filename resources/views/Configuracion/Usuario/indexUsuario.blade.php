@@ -23,7 +23,7 @@
             <h3 class="block-title"><i class="fa fa-fw fa-users mr-5"></i> Usuarios</h3>
             <div class="block-options">
                 <button type="button" class="btn-block-option d-none d-sm-inline" onclick="hUsuario.new_('{{$form_id}}','{{$form_url}}')">
-                    <i class="fa fa-user-plus"></i> Nuevo
+                    <i class="fa fa-user-plus"></i> Nuevo usuario
                 </button>
                 <button type="button" class="btn-block-option d-none d-sm-inline" onclick="hUsuario.reload('dataTableBuilder')">
                     <i class="fa fa-refresh"></i> Actualizar

@@ -28,9 +28,9 @@
             </li>
             <li class="nav-item ml-auto">
                 <div class="block-options mr-15">
-                <a href="{{ url('recepcion/documentos/nueva-recepcion') }}" class="btn-block-option">
-                    <i class="fa fa-fw fa-user-plus"></i> Nuevo usuario
-                </a>
+                <button type="button" class="btn-block-option d-none d-sm-inline" onclick="hUsuario.new_('form-usuario','{{ url('configuracion/usuarios/nuevo') }}')">
+                    <i class="fa fa-user-plus"></i> Nuevo usuario
+                </button>
                 <div class="dropdown">
                     <button type="button" class="btn-block-option dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cog"></i> Opciones</button>
                     <div class="dropdown-menu dropdown-menu-right">
@@ -126,6 +126,7 @@
 @push('js-script')
     {{ Html::script('js/plugins/select2/select2.full.min.js') }}
     {{ Html::script('js/plugins/jquery-validation/jquery.validate.min.js') }}
+    {{ Html::script('js/helpers/usuario.helper.js') }}
     {{ Html::script('js/app-form.js') }}
     {{ Html::script('js/app-alert.js') }}
 @endpush
@@ -150,16 +151,19 @@
             var self = this;
             var selectUsuario = $('#usuario').on('change',function(){
                 if ( this.value.length ){
+                    
+                    checkboxPermisos.prop('checked',false);
+                    checkboxDirecciones.prop('checked',false);
+                    checkboxDepartamentos.prop('checked',false);
+                    
                     App.ajaxRequest({
                         url  : self.form.attr('action'),
                         data : { action : 1, usuario : this.value },
-                        before : function(){
-                            checkboxPermisos.add(checkboxDirecciones).add(checkboxDepartamentos).prop('checked',false);
+                        beforeSend : function(){
                             Codebase.blocks( self.context, 'state_loading');
                         },
                         success : function(result){
                             
-
                             $.each(result.permisos, function(index, permiso){
                                 console.log(checkboxPermisos)
                                 console.log(checkboxPermisos.filter('#permiso-'+permiso))
@@ -174,6 +178,9 @@
                                 checkboxDepartamentos.filter('#departamento-'+departamento).prop('checked',true);
                             });
 
+                        },
+                        complete : function(){
+                            Codebase.blocks( self.context, 'state_normal');
                         }
                     });
                 }
@@ -192,6 +199,7 @@
                 usuario : { required : 'Especifique un usuario' }
             }
         };
+
     }).init().start();
 </script>
 @endpush

@@ -28,18 +28,19 @@ class ManagerUsuarioRequest extends FormRequest
             'id'          => 'required_if:action:2,3,4,5',
             'usuario'     => [
                 'required_if:action,1',
-                \Illuminate\Validation\Rule::unique('usuarios','USUA_USERNAME')->where(function($query){
+                \Illuminate\Validation\Rule::unique('usuarios','USUA_USERNAME') -> where(function($query){
                     return $query -> where('USUA_DELETED',0);
                 }),
                 'min:1,max:255',
             ],
-            'password'    => 'required_if:action,1,5|min:6,max:20|confirmed',
-            'descripcion' => 'required_if:action,1,2|min:3,max:255',
-            'genero'      => 'required_if:action,1,2|in:HOMBRE,MUJER',
-            'nombres'     => 'required_if:action,1,2|min:1,max:255',
-            'apellidos'   => 'required_if:action,1,2|min:1,max:255',
-            'email'       => 'required_if:action,1,2|min:5,max:255|email',
-            'telefono'    => 'min:1,max:25',
+            'password'      => 'required_if:action,1,5|min:6,max:20|confirmed',
+            'no_trabajador' => 'max:10',
+            'descripcion'   => 'required_if:action,1,2|min:3,max:255',
+            'nombres'       => 'required_if:action,1,2|min:1,max:255',
+            'apellidos'     => 'required_if:action,1,2|min:1,max:255',
+            'genero'        => 'required_if:action,1,2|in:HOMBRE,MUJER',
+            'email'         => 'required_if:action,1,2|min:5,max:255|email',
+            'telefono'      => 'min:1,max:25',
         ];
     }
 
@@ -47,7 +48,7 @@ class ManagerUsuarioRequest extends FormRequest
         return [
             'action.required'         => 'Petición no especificada',
             'action.in'               => 'Petición no válida',
-            'usuario.unique'          => 'Ya existe este nombre de usuario',
+            'usuario.unique'          => 'Ya existe el usuario <b>:input</b>',
             'usuario.required_if'     => 'Introduzca el nombre de usuario',
             'usuario.min'             => 'Mínimo :min caracter',
             'usuario.max'             => 'Máximo :max caracteres',
@@ -55,24 +56,24 @@ class ManagerUsuarioRequest extends FormRequest
             'password.min'            => 'Mínimo :min caracter',
             'password.max'            => 'Máximo :max caracteres',
             'password.confirmed'      => 'Las contraseñas no coinciden',
+            'no_trabajador.max'       => 'Máximo :max caracteres',
             'descripcion.required_if' => 'Introduzca una descripción',
             'descripcion.min'         => 'Mínimo :min caracteres',
             'descripcion.max'         => 'Máximo :max caracteres',
-            'genero.required_if'      => 'Seleccione un género',
-            'genero.in'               => 'Género no válido',
             'nombres.required_if'     => 'Introduzca el nombre(s) del usuario',
             'nombres.min'             => 'Mínimo :min caracter',
             'nombres.max'             => 'Máximo :max caracteres',
             'apellidos.required_if'   => 'Introduzca el apellido(s) del usuario',
             'apellidos.min'           => 'Mínimo :min caracter',
             'apellidos.max'           => 'Máximo :max caracteres',
+            'genero.required_if'      => 'Seleccione un género',
+            'genero.in'               => 'Género no válido',
             'email.required_if'       => 'Introduzca el correo electrónico del usuario',
             'email.min'               => 'Mínimo :min caracteres',
             'email.max'               => 'Máximo :max caracteres',
             'email.email'             => 'Introduzca un correo electrónico válido',
             'telefono.min'            => 'Mínimo :min caracteres',
             'telefono.max'            => 'Máximo :max caracteres',
-
         ];
     }
 }

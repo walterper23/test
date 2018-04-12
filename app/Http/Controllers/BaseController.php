@@ -139,7 +139,7 @@ class BaseController extends Controller
         return $this -> buildValues(true, $message, 'warning', $type, $tables);
     }
 
-    protected function responseErrorJSON( $message = '', $type = null, $tables = null )
+    protected function responseDangerJSON( $message = '', $type = null, $tables = null )
     {
         return $this -> buildValues(false, $message, 'danger', $type, $tables);
     }

@@ -13,8 +13,8 @@ var App = function(){
 		error       : function(){},
 		fail        : function(){},
 		statusCode  : {
-			422 : function( error ){
-				console.log(error)
+			422 : function( result ){
+				console.log(result.responseJSON)
 			}
 		}
 	};
@@ -43,6 +43,9 @@ var App = function(){
 			complete    : options.complete,
 			error       : options.error,
 			fail        : options.fail,
+			statusCode : {
+				422 : options.code422
+			},
 		}));
 	};
 
@@ -122,6 +125,7 @@ var App = function(){
         },
         reloadTable : function(table, callback = null , resetPaging = false){
 			if(typeof table == 'string' && table.length){
+				console.log('si viene')
             	_reloadTable(table, callback, resetPaging);
         	}else if(table instanceof Array){
 				var callback = table[1] || null;
