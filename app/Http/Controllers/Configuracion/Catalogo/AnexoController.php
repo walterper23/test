@@ -43,14 +43,17 @@ class AnexoController extends BaseController
             case 2: // Editar
                 $response = $this -> editarAnexo( $request );
                 break;
-            case 3: // Activar / Desactivar
+            case 3: // Visualizar anexo
+                $response = $this -> verAnexo( $request );
+                break;
+            case 4: // Activar / Desactivar
                 $response = $this -> activarAnexo( $request );
                 break;
-            case 4: // Eliminar
+            case 5: // Eliminar
                 $response = $this -> eliminarAnexo( $request );
                 break;
             default:
-                return response()->json(['message'=>'Petición no válida'],404);
+                return response() -> json(['message'=>'Petición no válida'],404);
                 break;
         }
 
@@ -131,6 +134,11 @@ class AnexoController extends BaseController
         } catch(Exception $error) {
             
         }
+    }
+
+    public function verAnexo( $request )
+    {
+        
     }
 
     public function activarAnexo( $request )

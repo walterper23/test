@@ -138,6 +138,9 @@ If your sidebar menu includes icons and you would like to hide them, you can add
                         <a href="{{ url('configuracion/sistema/estados-documentos') }}">Estados de documentos</a>
                     </li>
                     <li>
+                        <a href="{{ url('configuracion/sistema/documentos-archivados') }}">Documentos archivados</a>
+                    </li>
+                    <li>
                         <a href="{{ url('configuracion/sistema/variables') }}">Variables</a>
                     </li>
                     <li>

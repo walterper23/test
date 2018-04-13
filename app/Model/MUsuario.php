@@ -44,7 +44,7 @@ class MUsuario extends Authenticatable
     {
         return $this -> attributes['USUA_PASSWORD'];
     }
-    
+
     public function getNombre()
     {
         return $this -> attributes['USUA_NOMBRE'];

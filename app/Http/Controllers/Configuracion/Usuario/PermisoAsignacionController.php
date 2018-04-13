@@ -46,7 +46,13 @@ class PermisoAsignacionController extends BaseController
 		$data['userKey'] = !is_null($usuario) ? $userKey : userKey(); // Almacenamos el ID del usuario si existe. Si no, almacenamos el ID del usuario en sesión
 
 		// Recuperar los permisos del usuario, para cargarlos en la interfaz
-		$data['permisosUsuario'] = !is_null($usuario) ? $usuario -> Permisos -> pluck('SYPE_PERMISO') -> toArray() : [];
+		$data['permisosUsuario'] = !is_null($usuario) ? $usuario -> Permisos() -> pluck('SYPE_PERMISO') -> toArray() : [];
+
+        // Recuperar las direcciones asignadas al usuario
+        $data['direccionesUsuario'] = $usuario -> Direcciones() -> pluck('DIRE_DIRECCION') -> toArray();
+
+        // Recuperar los departamentos asignados al usuario
+        $data['departamentosUsuario'] = $usuario -> Departamentos() -> pluck('DEPA_DEPARTAMENTO') -> toArray();
 		
 		$data['url_send_form'] = url('configuracion/usuarios/permisos-asignaciones/manager');
 		$data['form_id']       = 'form-usuario-asignacion-permiso';
@@ -76,7 +82,7 @@ class PermisoAsignacionController extends BaseController
     	$usuario = MUsuario::with('Permisos','Direcciones','Departamentos') -> where('USUA_USUARIO',$request -> usuario) -> existente() -> first();
         
         // Recuperar los permisos actuales del usuario
-        $data['permisos']    = $usuario -> Permisos() -> pluck('USPE_PERMISO') -> toArray();
+        $data['permisos'] = $usuario -> Permisos() -> pluck('USPE_PERMISO') -> toArray();
 
         // Recuperar las direcciones asignadas al usuario
         $data['direcciones'] = $usuario -> Direcciones() -> pluck('DIRE_DIRECCION') -> toArray();

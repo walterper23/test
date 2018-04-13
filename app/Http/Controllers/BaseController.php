@@ -165,7 +165,6 @@ class BaseController extends Controller
         {
             $type = $type2;
         }
-
         return $this -> responseJSON( $status, $message, $type, $tables );
     }
 
@@ -173,12 +172,14 @@ class BaseController extends Controller
     {
         if( is_array($message) )
         {
-            array_merge($values, $message);
-        }else{
+            $values = array_merge($values, $message);
+        }
+        else
+        {
             $values['message'] = $message;
         }
 
-        if( isset($values['tables']) && is_null($values['tables']) )
+        if (array_key_exists('tables',$values) && is_null($values['tables']) )
             unset($values['tables']);
 
         return $values;

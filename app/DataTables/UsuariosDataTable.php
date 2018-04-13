@@ -20,7 +20,7 @@ class UsuariosDataTable extends CustomDataTable {
             [
                 'title' => 'Usuario',
                 'render' => function($query){
-                    return sprintf('<a href="%s">%s</a>',url('configuracion/usuarios/ver',[$query -> USUA_USUARIO]),$query -> getAuthUsername());
+                    return sprintf('<span class="text-primary">%s</span>',$query -> getAuthUsername());
                 },
             ],
             [
@@ -52,7 +52,11 @@ class UsuariosDataTable extends CustomDataTable {
                 'title' => 'Opciones',
                 'render' => function($query){
 
-                    $buttons = sprintf('<button type="button" class="btn btn-sm btn-circle btn-alt-warning" onclick="hUsuario.password(%d)" title="Cambiar contraseña"><i class="fa fa-key"></i></button>',$query -> getKey());
+                    $buttons = sprintf('<button type="button" class="btn btn-sm btn-circle btn-alt-primary" onclick="hUsuario.view(%d)" title="Ver usuario"><i class="fa fa-fw fa-eye"></i></button>',$query -> getKey());
+
+                    $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-success" onclick="hUsuario.edit_(%d)" title="Modificar usuario"><i class="fa fa-fw fa-pencil"></i></button>',$query -> getKey());
+
+                    $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-warning" onclick="hUsuario.password(%d)" title="Cambiar contraseña"><i class="fa fa-key"></i></button>',$query -> getKey());
 
                     if (user() -> can('USU.ADMIN.PERMISOS.ASIG'))
                     {
@@ -61,7 +65,7 @@ class UsuariosDataTable extends CustomDataTable {
                     }
 
                     if ( $query -> getKey() != userKey() )
-                        $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hUsuario.delete_(%d)"><i class="fa fa-trash"></i></button>',$query -> getKey());
+                        $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hUsuario.delete_(%d)" title="Eliminar"><i class="fa fa-trash"></i></button>',$query -> getKey());
                     
                     return $buttons;
                 }

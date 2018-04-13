@@ -6,7 +6,7 @@ App.loadScript('/js/helpers/helper.js', function(){
 	hRecepcion = $.extend({}, Helper, function(){
 		return {
 			manager : function(){
-				return '/configuracion/catalogos/puestos/manager'
+				return '/recepcion/documentos/manager'
 			},
 
 			reloadTables : function( tables ){

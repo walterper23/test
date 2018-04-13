@@ -11,7 +11,6 @@ use App\Http\Controllers\BaseController;
 /* Models */
 use App\Model\MUsuario;
 use App\Model\MDocumento;
-use App\Model\MMarcador;
 use App\Model\MSeguimiento;
 use App\Model\Catalogo\MDireccion;
 use App\Model\Catalogo\MEstadoDocumento;
@@ -42,7 +41,6 @@ class PanelController extends BaseController
 		*  Recuperar los seguimientos que hayan pasado por las direcciones y departamentos anteriores
 		*  Los seguimientos nos darán los documentos en los cuáles ha participado el usuario
 		*/
-
 		$documentos = MSeguimiento::selectRaw('distinct(SEGU_DOCUMENTO) as id_documento')
 						-> whereIn('SEGU_DIRECCION_ORIGEN',$ids_direcciones)
 						-> orWhereIn('SEGU_DIRECCION_DESTINO',$ids_direcciones)
@@ -58,7 +56,6 @@ class PanelController extends BaseController
 						-> leftJoin('detalles','DETA_DETALLE','=','DOCU_DETALLE')
 						-> leftJoin('usuarios','USUA_USUARIO','=','SEGU_USUARIO')
 						-> leftJoin('usuarios_detalles','USDE_USUARIO_DETALLE','=','USUA_DETALLE')
-						-> leftJoin('documentos_marcadores','DOMA_DOCUMENTO','=','DOCU_DOCUMENTO')
 						-> whereIn('SEGU_DOCUMENTO',$documentos)
 						-> whereRaw('SEGU_SEGUIMIENTO in (select max(SEGU_SEGUIMIENTO) from seguimiento group by SEGU_DOCUMENTO order by SEGU_SEGUIMIENTO desc)')
 						-> orderBy('SEGU_SEGUIMIENTO','DESC')
@@ -66,7 +63,7 @@ class PanelController extends BaseController
 
 		// Creamos un contenedor donde se almacenarán los seguimientos y documentos de acuerdo a ciertas clasificaciones
 		$documentos = [
-			'recientes'   => [], // Documentos que el usuario aún no ha leído
+			'recientes'   => [], // Documentos/seguimientos que el usuario aún no ha leído
 			'todos'       => [], // Todos los documentos encontrados
 			'importantes' => [], // Los documentos que el usuario ha marcado como importantes
 			'archivados'  => [], // Los documentos que el usuario ha marcado como archivados
@@ -87,14 +84,14 @@ class PanelController extends BaseController
 			}
 
 			// Si el usuario tiene marcado el documento como Importante, lo añadimos a Importantes
-			if (strpos($seguimiento -> DOMA_IMPORTANTE,strval(userKey())) !== false)
+			if (strpos($seguimiento -> DOCU_IMPORTANTE,strval(userKey())) !== false)
 			{
 				$seguimiento -> importante = true;
 				$documentos['importantes'][] = $seguimiento;
 			}
 
 			// Si el usuario tiene marcado el documento como Archivado, lo añadimos a Archivados
-			if (strpos($seguimiento -> DOMA_ARCHIVADO,strval(userKey())) !== false)
+			if (strpos($seguimiento -> DOCU_ARCHIVADO,strval(userKey())) !== false)
 			{
 				$documentos['archivados'][] = $seguimiento;
 			}
@@ -158,6 +155,9 @@ class PanelController extends BaseController
                 break;
             case 3: // Marcar documento como importante
                 $response = $this -> marcarDocumentoImportante( $request );
+                break;
+            case 3: // Marcar documento como archivado
+                $response = $this -> marcarDocumentoArchivado( $request );
                 break;
             default:
                 return response()->json(['message'=>'Petición no válida'],404);
@@ -270,22 +270,29 @@ class PanelController extends BaseController
 	public function marcarDocumentoImportante( $request )
 	{
 		try {
+			$documento = MDocumento::find( $request ->  documento );
+			$documento -> marcarImportante();
+			$documento -> save();
 
-			$documento = MDocumento::with('Marcadores') -> find( $request ->  documento );
-			$marcadores = $documento -> Marcadores;
+			$importante = $documento -> importante();
 
-			if (is_null($marcadores))
-			{
-				$marcadores = new MMarcador;
-				$marcadores -> DOMA_DOCUMENTO  = $documento -> getKey();
-				$marcadores -> DOMA_IMPORTANTE = userKey();
-			}
-			else
-			{
-				$marcadores -> marcarImportante();
-			}
-			
-			$marcadores -> save();
+			$message = sprintf('Documento # %s importante <i class="fa fa-fw fa-star"></i>', $documento -> getCodigo());
+
+			return $this -> responseWarningJSON(['message'=>$message,'importante'=>$importante]);
+
+		} catch(Exception $error) {
+
+		}
+
+	}
+
+	// Método para marcar como Archivado un documento para el usuario
+	public function marcarDocumentoArchivado( $request )
+	{
+		try {
+			$documento = MDocumento::find( $request ->  documento );
+			$documento -> marcarArchivado();
+			$documento -> save();
 
 			return $this -> responseSuccessJSON();
 

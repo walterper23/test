@@ -90,16 +90,22 @@
                         </div>
                     </div>
                     @foreach( $direcciones as $direccion )
+
+                    @php $checked_dir = in_array($direccion -> getKey(), $direccionesUsuario) ? 'checked' : '' @endphp
+
                     <div class="col-md-4">
                         <div class="form-group row">
                             <div class="col-12">
                                 <div class="custom-control custom-checkbox mb-5">
-                                    <input class="custom-control-input" type="checkbox" name="direcciones[]" id="direccion-{{ $direccion -> getKey() }}" value="{{ $direccion -> getKey() }}">
+                                    <input class="custom-control-input" type="checkbox" name="direcciones[]" id="direccion-{{ $direccion -> getKey() }}" value="{{ $direccion -> getKey() }}" {{ $checked_dir }}>
                                     <label class="custom-control-label bg-primary font-w700 text-white pl-5 pr-5" for="direccion-{{ $direccion -> getKey() }}">{{ $direccion -> getNombre() }}</label>
                                 </div>
                                 @foreach( $direccion -> DepartamentosExistentes() -> orderBy('DEPA_NOMBRE') -> get() as $departamento )
+                                
+                                @php $checked_dep = in_array($departamento -> getKey(), $departamentosUsuario) ? 'checked' : '' @endphp
+
                                 <div class="custom-control custom-checkbox mb-5 ml-30">
-                                    <input class="custom-control-input" type="checkbox" name="departamentos[]" id="departamento-{{ $departamento -> getKey() }}" value="{{ $departamento -> getKey() }}">
+                                    <input class="custom-control-input" type="checkbox" name="departamentos[]" id="departamento-{{ $departamento -> getKey() }}" value="{{ $departamento -> getKey() }}" {{ $checked_dep }}>
                                     <label class="custom-control-label" for="departamento-{{ $departamento -> getKey() }}">{{ $departamento -> getNombre() }}</label>
                                 </div>
                                 @endforeach

@@ -1,4 +1,4 @@
-{{ Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id,'files'=>true,'target'=>'_blank']) }}
+{{ Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id,'files'=>true]) }}
     {{ Form::hidden('action',1) }}
     <div class="row">
         <div class="col-md-7">
@@ -54,8 +54,8 @@
         <div class="col-md-7">
             <div class="form-group row">
                 <div class="col-md-9 ml-auto">
-                    <button type="button" class="btn btn-danger btn-rounded btn-sm" data-toggle="modal" data-target="#modal-escaneos"><i class="fa fa-fw fa-file-pdf-o"></i> Escaneos <span class="badge badge-pill badge-secondary" id="conteo-escaneos"></span></button>
-                    <button type="button" class="btn btn-success btn-rounded btn-sm" data-toggle="modal" data-target="#modal-entrega"><i class="fa fa-fw fa-vcard"></i> Quién entrega</span></button>
+                    <button type="button" class="btn btn-danger btn-rounded btn-sm" data-toggle="modal" data-target="#modal-escaneos"><i class="fa fa-fw fa-clipboard"></i> Escaneos <span class="badge badge-pill badge-secondary" id="conteo-escaneos"></span></button>
+                    <button type="button" class="btn btn-success btn-rounded btn-sm" data-toggle="modal" data-target="#modal-entrega"><i class="fa fa-fw fa-vcard-o"></i> Quién entrega</span></button>
                 </div>
             </div>
         </div>
@@ -66,7 +66,7 @@
             <div class="modal-content">
                 <div class="block block-themed block-transparent mb-0">
                     <div class="block-header bg-pulse">
-                        <h3 class="block-title"><i class="fa fa-fw fa-file-pdf-o"></i> Escaneos</h3>
+                        <h3 class="block-title"><i class="fa fa-fw fa-clipboard"></i> Escaneos</h3>
                         <div class="block-options">
                             <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
                                 <i class="si si-close"></i>
@@ -131,7 +131,7 @@
 
                         {!! Field::text('nombre','',['label'=>'Nombre','placeholder'=>'Opcional']) !!}
                         {!! Field::text('telefono','',['label'=>'Teléfono','placeholder'=>'Opcional']) !!}
-                        {!! Field::text('e-mail','',['label'=>'E-mail','placeholder'=>'Opcional']) !!}
+                        {!! Field::text('e_mail','',['label'=>'E-mail','placeholder'=>'Opcional']) !!}
                         {!! Field::text('identificacion','',['label'=>'Identificación','placeholder'=>'Opcional']) !!}
 
                     </div>
@@ -142,8 +142,5 @@
             </div>
         </div>
     </div>
-
-
-
 
 {{ Form::close() }}

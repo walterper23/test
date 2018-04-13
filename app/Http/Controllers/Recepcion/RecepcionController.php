@@ -78,13 +78,13 @@ class RecepcionController extends BaseController
 				$response = $this -> nuevaRecepcion( $request );
 				break;
 			case 2: // Editar
-				$response = $this -> editarAnexo( $request );
+				$response = $this -> editarRecepcion( $request );
 				break;
-			case 3: // Activar / Desactivar
-				$response = $this -> activarAnexo( $request );
+			case 3: // Visualizar recepción
+				$response = $this -> verRecepcion( $request );
 				break;
 			case 4: // Eliminar
-				$response = $this -> eliminarAnexo( $request );
+				$response = $this -> eliminarRecepcion( $request );
 				break;
 			default:
 				return response()->json(['message'=>'Petición no válida'],404);
@@ -148,10 +148,6 @@ class RecepcionController extends BaseController
 
 		try {
 
-
-
-
-
 			// Reemplazamos los saltos de línea, por "\n"
 			$anexos = preg_replace('/\r|\n/','\n',$request -> anexos);
 			// Reemplazamos las "\n" repetidas
@@ -161,12 +157,16 @@ class RecepcionController extends BaseController
 
 			// Guardamos los detalles del documento
 			$detalle = new MDetalle;
-			$detalle -> DETA_MUNICIPIO            = $request -> municipio;
-			$detalle -> DETA_FECHA_RECEPCION      = $request -> recepcion;
-			$detalle -> DETA_DESCRIPCION          = $request -> descripcion;
-			$detalle -> DETA_RESPONSABLE          = $request -> responsable;
-			$detalle -> DETA_ANEXOS               = $anexos;
-			$detalle -> DETA_OBSERVACIONES        = $request -> observaciones;
+			$detalle -> DETA_MUNICIPIO              = $request -> municipio;
+			$detalle -> DETA_FECHA_RECEPCION        = $request -> recepcion;
+			$detalle -> DETA_DESCRIPCION            = $request -> descripcion;
+			$detalle -> DETA_RESPONSABLE            = $request -> responsable;
+			$detalle -> DETA_ANEXOS                 = $anexos;
+			$detalle -> DETA_OBSERVACIONES          = $request -> observaciones;
+			$detalle -> DETA_ENTREGO_NOMBRE         = $request -> nombre;
+			$detalle -> DETA_ENTREGO_EMAIL          = $request -> e_mail;
+			$detalle -> DETA_ENTREGO_TELEFONO       = $request -> telefono;
+			$detalle -> DETA_ENTREGO_IDENTIFICACION = $request -> identificacion;
 			$detalle -> save();
 
 			// Guardamos el documento
@@ -202,7 +202,7 @@ class RecepcionController extends BaseController
 
 			// Guardamos los archivos o escaneos que se hayan agregado al archivo
 
-			foreach ($request -> escaneos as $escaneo) {
+			foreach ($request -> escaneos ?? [] as $escaneo) {
 				$this -> nuevoEscaneo($documento, $escaneo,['escaneo_nombre'=>'A ver uno','escaneo_descripcion'=>'a ver dos']);
 			}
 
@@ -247,19 +247,15 @@ class RecepcionController extends BaseController
 	}
 
 
+	public function verRecepcion( $request ){
 
-	public function verDocumentoRecepcionado( $id ){
+		$documento = MDocumento::find( $request -> id );
 
-		$data['documento'] = MDocumento::find( $id );
+		dd($documento);
 
 		return view('Recepcion.verDocumento')->with($data);
 
 	}
-
-
-
-	
-
 
 
 }

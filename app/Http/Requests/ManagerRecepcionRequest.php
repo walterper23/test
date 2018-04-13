@@ -23,8 +23,9 @@ class ManagerRecepcionRequest extends FormRequest
     public function rules()
     {
         return [
-            'action'         => 'required|in:1,2,3,4',
-            'tipo_documento' => 'required_if:action:2,3,4|exists:system_tipos_documentos,SYTD_TIPO_DOCUMENTO',
+            'action'         => 'required|in:0,1,2,3,4',
+            'id'             => 'required_if:action:2,3,4',
+            'tipo_documento' => 'required_if:action:0,1,2|exists:system_tipos_documentos,SYTD_TIPO_DOCUMENTO',
             'numero'         => 'required_if:action,1,2|min:1,max:255',
             'recepcion'      => 'required_if:action,1|date_format:Y-m-d',
             'municipio'      => 'required_if:action,1',
@@ -37,6 +38,7 @@ class ManagerRecepcionRequest extends FormRequest
         return [
             'action.required'            => 'Petición no especificada',
             'action.in'                  => 'Petición no válida',
+            'id.required_if'             => 'Especifique el identificador del recurso',
             'tipo_documento.required_if' => 'Seleccione el tipo de documento',
             'tipo_documento.exists'      => 'Tipo de Documento no encontrado',
             'numero.required_if'         => 'Introduzca el número del documento',

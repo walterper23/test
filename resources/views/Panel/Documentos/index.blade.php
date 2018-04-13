@@ -108,12 +108,11 @@
                                     <p>{{ $seguimiento -> DETA_DESCRIPCION }}</p>
                                 </div>
                                 <div class="col-12">
-
-                                    <button type="button" class="btn btn-sm btn-alt-primary" data-toggle="block-option">
+                                    <button type="button" class="btn btn-sm btn-rounded btn-alt-primary" onclick="hPanel.verAnexos({{ $seguimiento -> Documento -> getKey()  }})">
                                         <i class="fa fa-fw fa-clipboard"></i> Anexos
                                     </button>
-                                    <button type="button" class="btn btn-sm btn-alt-danger" data-toggle="block-option">
-                                        <i class="fa fa-fw fa-file-pdf-o"></i> Escaneos <span class="badge badge-pill badge-danger">3</span>
+                                    <button type="button" class="btn btn-sm btn-rounded btn-alt-danger" onclick="hPanel.verEscaneos({{ $seguimiento -> Documento -> getKey()  }})">
+                                        <i class="fa fa-fw fa-clipboard"></i> Escaneos <span class="badge badge-pill badge-danger"></span>
                                     </button>
                                 </div>
                             </div>
@@ -150,16 +149,16 @@
                                 <div class="col-md-2">
                                     <hr>
                                     <div class="font-size-sm text-muted text-right">
-                                        <a href="javascript:void(0)" onclick="hPanel.marcarImportante({{ $seguimiento -> Documento -> getKey() }})">
+                                        <a href="javascript:void(0)" onclick="hPanel.marcarImportante(this, {{ $seguimiento -> Documento -> getKey() }})">
                                             @if ($seguimiento -> importante)
                                                 <i class="fa fa-fw fa-star text-warning"></i>
                                             @else
                                                 <i class="fa fa-fw fa-star-o"></i>
                                             @endif
                                         </a>
-                                        <i class="fa fa-fw fa-files-o"></i> # {{ $seguimiento -> Documento -> getCodigo() }}
+                                        <i class="fa fa-fw fa-file-o"></i> # {{ $seguimiento -> Documento -> getCodigo() }}
                                     </div>
-                                    <div class="font-size-sm text-muted text-right"><i class="fa fa-fw fa-flash"></i> # {{ $seguimiento -> getCodigo(5) }}</div>
+                                    <div class="font-size-sm text-muted text-right" title="Seguimiento # {{ $seguimiento -> getCodigo(5) }}"><i class="fa fa-fw fa-flash"></i> # {{ $seguimiento -> getCodigo(5) }}</div>
                                 </div>
                             </div>
                         </div>

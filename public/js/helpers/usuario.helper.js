@@ -15,6 +15,14 @@ App.loadScript('/js/helpers/helper.js', function(){
 				});
 			},
 
+			edit_ : function(id){
+				this.edit({
+					modal : 'form-usuario',
+					url   : '/configuracion/usuarios/editar',
+					id
+				})
+			},
+
 			delete_ : function(id){
 				this.delete({
 					id, title : 'Eliminar usuario'

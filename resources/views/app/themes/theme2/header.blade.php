@@ -5,7 +5,7 @@
         <div class="content-header-item">
             <a class="link-effect font-w700" href="/">
                 <span class="font-size-xl text-dual-primary-dark">
-                    {{ Html::image('img/favicon/logo.png','Logo',['class'=>'mb-5','width'=>'30']) }} {{ config_var('Sistema.Siglas') }}
+                    {{-- Html::image('img/favicon/logo.png','Logo',['class'=>'mb-5','width'=>'30']) }} {{ config_var('Sistema.Siglas') --}}
                 </span>
             </a>
         </div>

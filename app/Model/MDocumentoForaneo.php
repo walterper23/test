@@ -1,7 +1,7 @@
 <?php
 namespace App\Model;
 
-class MDocumento extends BaseModel
+class MDocumentoForaneo extends BaseModel
 {
     protected $table        = 'documentos_foraneos';
     protected $primaryKey   = 'DOFO_DOCUMENTO';

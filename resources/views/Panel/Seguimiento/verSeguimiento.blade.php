@@ -42,7 +42,7 @@
                                     {{ $seguimiento -> EstadoDocumento -> getNombre() }}
                                 </p>
                                 <i class="fa fa-fw fa-comment-o"></i> <span class="font-w600">Observaciones:</span> {{ $seguimiento -> getObservacion() }}
-                                <div class="font-size-sm text-muted"><i class="fa fa-fw fa-user"></i> {{ trim(sprintf('%s %s',$seguimiento -> USDE_NOMBRES,$seguimiento -> USDE_APELLIDOS)) }}</div>
+                                <div class="font-size-sm text-muted"><i class="fa fa-fw fa-user"></i> {{ trim(sprintf('%s :: %s %s',$seguimiento -> USDE_NO_TRABAJADOR, $seguimiento -> USDE_NOMBRES,$seguimiento -> USDE_APELLIDOS)) }}</div>
                             </div>
                             <div class="col-md-6">
                                 <p>
