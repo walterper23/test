@@ -1,12 +1,6 @@
 <?php
 namespace App\Model;
 
-/* Models */
-use App\Model\BaseModel;
-
-/* Presenter */
-use App\Presenters\MAnexoPresenter;
-
 class MEscaneo extends BaseModel
 {
     protected $table        = 'escaneos';
@@ -37,8 +31,5 @@ class MEscaneo extends BaseModel
     {
        return $this -> hasOne('App\Model\MArchivo','ARCH_ARCHIVO','ESCA_ARCHIVO');
     }
-
-
-    /* Presenter */    
 
 }

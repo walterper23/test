@@ -75,9 +75,19 @@ class MSeguimiento extends BaseModel
         return $this -> belongsTo('App\Model\MDocumento','SEGU_DOCUMENTO','DOCU_DOCUMENTO');
     }
 
+    public function Escaneos()
+    {
+        return $this -> hasMany('App\Model\MEscaneo','ESCA_DOCUMENTO','SEGU_DOCUMENTO');
+    }
+
     public function EstadoDocumento()
     {
         return $this -> belongsTo('App\Model\Catalogo\MEstadoDocumento','SEGU_ESTADO_DOCUMENTO','ESDO_ESTADO_DOCUMENTO');
+    }
+
+    public function Seguimientos()
+    {
+        return $this -> hasMany('App\Model\MSeguimiento','SEGU_DOCUMENTO','SEGU_DOCUMENTO');
     }
     
     public function Usuario()

@@ -38,13 +38,13 @@ var hPanel = function(){
 			success : function(result){
 				if ( result.status ){
 					if ( result.importante ){
-						$(element).find('i').removeClass('fa-star-o').addClass('fa-star').addClass('text-warning');
+						$(element).closest('.section-options').find('i.star').removeClass('fa-star-o').addClass('fa-star').addClass('text-warning');
 						AppAlert.notify({
 							type : 'warning',
 							message : result.message
 						});
 					}else{
-						$(element).find('i').removeClass('fa-star').removeClass('text-warning').addClass('fa-star-o');
+						$(element).closest('.section-options').find('i.star').removeClass('fa-star').removeClass('text-warning').addClass('fa-star-o');
 					}
 				}else{
 

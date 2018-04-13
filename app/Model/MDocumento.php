@@ -75,6 +75,11 @@ class MDocumento extends BaseModel
         return $this -> attributes['DOCU_SYSTEM_ESTADO_DOCTO'] == 4; // Documento resuelto
     }
 
+    public function rechazado()
+    {
+        return $this -> attributes['DOCU_SYSTEM_ESTADO_DOCTO'] == 5; // Documento rechazado
+    }
+
     /* Local Scopes */
 
     public function scopeGuardado($query)

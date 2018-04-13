@@ -29,9 +29,7 @@
         $url = sprintf('panel/documentos/seguimiento?search=%d',$seguimiento -> getKey());
 
         if ($seguimiento -> leido === false)
-        {
             $url = sprintf('%s&read=1',$url);
-        }
 
         return url( $url );
     }
@@ -82,6 +80,9 @@
                         </div>
                     </div>
                     <div class="block-options">
+                        <button type="button" class="btn btn-danger" onclick="hPanel.">
+                            <i class="fa fa-fw fa-flash"></i> Nuevo
+                        </button>
                         <strong>1 - {{ sizeof($documentos) }}</strong> de <strong>{{ sizeof($documentos) }}</strong>
                         <button type="button" class="btn-block-option" data-toggle="block-option">
                             <i class="si si-arrow-left"></i>
@@ -89,7 +90,7 @@
                         <button type="button" class="btn-block-option" data-toggle="block-option">
                             <i class="si si-arrow-right"></i>
                         </button>
-                        <button type="button" class="btn-block-option" data-toggle="block-option" data-action="state_toggle" data-action-mode="demo">
+                        <button type="button" class="btn-block-option" data-toggle="block-option">
                             <i class="si si-refresh"></i>
                         </button>
                     </div>
@@ -98,7 +99,7 @@
 
             @forelse ($documentos as $seguimiento)
             <div class="block">
-                <div class="block-content block-content-full ribbon ribbon-bookmark ribbon-{{ $seguimiento -> SYTD_RIBBON_COLOR }}">
+                <div class="block-content block-content-full ribbon ribbon-bottom ribbon-bookmark ribbon-{{ $seguimiento -> SYTD_RIBBON_COLOR }}">
                     <div class="ribbon-box">{{ $seguimiento -> SYTD_NOMBRE }}</div>
                     <div class="row">
                         <div class="col-md-5">
@@ -108,29 +109,66 @@
                                     <p>{{ $seguimiento -> DETA_DESCRIPCION }}</p>
                                 </div>
                                 <div class="col-12">
+                                    @if (! empty($seguimiento -> DETA_ANEXOS) )
                                     <button type="button" class="btn btn-sm btn-rounded btn-alt-primary" onclick="hPanel.verAnexos({{ $seguimiento -> Documento -> getKey()  }})">
                                         <i class="fa fa-fw fa-clipboard"></i> Anexos
                                     </button>
+                                    @endif
+                                    @if ($seguimiento -> Escaneos -> count() > 0 )
                                     <button type="button" class="btn btn-sm btn-rounded btn-alt-danger" onclick="hPanel.verEscaneos({{ $seguimiento -> Documento -> getKey()  }})">
-                                        <i class="fa fa-fw fa-clipboard"></i> Escaneos <span class="badge badge-pill badge-danger"></span>
+                                        <i class="fa fa-fw fa-clipboard"></i> Escaneos <span class="badge badge-pill badge-danger">{{ $seguimiento -> Escaneos -> count() }}</span>
                                     </button>
+                                    @endif
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-7">
-                            <div class="row">
-                                <div class="col-12">
-                                    <p class="font-w700">ÚLTIMO ESTADO:</p>
-                                    <p>{{ $seguimiento -> EstadoDocumento -> getNombre() }}</p>
-                                    <p><span class="font-w600">Observaciones:</span> {{ $seguimiento -> getObservacion() }}</p>
-                                </div>
-                                <div class="col-12">
-                                    <a class="btn btn-sm btn-success pull-right" href="{{ url_ver_seguimiento( $seguimiento ) }}">
-                                        <i class="fa fa-fw fa-paper-plane"></i> Ver seguimiento
-                                    </a>
-                                    @can('SEG.CAMBIAR.ESTADO')
-                                    <button class="btn btn-sm btn-danger pull-right mr-5" onclick="hPanel.cambiarEstado({{ $seguimiento -> getKey() }})"><i class="fa fa-fw fa-flash"></i> Cambiar estado</button>
-                                    @endcan
+                        <div class="col-md-5">
+                            <p class="font-w700" title="Seguimiento #{{ $seguimiento -> getCodigo(5) }}">
+                                <span class="text-danger"><i class="fa fa-fw fa-flash"></i> #{{ $seguimiento -> getCodigo(5) }}</span> :: ÚLTIMO ESTADO
+                            </p>
+                            <p>{{ $seguimiento -> EstadoDocumento -> getNombre() }}</p>
+                            <p><span class="font-w600"><i class="fa fa-fw fa-comment-o"></i> Observaciones:</span> {{ $seguimiento -> getObservacion() }}</p>
+                        </div>
+                        <div class="col-md-2 text-right section-options">
+                            <div class="font-size-sm text-muted text-right" title="Documento #{{ $seguimiento -> Documento -> getCodigo() }}">
+                                <a href="javascript:void(0)" onclick="hPanel.marcarImportante(this, {{ $seguimiento -> Documento -> getKey() }})">
+                                    @if ($seguimiento -> importante)
+                                        <i class="fa fa-fw fa-star text-warning star" title="Marcar como importante"></i>
+                                    @else
+                                        <i class="fa fa-fw fa-star-o star" title="Marcar como importante"></i>
+                                    @endif
+                                </a>
+                                #{{ $seguimiento -> Documento -> getCodigo() }}
+                                @if ($seguimiento -> leido === false)
+                                    <i class="fa fa-fw fa-folder"></i>
+                                @else
+                                    <i class="fa fa-fw fa-folder-open-o"></i>
+                                @endif
+                                <br>{{ $seguimiento -> SYED_NOMBRE }}
+                            </div>
+                            <div class="btn-group" role="group" aria-label="Documentos a visualizar">
+                                <div class="btn-group show" role="group">
+                                    <button type="button" class="btn btn-alt-secondary dropdown-toggle" id="btnGroupDrop2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Opciones</button>
+                                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop2" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 94px, 0px); top: 0px; left: 40px; will-change: transform;">
+                                        @if ( !($seguimiento -> Documento -> rechazado()) && !($seguimiento -> Documento -> resuelto()) && user() -> can('SEG.CAMBIAR.ESTADO') )
+                                        <a class="dropdown-item" href="#" onclick="hPanel.cambiarEstado({{ $seguimiento -> getKey() }})">
+                                            <i class="fa fa-fw fa-flash text-danger"></i> Cambiar estado
+                                        </a>
+                                        @endif
+                                        <a class="dropdown-item" href="javascript:void(0)" onclick="hPanel.marcarImportante(this, {{ $seguimiento -> Documento -> getKey() }})">
+                                        @if ($seguimiento -> importante)
+                                            <i class="fa fa-fw fa-star text-warning star"></i> Importante
+                                        @else
+                                            <i class="fa fa-fw fa-star-o star"></i> Importante
+                                        @endif
+                                        </a>
+                                        <a class="dropdown-item" href="{{ url_ver_seguimiento( $seguimiento ) }}">
+                                            <i class="fa fa-fw fa-paper-plane text-success"></i> Ver seguimiento
+                                        </a>
+                                        <a class="dropdown-item" href="javascript:void(0)" onclick="hPanel.archivar(this, {{ $seguimiento -> Documento -> getKey() }})">
+                                            <i class="fa fa-fw fa-archive"></i> Archivar
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -141,24 +179,10 @@
                                     <div class="font-size-sm text-muted"><i class="fa fa-fw fa-sitemap"></i> {{ $seguimiento -> DireccionOrigen -> getNombre() }}</div>
                                     <div class="font-size-sm text-muted"><i class="fa fa-fw fa-sitemap"></i> {{ optional($seguimiento -> DepartamentoOrigen) -> getNombre() }}</div>
                                 </div>
-                                <div class="col-md-5">
+                                <div class="col-md-7">
                                     <hr>
-                                    <div class="font-size-sm text-muted"><i class="fa fa-fw fa-user"></i> {{ trim(sprintf('%s %s',$seguimiento -> USDE_NOMBRES,$seguimiento -> USDE_APELLIDOS)) }}</div>
+                                    <div class="font-size-sm text-muted"><i class="fa fa-fw fa-user"></i> {{ trim(sprintf('%s :: %s %s',$seguimiento -> USDE_NO_TRABAJADOR, $seguimiento -> USDE_NOMBRES,$seguimiento -> USDE_APELLIDOS)) }}</div>
                                     <div class="font-size-sm text-muted"><i class="fa fa-fw fa-calendar"></i> {{ $seguimiento -> presenter() -> getFechaSeguimiento() }}</div>
-                                </div>
-                                <div class="col-md-2">
-                                    <hr>
-                                    <div class="font-size-sm text-muted text-right">
-                                        <a href="javascript:void(0)" onclick="hPanel.marcarImportante(this, {{ $seguimiento -> Documento -> getKey() }})">
-                                            @if ($seguimiento -> importante)
-                                                <i class="fa fa-fw fa-star text-warning"></i>
-                                            @else
-                                                <i class="fa fa-fw fa-star-o"></i>
-                                            @endif
-                                        </a>
-                                        <i class="fa fa-fw fa-file-o"></i> # {{ $seguimiento -> Documento -> getCodigo() }}
-                                    </div>
-                                    <div class="font-size-sm text-muted text-right" title="Seguimiento # {{ $seguimiento -> getCodigo(5) }}"><i class="fa fa-fw fa-flash"></i> # {{ $seguimiento -> getCodigo(5) }}</div>
                                 </div>
                             </div>
                         </div>

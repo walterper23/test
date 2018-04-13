@@ -30,23 +30,26 @@
         <li class="nav-item">
             <a class="nav-link{{ $tab_3 }}" href="#btabswo-static-three">Documentos</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link{{ $tab_4 }}" href="#btabswo-static-four">Recepciones foráneas</a>
+        </li>
         <li class="nav-item ml-auto">
             <div class="block-options mr-15">
-            <button type="button" class="btn-block-option" onclick="location.href='{{ url('recepcion/documentos/nueva-recepcion') }}'">
-                <i class="fa fa-fw fa-plus"></i> Nueva recepci&oacute;n
+            <button type="button" class="btn-block-option d-none d-sm-inline" onclick="location.href='{{ url('recepcion/documentos/nueva-recepcion') }}'">
+                <i class="fa fa-fw fa-plus"></i> Nueva recepción
             </button>
-            <button type="button" class="btn-block-option" onclick="hRecepcion.reloadTables(['denuncias-datatables','documentos-denuncias-datatables','documentos-datatables'])">
+            <button type="button" class="btn-block-option d-none d-sm-inline" onclick="hRecepcion.reloadTables(['denuncias-datatables','documentos-denuncias-datatables','documentos-datatables'])">
                 <i class="fa fa-fw fa-refresh"></i> Actualizar
             </button>
             <div class="dropdown">
                 <button type="button" class="btn-block-option dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cog"></i> Opciones</button>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="javascript:void(0)">
-                        <i class="fa fa-fw fa-bell mr-5"></i>News
+                    <a class="dropdown-item" href="#" onclick="location.href='{{ url('recepcion/documentos/nueva-recepcion') }}'">
+                        <i class="fa fa-fw fa-plus mr-5"></i>Nueva recepción
                     </a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="javascript:void(0)">
-                        <i class="fa fa-fw fa-pencil mr-5"></i>Edit Profile
+                    <a class="dropdown-item" href="#" onclick="hRecepcion.reloadTables(['denuncias-datatables','documentos-denuncias-datatables','documentos-datatables'])">
+                        <i class="fa fa-fw fa-refresh mr-5"></i>Actualizar registros
                     </a>
                 </div>
             </div>
@@ -67,6 +70,11 @@
         <div class="tab-pane{{ $tab_3 }}" id="btabswo-static-three" role="tabpanel">
             <div class="table-responsive">
                 {{ $table3 -> html() }}
+            </div>
+        </div>
+        <div class="tab-pane{{ $tab_4 }}" id="btabswo-static-four" role="tabpanel">
+            <div class="table-responsive">
+                
             </div>
         </div>
     </div>

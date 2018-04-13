@@ -7,6 +7,30 @@
     {{ Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) }}
         <input type="hidden" name="action" value="{{ $action }}"> 
         {{ Form::hidden('seguimiento',$seguimiento) }}
+
+        <div class="col-12">
+        	<div class="row">
+	            <div class="col-md-4">
+                    <div class="custom-control custom-radio custom-control-inline mb-5">
+    	                <input class="custom-control-input" name="estado_documento" id="estado_radio_1" value="1" checked="" type="radio">
+    	                <label class="custom-control-label" for="estado_radio_1">En seguimiento</label>
+    	            </div>
+                </div>
+	            <div class="col-md-4">
+                    <div class="custom-control custom-radio custom-control-inline mb-5">
+    	                <input class="custom-control-input" name="estado_documento" id="estado_radio_2" value="2" type="radio">
+    	                <label class="custom-control-label" for="estado_radio_2">Rechazar documento</label>
+    	            </div>
+                </div>
+	            <div class="col-md-4">
+                    <div class="custom-control custom-radio custom-control-inline mb-5">
+    	                <input class="custom-control-input" name="estado_documento" id="estado_radio_3" value="3" type="radio">
+    	                <label class="custom-control-label" for="estado_radio_3">Finalizar documento (resolver)</label>
+    	            </div>
+                </div>
+            </div>
+        </div>
+
         {!! Field::select('direccion_origen',null,['label'=>'Dirección origen','required','autofocus'],$direcciones_origen) !!}
         <div class="form-group row">
             <label class="col-sm-3 col-form-label" for="departamento_origen">Departamento origen</label>
@@ -43,19 +67,31 @@
 @push('js-custom')
 <script type="text/javascript">
 	'use strict';
-	$.extend(new AppForm, new function(){
+	var formCambio = new AppForm;
+	$.extend(formCambio, new function(){
 
 		this.context_ = '#modal-{{ $form_id }}';
 		this.form_    = '#{{ $form_id }}';	
 		
 		this.start = function(){
 
+            var radiosEstados = $('input[name="estado_documento"]');
+            var selectDireccionOrigen = $('#direccion_origen');
 			var selectDepartamentoOrigen = $('#departamento_origen');
-			var selectDepartamentoDestino = $('#departamento_destino');
+            var selectDireccionDestino = $('#direccion_destino');
+            var selectDepartamentoDestino = $('#departamento_destino');
+			var textAreaInstruccion = $('#instruccion');
 			var optionsDeptoOrigen = selectDepartamentoOrigen.find('option[data-direccion]').hide();
 			var optionsDeptoDestino = selectDepartamentoDestino.find('option[data-direccion]').hide();
 
-			$('#direccion_origen').on('change',function(){
+            radiosEstados.on('change',function(e){
+                selectDireccionDestino.add(selectDepartamentoDestino).add(textAreaInstruccion).closest('div.form-group.row').show()
+                if ( radiosEstados.filter(':checked').val() != 1 ){
+                    selectDireccionDestino.add(selectDepartamentoDestino).add(textAreaInstruccion).closest('div.form-group.row').hide()
+                }
+            });
+
+			selectDireccionOrigen.on('change',function(){
 				selectDepartamentoOrigen.val('');
 				optionsDeptoOrigen.hide();
 				if( this.value.length ){
@@ -64,7 +100,7 @@
 				}
 			});
 
-			$('#direccion_destino').on('change',function(){
+			selectDireccionDestino.on('change',function(){
 				selectDepartamentoDestino.val('');
 				optionsDeptoDestino.hide();
 				if( this.value.length ){
@@ -75,12 +111,22 @@
 
 		};
 
-		this.successSubmitHandler = function( data ){
-			if( data.status ){
-				location.reload();
+		this.successSubmitHandler = function( result ){
+			var config = {
+				type: result.type,
+				message : result.message,
+				z_index : 9999
+			};
+
+			if( result.status ){
+				config.onClose = function(){
+					location.reload();
+				}
 			}else{
-				location.reload();
+				Codebase.blocks( formCambio.context.find('div.modal-content>div.block'), 'state_normal');
 			}
+
+			AppAlert.notify(config);
 		};
 
 		this.rules = function(){

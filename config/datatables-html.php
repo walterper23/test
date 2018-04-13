@@ -10,6 +10,8 @@ return [
         
         'class' => 'table table-bordered table-striped table-vcenter table-sm js-dataTable-full-pagination',
 
+        'style' => 'width: 100%'
+
     ],
 
     'options' => [

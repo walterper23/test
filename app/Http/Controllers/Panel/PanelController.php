@@ -30,12 +30,10 @@ class PanelController extends BaseController
 		$view = $request -> get('view','all');
 
 		// Recuperar las direcciones asignadas al usuario
-		$direcciones = user() -> Direcciones;
-		$ids_direcciones = $direcciones -> pluck('DIRE_DIRECCION') -> toArray();
+		$ids_direcciones = user() -> Direcciones -> pluck('DIRE_DIRECCION') -> toArray();
 
 		// Recuperar los departamentos asignados al usuario
-		$departamentos = user() -> Departamentos;
-		$ids_departamentos = $departamentos -> pluck('DEPA_DEPARTAMENTO') -> toArray();
+		$ids_departamentos = user() -> Departamentos -> pluck('DEPA_DEPARTAMENTO') -> toArray();
 
 		/* 
 		*  Recuperar los seguimientos que hayan pasado por las direcciones y departamentos anteriores
@@ -50,12 +48,13 @@ class PanelController extends BaseController
 						-> toArray();
 
 		// Recuperar el último seguimiento de cada documento
-		$seguimientos = MSeguimiento::with('Documento','DireccionOrigen','DireccionDestino','DepartamentoOrigen','DepartamentoDestino','EstadoDocumento')
+		$seguimientos = MSeguimiento::with('Documento','DireccionOrigen','DireccionDestino','DepartamentoOrigen','DepartamentoDestino','EstadoDocumento','Escaneos')
 						-> leftJoin('documentos','SEGU_DOCUMENTO','=','DOCU_DOCUMENTO')
 						-> leftJoin('system_tipos_documentos','SYTD_TIPO_DOCUMENTO','=','DOCU_SYSTEM_TIPO_DOCTO')
 						-> leftJoin('detalles','DETA_DETALLE','=','DOCU_DETALLE')
 						-> leftJoin('usuarios','USUA_USUARIO','=','SEGU_USUARIO')
 						-> leftJoin('usuarios_detalles','USDE_USUARIO_DETALLE','=','USUA_DETALLE')
+						-> leftJoin('system_estados_documentos','SYED_ESTADO_DOCUMENTO','=','DOCU_SYSTEM_ESTADO_DOCTO')
 						-> whereIn('SEGU_DOCUMENTO',$documentos)
 						-> whereRaw('SEGU_SEGUIMIENTO in (select max(SEGU_SEGUIMIENTO) from seguimiento group by SEGU_DOCUMENTO order by SEGU_SEGUIMIENTO desc)')
 						-> orderBy('SEGU_SEGUIMIENTO','DESC')
@@ -105,7 +104,7 @@ class PanelController extends BaseController
 
 		}
 		
-		// 
+		// Almacenar el título a mostrar de la vista y almacenar los documentos y seguimientos a mostrar de acuerdo al tipo de $view solicitado
 		switch ($view) {
 			case 'recents':
 				$data['title']      = 'Documentos recientes';
@@ -156,7 +155,13 @@ class PanelController extends BaseController
             case 3: // Marcar documento como importante
                 $response = $this -> marcarDocumentoImportante( $request );
                 break;
-            case 3: // Marcar documento como archivado
+            case 4: // Marcar documento como archivado
+                $response = $this -> marcarDocumentoArchivado( $request );
+                break;
+            case 5: // Marcar documento como archivado
+                $response = $this -> marcarDocumentoArchivado( $request );
+                break;
+            case 6: // Marcar documento como archivado
                 $response = $this -> marcarDocumentoArchivado( $request );
                 break;
             default:
@@ -177,12 +182,16 @@ class PanelController extends BaseController
 			'seguimiento'   => $request -> seguimiento,
 		];
 
+		// Cargamos al usuario sus direcciones y departamentos asignados
+		user() -> with(['Direcciones','Departamentos'=>function($query){
+			return $query -> with('Direccion');
+		}]);
 
 		// Obtener las direcciones asignadas al usuario
 		$data['direcciones_origen'] = user() -> Direcciones -> pluck('DIRE_NOMBRE','DIRE_DIRECCION') -> toArray();
 
 		// Obtener los departamentos asignados al usuario
-		$usuario_departamentos = user() -> Departamentos() -> with('Direccion') -> get();
+		$usuario_departamentos = user() -> Departamentos;
 
 		$data['departamentos_origen'] = [];
 		foreach ($usuario_departamentos as $departamento)
@@ -195,11 +204,13 @@ class PanelController extends BaseController
 		}
 
 		// Obtener todas las direcciones de destino disponibles
-		$direcciones = MDireccion::with('Departamentos')
-							-> select('DIRE_DIRECCION','DIRE_NOMBRE')
-							-> where('DIRE_ENABLED',1)
-							-> orderBy('DIRE_NOMBRE')
-							-> get();
+		$direcciones = MDireccion::with(['Departamentos'=>function($query){
+							return $query -> existenteDisponible();
+						}])
+						-> select('DIRE_DIRECCION','DIRE_NOMBRE')
+						-> existenteDisponible()
+						-> orderBy('DIRE_NOMBRE')
+						-> get();
 
 		$data['direcciones_destino'] = $direcciones -> pluck('DIRE_NOMBRE','DIRE_DIRECCION') -> toArray();
 		
@@ -208,8 +219,7 @@ class PanelController extends BaseController
 
 		foreach ($direcciones as $direccion)
 		{
-			$departamentos = $direccion -> Departamentos() -> where('DEPA_ENABLED',1) -> get();
-			foreach ($departamentos as $departamento)
+			foreach ($direccion -> Departamentos as $departamento)
 			{
 				$data['departamentos_destino'][] = [
 					$direccion -> getKey(),
@@ -220,18 +230,13 @@ class PanelController extends BaseController
 		}
 	
 		// Obtener los estados de documentos de sus direcciones y departamentos
-		$estados = MEstadoDocumento::select('ESDO_NOMBRE','ESDO_ESTADO_DOCUMENTO')
-					-> where('ESDO_ENABLED',1)
-					-> where('ESDO_DELETED',0)
+		$estados = MEstadoDocumento::select('ESDO_NOMBRE','ESDO_ESTADO_DOCUMENTO') -> existenteDisponible()
 					-> where(function($query){
-
 						// Recuperar las direcciones asignadas al usuario
-						$direcciones = user() -> Direcciones;
-						$ids_direcciones = $direcciones -> pluck('DIRE_DIRECCION') -> toArray();
+						$ids_direcciones = user() -> Direcciones -> pluck('DIRE_DIRECCION') -> toArray();
 
 						// Recuperar los departamentos asignados al usuario
-						$departamentos = user() -> Departamentos;
-						$ids_departamentos = $departamentos -> pluck('DEPA_DEPARTAMENTO') -> toArray();
+						$ids_departamentos = user() -> Departamentos -> pluck('DEPA_DEPARTAMENTO') -> toArray();
 
 						$query -> orWhereIn('ESDO_DIRECCION',$ids_direcciones);
 						$query -> orWhereIn('ESDO_DEPARTAMENTO',$ids_departamentos);
@@ -248,21 +253,54 @@ class PanelController extends BaseController
 	public function cambiarEstadoDocumento( $request )
 	{
 
-		$anterior = MSeguimiento::find( $request -> seguimiento );
+		$anterior = MSeguimiento::with('Documento','Seguimientos') -> find( $request -> seguimiento );
+
+		$documento = $anterior -> Documento;
 		
+		if ($documento -> resuelto() || $documento -> rechazado())
+		{
+			return $this -> responseDangerJSON('<i class="fa fa-fw fa-warning"></i> El documento ya fue finalizado. No se permiten más cambios de estado');
+		}		
+
+		$departamento_origen = $request -> departamento_origen;
+		if ($departamento_origen == 0)
+			$departamento_origen = null;
+
+		$departamento_destino = $request -> departamento_destino;
+		if ($departamento_destino == 0)
+			$departamento_destino = null;
+
 		$seguimiento = new MSeguimiento;
 		$seguimiento -> SEGU_USUARIO              = userKey();
 		$seguimiento -> SEGU_DOCUMENTO            = $anterior -> SEGU_DOCUMENTO;
 		$seguimiento -> SEGU_DIRECCION_ORIGEN     = $request -> direccion_origen;
-		$seguimiento -> SEGU_DEPARTAMENTO_ORIGEN  = $request -> departamento_origen;
+		$seguimiento -> SEGU_DEPARTAMENTO_ORIGEN  = $departamento_origen;
 		$seguimiento -> SEGU_DIRECCION_DESTINO    = $request -> direccion_destino;
-		$seguimiento -> SEGU_DEPARTAMENTO_DESTINO = $request -> departamento_destino;
+		$seguimiento -> SEGU_DEPARTAMENTO_DESTINO = $departamento_destino;
 		$seguimiento -> SEGU_ESTADO_DOCUMENTO     = $request -> estado;
 		$seguimiento -> SEGU_OBSERVACION          = $request -> observacion;
 		$seguimiento -> SEGU_INSTRUCCION          = $request -> instruccion;
 		$seguimiento -> save();
 
-		return $this -> responseSuccessJSON();
+		switch ($request -> estado_documento) {
+			case 2:
+				$documento -> DOCU_SYSTEM_ESTADO_DOCTO = 5; // Documento rechazado
+				$documento -> save();
+				break;
+			case 3:
+				$documento -> DOCU_SYSTEM_ESTADO_DOCTO = 4; // Documento resuelto
+				$documento -> save();
+				break;
+			default:
+				if ($anterior -> Seguimientos -> count() == 1) // Si el documento solo tenía un seguimiento o cambio de estado ...
+				{
+					$documento -> DOCU_SYSTEM_ESTADO_DOCTO = 3; // ... lo cambiamos a Documento en seguimiento
+					$documento -> save();
+				}
+				break;
+		}
+
+		return $this -> responseSuccessJSON(sprintf('<i class="fa fa-fw fa-flash"></i> Seguimiento <b>#%s</b> creado',$seguimiento -> getCodigo(5)));
 
 	}
 
@@ -276,7 +314,7 @@ class PanelController extends BaseController
 
 			$importante = $documento -> importante();
 
-			$message = sprintf('Documento # %s importante <i class="fa fa-fw fa-star"></i>', $documento -> getCodigo());
+			$message = sprintf('Documento #%s importante <i class="fa fa-fw fa-star"></i>', $documento -> getCodigo());
 
 			return $this -> responseWarningJSON(['message'=>$message,'importante'=>$importante]);
 

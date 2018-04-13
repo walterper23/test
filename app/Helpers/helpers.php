@@ -6,12 +6,11 @@ if (! function_exists('config_var'))
     // Helper para recuperar las variables de configuración del sistema
     function config_var( $key_var, $default = '' )
     {
-        $config = Cache::rememberForever('SystemConfigVar',function(){
+        $config = Cache::rememberForever('System.Config.Variables',function(){
             return \App\Model\Sistema\MSistemaConfig::select('SYCO_VARIABLE','SYCO_VALOR') -> pluck('SYCO_VALOR','SYCO_VARIABLE') -> toArray();
         });
 
         return $config[$key_var];
-
     }
 }
 
@@ -29,7 +28,7 @@ if (! function_exists('permisoUsuario'))
     // Helper para recuperar todos los permisos del usuario
     function permisoUsuario( $permiso )
     {
-        Cache::flush('Permisos.Usuario.Actual');
+        //Cache::flush('Permisos.Usuario.Actual');
         $permisos = Cache::rememberForever('Permisos.Usuario.Actual',function(){
             return user() -> Permisos;
         });

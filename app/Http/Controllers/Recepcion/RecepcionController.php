@@ -49,6 +49,7 @@ class RecepcionController extends BaseController
 		$data['tab_1'] = '';
 		$data['tab_2'] = '';
 		$data['tab_3'] = '';
+		$data['tab_4'] = '';
 
 		switch ( $view ) {
 			case 'denuncias':
@@ -59,6 +60,9 @@ class RecepcionController extends BaseController
 				break;
 			case 'documentos':
 				$data['tab_3'] = ' active';
+				break;
+			case 'recepciones-foraneas':
+				$data['tab_4'] = ' active';
 				break;
 			default:
 				$data['tab_1'] = ' active';
