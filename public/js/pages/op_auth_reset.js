@@ -1,7 +1,7 @@
 /*
- *  Document   : op_auth_reminder.js
- *  Author     : pixelcave
- *  Description: Custom JS code used in Password Reminder Page
+ *  Document   : op_auth_reset.js
+ *  Author     :
+ *  Description: Custom JS code used in Password Reset Page
  */
 
 var OpAuthReminder = function() {
@@ -21,15 +21,20 @@ var OpAuthReminder = function() {
                 jQuery(e).remove();
             },
             rules: {
-                'username': {
-                    required  : true,
-                    minlength : 5
-                }
+                password : { required : true, minlength: 6, maxlength : 20 },
+                password_confirmation : { required : true, minlength: 6, maxlength : 20, equalTo : '#password' }
             },
             messages: {
-                'username': {
-                    required  : 'Introduzca su usuario',
-                    minlength : 'Introduzca mínimo {0} caracteres'
+                password : {
+                    required : 'Introduzca una contraseña',
+                    minlength : 'Mínimo {0} caracteres',
+                    maxlength : 'Máximo {0} caracteres'
+                },
+                password_confirmation : {
+                    required : 'Confirme la contraseña',
+                    minlength : 'Mínimo {0} caracteres',
+                    maxlength : 'Máximo {0} caracteres',
+                    equalTo : 'Las contraseñas no coinciden',
                 }
             }
         });

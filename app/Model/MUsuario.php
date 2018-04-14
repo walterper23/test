@@ -2,12 +2,15 @@
 namespace App\Model;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Notifications\UserCustomResetPasswordNotification as ResetPasswordNotification;
+use Illuminate\Notifications\Notifiable;
 
+/* Presenter */
 use App\Presenters\MUsuarioPresenter;
 
 class MUsuario extends Authenticatable
 {
-    use BaseModelTrait;
+    use BaseModelTrait, Notifiable;
     
     protected $table        = 'usuarios';
     protected $primaryKey   = 'USUA_USUARIO';
@@ -31,10 +34,15 @@ class MUsuario extends Authenticatable
         return $this -> getKey() == 1;
     }
 
+    public function getEmailForPasswordReset()
+    {
+        return $this -> getAuthUsername();
+    }
+    
     public function getAuthUsername()
     {
         return $this -> attributes['USUA_USERNAME'];
-    }    
+    }
 
     public function setUsuaPasswordAttribute( $password ){
         $this -> attributes['USUA_PASSWORD'] = bcrypt($password);
@@ -122,6 +130,13 @@ class MUsuario extends Authenticatable
     public function Permisos()
     {
         return $this -> belongsToMany('App\Model\MPermiso','usuarios_permisos','USPE_USUARIO','USPE_PERMISO');
+    }
+
+    /* Notifications */
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token));
     }
 
     /* Presenter */

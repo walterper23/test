@@ -28,7 +28,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this -> registerPolicies($gate);
 
-        // Binding eloquent.admin to our EloquentAdminUserProvider
+        // Binding eloquent.custom to our EloquentCustomUserProvider
         Auth::provider('eloquent.custom', function($app, array $config) {
             return new EloquentCustomUserProvider($app['hash'], $config['model']);
         });

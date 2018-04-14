@@ -19,7 +19,7 @@
 
         <!-- Icons -->
         <!-- The following icons can be replaced with your own, they are used by desktop and mobile browsers -->
-        <link rel="shortcut icon" href="img/favicons/favicon.ico">
+        <link rel="shortcut icon" href="img/favicon/favicon.ico">
         <link rel="icon" type="image/png" sizes="192x192" href="img/favicon/favicon-192x192.png">
         <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon-180x180.png">
         <!-- END Icons -->
@@ -29,11 +29,10 @@
         {{ Html::style('css/codebase.min.css',['id'=>'css-main']) }}
         {{ Html::style('css/custom.codebase.css') }}
 
-        <!-- You can include a specific file from css/themes/ folder to alter the default color theme of the template. eg: -->
-        <!-- <link rel="stylesheet" id="css-theme" href="assets/css/themes/flat.min.css"> -->
         <!-- END Stylesheets -->
     </head>
     <body>
+        <!-- Page Container -->
         <div id="page-container" class="main-content-boxed">
             <!-- Main Container -->
             <main id="main-container">
@@ -43,17 +42,17 @@
                         
                         <div class="row text-center px-5">
                             <div class="col-md-6 col-sm-12">
-                                <h2 class="h2 text-primary"><strong>Procuraduría de<br>Protección al Ambiente</strong></h2>
+                                <h2 class="h2 text-primary"><strong>{!! str_replace('\n', '<br>', config_var('Institucion.Nombre')) !!}</strong></h2>
                             </div>
                             <div class="col-md-6 col-sm-12">
-                                {{ Html::image('img/background/banner.png','',['width'=>'300','class'=>'pull-righ']) }}
+                                {{ Html::image(config_var('Institucion.Banner.Login'),'',['width'=>'300']) }}
                             </div>
                         </div>
 
                         <!-- Header -->
                         <div class="py-30 px-5 text-center">
                             <h1 class="h2 font-w700 mt-30 mb-10">
-                                Sistema Gestor de Documentos<br>
+                                {{ config_var('Sistema.Nombre') }}<br>
                                 {{ Html::image('img/favicon/logo.png','',['width'=>'60']) }}
                             </h1>
                             <h2 class="h4 font-w400 text-muted mb-0">Iniciar sesi&oacute;n</h2>
@@ -63,8 +62,6 @@
                         <!-- Sign In Form -->
                         <div class="row justify-content-center px-5">
                             <div class="col-sm-8 col-md-6 col-xl-4">
-                                <!-- jQuery Validation (.js-validation-signin class is initialized in js/pages/op_auth_signin.js) -->
-                                <!-- For more examples you can check out https://github.com/jzaefferer/jquery-validation -->
                                 {{ Form::open(['method'=>'POST', 'url'=>'login', 'class'=>'js-validation-signin']) }}
                                     <div class="form-group row">
                                         <div class="col-12">

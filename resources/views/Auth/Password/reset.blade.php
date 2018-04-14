@@ -7,29 +7,28 @@
 
         <title>{{ title('Restablecer contraseña') }}</title>
 
-        <meta name="description" content="Sistema Gestor de Documentos :: PPA">
-        <meta name="author" content="Instituto Tecnológico de Chetumal">
+        <meta name="description" content="{{ config_var('Sistema.Nombre') }}">
+        <meta name="author" content="Instituto Tecnológico de Chetumal 2017 - 2018">
         <meta name="robots" content="noindex, nofollow">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <!-- Open Graph Meta -->
-        <meta property="og:title" content="Sistema Gestor de Documentos">
-        <meta property="og:site_name" content="SIGESD">
-        <meta property="og:description" content="Sistema Gestor de Documentos creado por Instituto Tecnológico de Chetumal">
+        <meta property="og:site_name" content="{{ config_var('Sistema.Nombre') }}">
+        <meta property="og:description" content="Instituto Tecnológico de Chetumal 2017 - 2018">
         <meta property="og:type" content="webapp">
 
         <!-- Icons -->
         <!-- The following icons can be replaced with your own, they are used by desktop and mobile browsers -->
-        <link rel="shortcut icon" href="/assets/img/favicons/favicon.png">
-        <link rel="icon" type="image/png" sizes="192x192" href="/assets/img/favicons/favicon-192x192.png">
-        <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicons/apple-touch-icon-180x180.png">
+        <link rel="shortcut icon" href="{{ asset('img/favicon/favicon.ico') }}">
+        <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('img/favicon/favicon-192x192.png') }}">
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('img/favicon/apple-touch-icon-180x180.png') }}">
         <!-- END Icons -->
 
         <!-- Stylesheets -->
         <!-- Codebase framework -->
-        {{ Html::style('css/codebase.css',['id'=>'css-main']) }}
+        {{ Html::style('css/codebase.min.css',['id'=>'css-main']) }}
+        {{ Html::style('css/custom.codebase.css') }}
     
-        <!-- You can include a specific file from css/themes/ folder to alter the default color theme of the template. eg: -->
-        <!-- <link rel="stylesheet" id="css-theme" href="assets/css/themes/flat.min.css"> -->
         <!-- END Stylesheets -->
     </head>
     <body>
@@ -38,49 +37,50 @@
             <!-- Main Container -->
             <main id="main-container">
                 <!-- Page Content -->
-                <div class="bg-gd-cherry">
+                <div class="bg-gd-emerald">
                     <div class="hero-static content content-full bg-white invisible greca" data-toggle="appear">
                         
                         <div class="row text-center px-5">
                             <div class="col-md-6 col-sm-12">
-                                <h2 class="h2 text-primary"><strong>Procuraduría de<br>Protección al Ambiente</strong></h2>
+                                <h2 class="h2 text-primary"><strong>{!! str_replace('\n', '<br>', config_var('Institucion.Nombre')) !!}</strong></h2>
                             </div>
                             <div class="col-md-6 col-sm-12">
-                                {{ Html::image('img/background/banner.png','',['width'=>'300','class'=>'pull-righ']) }}
+                                {{ Html::image(config_var('Institucion.Banner.Login'),'',['width'=>'300']) }}
                             </div>
                         </div>
 
                         <!-- Header -->
                         <div class="py-30 px-5 text-center">
-                            <h1 class="h2 font-w700 mt-50 mb-10">Sistema Gestor de Documentos</h1>
-                            <h2 class="h4 font-w400 text-muted mb-0">Reestablecer contrase&ntilde;a</h2>
+                            <h1 class="h2 font-w700 mt-30 mb-10">
+                                {{ config_var('Sistema.Nombre') }}<br>
+                                {{ Html::image('img/favicon/logo.png','',['width'=>'60']) }}
+                            </h1>
+                            <h2 class="h4 font-w400 text-muted mb-0">Iniciar sesi&oacute;n</h2>
                         </div>
                         <!-- END Header -->
 
                         <!-- Reminder Form -->
                         <div class="row justify-content-center px-5">
                             <div class="col-sm-8 col-md-6 col-xl-4">
-                                <!-- jQuery Validation (.js-validation-reminder class is initialized in js/pages/op_auth_reminder.js) -->
-                                <!-- For more examples you can check out https://github.com/jzaefferer/jquery-validation -->
                                 {{ Form::open(['url'=>'/password/reset','method'=>'POST','class'=>'js-validation-reminder']) }}
                                     {{ csrf_field() }}
                                     <div class="form-group row">
                                         <div class="col-12">
                                             <div class="form-material floating open">
-                                                {{ Form::text('email',$email or old('email'),['id'=>'email','class'=>'form-control','autofocus']) }}
-                                                {{ Form::label('email','Usuario') }}
+                                                {{ Form::text('username',old('username'),['id'=>'username','class'=>'form-control text-center','autofocus']) }}
+                                                {{ Form::label('username','Usuario') }}
                                             </div>
-                                            @if ($errors->has('email'))
+                                            @if ($errors->has('username'))
                                                 <span class="help-block">
-                                                    <strong>{{ $errors->first('email') }}</strong>
+                                                    <strong>{{ $errors->first('username') }}</strong>
                                                 </span>
                                             @endif
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <div class="col-12">
-                                            <div class="form-material floating">
-                                                {{ Form::password('password',['id'=>'password','class'=>'form-control']) }}
+                                            <div class="form-material floating open">
+                                                {{ Form::password('password',['id'=>'password','class'=>'form-control text-center']) }}
                                                 {{ Form::label('password','Contrase&ntilde;a') }}
                                             </div>
                                             @if ($errors->has('password'))
@@ -92,8 +92,8 @@
                                     </div>
                                     <div class="form-group row">
                                         <div class="col-12">
-                                            <div class="form-material floating">
-                                                {{ Form::password('password_confirmation',['id'=>'password_confirmation','class'=>'form-control']) }}
+                                            <div class="form-material floating open">
+                                                {{ Form::password('password_confirmation',['id'=>'password_confirmation','class'=>'form-control text-center']) }}
                                                 {{ Form::label('password_confirmation','Confirmar Contrase&ntilde;a') }}
                                             </div>
                                             @if($errors->has('password_confirmation'))
@@ -125,8 +125,7 @@
 
         <!-- Codebase Core JS -->
         {{ Html::script('js/core/jquery.min.js') }}
-        {{ Html::script('js/core/popper.min.js') }}
-        {{ Html::script('js/core/bootstrap.min.js') }}
+        {{ Html::script('js/core/bootstrap.bundle.min.js') }}
         {{ Html::script('js/core/jquery.slimscroll.min.js') }}
         {{ Html::script('js/core/jquery.scrollLock.min.js') }}
         {{ Html::script('js/core/jquery.appear.min.js') }}
@@ -138,6 +137,6 @@
         {{ Html::script('js/plugins/jquery-validation/jquery.validate.min.js') }}
 
         <!-- Page JS Code -->
-        {{ Html::script('js/pages/op_auth_reminder.js') }}
+        {{ Html::script('js/pages/op_auth_reset.js') }}
     </body>
 </html>
