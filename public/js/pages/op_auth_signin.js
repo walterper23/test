@@ -32,7 +32,7 @@ var OpAuthSignIn = function() {
             },
             messages: {
                 'username': {
-                    required: 'Introduzca su usuario',
+                    required: 'Introduzca su nombre de usuario',
                     minlength: 'Introduzca mínimo {0} caracteres'
                 },
                 'password': {

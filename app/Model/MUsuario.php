@@ -2,7 +2,7 @@
 namespace App\Model;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use App\Notifications\UserCustomResetPasswordNotification as ResetPasswordNotification;
+//use App\Notifications\UserCustomResetPasswordNotification as ResetPasswordNotification;
 use Illuminate\Notifications\Notifiable;
 
 /* Presenter */
@@ -36,7 +36,7 @@ class MUsuario extends Authenticatable
 
     public function getEmailForPasswordReset()
     {
-        return $this -> getAuthUsername();
+        return $this -> UsuarioDetalle -> getEmail();
     }
     
     public function getAuthUsername()
@@ -134,10 +134,10 @@ class MUsuario extends Authenticatable
 
     /* Notifications */
 
-    public function sendPasswordResetNotification($token)
+    /*public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetPasswordNotification($token));
-    }
+    }*
 
     /* Presenter */
 

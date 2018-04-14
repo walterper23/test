@@ -55,13 +55,24 @@
                                 {{ config_var('Sistema.Nombre') }}<br>
                                 {{ Html::image('img/favicon/logo.png','',['width'=>'60']) }}
                             </h1>
-                            <h2 class="h4 font-w400 text-muted mb-0">Introduce tu correo electr&oacute;nico para reestablecer la contrase&ntilde;a</h2>
+                            <h2 class="h4 font-w400 text-muted mb-0">Introduzca su nombre de usuario para reestablecer la contrase&ntilde;a</h2>
                         </div>
                         <!-- END Header -->
 
                         <!-- Reminder Form -->
+                        @if (session()->has('status'))
+                        <div class="row justify-content-center px-5">
+                            <div class="col-md-6 col-sm-8 text-center">
+                                <div class="alert alert-primary">
+                                    {!! session('status') !!}
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+
                         <div class="row justify-content-center px-5">
                             <div class="col-sm-8 col-md-6 col-xl-4">
+                                @if (! session()->has('status'))
                                 {{ Form::open(['url'=>'/password/email','method'=>'POST','class'=>'js-validation-reminder']) }}
                                     {{ csrf_field() }}
                                     <div class="form-group row">
@@ -71,9 +82,9 @@
                                                 {{ Form::label('username','Usuario') }}
                                             </div>
                                             @if ($errors->has('username'))
-                                                <span class="help-block">
-                                                    <strong>{{ $errors->first('username') }}</strong>
-                                                </span>
+                                            <div class="text-danger">
+                                                {{ $errors -> first('username') }}
+                                            </div>
                                             @endif
                                         </div>
                                     </div>
@@ -81,11 +92,12 @@
                                         <button type="submit" class="btn btn-block btn-hero btn-noborder btn-rounded btn-alt-primary">
                                             <i class="fa fa-asterisk mr-10"></i> Restablecer contrase&ntilde;a
                                         </button>
-                                        <a class="btn btn-block btn-noborder btn-rounded btn-alt-secondary" href="{{ route('login') }}">
-                                            <i class="si si-login text-muted mr-10"></i> Iniciar sesi&oacute;n
-                                        </a>
                                     </div>
                                 {{ Form::close() }}
+                                @endif
+                                <a class="btn btn-block btn-noborder btn-rounded btn-alt-secondary" href="{{ route('login') }}">
+                                    <i class="si si-login text-muted mr-10"></i> Iniciar sesi&oacute;n
+                                </a>
                             </div>
                         </div>
                         <!-- END Reminder Form -->

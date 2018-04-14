@@ -5,19 +5,8 @@ use InvalidArgumentException;
 use Illuminate\Auth\Passwords\PasswordBrokerManager;
 use Illuminate\Support\Str;
 
-/**
- * @mixin \Illuminate\Contracts\Auth\PasswordBroker
- */
 class CustomPasswordBrokerManager extends PasswordBrokerManager
 {
-    /**
-     * Resolve the given broker.
-     *
-     * @param  string  $name
-     * @return \Illuminate\Contracts\Auth\PasswordBroker
-     *
-     * @throws \InvalidArgumentException
-     */
     protected function resolve($name)
     {
         $config = $this->getConfig($name);

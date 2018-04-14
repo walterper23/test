@@ -23,13 +23,15 @@ var OpAuthReminder = function() {
             rules: {
                 'username': {
                     required  : true,
-                    minlength : 5
+                    minlength : 5,
+                    email     : true
                 }
             },
             messages: {
                 'username': {
-                    required  : 'Introduzca su usuario',
-                    minlength : 'Introduzca mínimo {0} caracteres'
+                    required  : 'Introduzca su nombre de usuario',
+                    minlength : 'Introduzca mínimo {0} caracteres',
+                    email     : 'Introduzca un correo electrónico válido'
                 }
             }
         });

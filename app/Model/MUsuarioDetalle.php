@@ -14,12 +14,19 @@ class MUsuarioDetalle extends BaseModel
         return $this -> attributes['USDE_NO_TRABAJADOR'];
     }
 
-    public function getNombres(){
+    public function getNombres()
+    {
         return $this -> attributes['USDE_NOMBRES'];
     }
     
-    public function getApellidos(){
+    public function getApellidos()
+    {
         return $this -> attributes['USDE_APELLIDOS'];
+    }
+
+    public function getEmail()
+    {
+        return $this -> attributes['USDE_EMAIL'];
     }
     
     /* Relationships */

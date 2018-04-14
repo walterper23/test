@@ -19,28 +19,28 @@ class CustomDatabaseTokenRepository extends DatabaseTokenRepository
         // the database so that we can verify the token within the actual reset.
         $token = $this->createNewToken();
 
-        $insert = ['PASS_USUARIO' => $user -> getKey()];
-        $insert = array_merge($insert, $this->getPayload($email, $token));
+        $insert = [
+            'PASS_USUARIO'    => $user -> getKey(),
+            'PASS_USERNAME'   => $user -> getAuthUsername(),
+            'PASS_EMAIL'      => $email,
+            'PASS_TOKEN'      => $this->hasher->make($token),
+            'PASS_CREATED_AT' => new Carbon
+        ];
 
-        $this->getTable()->insert($insert);
+        $this -> getTable() -> insert($insert);
 
         return $token;
     }
 
     protected function deleteExisting(CanResetPasswordContract $user)
     {
-        return $this->getTable()->where('PASS_EMAIL', $user->getEmailForPasswordReset())->delete();
-    }
-
-    protected function getPayload($email, $token)
-    {
-        return ['PASS_EMAIL' => $email, 'PASS_TOKEN' => $this->hasher->make($token), 'PASS_CREATED_AT' => new Carbon];
+        return $this -> getTable() -> where('PASS_USERNAME',$user -> getAuthUsername()) -> where('PASS_EMAIL', $user->getEmailForPasswordReset()) -> delete();
     }
 
     public function exists(CanResetPasswordContract $user, $token)
     {
         $record = (array) $this->getTable()->where(
-            'PASS_EMAIL', $user->getEmailForPasswordReset()
+            'PASS_USERNAME', $user->getEmailForPasswordReset()
         )->first();
 
         return $record &&

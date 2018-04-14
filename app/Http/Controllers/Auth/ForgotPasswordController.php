@@ -40,29 +40,53 @@ class ForgotPasswordController extends Controller
 
     public function sendResetLinkEmail(Request $request)
     {
-        $this->validateEmail($request);
+        $this->validateUsername($request);
 
         // We will send the password reset link to this user. Once we have attempted
         // to send the link, we will examine the response then see the message we
         // need to show to the user. Finally, we'll send out a proper response.
-        $response = $this->broker()->sendResetLink(
-            ['USUA_USERNAME' => $request -> username ]
-        );
 
-        return $response == Password::RESET_LINK_SENT
-                    ? $this->sendResetLinkResponse($response)
-                    : $this->sendResetLinkFailedResponse($request, $response);
+        $credentials = [
+            'USUA_USERNAME' => $request -> username,
+            'USUA_ENABLED'  => 1,
+            'USUA_DELETED'  => 0
+        ];
+
+        $response = $this->broker()->sendResetLink( $credentials );
+
+        if ($response == Password::RESET_LINK_SENT)
+        {
+            $email = $this -> broker() -> getUser( $credentials ) -> getEmailForPasswordReset();
+            return $this->sendResetLinkResponseEmail($response, $email);
+        }
+        else
+        {
+            return $this->sendResetLinkFailedResponse($request, $response);
+        }
     }
 
-    protected function validateEmail(Request $request)
+    protected function validateUsername(Request $request)
     {
-        $this->validate($request, ['username' => 'required|email']);
+        $this->validate($request,
+            ['username' => 'required|email'],
+            [
+                'username.required' => 'Introduzca su nombre de usuario',
+                'username.email'    => 'Introduzca un correo electrónico válido'
+            ]
+        );
+    }
+
+    protected function sendResetLinkResponseEmail($response, $email)
+    {
+        $status = sprintf('<b>¡Éxito!</b> Se ha enviado un mensaje a <b>%s</b>.<br>Revise su bandeja para continuar el restablecimiento de contraseña.',$email);
+
+        return back()->with('status', $status);
     }
 
     protected function sendResetLinkFailedResponse(Request $request, $response)
     {
         return back()->withErrors(
-            ['username' => trans($response)]
+            ['username' => 'El usuario es incorrecto o no existe. Intente de nuevo']
         );
     }
 
