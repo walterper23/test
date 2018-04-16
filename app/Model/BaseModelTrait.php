@@ -163,7 +163,9 @@ trait BaseModelTrait
     // Scope para incluir solamente los registros que no tengan la marca de Eliminado y que tengan la marca de Disponible
     public function scopeExistenteDisponible($query)
     {
-        return $query -> existente() -> disponible();
+        return $query -> where(function($q){
+            $q -> existente() -> disponible();
+        });
     }
 
 }

@@ -50,8 +50,16 @@ var hPanel = function(){
 
 				}
 			}
+	};
+
+	var nuevoEstado = function(){
+		App.openModal({
+			id : 'modal-escaneos-documentos',
+			size : 'modal-lg',
+			url  : url_manager,
+			data : { action : 1, seguimiento : id }
 		});
-	}
+	};
 
 	return {
 		verAnexos : function( id ){
@@ -66,6 +74,8 @@ var hPanel = function(){
 		marcarImportante : function( element, id ){
 			_marcarImportante(element, id);
 		},
-
+		nuevoEstado : function(){
+			_nuevoEstado();
+		}
 	};
 }();

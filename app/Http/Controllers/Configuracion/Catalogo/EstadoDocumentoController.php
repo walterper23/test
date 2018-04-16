@@ -68,12 +68,11 @@ class EstadoDocumentoController extends BaseController
 			$data['action']		   = 1;
 			$data['id']		       = null;
 
-			$direcciones = MDireccion::with('Departamentos')
-									-> select('DIRE_DIRECCION','DIRE_NOMBRE')
-									-> where('DIRE_ENABLED',1)
-									-> where('DIRE_DELETED',0)
-									-> orderBy('DIRE_NOMBRE')
-									-> limit(1) -> get();
+			$direcciones = MDireccion::with('DepartamentosExistentesDisponibles')
+							-> select('DIRE_DIRECCION','DIRE_NOMBRE')
+							-> existenteDisponible()
+							-> orderBy('DIRE_NOMBRE')
+							-> get();
 
 			$data['direcciones'] = $direcciones -> pluck('DIRE_NOMBRE','DIRE_DIRECCION') -> toArray();
 
@@ -81,7 +80,7 @@ class EstadoDocumentoController extends BaseController
 
 			foreach ($direcciones as $direccion)
 			{
-				$departamentos = $direccion -> Departamentos() -> where('DEPA_ENABLED',1) -> get();
+				$departamentos = $direccion -> DepartamentosExistentesDisponibles;
 				foreach ($departamentos as $departamento)
 				{
 					$data['departamentos'][] = [
@@ -135,24 +134,27 @@ class EstadoDocumentoController extends BaseController
 			$data['action']		   = 2;
 			$data['id']		       = Input::get('id');
 
-			$direcciones = MDireccion::with('departamentos')
-									->select('DIRE_DIRECCION','DIRE_NOMBRE')
-									->where('DIRE_ENABLED',1)
-									->orderBy('DIRE_NOMBRE')
-									->get();
+			$direcciones = MDireccion::with('DepartamentosExistentesDisponibles')
+							-> select('DIRE_DIRECCION','DIRE_NOMBRE')
+							-> existenteDisponible()
+							-> orderBy('DIRE_NOMBRE')
+							-> get();
+
+			$data['direcciones'] = $direcciones -> pluck('DIRE_NOMBRE','DIRE_DIRECCION') -> toArray();
 
 			$data['departamentos'] = [];
 
-			foreach ($direcciones as $direccion) {
-
-				$nombre_direccion = $direccion->DIRE_NOMBRE;
-				foreach($direccion->departamentos as $departamento)
+			foreach ($direcciones as $direccion)
+			{
+				$departamentos = $direccion -> DepartamentosExistentesDisponibles;
+				foreach ($departamentos as $departamento)
 				{
-					$id_departamento      = $departamento->DEPA_DEPARTAMENTO;
-					$nombre_departamento  = $departamento->DEPA_NOMBRE;
-					$data['departamentos'][ $nombre_direccion ][ $id_departamento ] = $nombre_departamento;
+					$data['departamentos'][] = [
+						$direccion -> getKey(),
+						$departamento -> getKey(),
+						$departamento -> getNombre()
+					];
 				}
-
 			}
 
 			return view('Configuracion.Catalogo.EstadoDocumento.formEstadoDocumento') -> with($data);

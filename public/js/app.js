@@ -139,6 +139,7 @@ var App = function(){
             }
         },
         loadScript : function(url, callback){
+        	var callback = callback || function(){};
         	_loadScript(url, callback);
         }
     };

@@ -6,7 +6,7 @@ use App\Model\Catalogo\MEstadoDocumento;
 class EstadosDocumentosDataTable extends CustomDataTable{
 
     protected function setSourceData(){
-        $this->sourceData = MEstadoDocumento::with(['direccion','departamento'])->selectRaw('ESDO_ESTADO_DOCUMENTO, ESDO_DIRECCION, ESDO_DEPARTAMENTO, ESDO_NOMBRE, ESDO_CREATED_AT, ESDO_ENABLED')->where('ESDO_DELETED',0)->orderBy('ESDO_CREATED_AT','DESC')->get();
+        $this -> sourceData = MEstadoDocumento::with(['Direccion','Departamento']) -> select('ESDO_ESTADO_DOCUMENTO','ESDO_DIRECCION','ESDO_DEPARTAMENTO','ESDO_NOMBRE','ESDO_CREATED_AT','ESDO_ENABLED') -> disponible() -> orderBy('ESDO_CREATED_AT','DESC') -> get();
     }
 
     protected function columnsTable(){
@@ -20,18 +20,16 @@ class EstadosDocumentosDataTable extends CustomDataTable{
             [
                 'title' => 'Dirección',
                 'render' => function($query){
-                    if( $query->direccion != null ){
-                        return $query->direccion->presenter()->link();
-                    }
+                    if (! is_null($query -> Direccion) )
+                        return $query -> Direccion -> getNombre();
                     return '- Ninguno -';
                 }
             ],
             [
                 'title' => 'Departamento',
                 'render' => function($query){
-                    if( $query->departamento != null ){
-                        return $query->departamento->presenter()->link();
-                    }
+                    if (! is_null($query -> Departamento) )
+                        return $query -> Departamento -> getNombre();
                     return '- Ninguno -';
                 }
             ],
@@ -60,9 +58,9 @@ class EstadosDocumentosDataTable extends CustomDataTable{
                 'render' => function($query){
                     $buttons = '';
 
-                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hEstadoDocumento.edit_('.$query->ESDO_ESTADO_DOCUMENTO.')"><i class="fa fa-pencil"></i></button>';
+                    $buttons .= '<button type="button" class="btn btn-sm btn-circle btn-alt-success" onclick="hEstadoDocumento.edit_('.$query->ESDO_ESTADO_DOCUMENTO.')"><i class="fa fa-pencil"></i></button>';
                 
-                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hEstadoDocumento.delete_('.$query->ESDO_ESTADO_DOCUMENTO.')"><i class="fa fa-trash"></i></button>';
+                    $buttons .= '<button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hEstadoDocumento.delete_('.$query->ESDO_ESTADO_DOCUMENTO.')"><i class="fa fa-trash"></i></button>';
                     
                     return $buttons;
                 }

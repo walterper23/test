@@ -7,6 +7,10 @@
     </div>
 </div>
 
+@stack('css-style')
+
+@stack('css-custom')
+
 @yield('content')
 
 @yield('content-custom')

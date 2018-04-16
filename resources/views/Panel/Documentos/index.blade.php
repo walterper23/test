@@ -80,7 +80,7 @@
                         </div>
                     </div>
                     <div class="block-options">
-                        <button type="button" class="btn btn-danger" onclick="hPanel.">
+                        <button type="button" class="btn btn-danger" onclick="hPanel.nuevoEstado()">
                             <i class="fa fa-fw fa-flash"></i> Nuevo
                         </button>
                         <strong>1 - {{ sizeof($documentos) }}</strong> de <strong>{{ sizeof($documentos) }}</strong>

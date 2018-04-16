@@ -32,6 +32,16 @@ class MDireccion extends BaseModel
         return $this -> Departamentos() -> existente();
     }
 
+    public function DepartamentosDisponibles()
+    {
+        return $this -> Departamentos() -> disponible();
+    }
+
+    public function DepartamentosExistentesDisponibles()
+    {
+        return $this -> Departamentos() -> existenteDisponible();
+    }
+
     public function Puestos()
     {
         return $this -> hasMany('App\Model\Catalogo\MPuesto','PUES_DIRECCION',$this -> getKeyName());

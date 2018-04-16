@@ -2,6 +2,11 @@
 
 @section('title')<i class="fa fa-flash"></i> {!! $title !!}@endsection
 
+@push('css-style')
+    {{ Html::style('js/plugins/select2/select2.min.css') }}
+    {{ Html::style('js/plugins/select2/select2-bootstrap.min.css') }}
+@endpush
+
 @section('content')
 	@component('vendor.contentModal')
     {!! Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) !!}
@@ -26,6 +31,9 @@
 @endsection
 
 @push('js-custom')
+
+{{ Html::script('js/plugins/select2/select2.full.min.js') }}
+
 <script type="text/javascript">
 	'use strict';
 	$.extend(new AppForm, new function(){
@@ -34,6 +42,9 @@
 		this.form_    = '#{{$form_id}}';
 
 		this.start = function(){
+
+			Codebase.helper('select2');
+
 			var selectDepartamento = $('#departamento');
 			var options = selectDepartamento.find('option[data-direccion]').hide();
 
