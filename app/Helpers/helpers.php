@@ -28,8 +28,11 @@ if (! function_exists('permisoUsuario'))
     // Helper para recuperar todos los permisos del usuario
     function permisoUsuario( $permiso )
     {
+
+        $permisosUsuario = sprintf('Permisos.Usuario.Actual.%d', userKey());
+
         //Cache::flush('Permisos.Usuario.Actual');
-        $permisos = Cache::rememberForever('Permisos.Usuario.Actual',function(){
+        $permisos = Cache::rememberForever($permisosUsuario,function(){
             return user() -> Permisos;
         });
 

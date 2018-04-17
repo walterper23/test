@@ -144,7 +144,7 @@ class BaseController extends Controller
         return $this -> buildValues(false, $message, 'danger', $type, $tables);
     }
 
-    protected function responseTypeJSON( $message = '', $type )
+    protected function responseTypeJSON( $message = '', $type = 'success' )
     {
         $values = $this -> mergeValues(['status'=>true,'type'=>$type], $message);
         return response() -> json( $values );

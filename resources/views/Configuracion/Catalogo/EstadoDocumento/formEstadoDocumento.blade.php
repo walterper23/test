@@ -12,7 +12,7 @@
     {!! Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) !!}
 	    {!! Form::hidden('action',$action) !!}
 	    {!! Form::hidden('id',$id) !!}
-        {!! Field::selectTwo('direccion',(optional($modelo) -> ESDO_DIRECCION),['label'=>'Dirección','required'],$direcciones) !!}
+        {!! Field::select('direccion',(optional($modelo) -> ESDO_DIRECCION),['label'=>'Dirección','required'],$direcciones) !!}
         <div class="form-group row">
             <label class="col-sm-3 col-form-label" for="departamento" required>Departamento</label>
             <div class="col-sm-9">
@@ -25,7 +25,7 @@
             	</select>
             </div>
         </div>
-        {!! Field::text('nombre',(optional($modelo) -> ESDO_NOMBRE),['label'=>'Nombre','placeholder'=>'Nombre del estado de documento','required']) !!}
+        {!! Field::text('nombre',(optional($modelo) -> ESDO_NOMBRE),['label'=>'Nombre','placeholder'=>'Nombre del estado de documento','required','maxlength'=>150]) !!}
 	{!! Form::close() !!}
 	@endcomponent
 @endsection
@@ -36,7 +36,8 @@
 
 <script type="text/javascript">
 	'use strict';
-	$.extend(new AppForm, new function(){
+	var formEstadoDocumento = new AppForm;
+	$.extend(formEstadoDocumento, new function(){
 
 		this.context_ = '#modal-{{ $form_id }}';
 		this.form_    = '#{{$form_id}}';
@@ -45,10 +46,11 @@
 
 			Codebase.helper('select2');
 
+			var selectDireccion = $('#direccion');
 			var selectDepartamento = $('#departamento');
 			var options = selectDepartamento.find('option[data-direccion]').hide();
 
-			$('#direccion').on('change',function(){
+			selectDireccion.on('change',function(){
 				selectDepartamento.val('');
 				options.hide();
 				if( this.value.length ){
@@ -56,13 +58,18 @@
 					selectDepartamento.find('option[data-direccion='+this.value+']').show();
 				}
 			});
+
+			if( selectDireccion.find('option').length == 1 ){
+				selectDireccion.find('option:first').attr('selected','selected').trigger('change');
+			}
+
 		};
 	
 		this.rules = function(){
 			return {
 				direccion : { required : true },
 				departamento : { required : true },
-				nombre : { required : true, maxlength : 255 }
+				nombre : { required : true, maxlength : 150 }
 			}
 		}
 
@@ -70,7 +77,10 @@
 			return {
 				direccion : { required : 'Especifique una dirección' },
 				departamento : { required : 'Especifique un departamento' },
-				nombre : { required : 'Introduzca un nombre' }
+				nombre : {
+					required : 'Introduzca un nombre',
+					maxlength : 'Máximo {0} caracteres'
+				}
 			}
 		}
 	}).init().start();

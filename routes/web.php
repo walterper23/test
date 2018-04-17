@@ -69,6 +69,8 @@ Route::middleware('preventBackHistory') -> group(function(){
         Route::prefix('panel/documentos') -> namespace('Panel') -> group(function(){
             
             Route::get('/',                'PanelController@index');
+            Route::post('anexos-escaneos', 'PanelController@verAnexosEscaneos');
+            Route::post('cambio-estado',   'PanelController@formCambioEstadoDocumento');
             Route::post('manager',         'PanelController@manager');
             
             Route::prefix('seguimiento') -> namespace('Seguimiento') -> group(function(){

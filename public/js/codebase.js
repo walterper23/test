@@ -1419,6 +1419,7 @@ var Codebase = function() {
      *
      */
     var uiHelperSelect2 = function(){
+
         // Init Select2 (with .js-select2 class)
         jQuery('.js-select2:not(.js-select2-enabled)').each(function(){
             var el = jQuery(this);
@@ -1427,7 +1428,13 @@ var Codebase = function() {
             el.addClass('js-select2-enabled');
 
             // Init
-            el.select2();
+            el.select2({
+                language: {
+                    noResults : function(){
+                        return 'No se encontraron resultados';
+                    }
+                }
+            });
         });
     };
 

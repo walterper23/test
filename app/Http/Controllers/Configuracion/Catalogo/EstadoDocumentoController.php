@@ -68,17 +68,30 @@ class EstadoDocumentoController extends BaseController
 			$data['action']		   = 1;
 			$data['id']		       = null;
 
-			$direcciones = MDireccion::with('DepartamentosExistentesDisponibles')
-							-> select('DIRE_DIRECCION','DIRE_NOMBRE')
-							-> existenteDisponible()
-							-> orderBy('DIRE_NOMBRE')
-							-> get();
+			$direcciones = MDireccion::with(['DepartamentosExistentesDisponibles'=>function($query){
+				
+				// Si el usuario no puede administrar todOs lOs departamentos, buscamos solos los departamentos que tenga asignados		
+				if (! (user() -> can('SIS.ADMIN.DEPTOS')) )
+				{
+					$ids_departamentos = user() -> Departamentos -> pluck('DEPA_DEPARTAMENTO') -> toArray();
+					$query -> whereIn('DEPA_DEPARTAMENTO',$ids_departamentos);
+				}
+				return $query;
 
-			$data['direcciones'] = $direcciones -> pluck('DIRE_NOMBRE','DIRE_DIRECCION') -> toArray();
+			}]) -> select('DIRE_DIRECCION','DIRE_NOMBRE') -> existenteDisponible();
+
+			// Si el usuario no puede administrar todas las direcciones, buscamos solos las direcciones que tenga asignadas		
+			if (! (user() -> can('SIS.ADMIN.DIRECC')) )
+			{
+				$ids_direcciones = user() -> Direcciones -> pluck('DIRE_DIRECCION') -> toArray();
+				$direcciones -> whereIn('DIRE_DIRECCION',$ids_direcciones);
+			}
+
+			$direcciones = $direcciones -> orderBy('DIRE_NOMBRE');
 
 			$data['departamentos'] = [];
 
-			foreach ($direcciones as $direccion)
+			foreach ($direcciones -> get() as $direccion)
 			{
 				$departamentos = $direccion -> DepartamentosExistentesDisponibles;
 				foreach ($departamentos as $departamento)
@@ -90,6 +103,8 @@ class EstadoDocumentoController extends BaseController
 					];
 				}
 			}
+			
+			$data['direcciones'] = $direcciones -> pluck('DIRE_NOMBRE','DIRE_DIRECCION') -> toArray();
 
 			return view('Configuracion.Catalogo.EstadoDocumento.formEstadoDocumento')->with($data);
 
@@ -136,9 +151,16 @@ class EstadoDocumentoController extends BaseController
 
 			$direcciones = MDireccion::with('DepartamentosExistentesDisponibles')
 							-> select('DIRE_DIRECCION','DIRE_NOMBRE')
-							-> existenteDisponible()
-							-> orderBy('DIRE_NOMBRE')
-							-> get();
+							-> existenteDisponible();
+			
+			// Si el usuario no puede administrar todas las direcciones, buscamos solos las direcciones que tenga asignadas
+			if (! user() -> can('SIS.ADMIN.DIRECC') )
+			{
+				$ids_direcciones = user() -> Direcciones -> pluck('DIRE_DIRECCION') -> toArray();
+				$direcciones -> find($ids_direcciones); 
+			}
+
+			$direcciones -> orderBy('DIRE_NOMBRE') -> get();
 
 			$data['direcciones'] = $direcciones -> pluck('DIRE_NOMBRE','DIRE_DIRECCION') -> toArray();
 

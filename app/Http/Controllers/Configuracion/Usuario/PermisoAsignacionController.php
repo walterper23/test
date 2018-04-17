@@ -103,6 +103,9 @@ class PermisoAsignacionController extends BaseController
 
         $this -> editarAsignacionesUsuario( $usuario, $request );
 
+        // Eliminamos el caché de los permisos del usuario, para cargar de nuevo los permisos
+        Cache::forget(sprintf('Permisos.Usuario.Actual.%d', $usuario -> getKey()));
+
         return $this -> responseSuccessJSON('<i class="fa fa-fw fa-lock"></i> Los cambios se han guardado correctamente');
 
     }

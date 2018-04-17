@@ -4,30 +4,21 @@ var hPanel = function(){
 
 	var url_manager = '/panel/documentos/manager';
 
-	var _verAnexos = function(id){
+	var _verAnexosEscaneos = function(id){
 		App.openModal({
-			id : 'modal-anexos-documentos',
+			id : 'modal-anexos-escaneos-documentos',
 			size : 'modal-lg',
-			url  : url_manager,
+			url  : '/panel/documentos/anexos-escaneos',
 			data : { action : 1, seguimiento : id }
 		});
 	};
 
-	var _verEscaneos = function(id){
-		App.openModal({
-			id : 'modal-escaneos-documentos',
-			size : 'modal-lg',
-			url  : url_manager,
-			data : { action : 1, seguimiento : id }
-		});
-	};
-	
 	var _cambiarEstado = function(id){
 		App.openModal({
 			id : 'form-cambio-estado-documento',
 			size : 'modal-lg',
-			url  : url_manager,
-			data : { action : 1, seguimiento : id }
+			url  : '/panel/documentos/cambio-estado',
+			data : { seguimiento : id }
 		});
 	};
 
@@ -50,14 +41,43 @@ var hPanel = function(){
 
 				}
 			}
+		});
 	};
 
-	var nuevoEstado = function(){
+	var _marcarArchivado = function( element, id ){
+		AppAlert.confirm({
+			title : 'Archivar documento',
+			text : '¿Desea archivar/desarchivar el documento?',
+			then : function(){
+				App.ajaxRequest({
+					url  : url_manager,
+					data : { action : 4, documento : id },
+					success : function(result){
+						if ( result.status ){
+							if ( result.archivado ){
+								$(element).closest('.section-options').find('i.archive').addClass('text-primary');
+								$('#arch').text('Desarchivar');
+								AppAlert.notify({
+									type : result.type,
+									message : result.message
+								});
+							}else{
+								$(element).closest('.section-options').find('i.archive').removeClass('text-primary');
+								$('#arch').text('Archivar');
+							}
+						}else{
+
+						}
+					}
+				});
+			}
+		});
+	};
+
+	var _nuevoEstado = function(){
 		App.openModal({
-			id : 'modal-escaneos-documentos',
-			size : 'modal-lg',
-			url  : url_manager,
-			data : { action : 1, seguimiento : id }
+			id : 'form-estado-documento',
+			url : '/configuracion/catalogos/estados-documentos/nuevo',
 		});
 	};
 
@@ -73,6 +93,9 @@ var hPanel = function(){
 		},
 		marcarImportante : function( element, id ){
 			_marcarImportante(element, id);
+		},
+		marcarArchivado : function( element, id ){
+			_marcarArchivado( element, id );
 		},
 		nuevoEstado : function(){
 			_nuevoEstado();

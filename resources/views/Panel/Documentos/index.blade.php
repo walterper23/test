@@ -80,9 +80,11 @@
                         </div>
                     </div>
                     <div class="block-options">
+                        @can('SIS.ADMIN.ESTA.DOC')
                         <button type="button" class="btn btn-danger" onclick="hPanel.nuevoEstado()">
                             <i class="fa fa-fw fa-flash"></i> Nuevo
                         </button>
+                        @endcan
                         <strong>1 - {{ sizeof($documentos) }}</strong> de <strong>{{ sizeof($documentos) }}</strong>
                         <button type="button" class="btn-block-option" data-toggle="block-option">
                             <i class="si si-arrow-left"></i>
@@ -109,6 +111,7 @@
                                     <p>{{ $seguimiento -> DETA_DESCRIPCION }}</p>
                                 </div>
                                 <div class="col-12">
+                                    <span><i class="fa fa-fw fa-calendar"></i> <b>Recepción:</b> {{ $seguimiento -> DETA_FECHA_RECEPCION }} </span>
                                     @if (! empty($seguimiento -> DETA_ANEXOS) )
                                     <button type="button" class="btn btn-sm btn-rounded btn-alt-primary" onclick="hPanel.verAnexos({{ $seguimiento -> Documento -> getKey()  }})">
                                         <i class="fa fa-fw fa-clipboard"></i> Anexos
@@ -124,9 +127,8 @@
                         </div>
                         <div class="col-md-5">
                             <p class="font-w700" title="Seguimiento #{{ $seguimiento -> getCodigo(5) }}">
-                                <span class="text-danger"><i class="fa fa-fw fa-flash"></i> #{{ $seguimiento -> getCodigo(5) }}</span> :: ÚLTIMO ESTADO
+                                <span class="text-danger"><i class="fa fa-fw fa-flash"></i> #{{ $seguimiento -> getCodigo(5) }}</span> :: {{ $seguimiento -> EstadoDocumento -> getNombre() }}
                             </p>
-                            <p>{{ $seguimiento -> EstadoDocumento -> getNombre() }}</p>
                             <p><span class="font-w600"><i class="fa fa-fw fa-comment-o"></i> Observaciones:</span> {{ $seguimiento -> getObservacion() }}</p>
                         </div>
                         <div class="col-md-2 text-right section-options">
@@ -165,8 +167,12 @@
                                         <a class="dropdown-item" href="{{ url_ver_seguimiento( $seguimiento ) }}">
                                             <i class="fa fa-fw fa-paper-plane text-success"></i> Ver seguimiento
                                         </a>
-                                        <a class="dropdown-item" href="javascript:void(0)" onclick="hPanel.archivar(this, {{ $seguimiento -> Documento -> getKey() }})">
-                                            <i class="fa fa-fw fa-archive"></i> Archivar
+                                        <a class="dropdown-item" href="javascript:void(0)" onclick="hPanel.marcarArchivado(this, {{ $seguimiento -> Documento -> getKey() }})">
+                                        @if (! $seguimiento -> Documento -> archivado() )
+                                            <i class="fa fa-fw fa-archive archive"></i> <span id="arch">Archivar</span>
+                                        @else
+                                            <i class="fa fa-fw fa-archive archive text-primary"></i> <span id="arch">Desarchivar</span>
+                                        @endif
                                         </a>
                                     </div>
                                 </div>

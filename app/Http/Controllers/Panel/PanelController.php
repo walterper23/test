@@ -146,22 +146,16 @@ class PanelController extends BaseController
 	{
 
         switch ($request -> action) {
-            case 1: // Formulario de cambio de estado
-                $response = $this -> formCambioEstadoDocumento( $request );
-                break;
-            case 2: // Nuevo cambio de estado de documento
+            case 1: // Nuevo cambio de estado de documento
                 $response = $this -> cambiarEstadoDocumento( $request );
+                break;
+            case 2: // Editar cambio de estado de documento
+                $response = $this -> editarEstadoDocumento( $request );
                 break;
             case 3: // Marcar documento como importante
                 $response = $this -> marcarDocumentoImportante( $request );
                 break;
             case 4: // Marcar documento como archivado
-                $response = $this -> marcarDocumentoArchivado( $request );
-                break;
-            case 5: // Marcar documento como archivado
-                $response = $this -> marcarDocumentoArchivado( $request );
-                break;
-            case 6: // Marcar documento como archivado
                 $response = $this -> marcarDocumentoArchivado( $request );
                 break;
             default:
@@ -171,8 +165,18 @@ class PanelController extends BaseController
         return $response;
     }
 
+    // Método para mostrar una interfaz con los anexos y los escaneos que contiene un documento
+    public function verAnexosEscaneos(Request $request)
+    {
+    	// Recuperar el documento
+    	$documento;
+
+
+    	return ;
+    }
+
     // Formulario para realizar el cambio de estado de un documento
-	public function formCambioEstadoDocumento( $request )
+	public function formCambioEstadoDocumento(Request $request )
 	{
 		$data = [
 			'title'         => 'Cambio de Estado de Documento',
@@ -304,6 +308,16 @@ class PanelController extends BaseController
 
 	}
 
+	public function formEditarCambioEstadoDocumento(Request $request)
+	{
+
+	}
+
+	public function editarCambioEstadoDocumento( $request )
+	{
+
+	}
+
 	// Método para marcar como Importante un documento para el usuario
 	public function marcarDocumentoImportante( $request )
 	{
@@ -314,7 +328,7 @@ class PanelController extends BaseController
 
 			$importante = $documento -> importante();
 
-			$message = sprintf('Documento #%s importante <i class="fa fa-fw fa-star"></i>', $documento -> getCodigo());
+			$message = sprintf('Documento <b>#%s</b> importante <i class="fa fa-fw fa-star"></i>', $documento -> getCodigo());
 
 			return $this -> responseWarningJSON(['message'=>$message,'importante'=>$importante]);
 
@@ -332,8 +346,12 @@ class PanelController extends BaseController
 			$documento -> marcarArchivado();
 			$documento -> save();
 
-			return $this -> responseSuccessJSON();
-
+			if( $documento -> archivado() ){
+				$message = sprintf('Documento <b>#%s</b> archivado <i class="fa fa-fw fa-archive"></i>', $documento -> getCodigo());
+				return $this -> responseInfoJSON(['message'=>$message,'archivado'=>true]);
+			}
+			
+			return $this -> responseTypeJSON(['archivado'=>false]);
 		} catch(Exception $error) {
 
 		}

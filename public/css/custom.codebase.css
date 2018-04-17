@@ -62,7 +62,8 @@ a {
 }
 
 .form-control {
-	border: 1px solid #C7C7C7;
+	border: 1px solid #A3ACB5;
+	padding: 8px 8px;
 }
 
 .block.block-themed>.block-header>.block-title {
@@ -93,4 +94,8 @@ a {
 
 .block-content p {
 	margin-bottom: 0;
+}
+
+span.select2-selection.select2-selection--single, span.select2-selection__rendered, span.select2-selection__arrow {
+	height: 34px !important;
 }

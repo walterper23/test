@@ -10,7 +10,6 @@ var App = function(){
 		beforeSend  : function(){},
 		success     : function(){},
 		complete    : function(){},
-		error       : function(){},
 		fail        : function(){},
 		statusCode  : {
 			422 : function( result ){
@@ -27,6 +26,18 @@ var App = function(){
 		$.ajaxSetup({
 		    headers: {
 		        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+			},
+			error : function(x, status, error){
+				console.log(x.status, status, error)
+				if(x.status == 403){
+					AppAlert.error({
+						title : '¡ Acceso no autorizado !',
+						text : 'Lo sentimos, no tienes permisos',
+						then : function(){
+							location.href = '/';
+						}
+					});
+				}
 			}
 		});
 	};
@@ -44,6 +55,7 @@ var App = function(){
 			error       : options.error,
 			fail        : options.fail,
 			statusCode : {
+				403 : options.code403,
 				422 : options.code422
 			},
 		}));
