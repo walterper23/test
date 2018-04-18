@@ -25,7 +25,6 @@ class PermisoAsignacionController extends BaseController
 {
 	public function __construct()
 	{
-        $this -> middleware('can:USU.ADMIN.PERMISOS.ASIG');
 		parent::__construct();
 		$this -> setLog('PermisoAsignacionController.log');
 	}

@@ -91,6 +91,12 @@
 @endpush
 
 @push('js-custom')
+    @if (isset($acuse))
+    <script type="text/javascript">
+    hRecepcion.verAcuse({{ $acuse }});
+    @endif
+    </script>
+
     {{ $table1 -> javascript() }}
     {{ $table2 -> javascript() }}
     {{ $table3 -> javascript() }}

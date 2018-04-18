@@ -24,11 +24,12 @@ class SeguimientoController extends BaseController
 
 		$seguimiento = MSeguimiento::with('Documento') -> find( $search );
 
-		if ($read == 1) // Si la petición pide que marquemos el seguimiento como leído ...
+		if ($read == 1 && !($seguimiento -> leido()) ) // Si la petición pide que marquemos el seguimiento como leído y el seguimiento no ha sido leido ...
 			$seguimiento -> marcarComoLeido() -> save(); // ... marcamos el seguimiento como leído
 
 		$data['seguimiento']  = $seguimiento;
 		$data['documento']    = $seguimiento -> Documento;
+		$data['detalle']      = $seguimiento -> Documento -> Detalle;
 		$data['seguimientos'] = $seguimiento -> Documento -> Seguimientos() -> with('DireccionOrigen','DireccionDestino','DepartamentoOrigen','DepartamentoDestino','EstadoDocumento')
 			-> leftJoin('usuarios','USUA_USUARIO','=','SEGU_USUARIO')
 			-> leftJoin('usuarios_detalles','USDE_USUARIO_DETALLE','=','USUA_DETALLE')

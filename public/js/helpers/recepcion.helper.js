@@ -9,6 +9,10 @@ App.loadScript('/js/helpers/helper.js', function(){
 				return '/recepcion/documentos/manager'
 			},
 
+			verAcuse : function( id ){
+				console.log(id)
+			},
+
 			reloadTables : function( tables ){
 				console.log(tables[0])
 				App.reloadTable(tables[0], function(){

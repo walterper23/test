@@ -3,12 +3,8 @@ namespace App\Http\Controllers\Configuracion\Usuario;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\ManagerUsuarioRequest;
-use Illuminate\Support\Facades\Input;
-use Carbon\Carbon;
 use DB;
 use Exception;
-use Validator;
-
 
 /* Controllers */
 use App\Http\Controllers\BaseController;
@@ -24,7 +20,6 @@ class UsuarioController extends BaseController
 	
 	public function __construct()
 	{
-		$this -> middleware('can:USU.ADMIN.USUARIOS');
 		parent::__construct();
 		$this -> setLog('UsuarioController.log');
 	}

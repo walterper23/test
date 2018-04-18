@@ -18,6 +18,7 @@ use App\Model\MArchivo;
 use App\Model\MDenuncia;
 use App\Model\MDetalle;
 use App\Model\MDocumento;
+use App\Model\MDocumentoDenuncia;
 use App\Model\MEscaneo;
 use App\Model\MMunicipio;
 use App\Model\MSeguimiento;
@@ -33,8 +34,13 @@ use App\DataTables\DocumentosDataTable;
 
 class RecepcionController extends BaseController
 {
+	public function __construct()
+	{
+		parent::__construct();
+		$this -> setLog('RecepcionController');
+	}
 
-	public function index(){
+	public function index(Request $request){
 
 		$tabla1 = new DenunciasDataTable();
 		$tabla2 = new DocumentosDenunciasDataTable();
@@ -44,7 +50,8 @@ class RecepcionController extends BaseController
 		$data['table2'] = $tabla2;
 		$data['table3'] = $tabla3;
 
-		$view = request() -> get('view','denuncias');
+		$view  = $request -> get('view','denuncias');
+		$acuse = $request -> get('acuse');
 
 		$data['tab_1'] = '';
 		$data['tab_2'] = '';
@@ -69,7 +76,14 @@ class RecepcionController extends BaseController
 				break;
 		}
 
+		$data['acuse'] = $acuse;
+
 		return view('Recepcion.indexRecepcion') -> with($data);
+	}
+
+	public function documentosEnCaptura()
+	{
+		abort(404);
 	}
 
 	public function manager(ManagerRecepcionRequest $request){
@@ -125,16 +139,24 @@ class RecepcionController extends BaseController
 		$data = [];
 
 		// Recuperamos los tipos de documentsos que se pueden recepcionar
-		$data['tipos_documentos'] = MSistemaTipoDocumento::where('SYTD_ENABLED',1) -> get();
+		$data['tipos_documentos'] = MSistemaTipoDocumento::existenteDisponible() -> get();
 
-		$data['anexos'] = MAnexo::where('ANEX_ENABLED',1)
-									->where('ANEX_DELETED',0)
-									->orderBy('ANEX_NOMBRE')
-									->pluck('ANEX_NOMBRE','ANEX_ANEXO')
-									->toArray();
+		$data['denuncias'] = MDenuncia::select('DENU_DENUNCIA','DENU_NO_EXPEDIENTE')
+							-> join('documentos','DENU_DOCUMENTO','=','DOCU_DOCUMENTO')
+							-> whereNotNull('DENU_NO_EXPEDIENTE')
+							-> whereIn('DOCU_SYSTEM_ESTADO_DOCTO',[2,3]) // Documento recepcionado, Documento en seguimiento
+							-> pluck('DENU_NO_EXPEDIENTE','DENU_DENUNCIA')
+							-> toArray();
 
-		$data['municipios'] = MMunicipio::selectRaw('MUNI_MUNICIPIO AS id, CONCAT(MUNI_CLAVE," - ",MUNI_NOMBRE) AS nombre') -> where('MUNI_ENABLED',1)
-							-> pluck('nombre','id') -> toArray();
+		$data['anexos'] = MAnexo::existenteDisponible()
+							-> orderBy('ANEX_NOMBRE')
+							-> pluck('ANEX_NOMBRE','ANEX_ANEXO')
+							-> toArray();
+
+		$data['municipios'] = MMunicipio::selectRaw('MUNI_MUNICIPIO AS id, CONCAT(MUNI_CLAVE," - ",MUNI_NOMBRE) AS nombre')
+							-> where('MUNI_ENABLED',1)
+							-> pluck('nombre','id')
+							-> toArray();
 
 		$data['context']       = 'context-form-recepcion';
 		$data['form_id']       = 'form-recepcion';
@@ -148,10 +170,16 @@ class RecepcionController extends BaseController
 
 	}
 
-	public function nuevaRecepcion( $request ){
+	// Método para guardar un documento en estado de captura pendiente, o sea, aun no recepcionado completamente
+	public function capturarRecepcion( $request )
+	{
 
+	}
+
+	// Método para realizar el guardado y la recepción de un documento
+	public function nuevaRecepcion( $request )
+	{
 		try {
-
 			// Reemplazamos los saltos de línea, por "\n"
 			$anexos = preg_replace('/\r|\n/','\n',$request -> anexos);
 			// Reemplazamos las "\n" repetidas
@@ -199,10 +227,25 @@ class RecepcionController extends BaseController
 				$denuncia -> save();
 				$redirect = '?view=denuncias';
 			}
-			else if ( $request -> tipo_documento == 2 ) // Si el tipo de documentos es un documento para denuncia ...
+			else if ( $request -> tipo_documento == 2 ) // Si el tipo de documento es un documento para denuncia ...
+			{
+				$denuncia = MDenuncia::with('Documento') -> find( $request -> denuncia );
+
+				$documentoDenuncia = new MDocumentoDenuncia; // ... registramos el documento a la denuncia
+				$documentoDenuncia -> DODE_DOCUMENTO         = $documento -> getKey();
+				$documentoDenuncia -> DODE_DENUNCIA          = $denuncia -> getKey();
+				$documentoDenuncia -> DODE_DOCUMENTO_INICIAL = $denuncia -> Documento -> getKey();
+				$documentoDenuncia -> DODE_DETALLE           = $denuncia -> Documento -> Detalle -> getKey();
+				$documentoDenuncia -> save();
+
 				$redirect = '?view=documentos-denuncias';
+			}
 			else
+			{
 				$redirect = '?view=documentos';
+			}
+
+			$redirect .= sprintf('&acuse=%d',$documento -> getKey()) ;
 
 			// Guardamos los archivos o escaneos que se hayan agregado al archivo
 
@@ -251,7 +294,8 @@ class RecepcionController extends BaseController
 	}
 
 
-	public function verRecepcion( $request ){
+	public function verRecepcion( $request )
+	{
 
 		$documento = MDocumento::find( $request -> id );
 

@@ -1,7 +1,7 @@
 <?php
 
 DB::listen(function($query){
-    \Illuminate\Support\Facades\Log::info($query -> sql);
+    //\Illuminate\Support\Facades\Log::info($query -> sql);
     //echo "<pre style=\"z-index:5000\">{$query->sql}</pre>";
 });
 
@@ -66,22 +66,31 @@ Route::middleware('preventBackHistory') -> group(function(){
 
         // Panel de trabajo del personal de las direcciones y departamentos
         Route::redirect('panel', 'panel/documentos?view=all');
-        Route::prefix('panel/documentos') -> namespace('Panel') -> group(function(){
+        Route::prefix('panel') -> namespace('Panel') -> group(function(){
             
-            Route::get('/',                'PanelController@index');
-            Route::post('anexos-escaneos', 'PanelController@verAnexosEscaneos');
-            Route::post('cambio-estado',   'PanelController@formCambioEstadoDocumento');
-            Route::post('manager',         'PanelController@manager');
-            
-            Route::prefix('seguimiento') -> namespace('Seguimiento') -> group(function(){
-                Route::get('/',      'SeguimientoController@index');
-            });
+            Route::prefix('documentos') -> group(function(){
 
+                Route::get('/',                       'PanelController@index');
+                Route::post('anexos-escaneos',        'PanelController@verAnexosEscaneos');
+                Route::post('cambio-estado',          'PanelController@formCambioEstadoDocumento');
+                Route::post('editar-cambio-estado',   'PanelController@formEditarCambioEstadoDocumento');
+                Route::post('manager',                'PanelController@manager');
+                
+                // Seguimiento de los documentos
+                Route::prefix('seguimiento') -> namespace('Seguimiento') -> group(function(){
+                    Route::get('/',      'SeguimientoController@index');
+                });
+
+                // Documentos semaforizados
+                Route::prefix('semaforizados') -> group(function(){
+
+                });
+            });
         });
         
+        // Configuración de catálogos, usuarios y sistema
+        Route::redirect('configuracion','configuracion/catalogos');
         Route::prefix('configuracion') -> namespace('Configuracion') -> group(function(){
-            
-            Route::get('/', 'ConfiguracionController@index');
             
             Route::prefix('catalogos') -> namespace('Catalogo') -> group(function(){
                 
@@ -135,7 +144,7 @@ Route::middleware('preventBackHistory') -> group(function(){
             });
 
             // Administración de usuarios, sus permisos y asignaciones
-            Route::prefix('usuarios') -> namespace('Usuario') -> group(function(){
+            Route::prefix('usuarios') -> middleware('can:USU.ADMIN.USUARIOS') -> namespace('Usuario') -> group(function(){
                 
                 Route::get('/',           'UsuarioController@index');
                 Route::post('post-data',  'UsuarioController@postDataTable');
@@ -145,14 +154,14 @@ Route::middleware('preventBackHistory') -> group(function(){
                 Route::post('password',   'UsuarioController@formPassword');
                 Route::post('manager',    'UsuarioController@manager');
 
-                Route::prefix('permisos-asignaciones') -> group(function(){
-                    Route::get('/',           'PermisoAsignacionController@index');
-                    Route::post('post-data',  'PermisoAsignacionController@postDataTable');
-                    Route::get('nuevo',       'PermisoAsignacionController@formUsuario');
-                    Route::get('editar',      'PermisoAsignacionController@editarUsuario');
-                    Route::post('manager',    'PermisoAsignacionController@manager');
-                });
+            });
 
+            Route::prefix('usuarios/permisos-asignaciones') -> middleware('can:USU.ADMIN.PERMISOS.ASIG') -> namespace('Usuario') -> group(function(){
+                Route::get('/',           'PermisoAsignacionController@index');
+                Route::post('post-data',  'PermisoAsignacionController@postDataTable');
+                Route::get('nuevo',       'PermisoAsignacionController@formUsuario');
+                Route::get('editar',      'PermisoAsignacionController@editarUsuario');
+                Route::post('manager',    'PermisoAsignacionController@manager');
             });
 
             // Administración de las configuraciones del sistema

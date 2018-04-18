@@ -100,7 +100,7 @@
             </div>
 
             @forelse ($documentos as $seguimiento)
-            <div class="block">
+            <div class="block {{ ($seguimiento -> leido === false) ? 'bg-info-light' : '' }}">
                 <div class="block-content block-content-full ribbon ribbon-bottom ribbon-bookmark ribbon-{{ $seguimiento -> SYTD_RIBBON_COLOR }}">
                     <div class="ribbon-box">{{ $seguimiento -> SYTD_NOMBRE }}</div>
                     <div class="row">
@@ -126,9 +126,9 @@
                             </div>
                         </div>
                         <div class="col-md-5">
-                            <p class="font-w700" title="Seguimiento #{{ $seguimiento -> getCodigo(5) }}">
+                            <a class="font-w700 text-primary-darker" title="Seguimiento #{{ $seguimiento -> getCodigo(5) }}" href="{{ url_ver_seguimiento( $seguimiento ) }}">
                                 <span class="text-danger"><i class="fa fa-fw fa-flash"></i> #{{ $seguimiento -> getCodigo(5) }}</span> :: {{ $seguimiento -> EstadoDocumento -> getNombre() }}
-                            </p>
+                            </a>
                             <p><span class="font-w600"><i class="fa fa-fw fa-comment-o"></i> Observaciones:</span> {{ $seguimiento -> getObservacion() }}</p>
                         </div>
                         <div class="col-md-2 text-right section-options">
@@ -146,36 +146,36 @@
                                 @else
                                     <i class="fa fa-fw fa-folder-open-o"></i>
                                 @endif
-                                <br>{{ $seguimiento -> SYED_NOMBRE }}
-                            </div>
-                            <div class="btn-group" role="group" aria-label="Documentos a visualizar">
-                                <div class="btn-group show" role="group">
-                                    <button type="button" class="btn btn-alt-secondary dropdown-toggle" id="btnGroupDrop2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Opciones</button>
-                                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop2" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 94px, 0px); top: 0px; left: 40px; will-change: transform;">
-                                        @if ( !($seguimiento -> Documento -> rechazado()) && !($seguimiento -> Documento -> resuelto()) && user() -> can('SEG.CAMBIAR.ESTADO') )
-                                        <a class="dropdown-item" href="#" onclick="hPanel.cambiarEstado({{ $seguimiento -> getKey() }})">
-                                            <i class="fa fa-fw fa-flash text-danger"></i> Cambiar estado
-                                        </a>
-                                        @endif
-                                        <a class="dropdown-item" href="javascript:void(0)" onclick="hPanel.marcarImportante(this, {{ $seguimiento -> Documento -> getKey() }})">
-                                        @if ($seguimiento -> importante)
-                                            <i class="fa fa-fw fa-star text-warning star"></i> Importante
-                                        @else
-                                            <i class="fa fa-fw fa-star-o star"></i> Importante
-                                        @endif
-                                        </a>
-                                        <a class="dropdown-item" href="{{ url_ver_seguimiento( $seguimiento ) }}">
-                                            <i class="fa fa-fw fa-paper-plane text-success"></i> Ver seguimiento
-                                        </a>
-                                        <a class="dropdown-item" href="javascript:void(0)" onclick="hPanel.marcarArchivado(this, {{ $seguimiento -> Documento -> getKey() }})">
-                                        @if (! $seguimiento -> Documento -> archivado() )
-                                            <i class="fa fa-fw fa-archive archive"></i> <span id="arch">Archivar</span>
-                                        @else
-                                            <i class="fa fa-fw fa-archive archive text-primary"></i> <span id="arch">Desarchivar</span>
-                                        @endif
-                                        </a>
+                                <div class="btn-group" role="group" aria-label="Opciones">
+                                    <div class="btn-group show" role="group">
+                                        <button type="button" class="btn btn-sm btn-alt-secondary dropdown-toggle" id="btnGroupDrop2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Opciones</button>
+                                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop2" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 94px, 0px); top: 0px; left: 40px; will-change: transform;">
+                                            @if ( !($seguimiento -> Documento -> rechazado()) && !($seguimiento -> Documento -> resuelto()) && user() -> can('SEG.CAMBIAR.ESTADO') )
+                                            <a class="dropdown-item" href="#" onclick="hPanel.cambiarEstado({{ $seguimiento -> getKey() }})">
+                                                <i class="fa fa-fw fa-flash text-danger"></i> Cambiar estado
+                                            </a>
+                                            @endif
+                                            <a class="dropdown-item" href="javascript:void(0)" onclick="hPanel.marcarImportante(this, {{ $seguimiento -> Documento -> getKey() }})">
+                                            @if ($seguimiento -> importante)
+                                                <i class="fa fa-fw fa-star text-warning star"></i> Importante
+                                            @else
+                                                <i class="fa fa-fw fa-star-o star"></i> Importante
+                                            @endif
+                                            </a>
+                                            <a class="dropdown-item" href="{{ url_ver_seguimiento( $seguimiento ) }}">
+                                                <i class="fa fa-fw fa-paper-plane text-success"></i> Ver seguimiento
+                                            </a>
+                                            <a class="dropdown-item" href="javascript:void(0)" onclick="hPanel.marcarArchivado(this, {{ $seguimiento -> Documento -> getKey() }})">
+                                            @if (! $seguimiento -> Documento -> archivado() )
+                                                <i class="fa fa-fw fa-archive archive"></i> <span id="arch">Archivar</span>
+                                            @else
+                                                <i class="fa fa-fw fa-archive archive text-primary"></i> <span id="arch">Desarchivar</span>
+                                            @endif
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
+                                <br>{{ $seguimiento -> SYED_NOMBRE }}
                             </div>
                         </div>
                         <div class="col-12">

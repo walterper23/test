@@ -7,8 +7,8 @@ use App\Model\BaseModel;
 /* Presenter */
 use App\Presenters\MSistemaTipoDocumentoPresenter;
 
-class MSistemaTipoDocumento extends BaseModel {
-    
+class MSistemaTipoDocumento extends BaseModel
+{
     protected $table       = 'system_tipos_documentos';
     protected $primaryKey  = 'SYTD_TIPO_DOCUMENTO';
     protected $prefix      = 'SYTD';

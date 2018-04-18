@@ -29,6 +29,7 @@ class ManagerRecepcionRequest extends FormRequest
             'numero'         => 'required_if:action,1,2|min:1,max:255',
             'recepcion'      => 'required_if:action,1|date_format:Y-m-d',
             'municipio'      => 'required_if:action,1',
+            'denuncia'       => 'required_if:tipo_documento,2',
             'descripcion'    => 'required_if:action,1',
             'responsable'    => 'required_if:action,1',
         ];
@@ -45,6 +46,7 @@ class ManagerRecepcionRequest extends FormRequest
             'recepcion.required_if'      => 'Introduzca la fecha de recepción',
             'recepcion.date_format'      => 'La fecha de recepción no es válida',
             'municipio.required_if'      => 'Seleccione un municipio',
+            'denuncia.required_if'       => 'Seleccione el expediente donde se agregará el presente documento',
             'descripcion.required_if'    => 'Introduzca el asunto o descripción',
             'responsable.required_if'    => 'Introduzca el nombre del responsable',
         ];

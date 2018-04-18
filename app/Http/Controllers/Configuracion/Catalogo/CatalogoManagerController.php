@@ -1,27 +1,28 @@
 <?php
-
 namespace App\Http\Controllers\Configuracion\Catalogo;
 
-use Illuminate\Http\Request;
-use App\Http\Requests;
+/* Controllers */
 use App\Http\Controllers\BaseController;
-use App\Http\Controllers\DataTables\CustomDataTablesController;
 
+/* Models */
 use App\Model\Catalogo\MAnexo;
 use App\Model\Catalogo\MDepartamento;
 use App\Model\Catalogo\MDireccion;
+use App\Model\Catalogo\MEstadoDocumento;
 use App\Model\Catalogo\MPuesto;
-use App\Model\Catalogo\MTipoDocumento;
+use App\Model\MUsuario;
 
-class CatalogoManagerController extends BaseController {
-
+class CatalogoManagerController extends BaseController
+{
 	public function index(){
 
 		$data = [
-			'anexos'           => MAnexo::where('ANEX_DELETED',0)->count(),
-			'departamentos'    => MDepartamento::where('DEPA_DELETED',0)->count(),
-			'direcciones'      => MDireccion::where('DIRE_DELETED',0)->count(),
-			'puestos'          => MPuesto::where('PUES_DELETED',0)->count(),
+			'anexos'            => MAnexo::existenteDisponible() -> count(),
+			'departamentos'     => MDepartamento::existenteDisponible() -> count(),
+			'direcciones'       => MDireccion::existenteDisponible() -> count(),
+			'puestos'           => MPuesto::existenteDisponible() -> count(),
+			'estadosDocumentos' => MEstadoDocumento::existenteDisponible() -> count(),
+			'usuarios'          => MUsuario::existenteDisponible() -> count(),
 		];
 
 		return view('Configuracion.Catalogo.index')->with($data);

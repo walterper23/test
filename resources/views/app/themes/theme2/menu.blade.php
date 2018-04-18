@@ -16,9 +16,9 @@ If your sidebar menu includes icons and you would like to hide them, you can add
             <li>
                 <a href="{{ url('recepcion/documentos/nueva-recepcion') }}">Nueva recepci&oacute;n</a>
             </li>
-            <li>
+            <!--li>
                 <a href="{{ url('recepcion/documentos/en-captura') }}">En captura</a>
-            </li>
+            </li-->
             <li>
                 <a class="nav-submenu" data-toggle="nav-submenu" href="{{ url('recepcion/documentos/recepcionados') }}">Recepcionados</a>
                 <ul>
@@ -73,6 +73,9 @@ If your sidebar menu includes icons and you would like to hide them, you can add
             </li>
             <li>
                 <a href="{{ url('panel/documentos/?view=finished') }}">Finalizados</a>
+            </li>
+            <li>
+                <a href="{{ url('panel/documentos-semaforizados') }}">Semaforizados</a>
             </li>
         </ul>
     </li>

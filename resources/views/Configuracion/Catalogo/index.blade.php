@@ -4,6 +4,14 @@
 	{{ title('Catálogos') }}
 @endsection
 
+@push('css-custom')
+<style>
+    .block-content p {
+        margin-bottom : 10px
+    }
+</style>
+@endpush
+
 @section('breadcrumb')
     <nav class="breadcrumb bg-body-light mb-0">
         <a class="breadcrumb-item" href="javascript:void(0)"><i class="fa fa-cogs"></i> Configuraci&oacute;n</a>
@@ -12,66 +20,68 @@
 @endsection
 
 @section('content')
-	<div class="row gutters-tiny">
-        <div class="col-md-3">
-            <a class="block block-rounded block-link-shadow" href="{{ url('configuracion/catalogos/anexos') }}">
-                <div class="block-content block-content-full block-sticky-options">
-                    <div class="block-options">
-                        <div class="block-options-item">
-                            <i class="fa fa-clipboard fa-2x text-info-light"></i>
-                        </div>
-                    </div>
-                    <div class="py-20 text-center">
-                        <div class="font-size-h2 font-w700 mb-0 text-info js-count-to-enabled" data-toggle="countTo" data-to="{{ $anexos }}">{{ $anexos }}</div>
-                        <div class="font-size-sm font-w600 text-uppercase text-muted">Anexos</div>
-                    </div>
+
+    <div class="row gutters-tiny">
+        <div class="col-6 col-md-4 col-xl-2">
+            <a class="block block-rounded block-bordered block-link-pop text-center" href="{{ url('configuracion/catalogos/anexos') }}">
+                <div class="block-content">
+                    <p class="font-size-h1">
+                        <strong>{{ $anexos }}</strong>
+                    </p>
+                    <p class="font-w600"><i class="fa fa-fw fa-clipboard"></i> Anexos</p>
                 </div>
             </a>
         </div>
-        <div class="col-md-3">
-            <a class="block block-rounded block-link-shadow" href="{{ url('configuracion/catalogos/departamentos') }}">
-                <div class="block-content block-content-full block-sticky-options">
-                    <div class="block-options">
-                        <div class="block-options-item">
-                            <i class="fa fa-sitemap fa-2x text-danger-light"></i>
-                        </div>
-                    </div>
-                    <div class="py-20 text-center">
-                        <div class="font-size-h2 font-w700 mb-0 text-danger js-count-to-enabled" data-toggle="countTo" data-to="{{ $departamentos }}">{{ $departamentos }}</div>
-                        <div class="font-size-sm font-w600 text-uppercase text-muted">Departamentos</div>
-                    </div>
+        <div class="col-6 col-md-4 col-xl-2">
+            <a class="block block-rounded block-bordered block-link-pop text-center" href="{{ url('configuracion/catalogos/direcciones') }}">
+                <div class="block-content">
+                    <p class="font-size-h1 text-success">
+                        <strong>{{ $direcciones }}</strong>
+                    </p>
+                    <p class="font-w600"><i class="fa fa-fw fa-sitemap"></i> Direcciones</p>
                 </div>
             </a>
         </div>
-        <div class="col-md-3">
-            <a class="block block-rounded block-link-shadow" href="{{ url('configuracion/catalogos/direcciones') }}">
-                <div class="block-content block-content-full block-sticky-options">
-                    <div class="block-options">
-                        <div class="block-options-item">
-                            <i class="fa fa-sitemap fa-2x text-danger-light"></i>
-                        </div>
-                    </div>
-                    <div class="py-20 text-center">
-                        <div class="font-size-h2 font-w700 mb-0 text-danger js-count-to-enabled" data-toggle="countTo" data-to="{{ $direcciones }}">{{ $direcciones }}</div>
-                        <div class="font-size-sm font-w600 text-uppercase text-muted">Direcciones</div>
-                    </div>
+        <div class="col-6 col-md-4 col-xl-2">
+            <a class="block block-rounded block-bordered block-link-pop text-center" href="{{ url('configuracion/catalogos/departamentos') }}">
+                <div class="block-content">
+                    <p class="font-size-h1 text-warning">
+                        <strong>{{ $departamentos }}</strong>
+                    </p>
+                    <p class="font-w600"><i class="fa fa-fw fa-sitemap"></i> Departamentos</p>
                 </div>
             </a>
         </div>
-        <div class="col-md-3">
-            <a class="block block-rounded block-link-shadow" href="{{ url('configuracion/catalogos/puestos') }}">
-                <div class="block-content block-content-full block-sticky-options">
-                    <div class="block-options">
-                        <div class="block-options-item">
-                            <i class="fa fa-users fa-2x text-success-light"></i>
-                        </div>
-                    </div>
-                    <div class="py-20 text-center">
-                        <div class="font-size-h2 font-w700 mb-0 text-success js-count-to-enabled" data-toggle="countTo" data-to="{{ $puestos}}">{{ $puestos}}</div>
-                        <div class="font-size-sm font-w600 text-uppercase text-muted">Puestos</div>
-                    </div>
+        <div class="col-6 col-md-4 col-xl-2">
+            <a class="block block-rounded block-bordered block-link-pop text-center" href="{{ url('configuracion/catalogos/puestos') }}">
+                <div class="block-content">
+                    <p class="font-size-h1 text-corporate">
+                        <strong>{{ $puestos }}</strong>
+                    </p>
+                    <p class="font-w600"><i class="fa fa-fw fa-user-secret"></i> Puestos</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-md-4 col-xl-2">
+            <a class="block block-rounded block-bordered block-link-pop text-center" href="{{ url('configuracion/catalogos/estados-documentos') }}">
+                <div class="block-content">
+                    <p class="font-size-h1 text-danger">
+                        <strong>{{ $estadosDocumentos }}</strong>
+                    </p>
+                    <p class="font-w600"><i class="fa fa-fw fa-flash"></i> Estados de Documentos</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-md-4 col-xl-2">
+            <a class="block block-rounded block-bordered block-link-pop text-center" href="{{ url('configuracion/usuarios') }}">
+                <div class="block-content">
+                    <p class="font-size-h1 text-elegance">
+                        <strong>{{ $usuarios }}</strong>
+                    </p>
+                    <p class="font-w600"><i class="fa fa-fw fa-users"></i> Usuarios</p>
                 </div>
             </a>
         </div>
     </div>
+
 @endsection

@@ -1,7 +1,7 @@
 <?php
 namespace App\Model;
 
-class MDocumentoDetalle extends BaseModel
+class MDocumentoDenuncia extends BaseModel
 {
     protected $table        = 'documentos_denuncias';
     protected $primaryKey   = 'DODE_DOCUMENTO_DENUNCIA';
@@ -12,6 +12,11 @@ class MDocumentoDetalle extends BaseModel
     public function Documento()
     {
         return $this -> belongsTo('App\Model\MDocumento','DOCU_DOCUMENTO','DODE_DOCUMENTO');
+    }
+
+    public function DocumentoInicial()
+    {
+        return $this -> belongsTo('App\Model\MDocumento','DOCU_DOCUMENTO','DODE_DOCUMENTO_INICIAL');
     }
 
     public function Denuncia()

@@ -17,7 +17,6 @@ use App\Model\Catalogo\MEstadoDocumento;
 
 class PanelController extends BaseController
 {
-
 	public function __construct()
 	{
 		parent::__construct();
@@ -76,7 +75,7 @@ class PanelController extends BaseController
 			$documentos['todos'][] = $seguimiento;
 			
 			// Si el usuario no ha leido el seguimiento, lo añadimos a Recientes
-			if (! $seguimiento -> seguimientoLeido() )
+			if (! $seguimiento -> leido() )
 			{
 				$seguimiento -> leido = false;
 				$documentos['recientes'][] = $seguimiento;
@@ -171,8 +170,10 @@ class PanelController extends BaseController
     	// Recuperar el documento
     	$documento;
 
+    	$data['title'] = 'Anexos y Documentos';
 
-    	return ;
+
+		return view('Panel.Documentos.verAnexosEscaneos') -> with($data);
     }
 
     // Formulario para realizar el cambio de estado de un documento
@@ -182,7 +183,7 @@ class PanelController extends BaseController
 			'title'         => 'Cambio de Estado de Documento',
 			'url_send_form' => url('panel/documentos/manager'),
 			'form_id'       => 'form-cambio-estado-documento',
-			'action'        => 2,
+			'action'        => 1,
 			'seguimiento'   => $request -> seguimiento,
 		];
 

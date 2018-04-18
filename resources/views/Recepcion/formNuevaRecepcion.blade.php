@@ -28,6 +28,7 @@
     </div>
     <div class="row">
         <div class="col-md-7">
+            {!! Field::select('denuncia','',['label'=>'Expediente / Denuncia','required'],$denuncias) !!}
             {!! Field::textarea('descripcion','',['label'=>'Asunto / Descripción','placeholder'=>'Introduzca una descripción del documento','size'=>'20x3','required','noresize']) !!}
             {!! Field::text('responsable','',['label'=>'Responsable','required']) !!}
             {!! Field::textarea('observaciones','',['label'=>'Observaciones','placeholder'=>'Opcional','size'=>'20x4','noresize']) !!}

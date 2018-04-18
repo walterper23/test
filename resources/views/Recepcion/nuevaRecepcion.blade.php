@@ -7,6 +7,8 @@
 @push('css-style')
     {{ Html::style('js/plugins/sweetalert2/sweetalert2.min.css') }}
     {{ Html::style('js/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css') }}
+    {{ Html::style('js/plugins/select2/select2.min.css') }}
+    {{ Html::style('js/plugins/select2/select2-bootstrap.min.css') }}
 @endpush
 
 @section('breadcrumb')
@@ -57,6 +59,7 @@
     {{ Html::script('js/plugins/jquery-validation/jquery.validate.min.js') }}
     {{ Html::script('js/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}
     {{ Html::script('js/plugins/bootstrap-datepicker/locales/bootstrap-datepicker.es.min.js') }}
+    {{ Html::script('js/plugins/select2/select2.full.min.js') }}
     {{ Html::script('js/helpers/recepcion.helper.js') }}
     {{ Html::script('js/app-form.js') }}
     {{ Html::script('js/app-alert.js') }}
@@ -75,13 +78,26 @@
 
         this.start = function(){
 
-            Codebase.helper('datepicker');
+            Codebase.helpers(['datepicker','select2']);
+
+            this.form.validate({
+                ignore: 'input[type=hidden]'
+            });
 
             var labelNumero = $('label[for=numero]');
+            var selectDenuncia = $('#denuncia');
             var txtAnexo = this.form.find('#anexos');
+
+            selectDenuncia.closest('div.form-group.row').hide();
 
             var selectTipoDocumento = this.form.find('#tipo_documento').on('change',function(e){
                 labelNumero.text( $(this).find('option:selected').data('label') );
+
+                selectDenuncia.closest('div.form-group.row').hide();
+                if( this.value == 2 ){
+                    selectDenuncia.closest('div.form-group.row').show();
+                }
+
             });
 
             var selectAnexo = this.form.find('#anexo').on('change',function(e){
@@ -124,6 +140,9 @@
                 numero  : { required : true },
                 recepcion : { required : true, date : true },
                 municipio : { required : true },
+                denuncia : {
+                    required : true
+                },
                 descripcion : { required : true },
                 responsable : { required : true },
 
@@ -139,6 +158,7 @@
                     date : 'La fecha de recepción no es válida'
                 },
                 municipio : { required : 'Seleccione un municipio' },
+                denuncia : { required : 'Seleccione el expediente donde se agregará el presente documento' },
                 descripcion : { required : 'Introduzca el asunto o descripción' },
                 responsable : { required : 'Introduzca el nombre del responsable' },
             }
