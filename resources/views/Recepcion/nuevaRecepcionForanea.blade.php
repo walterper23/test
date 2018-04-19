@@ -1,7 +1,7 @@
 @extends('app.layoutMaster')
 
 @section('title')
-	{{ title('Nueva recepción de documento') }}
+	{{ title('Nueva recepción de documento foráneo') }}
 @endsection
 
 @push('css-style')
@@ -24,8 +24,8 @@
         <div class="col-lg-12">
            <!-- Normal Form -->
             <div class="block block-themed" id="{{ $context }}">
-                <div class="block-header bg-corporate">
-                    <h3 class="block-title"><i class="fa fa-fw fa-edit"></i> Nueva recepci&oacute;n</h3>
+                <div class="block-header bg-flat-dark">
+                    <h3 class="block-title"><i class="fa fa-fw fa-edit"></i> Nueva recepci&oacute;n foránea</h3>
                     <div class="block-options">
                         <div class="dropdown">
                             <button type="button" class="btn-block-option dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cog"></i> Opciones</button>
@@ -34,7 +34,7 @@
                                     <i class="fa fa-fw fa-save mr-5"></i>Guardar captura
                                 </a>
                                 <div class="dropdown-divider"></div-->
-                                <a class="dropdown-item" onclick="hRecepcion.cancelar()">
+                                <a class="dropdown-item" onclick="hRecepcionForanea.cancelar()">
                                     <i class="fa fa-fw fa-times mr-5 text-danger"></i>Cancelar
                                 </a>
                             </div>
@@ -45,7 +45,7 @@
                     {!! $form !!}
                 </div>
                 <div class="block-content block-content-full block-content-sm bg-body-light text-right">
-                    <button class="btn btn-default" id="btn-cancel" onclick="hRecepcion.cancelar()"><i class="fa fa-fw fa-times text-danger"></i> Cancelar</button>
+                    <button class="btn btn-default" id="btn-cancel" onclick="hRecepcionForanea.cancelar()"><i class="fa fa-fw fa-times text-danger"></i> Cancelar</button>
                     <!--button class="btn btn-alt-primary" tabindex="-1"><i class="fa fa-save"></i> Guardar captura</button-->
                     <button class="btn btn-primary" id="btn-ok">Recepcionar <i class="fa fa-fw fa-edit"></i></button>
                 </div>
@@ -60,7 +60,7 @@
     {{ Html::script('js/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}
     {{ Html::script('js/plugins/bootstrap-datepicker/locales/bootstrap-datepicker.es.min.js') }}
     {{ Html::script('js/plugins/select2/select2.full.min.js') }}
-    {{ Html::script('js/helpers/recepcion.helper.js') }}
+    {{ Html::script('js/helpers/recepcion.foranea.helper.js') }}
     {{ Html::script('js/app-form.js') }}
     {{ Html::script('js/app-alert.js') }}
 @endpush
@@ -80,12 +80,10 @@
 
             Codebase.helpers(['datepicker','select2']);
 
-            this.form.validate({
-                ignore: 'input[type=hidden]'
-            });
-
             var labelNumero = $('label[for=numero]');
             var selectDenuncia = $('#denuncia');
+            var selectDepartamento = $('#departamento');
+            var optionsDepto = selectDepartamento.find('option[data-direccion]').hide();
             var txtAnexo = this.form.find('#anexos');
 
             selectDenuncia.closest('div.form-group.row').hide();
@@ -97,7 +95,15 @@
                 if( this.value == 2 ){
                     selectDenuncia.closest('div.form-group.row').show();
                 }
+            });
 
+            $('#direccion').on('change',function(){
+                selectDepartamento.val('');
+                optionsDepto.hide();
+                if( this.value.length ){
+                    selectDepartamento.find('option[value=0]').show();
+                    selectDepartamento.find('option[data-direccion='+this.value+']').show();
+                }
             });
 
             var selectAnexo = this.form.find('#anexo').on('change',function(e){
@@ -110,8 +116,7 @@
             
             $('#addAnexo').on('click',function(){
                 selectAnexo.trigger('change');
-            });
-            
+            }); 
 
         }
 
@@ -120,8 +125,6 @@
                 return false;
             }
 
-            //var formData = new FormData($(form)[0]);
-            
             AppAlert.waiting({
                 type  : 'info',
                 title : 'Recepcionar documento',
@@ -139,6 +142,8 @@
                 tipo_documento : { required : true },
                 numero  : { required : true },
                 recepcion : { required : true, date : true },
+                direccion : { required : true },
+                departamento : { required : true },
                 municipio : { required : true },
                 denuncia : {
                     required : true
@@ -157,6 +162,8 @@
                     required : 'Introduzca la fecha de recepción',
                     date : 'La fecha de recepción no es válida'
                 },
+                direccion : { required : 'Seleccione una dirección' },
+                departamento : { required : 'Seleccione un departamento' },
                 municipio : { required : 'Seleccione un municipio' },
                 denuncia : { required : 'Seleccione el expediente donde se agregará el presente documento' },
                 descripcion : { required : 'Introduzca el asunto o descripción' },

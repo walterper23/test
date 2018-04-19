@@ -35,15 +35,6 @@
                     <i class="si si-user mr-5"></i> Perfil
                 </a>
                 <div class="dropdown-divider"></div>
-
-                <!-- Toggle Side Overlay -->
-                <!-- Layout API, functionality initialized in Codebase() -> uiApiLayout() -->
-                <a class="dropdown-item" href="{{ url('usuario/preferencias') }}" data-toggle="layout" data-action="side_overlay_toggle">
-                    <i class="si si-wrench mr-5"></i> Preferencias
-                </a>
-                <!-- END Side Overlay -->
-
-                <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="{{ route('logout') }}">
                     <i class="si si-logout mr-5 text-danger"></i> Cerrar sesi&oacute;n
                 </a>

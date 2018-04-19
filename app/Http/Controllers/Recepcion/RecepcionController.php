@@ -23,8 +23,6 @@ use App\Model\MEscaneo;
 use App\Model\MMunicipio;
 use App\Model\MSeguimiento;
 use App\Model\Catalogo\MAnexo;
-use App\Model\Catalogo\MDireccion;
-use App\Model\Catalogo\MEstadoDocumento;
 use App\Model\Sistema\MSistemaTipoDocumento;
 
 /* DataTables */
@@ -37,7 +35,7 @@ class RecepcionController extends BaseController
 	public function __construct()
 	{
 		parent::__construct();
-		$this -> setLog('RecepcionController');
+		$this -> setLog('RecepcionController.log');
 	}
 
 	public function index(Request $request){
@@ -148,6 +146,7 @@ class RecepcionController extends BaseController
 							-> pluck('DENU_NO_EXPEDIENTE','DENU_DENUNCIA')
 							-> toArray();
 
+		// Recuperamos los anexos almacenados en el sistema
 		$data['anexos'] = MAnexo::existenteDisponible()
 							-> orderBy('ANEX_NOMBRE')
 							-> pluck('ANEX_NOMBRE','ANEX_ANEXO')
@@ -234,8 +233,9 @@ class RecepcionController extends BaseController
 				$documentoDenuncia = new MDocumentoDenuncia; // ... registramos el documento a la denuncia
 				$documentoDenuncia -> DODE_DOCUMENTO         = $documento -> getKey();
 				$documentoDenuncia -> DODE_DENUNCIA          = $denuncia -> getKey();
-				$documentoDenuncia -> DODE_DOCUMENTO_INICIAL = $denuncia -> Documento -> getKey();
+				$documentoDenuncia -> DODE_DOCUMENTO_ORIGEN  = $denuncia -> Documento -> getKey();
 				$documentoDenuncia -> DODE_DETALLE           = $denuncia -> Documento -> Detalle -> getKey();
+				$documentoDenuncia -> DODE_SEGUIMIENTO       = $denuncia -> Documento -> Seguimientos -> last() -> getKey();
 				$documentoDenuncia -> save();
 
 				$redirect = '?view=documentos-denuncias';
@@ -248,7 +248,6 @@ class RecepcionController extends BaseController
 			$redirect .= sprintf('&acuse=%d',$documento -> getKey()) ;
 
 			// Guardamos los archivos o escaneos que se hayan agregado al archivo
-
 			foreach ($request -> escaneos ?? [] as $escaneo) {
 				$this -> nuevoEscaneo($documento, $escaneo,['escaneo_nombre'=>'A ver uno','escaneo_descripcion'=>'a ver dos']);
 			}
@@ -271,17 +270,17 @@ class RecepcionController extends BaseController
 		$archivo -> ARCH_FOLDER   = 'storage/app/escaneos';
 		$archivo -> ARCH_FILENAME = '';
 		$archivo -> ARCH_PATH     = '';
-		$archivo -> ARCH_TYPE     = $file -> extension();;
+		$archivo -> ARCH_TYPE     = $file -> extension();
 		$archivo -> ARCH_MIME     = $file -> getMimeType();
 		$archivo -> ARCH_SIZE     = $file -> getClientSize();
 
 		$archivo -> save();
 
 		$escaneo = new MEscaneo;
-		$escaneo -> ESCA_ARCHIVO     = $archivo -> getKey(); 
-		$escaneo -> ESCA_DOCUMENTO   = $documento -> getKey(); 
-		$escaneo -> ESCA_NOMBRE      = $data['escaneo_nombre']; 
-		$escaneo -> ESCA_DESCRIPCION = $data['escaneo_descripcion']; 
+		$escaneo -> ESCA_ARCHIVO          = $archivo -> getKey(); 
+		$escaneo -> ESCA_DOCUMENTO_LOCAL  = $documento -> getKey(); 
+		$escaneo -> ESCA_NOMBRE           = $data['escaneo_nombre']; 
+		$escaneo -> ESCA_DESCRIPCION      = $data['escaneo_descripcion']; 
 		$escaneo -> save();
 
 		$filename = sprintf('docto_%d_scan_%d_arch_%d_%s.pdf',$documento -> getKey(), $escaneo -> getKey(), $archivo -> getKey(), time());

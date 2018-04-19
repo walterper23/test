@@ -77,7 +77,7 @@ class MSeguimiento extends BaseModel
 
     public function Escaneos()
     {
-        return $this -> hasMany('App\Model\MEscaneo','ESCA_DOCUMENTO','SEGU_DOCUMENTO');
+        return $this -> hasMany('App\Model\MEscaneo','ESCA_DOCUMENTO_LOCAL','SEGU_DOCUMENTO');
     }
 
     public function EstadoDocumento()

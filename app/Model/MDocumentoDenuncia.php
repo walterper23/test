@@ -14,9 +14,9 @@ class MDocumentoDenuncia extends BaseModel
         return $this -> belongsTo('App\Model\MDocumento','DOCU_DOCUMENTO','DODE_DOCUMENTO');
     }
 
-    public function DocumentoInicial()
+    public function DocumentoOrigen()
     {
-        return $this -> belongsTo('App\Model\MDocumento','DOCU_DOCUMENTO','DODE_DOCUMENTO_INICIAL');
+        return $this -> belongsTo('App\Model\MDocumento','DOCU_DOCUMENTO','DODE_DOCUMENTO_ORIGEN');
     }
 
     public function Denuncia()

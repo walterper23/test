@@ -111,11 +111,11 @@
             <main id="main-container">
 
                 <!-- Breadcrumb -->
-                <div class="bg-body-light border-b">
+                <!--div class="bg-body-light border-b">
                     <div class="content py-5 text-center">
-                        @yield('breadcrumb')
+                        @yield('breadcrumb-disabled')
                     </div>
-                </div>
+                </div-->
                 <!-- END Breadcrumb -->
 
                 <!-- Page Content -->

@@ -10,9 +10,21 @@ class MMunicipio extends Model
     protected $prefix         = 'MUNI';
     public    $timestamps     = false;
 
+    /* Methods */
+
+    public function getClave()
+    {
+    	return $this -> attributes['MUNI_CLAVE']; 
+    }
+
     public function getNombre()
     {
     	return $this -> attributes['MUNI_NOMBRE']; 
+    }
+
+    public function scopeDisponible($query)
+    {
+    	return $query -> where('MUNI_ENABLED',1);
     }
 
 }

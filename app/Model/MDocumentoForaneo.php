@@ -7,18 +7,44 @@ class MDocumentoForaneo extends BaseModel
     protected $primaryKey   = 'DOFO_DOCUMENTO';
     protected $prefix       = 'DOFO';
 
+    /* Methods */
+
     public function getNumero()
     {
         return $this -> attributes['DOFO_NUMERO_DOCUMENTO'];
     }
 
-    /* Methods */
-
-    public function resuelto()
+    public function enviado()
     {
-        return $this -> attributes['DOFO_SYSTEM_ESTADO_DOCTO'] == 4; // Documento resuelto
+        return $this -> attributes['DOFO_SYSTEM_TRANSITO'] == 1;
     }
 
+    public function recibido()
+    {
+        return $this -> attributes['DOFO_SYSTEM_TRANSITO'] == 2;
+    }
+
+    public function validado()
+    {
+        return $this -> attributes['DOFO_VALIDADO'] == 1;
+    }
+
+    public function recepcionado()
+    {
+        return $this -> attributes['DOFO_RECEPCIONADO'] == 1;
+    }
+
+    /* Local Scopes */
+
+    public function scopeGuardado($query)
+    {
+        return $query -> where('DOFO_GUARDADO',1);
+    }
+
+    public function scopeNoGuardado($query)
+    {
+        return $query -> where('DOFO_GUARDADO',0);
+    }
 
     /* Relationships */
 
@@ -30,11 +56,6 @@ class MDocumentoForaneo extends BaseModel
     public function Detalle()
     {
         return $this -> hasOne('App\Model\MDetalle','DETA_DETALLE','DOFO_DETALLE');
-    }
-
-    public function EstadoDocumento()
-    {
-        return $this -> hasOne('App\Model\Sistema\MSistemaEstadoDocumento','SYED_ESTADO_DOCUMENTO','DOFO_SYSTEM_ESTADO_DOCTO');
     }
 
     public function TipoDocumento()

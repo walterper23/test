@@ -94,8 +94,8 @@
     @if (isset($acuse))
     <script type="text/javascript">
     hRecepcion.verAcuse({{ $acuse }});
-    @endif
     </script>
+    @endif
 
     {{ $table1 -> javascript() }}
     {{ $table2 -> javascript() }}

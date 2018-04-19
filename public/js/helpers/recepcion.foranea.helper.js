@@ -1,9 +1,9 @@
 'use strict';
 
-var hRecepcion;
+var hRecepcionForanea;
 
 App.loadScript('/js/helpers/helper.js', function(){
-	hRecepcion = $.extend({}, Helper, function(){
+	hRecepcionForanea = $.extend({}, Helper, function(){
 		return {
 			manager : function(){
 				return '/recepcion/documentos/manager'
@@ -30,7 +30,7 @@ App.loadScript('/js/helpers/helper.js', function(){
 					text  : '¿Está seguro que desea cancelar la recepción?',
 					cancelBtnText : 'Regresar',
 					then : function(){
-						location.href = '/recepcion/documentos/recepcionados'
+						location.href = '/recepcion/documentos-foraneos/recepcionados'
 					}
 				})
 			},

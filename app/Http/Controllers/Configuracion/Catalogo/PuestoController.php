@@ -77,8 +77,7 @@ class PuestoController extends BaseController {
 
 			$direcciones = MDireccion::with('departamentos')
 									-> select('DIRE_DIRECCION','DIRE_NOMBRE')
-									-> where('DIRE_ENABLED',1)
-									-> where('DIRE_DELETED',0)
+									-> existenteDisponible()
 									-> orderBy('DIRE_NOMBRE')
 									-> get();
 

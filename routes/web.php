@@ -40,7 +40,7 @@ Route::middleware('preventBackHistory') -> group(function(){
             Route::get('/',  'RecepcionController@index');
             
             // Recepción de documentos locales
-            Route::middleware('can:REC.DOCUMENTO.LOCAL') -> prefix('documentos') -> group(function(){
+            Route::prefix('documentos') -> middleware('can:REC.DOCUMENTO.LOCAL') -> group(function(){
                 Route::get('/',                'RecepcionController@index');
                 Route::get('recepcionados',    'RecepcionController@index');
                 Route::post('post-data',       'RecepcionController@postDataTable');
@@ -51,7 +51,7 @@ Route::middleware('preventBackHistory') -> group(function(){
             });
 
             // Recepción de documentos foráneos
-            Route::middleware('can:REC.DOCUMENTO.FORANEO') -> prefix('documentos-foraneos') -> group(function(){
+            Route::prefix('documentos-foraneos') -> middleware('can:REC.DOCUMENTO.FORANEO') -> group(function(){
                 Route::get('/',                'RecepcionForaneaController@index');
                 Route::get('recepcionados',    'RecepcionForaneaController@index');
                 Route::post('post-data',       'RecepcionForaneaController@postDataTable');

@@ -44,13 +44,24 @@ If your sidebar menu includes icons and you would like to hide them, you can add
         <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="fa fa-fw fa-files-o"></i>Recepción foránea</a>
         <ul>
             <li>
-                <a href="{{ url('recepcion/documentos-foraneos/recepcionados') }}">Recepcionados</a>
-            </li>
-            <li>
                 <a href="{{ url('recepcion/documentos-foraneos/nueva-recepcion') }}">Nueva recepci&oacute;n</a>
             </li>
-            <li>
+            <!--li>
                 <a href="{{ url('recepcion/documentos-foraneos/en-captura') }}">En captura</a>
+            </li-->
+            <li>
+                <a class="nav-submenu" data-toggle="nav-submenu" href="{{ url('recepcion/documentos-foraneos/recepcionados') }}">Recepcionados</a>
+                <ul>
+                    <li>
+                        <a href="{{ url('recepcion/documentos-foraneos/recepcionados?view=denuncias') }}">Denuncias</a>
+                    </li>
+                    <li>
+                        <a href="{{ url('recepcion/documentos-foraneos/recepcionados?view=documentos-denuncias') }}">Documentos de denuncias</a>
+                    </li>
+                    <li>
+                        <a href="{{ url('recepcion/documentos-foraneos/recepcionados?view=documentos') }}">Documentos</a>
+                    </li>
+                </ul>
             </li>
         </ul>
     </li>

@@ -22,9 +22,14 @@ class MEscaneo extends BaseModel
 
     /* Relationships */
     
-    public function Documento()
+    public function DocumentoLocal()
     {
-       return $this -> belongsTo('App\Model\MDocumento','ESCA_DOCUMENTO','DOCU_DOCUMENTO');
+       return $this -> belongsTo('App\Model\MDocumento','ESCA_DOCUMENTO_LOCAL','DOCU_DOCUMENTO');
+    }
+
+    public function DocumentoForaneo()
+    {
+       return $this -> belongsTo('App\Model\MDocumento','ESCA_DOCUMENTO_FORANEO','DOCU_DOCUMENTO');
     }
 
     public function Archivo()
