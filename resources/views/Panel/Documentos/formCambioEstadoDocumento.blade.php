@@ -72,10 +72,11 @@
 
 		this.context_ = '#modal-{{ $form_id }}';
 		this.form_    = '#{{ $form_id }}';	
+        
+        var radiosEstados = $('input[name="estado_documento"]');
 		
 		this.start = function(){
 
-            var radiosEstados = $('input[name="estado_documento"]');
             var selectDireccionOrigen = $('#direccion_origen');
 			var selectDepartamentoOrigen = $('#departamento_origen');
             var selectDireccionDestino = $('#direccion_destino');
@@ -132,6 +133,13 @@
 		this.rules = function(){
 			return {
 				direccion_origen : { required : true },
+				direccion_destino : {
+					required : {
+						depends : function(element){
+							return radiosEstados.filter(':checked').val() == 1;
+						}
+					}
+				},
 				estado : { required : true }
 			};
 		};
@@ -139,6 +147,7 @@
 		this.messages = function(){
 			return {
 				direccion_origen : { required : 'Especifique una dirección de origen' },
+				direccion_destino : { required : 'Especifique una dirección de destino' },
 				estado : { required : 'Especifique un estado de documento' }
 			};
 		};

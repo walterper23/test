@@ -231,9 +231,9 @@ class RecepcionController extends BaseController
 				$denuncia = MDenuncia::with('Documento') -> find( $request -> denuncia );
 
 				$documentoDenuncia = new MDocumentoDenuncia; // ... registramos el documento a la denuncia
-				$documentoDenuncia -> DODE_DOCUMENTO         = $documento -> getKey();
 				$documentoDenuncia -> DODE_DENUNCIA          = $denuncia -> getKey();
 				$documentoDenuncia -> DODE_DOCUMENTO_ORIGEN  = $denuncia -> Documento -> getKey();
+				$documentoDenuncia -> DODE_DOCUMENTO_LOCAL   = $documento -> getKey();
 				$documentoDenuncia -> DODE_DETALLE           = $denuncia -> Documento -> Detalle -> getKey();
 				$documentoDenuncia -> DODE_SEGUIMIENTO       = $denuncia -> Documento -> Seguimientos -> last() -> getKey();
 				$documentoDenuncia -> save();

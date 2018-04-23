@@ -150,7 +150,7 @@
                                     <div class="btn-group show" role="group">
                                         <button type="button" class="btn btn-sm btn-alt-secondary dropdown-toggle" id="btnGroupDrop2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Opciones</button>
                                         <div class="dropdown-menu" aria-labelledby="btnGroupDrop2" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 94px, 0px); top: 0px; left: 40px; will-change: transform;">
-                                            @if ( !($seguimiento -> Documento -> rechazado()) && !($seguimiento -> Documento -> resuelto()) && user() -> can('SEG.CAMBIAR.ESTADO') )
+                                            @if ($seguimiento -> Documento -> enSeguimiento() && user() -> can('SEG.CAMBIAR.ESTADO') )
                                             <a class="dropdown-item" href="#" onclick="hPanel.cambiarEstado({{ $seguimiento -> getKey() }})">
                                                 <i class="fa fa-fw fa-flash text-danger"></i> Cambiar estado
                                             </a>

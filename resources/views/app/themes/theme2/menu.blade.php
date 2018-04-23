@@ -20,7 +20,7 @@ If your sidebar menu includes icons and you would like to hide them, you can add
                 <a href="{{ url('recepcion/documentos/en-captura') }}">En captura</a>
             </li-->
             <li>
-                <a class="nav-submenu" data-toggle="nav-submenu" href="{{ url('recepcion/documentos/recepcionados') }}">Recepcionados</a>
+                <a class="nav-submenu" data-toggle="nav-submenu" href="{{ url('recepcion/documentos/recepcionados?view=denuncias') }}">Recepcionados</a>
                 <ul>
                     <li>
                         <a href="{{ url('recepcion/documentos/recepcionados?view=denuncias') }}">Denuncias</a>
@@ -34,7 +34,18 @@ If your sidebar menu includes icons and you would like to hide them, you can add
                 </ul>
             </li>
             <li>
-                <a href="{{ url('recepcion/documentos/recepcionados?view=recepciones-foraneas') }}">Recepciones foráneas</a>
+                <a class="nav-submenu" data-toggle="nav-submenu" href="{{ url('recepcion/documentos-foraneos/recepcionados?view=denuncias') }}">Recepciones foráneas</a>
+                <ul>
+                    <li>
+                        <a href="{{ url('recepcion/documentos-foraneos/recepcionados?view=denuncias') }}">Denuncias</a>
+                    </li>
+                    <li>
+                        <a href="{{ url('recepcion/documentos-foraneos/recepcionados?view=documentos-denuncias') }}">Documentos de denuncias</a>
+                    </li>
+                    <li>
+                        <a href="{{ url('recepcion/documentos-foraneos/recepcionados?view=documentos') }}">Documentos</a>
+                    </li>
+                </ul>
             </li>
         </ul>
     </li>

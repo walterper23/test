@@ -14,6 +14,11 @@ class MDocumentoForaneo extends BaseModel
         return $this -> attributes['DOFO_NUMERO_DOCUMENTO'];
     }
 
+    public function getTipoDocumento()
+    {
+        return $this -> attributes['DOFO_SYSTEM_TIPO_DOCTO'];
+    }
+
     public function enviado()
     {
         return $this -> attributes['DOFO_SYSTEM_TRANSITO'] == 1;

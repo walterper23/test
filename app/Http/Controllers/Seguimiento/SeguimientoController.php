@@ -9,7 +9,6 @@ use App\Model\MSeguimiento;
 
 class SeguimientoController extends BaseController
 {
-
 	public function __construct()
 	{
 		parent::__construct();
@@ -23,6 +22,9 @@ class SeguimientoController extends BaseController
 		$read   = $request -> get('read',0);
 
 		$seguimiento = MSeguimiento::with('Documento') -> find( $search );
+
+		if (is_null($seguimiento))
+			return view('Panel.Seguimiento.seguimientoNoEncontrado');
 
 		if ($read == 1 && !($seguimiento -> leido()) ) // Si la petición pide que marquemos el seguimiento como leído y el seguimiento no ha sido leido ...
 			$seguimiento -> marcarComoLeido() -> save(); // ... marcamos el seguimiento como leído

@@ -4,6 +4,10 @@
 	{{ title('Seguimiento de documento') }}
 @endsection
 
+@push('css-style')
+    {{ Html::style('js/plugins/sweetalert2/sweetalert2.min.css') }}
+@endpush
+
 @section('breadcrumb')
     <nav class="breadcrumb bg-body-light mb-0">
         <a class="breadcrumb-item" href="{{ url() -> previous() }}"><i class="fa fa-server"></i> Panel de trabajo</a>
@@ -17,12 +21,24 @@
     <!-- Timeline Activity -->
     <div class="block">
         <div class="block-header block-header-default">
-            <h3 class="block-title"><i class="fa fa-fw fa-history"></i> Historial de Cambios de Estados del Documento #{{ $documento -> getCodigo() }}</h3>
+            <h3 class="block-title">
+                <i class="fa fa-fw fa-history"></i>
+                Historial de Cambios de Estados del Documento <b>#{{ $documento -> getCodigo() }}</b>
+                 @if( $seguimiento -> Documento -> enSeguimiento() )
+                <span class="badge badge-danger">En seguimiento</span>
+                @elseif( $seguimiento -> Documento -> finalizado() )
+                <span class="badge badge-success">Finalizado</span>
+                @elseif( $seguimiento -> Documento -> rechazado() )
+                <span class="badge badge-warning">Rechazado</span>
+                @endif
+            </h3>
             <div class="block-options">
+                @if ($seguimiento -> Documento -> enSeguimiento() && user() -> can('SEG.CAMBIAR.ESTADO'))
                 <button type="button" class="btn btn-sm btn-danger" onclick="hPanel.cambiarEstado({{ $seguimiento -> getKey() }})">
                     <i class="fa fa-fw fa-flash"></i> Cambiar estado
                 </button>
-                <button type="button" class="btn btn-sm btn-info" data-toggle="block-option" data-action="fullscreen_toggle"></button>
+                @endif
+                <button type="button" class="btn-block-option" data-toggle="block-option" data-action="fullscreen_toggle"><i class="si si-size-fullscreen"></i></button>
             </div>
         </div>
         <div class="block-content block-content-full">
@@ -49,18 +65,26 @@
                         </tr>
                         <tr>
                             <td class="bg-primary text-white font-w700">Observaciones</td>
+                            @if (! empty($detalle -> getObservaciones()))
                             <td>{{ $detalle -> getObservaciones()  }}</td>
+                            @else
+                            <td class="font-size-sm text-muted">Sin observaciones</td>
+                            @endif
                             <td class="bg-primary text-white font-w700">Opciones</td>
                             <td>
-                                 @if (! empty($seguimiento -> DETA_ANEXOS) )
-                                <button type="button" class="btn btn-sm btn-rounded btn-alt-primary" onclick="hPanel.verAnexos({{ $seguimiento -> Documento -> getKey()  }})">
-                                    <i class="fa fa-fw fa-clipboard"></i> Anexos
-                                </button>
-                                @endif
-                                @if ($seguimiento -> Escaneos -> count() > 0 )
-                                <button type="button" class="btn btn-sm btn-rounded btn-alt-danger" onclick="hPanel.verEscaneos({{ $seguimiento -> Documento -> getKey()  }})">
-                                    <i class="fa fa-fw fa-clipboard"></i> Escaneos <span class="badge badge-pill badge-danger">{{ $seguimiento -> Escaneos -> count() }}</span>
-                                </button>
+                                @if (! empty($seguimiento -> DETA_ANEXOS) || $seguimiento -> Escaneos -> count() > 0)
+                                    @if (! empty($seguimiento -> DETA_ANEXOS) )
+                                    <button type="button" class="btn btn-sm btn-rounded btn-alt-primary" onclick="hPanel.verAnexos({{ $seguimiento -> Documento -> getKey()  }})">
+                                        <i class="fa fa-fw fa-clipboard"></i> Anexos
+                                    </button>
+                                    @endif
+                                    @if ($seguimiento -> Escaneos -> count() > 0 )
+                                    <button type="button" class="btn btn-sm btn-rounded btn-alt-danger" onclick="hPanel.verEscaneos({{ $seguimiento -> Documento -> getKey()  }})">
+                                        <i class="fa fa-fw fa-clipboard"></i> Escaneos <span class="badge badge-pill badge-danger">{{ $seguimiento -> Escaneos -> count() }}</span>
+                                    </button>
+                                    @endif
+                                @else
+                                    <div class="font-size-sm text-muted">El documento no contiene anexos ni escaneos</div>
                                 @endif
                             </td>
                         </tr>
@@ -75,7 +99,17 @@
                             <div class="list-timeline-time">
                                 <i class="fa fa-fw fa-calendar"></i> {{ $seguimiento -> presenter() -> getFechaSeguimiento() }}
                             </div>
-                            <i class="list-timeline-icon fa fa-flash bg-danger"></i>
+                            @if ($loop -> last)
+                                @if( $seguimiento -> Documento -> finalizado() )
+                                    <i class="list-timeline-icon fa fa-flag-checkered bg-success" title="Documento finalizado"></i>
+                                @elseif( $seguimiento -> Documento -> rechazado() )
+                                    <i class="list-timeline-icon fa fa-flag-checkered bg-warning" title="Documento rechazado"></i>
+                                @else
+                                    <i class="list-timeline-icon fa fa-flash bg-danger" title="Documento en seguimiento"></i>
+                                @endif
+                            @else
+                                <i class="list-timeline-icon fa fa-flash bg-danger" title="Documento en seguimiento"></i>
+                            @endif
                             <div class="list-timeline-content">
                                 <div class="row">
                                     <div class="col-md-6">

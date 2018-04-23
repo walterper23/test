@@ -82,24 +82,23 @@ class PanelController extends BaseController
 			}
 
 			// Si el usuario tiene marcado el documento como Importante, lo añadimos a Importantes
-			if (strpos($seguimiento -> DOCU_IMPORTANTE,strval(userKey())) !== false)
+			if ($seguimiento -> Documento -> importante())
 			{
 				$seguimiento -> importante = true;
 				$documentos['importantes'][] = $seguimiento;
 			}
 
 			// Si el usuario tiene marcado el documento como Archivado, lo añadimos a Archivados
-			if (strpos($seguimiento -> DOCU_ARCHIVADO,strval(userKey())) !== false)
+			if ($seguimiento -> Documento -> archivado())
 			{
 				$documentos['archivados'][] = $seguimiento;
 			}
 
-			// Si el documento ya está resuelto
-			if ($seguimiento -> Documento -> resuelto())
+			// Si el documento ya está finalizado
+			if ($seguimiento -> Documento -> finalizado())
 			{
 				$documentos['finalizados'][] = $seguimiento;
 			}
-
 
 		}
 		
@@ -208,10 +207,8 @@ class PanelController extends BaseController
 			];
 		}
 
-		// Obtener todas las direcciones de destino disponibles
-		$direcciones = MDireccion::with(['Departamentos'=>function($query){
-							return $query -> existenteDisponible();
-						}])
+		// Obtener todas las direcciones de destino existentes y disponibles con sus departamentos existentes y disponibles
+		$direcciones = MDireccion::with('DepartamentosExistentesDisponibles')
 						-> select('DIRE_DIRECCION','DIRE_NOMBRE')
 						-> existenteDisponible()
 						-> orderBy('DIRE_NOMBRE')
@@ -224,7 +221,7 @@ class PanelController extends BaseController
 
 		foreach ($direcciones as $direccion)
 		{
-			foreach ($direccion -> Departamentos as $departamento)
+			foreach ($direccion -> DepartamentosExistentesDisponibles as $departamento)
 			{
 				$data['departamentos_destino'][] = [
 					$direccion -> getKey(),
@@ -257,15 +254,15 @@ class PanelController extends BaseController
 	// Método para cambiar el estado de un documento
 	public function cambiarEstadoDocumento( $request )
 	{
-
 		$anterior = MSeguimiento::with('Documento','Seguimientos') -> find( $request -> seguimiento );
 
 		$documento = $anterior -> Documento;
 		
-		if ($documento -> resuelto() || $documento -> rechazado())
-		{
-			return $this -> responseDangerJSON('<i class="fa fa-fw fa-warning"></i> El documento ya fue finalizado. No se permiten más cambios de estado');
-		}		
+		if ($documento -> finalizado())
+			return $this -> responseDangerJSON('<i class="fa fa-fw fa-warning"></i> El documento ya fue finalizado. No se permiten más cambios de estado.');
+
+		if ($documento -> rechazado())
+			return $this -> responseDangerJSON('<i class="fa fa-fw fa-warning"></i> El documento fue rechazado. No se permiten más cambios de estado.');
 
 		$departamento_origen = $request -> departamento_origen;
 		if ($departamento_origen == 0)

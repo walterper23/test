@@ -23,7 +23,10 @@ class MDocumento extends BaseModel
 
     public function importante()
     {
-        return (strpos($this -> attributes['DOCU_IMPORTANTE'],strval(userKey())) !== false);
+        $usuarios = $this -> attributes['DOCU_IMPORTANTE']; // Recuperamos la lista de usuarios que han marcado como importante el documento
+        $lista = explode(',', $usuarios);
+        $usuario = array_search(userKey(), $lista);
+        return $usuario !== false; // Devolver si el usuario está en la lista
     }
 
     public function marcarArchivado()
@@ -35,44 +38,48 @@ class MDocumento extends BaseModel
 
     public function archivado()
     {
-        return (strpos($this -> attributes['DOCU_ARCHIVADO'],strval(userKey())) !== false);
+        $usuarios = $this -> attributes['DOCU_ARCHIVADO']; // Recuperamos la lista de usuarios que han archivado el documento
+        $lista = explode(',', $usuarios);
+        $usuario = array_search(userKey(), $lista);
+        return $usuario !== false; // Devolver si el usuario está en la lista
     }
 
-    private function marcarDocumento( $lista_usuarios )
+    private function marcarDocumento( $usuarios )
     {
-        if (empty($lista_usuarios)) // Si la lista de usuarios está vacía, añadimos al usuario a la lista
-        {
-            $lista_usuarios = userKey();
-        }
-        else if (! (strpos($lista_usuarios,strval(userKey())) !== false)) // Si el usuario no ha marcado el documento, lo añadimos a la lista después de una coma
-        {
-            $lista_usuarios .= ',' . userKey();
-        }
-        else // Si ya lo tiene marcado, quitaremos al usuario de la lista
-        {
-            $lista_usuarios = str_replace(userKey(), '', $lista_usuarios); // Reemplazar el ID del usuario por vacío
-            $lista_usuarios = str_replace(',,', ',', $lista_usuarios); // Eliminar dos comas seguidas, por sólo una coma
+        $lista = [];
 
-            if (! empty($lista_usuarios))
-            {
-                if( $lista_usuarios[0] == ',' ) // Si quedó una coma al inicio ...
-                    $lista_usuarios = substr($lista_usuarios, 1); // ... eliminar la coma del inicio
+        if (! empty(trim($usuarios)))
+            $lista = explode(',', $usuarios);
 
-                if( $lista_usuarios[-1] == ',' ) // Si quedó una coma al final ...
-                    $lista_usuarios = substr($lista_usuarios, 0, -1); // ... eliminar la coma del final
-            }
-            else
-            {
-                $lista_usuarios = null;
-            }
+        $usuario = array_search(userKey(), $lista);
+
+        if ($usuario === false) // Si el usuario no está en la lista, lo añadimos
+        {
+            $lista[] = userKey();
+        }
+        else // Si ya está en la lista, lo quitamos
+        {
+            unset($lista[ $usuario ]);
         }
 
-        return $lista_usuarios;
+        $lista = implode(',', $lista);
+
+        return $lista;
     }
 
-    public function resuelto()
+    public function recepcionado()
     {
-        return $this -> attributes['DOCU_SYSTEM_ESTADO_DOCTO'] == 4; // Documento resuelto
+        return $this -> attributes['DOCU_SYSTEM_ESTADO_DOCTO'] == 2; // Documento recepcionado
+    }
+
+    public function enSeguimiento()
+    {
+        return $this -> attributes['DOCU_SYSTEM_ESTADO_DOCTO'] == 3; // Documento en seguimiento
+    }
+
+    public function finalizado()
+    {
+        return $this -> attributes['DOCU_SYSTEM_ESTADO_DOCTO'] == 4; // Documento finalizado
     }
 
     public function rechazado()

@@ -13,7 +13,6 @@ class DenunciasForaneasDataTable extends CustomDataTable
 
     protected function setSourceData(){
         $this -> sourceData = MDocumentoForaneo::with('Detalle') -> existente() -> noGuardado() -> where('DOFO_SYSTEM_TIPO_DOCTO',1) -> orderBy('DOFO_DOCUMENTO','DESC') -> get(); // Denuncia
-        
     }
 
     protected function columnsTable(){
@@ -44,27 +43,27 @@ class DenunciasForaneasDataTable extends CustomDataTable
                 'title' => 'Tránsito',
                 'render' => function($documento){
                     if ($documento -> enviado())
-                        return sprintf('<button type="button" class="btn btn-sm btn-warning" onclick="hRecepcion.view(%d)" title="Enviar documento"><i class="fa fa-fw fa-car"></i> Enviar documento</button>', $documento -> getKey());
-                    else
                         return '<span class="badge badge-primary">Documento enviado <i class="fa fa-fw fa-car"></i></span>';
+                    else
+                        return sprintf('<button type="button" class="btn btn-sm btn-success" onclick="hRecepcionForanea.enviar(%d)" title="Enviar documento"><i class="fa fa-fw fa-car"></i> Enviar documento</button>', $documento -> getKey());
                 }
             ],
             [
                 'title' => 'Validado',
                 'render' => function($documento){
                     if ($documento -> validado() )
-                        return '<span class="badge badge-success">Validado</span>';
+                        return '<span class="badge badge-success"><i class="fa fa-fw fa-check"></i> Validado</span>';
                     else
-                        return '<span class="badge badge-danger">No validado</span>';
+                        return '<span class="badge badge-danger"><i class="fa fa-fw fa-times"></i> No validado</span>';
                 }
             ],
             [
                 'title' => 'Recepcionado',
                 'render' => function($documento){
                     if ($documento -> recepcionado() )
-                        return '<span class="badge badge-primary">Recepcionado</span>';
+                        return '<span class="badge badge-primary"><i class="fa fa-fw fa-check"></i> Recepcionado</span>';
                     else
-                        return '<span class="badge badge-danger">No recepcionado</span>';
+                        return '<span class="badge badge-danger"><i class="fa fa-fw fa-times"></i> No recepcionado</span>';
                 }
             ],
             [

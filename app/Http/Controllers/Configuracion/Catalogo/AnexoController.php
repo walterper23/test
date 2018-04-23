@@ -1,3 +1,4 @@
+
 <?php
 namespace App\Http\Controllers\Configuracion\Catalogo;
 
@@ -26,7 +27,6 @@ class AnexoController extends BaseController
 
     public function index(AnexosDataTable $dataTables)
     {
-
         $data['table']    = $dataTables;
         $data['form_id']  = $this -> form_id;
         $data['form_url'] = url('configuracion/catalogos/anexos/nuevo');

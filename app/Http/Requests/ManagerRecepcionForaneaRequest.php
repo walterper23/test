@@ -23,12 +23,13 @@ class ManagerRecepcionForaneaRequest extends FormRequest
     public function rules()
     {
         return [
-            'action'         => 'required|in:0,1,2,3,4',
-            'id'             => 'required_if:action:2,3,4',
+            'action'         => 'required|in:0,1,2,3,4,5',
+            'id'             => 'required_if:action:2,3,4,5',
             'tipo_documento' => 'required_if:action:0,1,2|exists:system_tipos_documentos,SYTD_TIPO_DOCUMENTO',
             'numero'         => 'required_if:action,1,2|min:1,max:255',
             'recepcion'      => 'required_if:action,1|date_format:Y-m-d',
             'municipio'      => 'required_if:action,1',
+            'direccion'      => 'required_if:action:1,2',
             'denuncia'       => 'required_if:tipo_documento,2',
             'descripcion'    => 'required_if:action,1',
             'responsable'    => 'required_if:action,1',
@@ -46,6 +47,7 @@ class ManagerRecepcionForaneaRequest extends FormRequest
             'recepcion.required_if'      => 'Introduzca la fecha de recepción',
             'recepcion.date_format'      => 'La fecha de recepción no es válida',
             'municipio.required_if'      => 'Seleccione un municipio',
+            'direccion.required_if'      => 'Seleccione una dirección de origen',
             'denuncia.required_if'       => 'Seleccione el expediente donde se agregará el presente documento',
             'descripcion.required_if'    => 'Introduzca el asunto o descripción',
             'responsable.required_if'    => 'Introduzca el nombre del responsable',

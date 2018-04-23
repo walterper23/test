@@ -88,6 +88,18 @@ class RecepcionForaneaController extends BaseController
 			case 1: // Nueva recepción
 				$response = $this -> nuevaRecepcion( $request );
 				break;
+			case 2: // Editar
+				$response = $this -> editarRecepcion( $request );
+				break;
+			case 3: // Visualizar recepción
+				$response = $this -> verRecepcion( $request );
+				break;
+			case 4: // Eliminar
+				$response = $this -> eliminarRecepcion( $request );
+				break;
+			case 5: // Enviar documento a Oficialía de Partes Local
+				$response = $this -> enviarDocumento( $request );
+				break;
 			default:
 				return response()->json(['message'=>'Petición no válida'],404);
 				break;
@@ -210,7 +222,6 @@ class RecepcionForaneaController extends BaseController
 
 			/* !!! El documento foráneo no debe crear ningún primer seguimiento !!! */
 			
-
 			if ($request -> tipo_documento == 1) // Si el tipo de documento es denuncia ...
 			{
 				/* !!! El documento foráneo no debe crear ningún registro de denuncia !!! */
@@ -221,9 +232,9 @@ class RecepcionForaneaController extends BaseController
 				$denuncia = MDenuncia::with('Documento') -> find( $request -> denuncia );
 
 				$documentoDenuncia = new MDocumentoDenuncia; // ... registramos el documento a la denuncia
-				$documentoDenuncia -> DODE_DOCUMENTO         = $documento -> getKey();
 				$documentoDenuncia -> DODE_DENUNCIA          = $denuncia -> getKey();
 				$documentoDenuncia -> DODE_DOCUMENTO_ORIGEN  = $denuncia -> Documento -> getKey();
+				$documentoDenuncia -> DODE_DOCUMENTO_FORANEO = $documento -> getKey();
 				$documentoDenuncia -> DODE_DETALLE           = $denuncia -> Documento -> Detalle -> getKey();
 				$documentoDenuncia -> DODE_SEGUIMIENTO       = $denuncia -> Documento -> Seguimientos -> last() -> getKey();
 				$documentoDenuncia -> save();
@@ -282,12 +293,29 @@ class RecepcionForaneaController extends BaseController
 		$archivo -> save();
 	}
 
-	public function verDocumentoRecepcionado( $id ){
 
-		$data['documento'] = MDocumentoForaneo::find( $id );
+	public function enviarDocumento( $request )
+	{
+		$documento = MDocumentoForaneo::find( $request -> id );
+		$documento -> DOFO_SYSTEM_TRANSITO = 1;
+		$documento -> save();
 
-		return view('Recepcion.verDocumento')->with($data);
+		$message = sprintf('Documento #<b>%s</b> enviado <i class="fa fa-fw fa-car"></i>',$documento -> getCodigo());
 
+		if ($documento -> getTipoDocumento() == 1)
+		{
+			$tables = ['denuncias-datatable',null,true];
+		}
+		else if ($documento -> getTipoDocumento() == 2)
+		{
+			$tables = ['documentos-denuncias-datatable',null,true];
+		}
+		else
+		{
+			$tables = ['documentos-datatable',null,true];
+		}
+
+		return $this -> responseSuccessJSON($message,$tables);
 	}
 
 }

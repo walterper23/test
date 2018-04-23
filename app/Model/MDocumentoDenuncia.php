@@ -9,9 +9,14 @@ class MDocumentoDenuncia extends BaseModel
     
     /** Relationships **/
 
-    public function Documento()
+    public function DocumentoLocal()
     {
-        return $this -> belongsTo('App\Model\MDocumento','DOCU_DOCUMENTO','DODE_DOCUMENTO');
+        return $this -> belongsTo('App\Model\MDocumento','DOCU_DOCUMENTO','DODE_DOCUMENTO_LOCAL');
+    }
+
+    public function DocumentoForaneo()
+    {
+        return $this -> belongsTo('App\Model\MDocumento','DOCU_DOCUMENTO','DODE_DOCUMENTO_FORANEO');
     }
 
     public function DocumentoOrigen()
@@ -27,6 +32,11 @@ class MDocumentoDenuncia extends BaseModel
     public function Detalle()
     {
     	return $this -> hasOne('App\Model\MDetalle','DETA_DETALLE','DODE_DETALLE');
+    }
+
+    public function Seguimiento()
+    {
+        return $this -> hasOne('App\Model\MSeguimiento','SEGU_SEGUIMIENTO','DODE_SEGUIMIENTO');
     }
 
     /* Presenter */

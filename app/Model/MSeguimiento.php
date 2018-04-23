@@ -27,24 +27,34 @@ class MSeguimiento extends BaseModel
     // Función para añadir el ID del usuario a la lista de usuarios que han leido el Seguimiento
     public function marcarComoLeido()
     {
-        $lecturas = $this -> attributes['SEGU_LEIDO']; // Recuperamos la lista de usuarios que han leido el seguimiento
+        $usuarios = $this -> attributes['SEGU_LEIDO']; // Recuperamos la lista de usuarios que han leido el seguimiento
+        
+        $lista = [];
 
-        if (! strpos($lecturas,strval(userKey()))) // Si el usuario no ha leido el seguimiento ...
-        {
-            if (! empty($lecturas)) // Si ya hay usuarios que han leido el seguimiento, añadimos una coma
-            {
-                $lecturas .= ',';
-            }
+        if (! empty(trim($usuarios)))
+            $lista = explode(',', $usuarios);
 
-            $this -> attributes['SEGU_LEIDO'] = $lecturas . userKey(); // ... añadimos al usuario a la lista
-        }
+        $usuario = array_search(userKey(), $lista);
+
+        if ($usuario === false) // Si el usuario no está en la lista, lo añadimos
+            $lista[] = userKey();
+
+        $lista = implode(',', $lista);
+
+        $this -> attributes['SEGU_LEIDO'] = $lista; // ... añadimos al usuario a la lista
+        
         return $this;
     }
 
     public function leido()
     {
-        $lecturas = $this -> attributes['SEGU_LEIDO']; // Recuperamos la lista de usuarios que han leido el seguimiento
-        return strpos($lecturas,strval(userKey())) !== false; // Devolver si el usuario ha leido el seguimiento
+        $usuarios = $this -> attributes['SEGU_LEIDO']; // Recuperamos la lista de usuarios que han leido el seguimiento
+
+        $lista = explode(',', $usuarios);
+
+        $usuario = array_search(userKey(), $lista);
+
+        return $usuario !== false; // Devolver si el usuario está en la lista
     }
 
 

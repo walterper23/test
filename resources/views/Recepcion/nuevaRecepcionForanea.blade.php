@@ -143,7 +143,6 @@
                 numero  : { required : true },
                 recepcion : { required : true, date : true },
                 direccion : { required : true },
-                departamento : { required : true },
                 municipio : { required : true },
                 denuncia : {
                     required : true
@@ -163,7 +162,6 @@
                     date : 'La fecha de recepción no es válida'
                 },
                 direccion : { required : 'Seleccione una dirección' },
-                departamento : { required : 'Seleccione un departamento' },
                 municipio : { required : 'Seleccione un municipio' },
                 denuncia : { required : 'Seleccione el expediente donde se agregará el presente documento' },
                 descripcion : { required : 'Introduzca el asunto o descripción' },
