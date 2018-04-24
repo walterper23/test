@@ -1,7 +1,7 @@
 @extends('app.layoutMaster')
 
 @section('title')
-	{{ title('Documentos recepcionados') }}
+	{{ title('Recibir documentos foráneos') }}
 @endsection
 
 @push('css-style')
@@ -12,9 +12,9 @@
 
 @section('breadcrumb')
     <nav class="breadcrumb bg-body-light mb-0">
-        <a class="breadcrumb-item" href="javascript:void(0)"><i class="fa fa-home"></i> Recepci&oacute;n</a>
+        <a class="breadcrumb-item" href="javascript:void(0)"><i class="fa fa-home"></i> Recepci&oacute;n foránea</a>
         <a class="breadcrumb-item" href="{{ url('recepcion/documentos') }}">Documentos</a>
-        <span class="breadcrumb-item active">Recepcionados</span>
+        <span class="breadcrumb-item active">Recibir</span>
     </nav>
 @endsection
 
@@ -32,11 +32,11 @@
         </li>
         <li class="nav-item ml-auto">
             <div class="block-options mr-15">
-            <button type="button" class="btn-block-option d-none d-sm-inline" onclick="location.href='{{ url('recepcion/documentos/nueva-recepcion') }}'">
-                <i class="fa fa-fw fa-plus"></i> Nueva recepción
-            </button>
-            <button type="button" class="btn-block-option d-none d-sm-inline" onclick="hRecepcion.reloadTables(['denuncias-datatables','documentos-denuncias-datatables','documentos-datatables'])">
-                <i class="fa fa-fw fa-refresh"></i> Actualizar
+            <a href="{{ url('recepcion/documentos/nueva-recepcion') }}" class="btn-block-option">
+                <i class="fa fa-plus"></i> Nueva recepci&oacute;n
+            </a>
+            <button type="button" class="btn-block-option" onclick="hRecepcion.reload('dataTableBuilder')">
+                <i class="fa fa-refresh"></i> Actualizar
             </button>
             <div class="dropdown">
                 <button type="button" class="btn-block-option dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cog"></i> Opciones</button>
@@ -77,18 +77,12 @@
     {{ Html::script('js/plugins/jquery-validation/jquery.validate.min.js') }}
     {{ Html::script('js/plugins/datatables/jquery.dataTables.min.js') }}
     {{ Html::script('js/plugins/datatables/dataTables.bootstrap4.min.js') }}
-    {{ Html::script('js/helpers/recepcion.helper.js') }}
+    {{ Html::script('js/helpers/recibir.recepcion.foranea.helper.js') }}
     {{ Html::script('js/app-form.js') }}
     {{ Html::script('js/app-alert.js') }}
 @endpush
 
 @push('js-custom')
-    @if (isset($acuse))
-    <script type="text/javascript">
-    hRecepcion.verAcuse({{ $acuse }});
-    </script>
-    @endif
-
     {{ $table1 -> javascript() }}
     {{ $table2 -> javascript() }}
     {{ $table3 -> javascript() }}

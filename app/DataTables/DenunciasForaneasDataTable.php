@@ -44,6 +44,8 @@ class DenunciasForaneasDataTable extends CustomDataTable
                 'render' => function($documento){
                     if ($documento -> enviado())
                         return '<span class="badge badge-primary">Documento enviado <i class="fa fa-fw fa-car"></i></span>';
+                    elseif ($documento -> recibido())
+                        return '<span class="badge badge-primary">Documento recibido <i class="fa fa-fw fa-folder"></i></span>';
                     else
                         return sprintf('<button type="button" class="btn btn-sm btn-success" onclick="hRecepcionForanea.enviar(%d)" title="Enviar documento"><i class="fa fa-fw fa-car"></i> Enviar documento</button>', $documento -> getKey());
                 }
@@ -61,7 +63,7 @@ class DenunciasForaneasDataTable extends CustomDataTable
                 'title' => 'Recepcionado',
                 'render' => function($documento){
                     if ($documento -> recepcionado() )
-                        return '<span class="badge badge-primary"><i class="fa fa-fw fa-check"></i> Recepcionado</span>';
+                        return '<span class="badge badge-success"><i class="fa fa-fw fa-check"></i> Recepcionado</span>';
                     else
                         return '<span class="badge badge-danger"><i class="fa fa-fw fa-times"></i> No recepcionado</span>';
                 }

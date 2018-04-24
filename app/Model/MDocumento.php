@@ -12,6 +12,11 @@ class MDocumento extends BaseModel
         return $this -> attributes['DOCU_NUMERO_DOCUMENTO'];
     }
 
+    public function getTipoDocumento()
+    {
+        return $this -> attributes['DOCU_SYSTEM_TIPO_DOCTO'];
+    }
+
     /* Methods */
 
     public function marcarImportante()
@@ -110,6 +115,11 @@ class MDocumento extends BaseModel
     public function Detalle()
     {
         return $this -> hasOne('App\Model\MDetalle','DETA_DETALLE','DOCU_DETALLE');
+    }
+
+    public function Escaneos()
+    {
+        return $this -> hasMany('App\Model\MEscaneo','ESCA_DOCUMENTO_LOCAL',$this -> getKeyName());
     }
 
     public function EstadoDocumento()

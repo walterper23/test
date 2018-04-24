@@ -92,6 +92,14 @@ var hPanel = function(){
 		});
 	};
 
+	var _expediente = function( id ){
+		App.openModal({
+			id : 'form-no-expediente-denuncia',
+			url : '/panel/documentos/no-expediente-denuncia',
+			data : { id }
+		});
+	};
+
 	return {
 		verAnexos : function( id ){
 			_verAnexosEscaneos(id);
@@ -110,6 +118,9 @@ var hPanel = function(){
 		},
 		nuevoEstado : function(){
 			_nuevoEstado();
+		},
+		expediente : function(id){
+			_expediente(id);
 		}
 	};
 }();

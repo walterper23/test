@@ -34,16 +34,16 @@ If your sidebar menu includes icons and you would like to hide them, you can add
                 </ul>
             </li>
             <li>
-                <a class="nav-submenu" data-toggle="nav-submenu" href="{{ url('recepcion/documentos-foraneos/recepcionados?view=denuncias') }}">Recepciones foráneas</a>
+                <a class="nav-submenu" data-toggle="nav-submenu" href="{{ url('recepcion/documentos/foraneos?view=denuncias') }}">Recepciones foráneas</a>
                 <ul>
                     <li>
-                        <a href="{{ url('recepcion/documentos-foraneos/recepcionados?view=denuncias') }}">Denuncias</a>
+                        <a href="{{ url('recepcion/documentos/foraneos?view=denuncias') }}">Denuncias</a>
                     </li>
                     <li>
-                        <a href="{{ url('recepcion/documentos-foraneos/recepcionados?view=documentos-denuncias') }}">Documentos de denuncias</a>
+                        <a href="{{ url('recepcion/documentos/foraneos?view=documentos-denuncias') }}">Documentos de denuncias</a>
                     </li>
                     <li>
-                        <a href="{{ url('recepcion/documentos-foraneos/recepcionados?view=documentos') }}">Documentos</a>
+                        <a href="{{ url('recepcion/documentos/foraneos?view=documentos') }}">Documentos</a>
                     </li>
                 </ul>
             </li>
@@ -91,13 +91,13 @@ If your sidebar menu includes icons and you would like to hide them, you can add
                 <a href="{{ url('panel/documentos/?view=important') }}">Importantes</a>
             </li>
             <li>
-                <a href="{{ url('panel/documentos/?view=archived') }}">Archivados</a>
-            </li>
-            <li>
                 <a href="{{ url('panel/documentos/?view=finished') }}">Finalizados</a>
             </li>
             <li>
                 <a href="{{ url('panel/documentos-semaforizados') }}">Semaforizados</a>
+            </li>
+            <li>
+                <a href="{{ url('panel/documentos/?view=archived') }}">Archivados</a>
             </li>
         </ul>
     </li>

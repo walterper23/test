@@ -63,6 +63,16 @@ class MDocumentoForaneo extends BaseModel
         return $this -> hasOne('App\Model\MDetalle','DETA_DETALLE','DOFO_DETALLE');
     }
 
+    public function DocumentoDenuncia()
+    {
+        return $this -> hasOne('App\Model\MDocumentoDenuncia','DODE_DOCUMENTO_FORANEO',$this -> getKeyName());
+    }
+
+    public function Escaneos()
+    {
+        return $this -> hasMany('App\Model\MEscaneo','ESCA_DOCUMENTO_FORANEO',$this -> getKeyName());
+    }
+
     public function TipoDocumento()
     {
         return $this -> hasOne('App\Model\Sistema\MSistemaTipoDocumento','SYTD_TIPO_DOCUMENTO','DOFO_SYSTEM_TIPO_DOCTO');

@@ -3,17 +3,16 @@ namespace App\DataTables;
 
 use App\Model\MDocumentoForaneo;
 
-class DocumentosDenunciasForaneasDataTable extends CustomDataTable
+class RecibirDenunciasForaneasDataTable extends CustomDataTable
 {
     public function __construct()
     {
         parent::__construct();
-        $this -> builderHtml -> setTableId('documentos-denuncias-datatable');
+        $this -> builderHtml -> setTableId('recibir-denuncias-datatable');
     }
 
-    protected function setSourceData()
-    {
-        $this -> sourceData = MDocumentoForaneo::with('Detalle') -> where('DOFO_SYSTEM_TIPO_DOCTO',2) -> existente() -> noGuardado() -> orderBy('DOFO_DOCUMENTO','DESC') -> get(); // Documentos de denuncias
+    protected function setSourceData(){
+        $this -> sourceData = MDocumentoForaneo::with('Detalle') -> existente() -> noGuardado() -> where('DOFO_SYSTEM_TIPO_DOCTO',1) -> orderBy('DOFO_DOCUMENTO','DESC') -> get(); // Denuncia
     }
 
     protected function columnsTable(){
@@ -25,7 +24,7 @@ class DocumentosDenunciasForaneasDataTable extends CustomDataTable
                 }
             ],
             [
-                'title'  => 'NÓ. DOCUMENTO',
+                'title'  => 'Nó. Documento',
                 'data'   => 'DOFO_NUMERO_DOCUMENTO'
             ],
             [
@@ -35,7 +34,7 @@ class DocumentosDenunciasForaneasDataTable extends CustomDataTable
                 }
             ],
             [
-                'title' => 'RECEPCIÓN',
+                'title' => 'Recepción',
                 'render' => function($query){
                     return $query -> Detalle -> getFechaRecepcion();
                 }
@@ -44,20 +43,22 @@ class DocumentosDenunciasForaneasDataTable extends CustomDataTable
                 'title' => 'Tránsito',
                 'render' => function($documento){
                     if ($documento -> enviado())
-                        return '<span class="badge badge-primary">Documento enviado <i class="fa fa-fw fa-car"></i></span>';
-                    elseif ($documento -> recibido())
-                        return '<span class="badge badge-primary">Documento recibido <i class="fa fa-fw fa-folder"></i></span>';
+                        return sprintf('<button type="button" class="btn btn-sm btn-success" onclick="hRecibirRecepcionForanea.recibir(%d)" title="Recibir documento"><i class="fa fa-fw fa-folder-open"></i> Recibir</button>', $documento -> getKey());
+                    elseif( $documento -> recibido() )
+                        return '<span class="badge badge-primary"><i class="fa fa-fw fa-folder"></i> Documento recibido</span>';
                     else
-                        return sprintf('<button type="button" class="btn btn-sm btn-success" onclick="hRecepcionForanea.enviar(%d)" title="Enviar documento"><i class="fa fa-fw fa-car"></i> Enviar documento</button>', $documento -> getKey());
+                        return '<span class="badge badge-danger"><i class="fa fa-fw fa-car"></i> Aún no enviado</span>';
                 }
             ],
             [
                 'title' => 'Validado',
                 'render' => function($documento){
-                    if ($documento -> validado() )
+                    if ($documento -> validado())
                         return '<span class="badge badge-success"><i class="fa fa-fw fa-check"></i> Validado</span>';
+                    elseif ($documento -> recibido())
+                        return sprintf('<button type="button" class="btn btn-sm btn-success" onclick="hRecibirRecepcionForanea.validar(%d)" title="Validar documento"><i class="fa fa-fw fa-check"></i> Validar</button>', $documento -> getKey());
                     else
-                        return '<span class="badge badge-danger"><i class="fa fa-fw fa-times"></i> No validado</span>';
+                        return '<span class="badge badge-danger"><i class="fa fa-fw fa-times"></i> Aún sin validar</span>';
                 }
             ],
             [
@@ -65,8 +66,10 @@ class DocumentosDenunciasForaneasDataTable extends CustomDataTable
                 'render' => function($documento){
                     if ($documento -> recepcionado() )
                         return '<span class="badge badge-success"><i class="fa fa-fw fa-check"></i> Recepcionado</span>';
+                    elseif ($documento -> recibido())
+                        return sprintf('<button type="button" class="btn btn-sm btn-success" onclick="hRecibirRecepcionForanea.recepcionar(%d)" title="Recepcionar documento"><i class="fa fa-fw fa-check"></i> Recepcionar</button>', $documento -> getKey());
                     else
-                        return '<span class="badge badge-danger"><i class="fa fa-fw fa-times"></i> No recepcionado</span>';
+                        return '<span class="badge badge-danger"><i class="fa fa-fw fa-times"></i> Aún sin validar</span>';
                 }
             ],
             [
@@ -80,7 +83,7 @@ class DocumentosDenunciasForaneasDataTable extends CustomDataTable
 
                     $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-success" onclick="hRecepcion.view(%d)" title="Acuse de Recepción"><i class="fa fa-fw fa-file-text"></i></button>', $query -> getKey());
 
-                    /*$buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hTipoDocumento.delete('.$query->DOFO_DOCUMENTO.')"><i class="fa fa-trash"></i></button>';*/
+                    /*$buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hTipoDocumento.delete('.$query->DOCU_DOCUMENTO.')"><i class="fa fa-trash"></i></button>';*/
                     
                     return $buttons;
                 }
@@ -89,7 +92,7 @@ class DocumentosDenunciasForaneasDataTable extends CustomDataTable
     }
 
     protected function getUrlAjax(){
-        return url('recepcion/documentos-foraneos/post-data?type=documentos-denuncias');
+        return url('recepcion/documentos/foraneos/post-data?type=denuncias');
     }
 
 }

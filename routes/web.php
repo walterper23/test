@@ -37,18 +37,29 @@ Route::middleware('preventBackHistory') -> group(function(){
         // Recepcion de documentos locales y foráneos
         Route::prefix('recepcion') -> namespace('Recepcion') -> group(function(){
             
-            Route::get('/',  'RecepcionController@index');
+            Route::redirect('/', '/recepcion/documentos/recepcionados?view=denuncias');
             
             // Recepción de documentos locales
             Route::prefix('documentos') -> middleware('can:REC.DOCUMENTO.LOCAL') -> group(function(){
-                Route::get('/',                'RecepcionController@index');
+
+                Route::redirect('/', '/recepcion/documentos/recepcionados?view=denuncias');
+
                 Route::get('recepcionados',    'RecepcionController@index');
                 Route::post('post-data',       'RecepcionController@postDataTable');
                 Route::get('nueva-recepcion',  'RecepcionController@formNuevaRecepcion');
                 Route::post('manager',         'RecepcionController@manager');
                 Route::get('en-captura',       'RecepcionController@documentosEnCaptura');
-                Route::get('{id}',             'RecepcionController@verDocumentoRecepcionado');
+
+                Route::prefix('foraneos') -> group(function(){
+                    Route::get('/',                'RecibirRecepcionForaneaController@index');
+                    Route::post('post-data',       'RecibirRecepcionForaneaController@postDataTable');
+                    Route::get('nueva-recepcion',  'RecibirRecepcionForaneaController@formNuevaRecepcion');
+                    Route::post('manager',         'RecibirRecepcionForaneaController@manager');
+                    Route::get('en-captura',       'RecibirRecepcionForaneaController@documentosEnCaptura');
+                });
+
             });
+
 
             // Recepción de documentos foráneos
             Route::prefix('documentos-foraneos') -> middleware('can:REC.DOCUMENTO.FORANEO') -> group(function(){
@@ -58,7 +69,6 @@ Route::middleware('preventBackHistory') -> group(function(){
                 Route::get('nueva-recepcion',  'RecepcionForaneaController@formNuevaRecepcion');
                 Route::post('manager',         'RecepcionForaneaController@manager');
                 Route::get('en-captura',       'RecepcionForaneaController@documentosEnCaptura');
-                Route::get('{id}',             'RecepcionForaneaController@verDocumentoRecepcionado');
             });
 
         });
@@ -74,6 +84,7 @@ Route::middleware('preventBackHistory') -> group(function(){
                 Route::post('anexos-escaneos',        'PanelController@verAnexosEscaneos');
                 Route::post('cambio-estado',          'PanelController@formCambioEstadoDocumento');
                 Route::post('editar-cambio-estado',   'PanelController@formEditarCambioEstadoDocumento');
+                Route::post('no-expediente-denuncia', 'PanelController@formAsignarNoExpedienteDenuncia');
                 Route::post('manager',                'PanelController@manager');
                 
                 // Seguimiento de los documentos

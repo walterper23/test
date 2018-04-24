@@ -24,7 +24,9 @@
             <h3 class="block-title">
                 <i class="fa fa-fw fa-history"></i>
                 Historial de Cambios de Estados del Documento <b>#{{ $documento -> getCodigo() }}</b>
-                 @if( $seguimiento -> Documento -> enSeguimiento() )
+                @if( $seguimiento -> Documento -> recepcionado() )
+                <span class="badge badge-primary">Recepcionado</span>
+                @elseif( $seguimiento -> Documento -> enSeguimiento() )
                 <span class="badge badge-danger">En seguimiento</span>
                 @elseif( $seguimiento -> Documento -> finalizado() )
                 <span class="badge badge-success">Finalizado</span>
@@ -33,7 +35,7 @@
                 @endif
             </h3>
             <div class="block-options">
-                @if ($seguimiento -> Documento -> enSeguimiento() && user() -> can('SEG.CAMBIAR.ESTADO'))
+                @if (! $seguimiento -> Documento -> finalizado() && ! $seguimiento -> Documento -> rechazado() && user() -> can('SEG.CAMBIAR.ESTADO'))
                 <button type="button" class="btn btn-sm btn-danger" onclick="hPanel.cambiarEstado({{ $seguimiento -> getKey() }})">
                     <i class="fa fa-fw fa-flash"></i> Cambiar estado
                 </button>

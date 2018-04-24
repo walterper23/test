@@ -120,7 +120,7 @@
 			};
 
 			if( result.status ){
-				config.onClose = function(){
+				config.onShown = function(){
 					location.reload();
 				}
 			}else{

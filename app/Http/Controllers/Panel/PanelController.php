@@ -10,6 +10,7 @@ use App\Http\Controllers\BaseController;
 
 /* Models */
 use App\Model\MUsuario;
+use App\Model\MDenuncia;
 use App\Model\MDocumento;
 use App\Model\MSeguimiento;
 use App\Model\Catalogo\MDireccion;
@@ -54,6 +55,7 @@ class PanelController extends BaseController
 						-> leftJoin('usuarios','USUA_USUARIO','=','SEGU_USUARIO')
 						-> leftJoin('usuarios_detalles','USDE_USUARIO_DETALLE','=','USUA_DETALLE')
 						-> leftJoin('system_estados_documentos','SYED_ESTADO_DOCUMENTO','=','DOCU_SYSTEM_ESTADO_DOCTO')
+						-> leftJoin('denuncias','DENU_DOCUMENTO','=','DOCU_DOCUMENTO')
 						-> whereIn('SEGU_DOCUMENTO',$documentos)
 						-> whereRaw('SEGU_SEGUIMIENTO in (select max(SEGU_SEGUIMIENTO) from seguimiento group by SEGU_DOCUMENTO order by SEGU_SEGUIMIENTO desc)')
 						-> orderBy('SEGU_SEGUIMIENTO','DESC')
@@ -71,20 +73,19 @@ class PanelController extends BaseController
 		// Recorremos todos los seguimientos encontrados y vamos guardando en el contenedor anterior
 		foreach ($seguimientos as $seguimiento) {
 			
-			// Añadimos el seguimiento a Todos
-			$documentos['todos'][] = $seguimiento;
+			// Añadimos el seguimiento a Todos, si no es un documento archivado por el usuario
+			if (! $seguimiento -> Documento -> archivado())
+				$documentos['todos'][] = $seguimiento;
 			
 			// Si el usuario no ha leido el seguimiento, lo añadimos a Recientes
 			if (! $seguimiento -> leido() )
 			{
-				$seguimiento -> leido = false;
 				$documentos['recientes'][] = $seguimiento;
 			}
 
 			// Si el usuario tiene marcado el documento como Importante, lo añadimos a Importantes
 			if ($seguimiento -> Documento -> importante())
 			{
-				$seguimiento -> importante = true;
 				$documentos['importantes'][] = $seguimiento;
 			}
 
@@ -156,6 +157,9 @@ class PanelController extends BaseController
             case 4: // Marcar documento como archivado
                 $response = $this -> marcarDocumentoArchivado( $request );
                 break;
+            case 5: // Asignar número de expediente a denuncia
+            	$response = $this -> asignarNoExpedienteDenuncia( $request );
+            	break;
             default:
                 return response()->json(['message'=>'Petición no válida'],404);
                 break;
@@ -353,6 +357,44 @@ class PanelController extends BaseController
 		} catch(Exception $error) {
 
 		}
+
+	}
+
+	public function formAsignarNoExpedienteDenuncia(Request $request)
+	{
+		$data = [
+			'title'         => 'Nó. de expediende de denuncia',
+			'url_send_form' => url('panel/documentos/manager'),
+			'form_id'       => 'form-no-expediente-denuncia',
+			'action'        => 5,
+			'id'            => $request -> id,
+		];
+
+		$denuncia = MDenuncia::where('DENU_DOCUMENTO',$request -> id) -> first();
+
+		if (is_null($denuncia))
+		{
+			// Si no existe el documento ni la denuncia ...
+		}
+
+		$data['no_expediente'] = $denuncia -> getNoExpediente();
+
+		return view('Panel.Documentos.formAsignarNoExpedienteDenuncia') -> with($data);
+		
+	}
+
+	public function asignarNoExpedienteDenuncia( $request )
+	{
+		if (user() -> cant('DOC.CREAR.NO.EXPE'))
+			abort(403);
+
+		$denuncia = MDenuncia::where('DENU_DOCUMENTO',$request -> id) -> first();
+		$denuncia -> DENU_NO_EXPEDIENTE = $request -> expediente;
+		$denuncia -> save();
+
+		$message = sprintf('Nó. expediente <b>%s</b> asignado a Documento <b>#%s</b>',$denuncia -> getNoExpediente(), $denuncia -> DENU_DOCUMENTO);
+
+		return $this -> responseSuccessJSON($message);
 
 	}
 

@@ -151,6 +151,7 @@ App.loadScript('/js/plugins/sweetalert2/sweetalert2.min.js', function(){
                             align : options.align
                         },
                         z_index: options.z_index,
+                        onShown: options.onShown,
                         onClose: options.onClose
                     });
                 }

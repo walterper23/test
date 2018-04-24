@@ -28,7 +28,7 @@
     {
         $url = sprintf('panel/documentos/seguimiento?search=%d',$seguimiento -> getKey());
 
-        if ($seguimiento -> leido === false)
+        if (! $seguimiento -> leido())
             $url = sprintf('%s&read=1',$url);
 
         return url( $url );
@@ -85,7 +85,7 @@
                             <i class="fa fa-fw fa-flash"></i> Nuevo
                         </button>
                         @endcan
-                        <strong>1 - {{ sizeof($documentos) }}</strong> de <strong>{{ sizeof($documentos) }}</strong>
+                        <!--strong>1 - {{ sizeof($documentos) }}</strong> de <strong>{{ sizeof($documentos) }}</strong>
                         <button type="button" class="btn-block-option" data-toggle="block-option">
                             <i class="si si-arrow-left"></i>
                         </button>
@@ -94,31 +94,46 @@
                         </button>
                         <button type="button" class="btn-block-option" data-toggle="block-option">
                             <i class="si si-refresh"></i>
-                        </button>
+                        </button-->
                     </div>
                 </div>
             </div>
 
             @forelse ($documentos as $seguimiento)
-            <div class="block {{ ($seguimiento -> leido === false) ? 'bg-info-light' : '' }}">
+            @php
+                $documento = $seguimiento -> Documento;
+            @endphp
+            <div class="block {{ (! $seguimiento -> leido()) ? 'bg-info-light' : '' }}">
                 <div class="block-content block-content-full ribbon ribbon-bottom ribbon-bookmark ribbon-{{ $seguimiento -> SYTD_RIBBON_COLOR }}">
-                    <div class="ribbon-box">{{ $seguimiento -> SYTD_NOMBRE }}</div>
+                    <div class="ribbon-box">
+                        {{ $seguimiento -> SYTD_NOMBRE }}
+                        @if ( $documento -> getTipoDocumento() == 1)
+                            <span style="cursor: pointer;" onclick="hPanel.expediente({{ $documento -> getKey() }})">
+                            <i class="fa fa-fw fa-legal"></i>
+                            @if (! empty($seguimiento -> DENU_NO_EXPEDIENTE) )
+                                {{ $seguimiento -> DENU_NO_EXPEDIENTE }}
+                            @else
+                                _ _ _ _
+                            @endif
+                            </span>
+                        @endif
+                    </div>
                     <div class="row">
                         <div class="col-md-5">
                             <div class="row">
                                 <div class="col-12">
-                                    <p class="font-w700">{{ $seguimiento -> Documento -> getNumero() }}</p>
+                                    <p class="font-w700">{{ $documento -> getNumero() }}</p>
                                     <p>{{ $seguimiento -> DETA_DESCRIPCION }}</p>
                                 </div>
                                 <div class="col-12">
                                     <span><i class="fa fa-fw fa-calendar"></i> <b>Recepción:</b> {{ $seguimiento -> DETA_FECHA_RECEPCION }} </span>
                                     @if (! empty($seguimiento -> DETA_ANEXOS) )
-                                    <button type="button" class="btn btn-sm btn-rounded btn-alt-primary" onclick="hPanel.verAnexos({{ $seguimiento -> Documento -> getKey()  }})">
+                                    <button type="button" class="btn btn-sm btn-rounded btn-alt-primary" onclick="hPanel.verAnexos({{ $documento -> getKey()  }})">
                                         <i class="fa fa-fw fa-clipboard"></i> Anexos
                                     </button>
                                     @endif
                                     @if ($seguimiento -> Escaneos -> count() > 0 )
-                                    <button type="button" class="btn btn-sm btn-rounded btn-alt-danger" onclick="hPanel.verEscaneos({{ $seguimiento -> Documento -> getKey()  }})">
+                                    <button type="button" class="btn btn-sm btn-rounded btn-alt-danger" onclick="hPanel.verEscaneos({{ $documento -> getKey()  }})">
                                         <i class="fa fa-fw fa-clipboard"></i> Escaneos <span class="badge badge-pill badge-danger">{{ $seguimiento -> Escaneos -> count() }}</span>
                                     </button>
                                     @endif
@@ -132,16 +147,16 @@
                             <p><span class="font-w600"><i class="fa fa-fw fa-comment-o"></i> Observaciones:</span> {{ $seguimiento -> getObservacion() }}</p>
                         </div>
                         <div class="col-md-2 text-right section-options">
-                            <div class="font-size-sm text-muted text-right" title="Documento #{{ $seguimiento -> Documento -> getCodigo() }}">
-                                <a href="javascript:void(0)" onclick="hPanel.marcarImportante(this, {{ $seguimiento -> Documento -> getKey() }})">
-                                    @if ($seguimiento -> importante)
+                            <div class="font-size-sm text-muted text-right" title="Documento #{{ $documento -> getCodigo() }}">
+                                <a href="javascript:void(0)" onclick="hPanel.marcarImportante(this, {{ $documento -> getKey() }})">
+                                    @if ($documento -> importante())
                                         <i class="fa fa-fw fa-star text-warning star" title="Marcar como importante"></i>
                                     @else
                                         <i class="fa fa-fw fa-star-o star" title="Marcar como importante"></i>
                                     @endif
                                 </a>
-                                #{{ $seguimiento -> Documento -> getCodigo() }}
-                                @if ($seguimiento -> leido === false)
+                                #{{ $documento -> getCodigo() }}
+                                @if (! $seguimiento -> leido())
                                     <i class="fa fa-fw fa-folder"></i>
                                 @else
                                     <i class="fa fa-fw fa-folder-open-o"></i>
@@ -150,23 +165,28 @@
                                     <div class="btn-group show" role="group">
                                         <button type="button" class="btn btn-sm btn-alt-secondary dropdown-toggle" id="btnGroupDrop2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Opciones</button>
                                         <div class="dropdown-menu" aria-labelledby="btnGroupDrop2" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 94px, 0px); top: 0px; left: 40px; will-change: transform;">
-                                            @if ($seguimiento -> Documento -> enSeguimiento() && user() -> can('SEG.CAMBIAR.ESTADO') )
+                                            @if (! $documento -> finalizado() && ! $documento -> rechazado() && user() -> can('SEG.CAMBIAR.ESTADO') )
                                             <a class="dropdown-item" href="#" onclick="hPanel.cambiarEstado({{ $seguimiento -> getKey() }})">
                                                 <i class="fa fa-fw fa-flash text-danger"></i> Cambiar estado
                                             </a>
                                             @endif
-                                            <a class="dropdown-item" href="javascript:void(0)" onclick="hPanel.marcarImportante(this, {{ $seguimiento -> Documento -> getKey() }})">
-                                            @if ($seguimiento -> importante)
+                                            <a class="dropdown-item" href="{{ url_ver_seguimiento( $seguimiento ) }}">
+                                                <i class="fa fa-fw fa-paper-plane text-success"></i> Ver seguimiento
+                                            </a>
+                                            @if ( user() -> can('DOC.CREAR.NO.EXPE') && $documento -> getTipoDocumento() == 1)
+                                            <a class="dropdown-item" href="#" onclick="hPanel.expediente({{ $documento -> getKey() }})">
+                                                <i class="fa fa-fw fa-legal text-danger"></i> Número de Expediente
+                                            </a>
+                                            @endif
+                                            <a class="dropdown-item" href="javascript:void(0)" onclick="hPanel.marcarImportante(this, {{ $documento -> getKey() }})">
+                                            @if ($documento -> importante())
                                                 <i class="fa fa-fw fa-star text-warning star"></i> Importante
                                             @else
                                                 <i class="fa fa-fw fa-star-o star"></i> Importante
                                             @endif
                                             </a>
-                                            <a class="dropdown-item" href="{{ url_ver_seguimiento( $seguimiento ) }}">
-                                                <i class="fa fa-fw fa-paper-plane text-success"></i> Ver seguimiento
-                                            </a>
-                                            <a class="dropdown-item" href="javascript:void(0)" onclick="hPanel.marcarArchivado(this, {{ $seguimiento -> Documento -> getKey() }})">
-                                            @if (! $seguimiento -> Documento -> archivado() )
+                                            <a class="dropdown-item" href="javascript:void(0)" onclick="hPanel.marcarArchivado(this, {{ $documento -> getKey() }})">
+                                            @if (! $documento -> archivado() )
                                                 <i class="fa fa-fw fa-archive archive"></i> <span id="arch">Archivar</span>
                                             @else
                                                 <i class="fa fa-fw fa-archive archive text-primary"></i> <span id="arch">Desarchivar</span>
@@ -187,7 +207,10 @@
                                 </div>
                                 <div class="col-md-7">
                                     <hr>
-                                    <div class="font-size-sm text-muted"><i class="fa fa-fw fa-user"></i> {{ trim(sprintf('%s :: %s %s',$seguimiento -> USDE_NO_TRABAJADOR, $seguimiento -> USDE_NOMBRES,$seguimiento -> USDE_APELLIDOS)) }}</div>
+                                    @php
+                                        $usuario = trim(sprintf('%s :: %s %s',$seguimiento -> USDE_NO_TRABAJADOR, $seguimiento -> USDE_NOMBRES,$seguimiento -> USDE_APELLIDOS));
+                                    @endphp
+                                    <div class="font-size-sm text-muted"><i class="fa fa-fw fa-user"></i> {{ $usuario }}</div>
                                     <div class="font-size-sm text-muted"><i class="fa fa-fw fa-calendar"></i> {{ $seguimiento -> presenter() -> getFechaSeguimiento() }}</div>
                                 </div>
                             </div>
