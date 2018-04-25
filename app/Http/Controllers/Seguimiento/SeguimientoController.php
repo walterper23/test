@@ -36,6 +36,7 @@ class SeguimientoController extends BaseController
 			-> leftJoin('usuarios','USUA_USUARIO','=','SEGU_USUARIO')
 			-> leftJoin('usuarios_detalles','USDE_USUARIO_DETALLE','=','USUA_DETALLE')
 			-> existente()
+			-> orderBy('SEGU_SEGUIMIENTO','DESC')
 			-> get();
 
 		return view('Panel.Seguimiento.verSeguimiento') -> with($data);

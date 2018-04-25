@@ -30,6 +30,10 @@ a {
 	background-color: #4a6a82;
 }
 
+.block-header {
+	padding: 8px 10px;
+}
+
 @media (min-width: 992px) {
 	#page-container.page-header-modern #page-header {
 		background-color: #4a6a82;

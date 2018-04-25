@@ -93,9 +93,11 @@ If your sidebar menu includes icons and you would like to hide them, you can add
             <li>
                 <a href="{{ url('panel/documentos/?view=finished') }}">Finalizados</a>
             </li>
+            @can('SEG.SEMAFORO.SOLICITAR')
             <li>
-                <a href="{{ url('panel/documentos-semaforizados') }}">Semaforizados</a>
+                <a href="{{ url('panel/documentos/semaforizados') }}">Semaforizados</a>
             </li>
+            @endcan
             <li>
                 <a href="{{ url('panel/documentos/?view=archived') }}">Archivados</a>
             </li>

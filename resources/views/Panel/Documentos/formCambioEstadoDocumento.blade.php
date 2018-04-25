@@ -7,30 +7,23 @@
     {{ Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) }}
         <input type="hidden" name="action" value="{{ $action }}"> 
         {{ Form::hidden('seguimiento',$seguimiento) }}
-
-        <div class="col-12">
-        	<div class="row">
-	            <div class="col-md-4">
-                    <div class="custom-control custom-radio custom-control-inline mb-5">
-    	                <input class="custom-control-input" name="estado_documento" id="estado_radio_1" value="1" checked="" type="radio">
-    	                <label class="custom-control-label" for="estado_radio_1">En seguimiento</label>
-    	            </div>
-                </div>
-	            <div class="col-md-4">
-                    <div class="custom-control custom-radio custom-control-inline mb-5">
-    	                <input class="custom-control-input" name="estado_documento" id="estado_radio_2" value="2" type="radio">
-    	                <label class="custom-control-label" for="estado_radio_2">Rechazar documento</label>
-    	            </div>
-                </div>
-	            <div class="col-md-4">
-                    <div class="custom-control custom-radio custom-control-inline mb-5">
-    	                <input class="custom-control-input" name="estado_documento" id="estado_radio_3" value="3" type="radio">
-    	                <label class="custom-control-label" for="estado_radio_3">Finalizar documento (resolver)</label>
-    	            </div>
-                </div>
+		
+		@isset($contestar)
+		<div class="form-group row">
+            <div class="col-sm-3">
+	        	<div class="custom-control custom-checkbox mt-5">
+	                <input class="custom-control-input" name="contestar" id="contestar" value="1" type="checkbox">
+	                <label class="custom-control-label" for="contestar">Contestar a la solicitud realizada por el origen</label>
+            	</div>
+            </div>
+            <div class="col-md-9">
+            	<textarea placeholder="Respuesta a la solicitud realizada por el origen" noresize="" id="contestacion" class="form-control" name="contestacion" cols="20" rows="2"></textarea>
             </div>
         </div>
+		<hr>
+		@endisset
 
+		{!! Field::select('estado_documento',1,['label'=>'Seguimiento','required'],[1=>'En seguimiento',2=>'Rechazar documento',3=>'Finalizar documento (resolver)']) !!}
         {!! Field::select('direccion_origen',null,['label'=>'Dirección origen','required','autofocus'],$direcciones_origen) !!}
         <div class="form-group row">
             <label class="col-sm-3 col-form-label" for="departamento_origen">Departamento origen</label>
@@ -58,8 +51,20 @@
             </div>
         </div>
         {!! Field::select('estado','',['label'=>'Estado de Documento','required'],$estados) !!}
-        {!! Field::textarea('observacion','',['label'=>'Observaciones','size'=>'20x4','placeholder'=>'Opcional']) !!}
-        {!! Field::textarea('instruccion','',['label'=>'Instrucción','size'=>'20x4','placeholder'=>'Instrucción al destino']) !!}
+        {!! Field::textarea('observacion','',['label'=>'Observaciones','size'=>'20x2','placeholder'=>'Opcional','noresize']) !!}
+        <hr>
+        {!! Field::textarea('instruccion','',['label'=>'Instrucción al destino','size'=>'20x2','placeholder'=>'Opcional','noresize']) !!}
+        @can('SEG.SEMAFORO.SOLICITAR')
+        <div class="form-group row">
+        	<label class="col-sm-3 col-form-label" for="semaforizar">Semaforizar</label>
+            <div class="col-sm-9">
+	        	<div class="custom-control custom-checkbox mt-5">
+	                <input class="custom-control-input" name="semaforizar" id="semaforizar" value="1" type="checkbox">
+	                <label class="custom-control-label" for="semaforizar">Solicitar al destino, contestar a este Cambio de Estado</label>
+            	</div>
+            </div>
+        </div>
+        @endcan
     {{ Form::close() }}
     @endcomponent
 @endsection
@@ -73,7 +78,7 @@
 		this.context_ = '#modal-{{ $form_id }}';
 		this.form_    = '#{{ $form_id }}';	
         
-        var radiosEstados = $('input[name="estado_documento"]');
+        var selectSeguimiento = $('#estado_documento');
 		
 		this.start = function(){
 
@@ -82,13 +87,14 @@
             var selectDireccionDestino = $('#direccion_destino');
             var selectDepartamentoDestino = $('#departamento_destino');
 			var textAreaInstruccion = $('#instruccion');
+			var checkSemaforizar = $('#semaforizar');
 			var optionsDeptoOrigen = selectDepartamentoOrigen.find('option[data-direccion]').hide();
 			var optionsDeptoDestino = selectDepartamentoDestino.find('option[data-direccion]').hide();
 
-            radiosEstados.on('change',function(e){
-                selectDireccionDestino.add(selectDepartamentoDestino).add(textAreaInstruccion).closest('div.form-group.row').show()
-                if ( radiosEstados.filter(':checked').val() != 1 ){
-                    selectDireccionDestino.add(selectDepartamentoDestino).add(textAreaInstruccion).closest('div.form-group.row').hide()
+            selectSeguimiento.on('change',function(e){
+                selectDireccionDestino.add(selectDepartamentoDestino).add(textAreaInstruccion).add(checkSemaforizar).closest('div.form-group.row').show()
+                if ( selectSeguimiento.val() != 1 ){
+                    selectDireccionDestino.add(selectDepartamentoDestino).add(textAreaInstruccion).add(checkSemaforizar).closest('div.form-group.row').hide()
                 }
             });
 
@@ -132,11 +138,12 @@
 
 		this.rules = function(){
 			return {
+				estado_documento : { required : true },
 				direccion_origen : { required : true },
 				direccion_destino : {
 					required : {
 						depends : function(element){
-							return radiosEstados.filter(':checked').val() == 1;
+							return selectSeguimiento.val() == 1;
 						}
 					}
 				},
@@ -146,6 +153,7 @@
 
 		this.messages = function(){
 			return {
+				estado_documento : { required : 'Especifique el seguimiento del documento' },
 				direccion_origen : { required : 'Especifique una dirección de origen' },
 				direccion_destino : { required : 'Especifique una dirección de destino' },
 				estado : { required : 'Especifique un estado de documento' }

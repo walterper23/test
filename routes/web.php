@@ -93,8 +93,9 @@ Route::middleware('preventBackHistory') -> group(function(){
                 });
 
                 // Documentos semaforizados
-                Route::prefix('semaforizados') -> group(function(){
-
+                Route::prefix('semaforizados') -> middleware('can:SEG.SEMAFORO.SOLICITAR') -> group(function(){
+                    Route::get('/',                'DocumentoSemaforizadoController@index');
+                    Route::post('post-data',       'DocumentoSemaforizadoController@postDataTable');
                 });
             });
         });

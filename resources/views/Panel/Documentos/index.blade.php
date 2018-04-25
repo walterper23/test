@@ -44,16 +44,16 @@
                     <div class="block-title">
                         <div class="push">
                             <div class="row">
-                                <div class="col-md-2">
+                                <div class="col-md-2 col-sm-4">
                                     <div class="btn-group" role="group" aria-label="Documentos a visualizar">
                                         <div class="btn-group show" role="group">
                                             <button type="button" class="btn btn-alt-secondary dropdown-toggle" id="btnGroupDrop1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ver documentos</button>
                                             <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 34px, 0px); top: 0px; left: 0px; will-change: transform;">
                                                 <a class="dropdown-item" href="{{ url('panel/documentos?view=recents') }}">
-                                                    <i class="fa fa-inbox mx-5"></i> Recientes {!! badge($recientes) !!}
+                                                    <i class="fa fa-folder mx-5"></i> Recientes {!! badge($recientes) !!}
                                                 </a>
                                                 <a class="dropdown-item" href="{{ url('panel/documentos?view=all') }}">
-                                                    <i class="fa fa-fw fa-cubes mr-5"></i> Todos {!! badge($todos) !!}
+                                                    <i class="fa fa-fw fa-files-o mr-5"></i> Todos {!! badge($todos) !!}
                                                 </a>
                                                 <a class="dropdown-item" href="{{ url('panel/documentos?view=important') }}">
                                                     <i class="fa fa-fw fa-star mr-5"></i> Importantes {!! badge($importantes) !!}
@@ -68,13 +68,16 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-6">
+                                    <form>
+                                        {{ Form::hidden('view',request() -> get('view','all')) }}
                                     <div class="input-group">
-                                        <input type="search" class="form-control" id="search" name="search" placeholder="Nó. documento, Nó. expediente, Asunto, Descripción...">
+                                        <input type="search" class="form-control" id="search" name="search" placeholder="Nó. documento, Tipo documento, Nó. expediente, Asunto..." value="{{ request() -> get('search') }}">
                                         <div class="input-group-append">
-                                            <button type="button" class="btn btn-secondary"><i class="fa fa-search"></i></button>
+                                            <button type="submit" class="btn btn-secondary"><i class="fa fa-search"></i></button>
                                         </div>
                                     </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -108,7 +111,7 @@
                     <div class="ribbon-box">
                         {{ $seguimiento -> SYTD_NOMBRE }}
                         @if ( $documento -> getTipoDocumento() == 1)
-                            <span style="cursor: pointer;" onclick="hPanel.expediente({{ $documento -> getKey() }})">
+                            <span @can('DOC.CREAR.NO.EXPE') style="cursor: pointer;" onclick="hPanel.expediente({{ $documento -> getKey() }})" @endcan>
                             <i class="fa fa-fw fa-legal"></i>
                             @if (! empty($seguimiento -> DENU_NO_EXPEDIENTE) )
                                 {{ $seguimiento -> DENU_NO_EXPEDIENTE }}
@@ -145,6 +148,7 @@
                                 <span class="text-danger"><i class="fa fa-fw fa-flash"></i> #{{ $seguimiento -> getCodigo(5) }}</span> :: {{ $seguimiento -> EstadoDocumento -> getNombre() }}
                             </a>
                             <p><span class="font-w600"><i class="fa fa-fw fa-comment-o"></i> Observaciones:</span> {{ $seguimiento -> getObservacion() }}</p>
+                            <p><span class="font-w600"><i class="fa fa-fw fa-street-view"></i> Instrucción al destino:</span> {{ $seguimiento -> getInstruccion() }}</p>
                         </div>
                         <div class="col-md-2 text-right section-options">
                             <div class="font-size-sm text-muted text-right" title="Documento #{{ $documento -> getCodigo() }}">

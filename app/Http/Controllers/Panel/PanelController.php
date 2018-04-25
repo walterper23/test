@@ -12,6 +12,7 @@ use App\Http\Controllers\BaseController;
 use App\Model\MUsuario;
 use App\Model\MDenuncia;
 use App\Model\MDocumento;
+use App\Model\MDocumentoSemaforizado;
 use App\Model\MSeguimiento;
 use App\Model\Catalogo\MDireccion;
 use App\Model\Catalogo\MEstadoDocumento;
@@ -28,6 +29,8 @@ class PanelController extends BaseController
 	{
 
 		$view = $request -> get('view','all');
+
+		$search = $request -> get('search');
 
 		// Recuperar las direcciones asignadas al usuario
 		$ids_direcciones = user() -> Direcciones -> pluck('DIRE_DIRECCION') -> toArray();
@@ -56,6 +59,16 @@ class PanelController extends BaseController
 						-> leftJoin('usuarios_detalles','USDE_USUARIO_DETALLE','=','USUA_DETALLE')
 						-> leftJoin('system_estados_documentos','SYED_ESTADO_DOCUMENTO','=','DOCU_SYSTEM_ESTADO_DOCTO')
 						-> leftJoin('denuncias','DENU_DOCUMENTO','=','DOCU_DOCUMENTO')
+						-> where(function($query) use ($search) {
+							if (! is_null($search) && ! empty($search))
+							{
+								$search = "%$search%";
+								$query -> where('DOCU_NUMERO_DOCUMENTO','like',$search);
+								$query -> orWhere('DENU_NO_EXPEDIENTE','like',$search);
+								$query -> orWhere('DETA_DESCRIPCION','like',$search);
+								$query -> orWhere('SYTD_NOMBRE','like',$search);
+							}
+						})
 						-> whereIn('SEGU_DOCUMENTO',$documentos)
 						-> whereRaw('SEGU_SEGUIMIENTO in (select max(SEGU_SEGUIMIENTO) from seguimiento group by SEGU_DOCUMENTO order by SEGU_SEGUIMIENTO desc)')
 						-> orderBy('SEGU_SEGUIMIENTO','DESC')
@@ -95,8 +108,8 @@ class PanelController extends BaseController
 				$documentos['archivados'][] = $seguimiento;
 			}
 
-			// Si el documento ya está finalizado
-			if ($seguimiento -> Documento -> finalizado())
+			// Si el documento fue rechazado o ya está finalizado
+			if ($seguimiento -> Documento -> rechazado() || $seguimiento -> Documento -> finalizado())
 			{
 				$documentos['finalizados'][] = $seguimiento;
 			}
@@ -180,7 +193,7 @@ class PanelController extends BaseController
     }
 
     // Formulario para realizar el cambio de estado de un documento
-	public function formCambioEstadoDocumento(Request $request )
+	public function formCambioEstadoDocumento(Request $request)
 	{
 		$data = [
 			'title'         => 'Cambio de Estado de Documento',
@@ -252,42 +265,33 @@ class PanelController extends BaseController
 
 		$data['estados'] = $estados;
 
+		// Verificamos si hay solicitud de contestación al documento
+		$seguimiento = MSeguimiento::find( $request -> seguimiento );
+
+		$semaforo = MDocumentoSemaforizado::where('DOSE_DOCUMENTO',$seguimiento -> SEGU_DOCUMENTO)
+					-> whereIn('DOSE_ESTADO',[1,2]) // En espera, No atendido
+					-> whereNull('DOSE_SEGUIMIENTO_B')
+					-> first();
+		
+		if ($semaforo)
+			$data['contestar'] = true;
+
 		return view('Panel.Documentos.formCambioEstadoDocumento') -> with($data);
 	}
 
 	// Método para cambiar el estado de un documento
 	public function cambiarEstadoDocumento( $request )
 	{
-		$anterior = MSeguimiento::with('Documento','Seguimientos') -> find( $request -> seguimiento );
+		$seguimientoAnterior = MSeguimiento::with('Documento','Seguimientos') -> find( $request -> seguimiento );
 
-		$documento = $anterior -> Documento;
-		
+		$documento = $seguimientoAnterior -> Documento;
+
 		if ($documento -> finalizado())
 			return $this -> responseDangerJSON('<i class="fa fa-fw fa-warning"></i> El documento ya fue finalizado. No se permiten más cambios de estado.');
 
 		if ($documento -> rechazado())
 			return $this -> responseDangerJSON('<i class="fa fa-fw fa-warning"></i> El documento fue rechazado. No se permiten más cambios de estado.');
-
-		$departamento_origen = $request -> departamento_origen;
-		if ($departamento_origen == 0)
-			$departamento_origen = null;
-
-		$departamento_destino = $request -> departamento_destino;
-		if ($departamento_destino == 0)
-			$departamento_destino = null;
-
-		$seguimiento = new MSeguimiento;
-		$seguimiento -> SEGU_USUARIO              = userKey();
-		$seguimiento -> SEGU_DOCUMENTO            = $anterior -> SEGU_DOCUMENTO;
-		$seguimiento -> SEGU_DIRECCION_ORIGEN     = $request -> direccion_origen;
-		$seguimiento -> SEGU_DEPARTAMENTO_ORIGEN  = $departamento_origen;
-		$seguimiento -> SEGU_DIRECCION_DESTINO    = $request -> direccion_destino;
-		$seguimiento -> SEGU_DEPARTAMENTO_DESTINO = $departamento_destino;
-		$seguimiento -> SEGU_ESTADO_DOCUMENTO     = $request -> estado;
-		$seguimiento -> SEGU_OBSERVACION          = $request -> observacion;
-		$seguimiento -> SEGU_INSTRUCCION          = $request -> instruccion;
-		$seguimiento -> save();
-
+				
 		switch ($request -> estado_documento) {
 			case 2:
 				$documento -> DOCU_SYSTEM_ESTADO_DOCTO = 5; // Documento rechazado
@@ -298,7 +302,7 @@ class PanelController extends BaseController
 				$documento -> save();
 				break;
 			default:
-				if ($anterior -> Seguimientos -> count() == 1) // Si el documento solo tenía un seguimiento o cambio de estado ...
+				if ($seguimientoAnterior -> Seguimientos -> count() == 1) // Si el documento solo tenía un seguimiento o cambio de estado ...
 				{
 					$documento -> DOCU_SYSTEM_ESTADO_DOCTO = 3; // ... lo cambiamos a Documento en seguimiento
 					$documento -> save();
@@ -306,8 +310,58 @@ class PanelController extends BaseController
 				break;
 		}
 
-		return $this -> responseSuccessJSON(sprintf('<i class="fa fa-fw fa-flash"></i> Seguimiento <b>#%s</b> creado',$seguimiento -> getCodigo(5)));
+		$departamento_origen = $request -> departamento_origen;
+		if ($departamento_origen == 0)
+			$departamento_origen = null;
 
+		$departamento_destino = $request -> departamento_destino;
+		if ($departamento_destino == 0)
+			$departamento_destino = null;
+
+		$seguimientoNuevo = new MSeguimiento;
+		$seguimientoNuevo -> SEGU_USUARIO              = userKey();
+		$seguimientoNuevo -> SEGU_DOCUMENTO            = $seguimientoAnterior -> SEGU_DOCUMENTO;
+		$seguimientoNuevo -> SEGU_DIRECCION_ORIGEN     = $request -> direccion_origen;
+		$seguimientoNuevo -> SEGU_DEPARTAMENTO_ORIGEN  = $departamento_origen;
+		$seguimientoNuevo -> SEGU_DIRECCION_DESTINO    = $request -> direccion_destino;
+		$seguimientoNuevo -> SEGU_DEPARTAMENTO_DESTINO = $departamento_destino;
+		$seguimientoNuevo -> SEGU_ESTADO_DOCUMENTO     = $request -> estado;
+		$seguimientoNuevo -> SEGU_OBSERVACION          = $request -> observacion;
+		$seguimientoNuevo -> SEGU_INSTRUCCION          = $request -> instruccion;
+		$seguimientoNuevo -> save();
+
+		if ($request -> get('contestar') == 1)
+		{
+			$documentoSemaforizado = MDocumentoSemaforizado::where('DOSE_DOCUMENTO',$seguimientoAnterior -> SEGU_DOCUMENTO)
+					-> whereIn('DOSE_ESTADO',[1,2]) // En espera, No atendido
+					-> whereNull('DOSE_SEGUIMIENTO_B')
+					-> first();
+
+			$documentoSemaforizado -> DOSE_ESTADO              = 3; // Respondido
+			$documentoSemaforizado -> DOSE_SEGUIMIENTO_B       = $seguimientoNuevo -> getKey();
+			$documentoSemaforizado -> DOSE_CONTESTACION        = $request -> contestacion;
+			$documentoSemaforizado -> DOSE_CONTESTACION_FECHA  = \Carbon\Carbon::now();
+			$documentoSemaforizado -> save();
+		}
+		
+		if($request -> estado_documento == 1) // Permitir semaforizar el documento, si aun estára en seguimiento
+		{
+			if ($request -> get('semaforizar') == 1)
+			{
+				$fecha_limite = \Carbon\Carbon::now() -> addDays( config_var('Sistema.Dias.Limite.Semaforo') ) -> format('Y-m-d');
+
+				$semaforo = new MDocumentoSemaforizado;
+				$semaforo -> DOSE_DOCUMENTO     = $seguimientoAnterior -> SEGU_DOCUMENTO;
+				$semaforo -> DOSE_USUARIO       = userKey();
+				$semaforo -> DOSE_ESTADO        = 1; // En espera de contestación
+				$semaforo -> DOSE_SOLICITUD     = $request -> instruccion;
+				$semaforo -> DOSE_FECHA_LIMITE  = $fecha_limite;
+				$semaforo -> DOSE_SEGUIMIENTO_A = $seguimientoNuevo -> getKey();
+				$semaforo -> save();
+			}
+		}
+
+		return $this -> responseSuccessJSON(sprintf('<i class="fa fa-fw fa-flash"></i> Seguimiento <b>#%s</b> creado',$seguimientoNuevo -> getCodigo(5)));
 	}
 
 	public function formEditarCambioEstadoDocumento(Request $request)

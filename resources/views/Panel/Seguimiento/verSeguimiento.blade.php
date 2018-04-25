@@ -101,7 +101,7 @@
                             <div class="list-timeline-time">
                                 <i class="fa fa-fw fa-calendar"></i> {{ $seguimiento -> presenter() -> getFechaSeguimiento() }}
                             </div>
-                            @if ($loop -> last)
+                            @if ($loop -> first)
                                 @if( $seguimiento -> Documento -> finalizado() )
                                     <i class="list-timeline-icon fa fa-flag-checkered bg-success" title="Documento finalizado"></i>
                                 @elseif( $seguimiento -> Documento -> rechazado() )
@@ -109,7 +109,11 @@
                                 @else
                                     <i class="list-timeline-icon fa fa-flash bg-danger" title="Documento en seguimiento"></i>
                                 @endif
-                            @else
+                            @endif
+                            @if ($loop -> last)
+                                <i class="list-timeline-icon fa fa-folder-open bg-primary" title="Documento recepcionado"></i>
+                            @endif
+                            @if(!$loop -> first && !$loop -> last) 
                                 <i class="list-timeline-icon fa fa-flash bg-danger" title="Documento en seguimiento"></i>
                             @endif
                             <div class="list-timeline-content">

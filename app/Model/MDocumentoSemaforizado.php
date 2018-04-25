@@ -1,7 +1,7 @@
 <?php
 namespace App\Model;
 
-class MDocumento extends BaseModel
+class MDocumentoSemaforizado extends BaseModel
 {
     protected $table        = 'documentos_semaforizados';
     protected $primaryKey   = 'DOSE_SEMAFORO';
@@ -13,6 +13,18 @@ class MDocumento extends BaseModel
     public function getEstado()
     {
         return $this -> attributes['DOSE_ESTADO'];
+    }
+
+    public function enEspera(){
+        return $this -> getEstado() == 1;
+    }
+
+    public function noAtendido(){
+        return $this -> getEstado() == 2;
+    }
+
+    public function respondido(){
+        return $this -> getEstado() == 3;
     }
 
     public function getFechaLimite()
