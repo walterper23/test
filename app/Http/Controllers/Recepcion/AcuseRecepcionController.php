@@ -1,0 +1,50 @@
+<?php
+namespace App\Http\Controllers\Recepcion;
+
+use Illuminate\Http\Request;
+use App\Http\Requests\ManagerAnexoRequest;
+use Illuminate\Support\Facades\Input;
+use Carbon\Carbon;
+use Validator;
+use PDF;
+
+/* Controllers */
+use App\Http\Controllers\BaseController;
+
+/* Models */
+use App\Model\MAcuseRecepcion;
+
+class AcuseRecepcionController extends BaseController
+{
+    public function __construct()
+    {
+        parent::__construct();
+        $this -> setLog('AcuseRecepcionController.log');
+    }
+
+    public function index(Request $request, $nombre_acuse)
+    {
+
+        $mode = $request -> get('d',0); // Si el documento será visualizado o descargado por el usuario
+
+        // Buscamos el registro del acuse, y luego la información del documento
+        $acuseRecepcion = MAcuseRecepcion::with('DocumentoLocal','Detalle') -> where('ACUS_NOMBRE', $nombre_acuse) -> limit(1) -> first();
+
+        $data = [
+            'nombre_acuse' => $nombre_acuse,
+            'acuse'        => $acuseRecepcion,
+            'documento'    => $acuseRecepcion -> DocumentoLocal,
+            'detalle'      => $acuseRecepcion -> Detalle,
+            'usuario'      => $acuseRecepcion -> Usuario,
+        ];
+
+        //return view('Recepcion.Acuses.acuseRecepcion') -> with($data);
+
+        $pdf = PDF::loadView('Recepcion.Acuses.acuseRecepcion', $data);
+
+        return $pdf -> stream();
+
+    }
+
+
+}

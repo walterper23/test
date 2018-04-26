@@ -38,6 +38,8 @@ Route::middleware('preventBackHistory') -> group(function(){
         Route::prefix('recepcion') -> namespace('Recepcion') -> group(function(){
             
             Route::redirect('/', '/recepcion/documentos/recepcionados?view=denuncias');
+
+            Route::get('acuse/documento/{acuse}', 'AcuseRecepcionController@index');
             
             // Recepción de documentos locales
             Route::prefix('documentos') -> middleware('can:REC.DOCUMENTO.LOCAL') -> group(function(){

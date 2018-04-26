@@ -39,6 +39,4 @@ class MDocumentoDenuncia extends BaseModel
         return $this -> hasOne('App\Model\MSeguimiento','SEGU_SEGUIMIENTO','DODE_SEGUIMIENTO');
     }
 
-    /* Presenter */
-
 }
