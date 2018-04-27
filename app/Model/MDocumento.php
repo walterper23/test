@@ -107,6 +107,11 @@ class MDocumento extends BaseModel
 
     /* Relationships */
 
+    public function AcuseRecepcion()
+    {
+        return $this -> hasOne('App\Model\MAcuseRecepcion','ACUS_DOCUMENTO_LOCAL',$this -> getKeyName());
+    }
+
     public function Denuncia()
     {
         return $this -> hasOne('App\Model\MDenuncia','DENU_DOCUMENTO',$this -> getKeyName());
@@ -115,6 +120,11 @@ class MDocumento extends BaseModel
     public function Detalle()
     {
         return $this -> hasOne('App\Model\MDetalle','DETA_DETALLE','DOCU_DETALLE');
+    }
+
+    public function DocumentoDenuncia()
+    {
+        return $this -> belongsTo('App\Model\MDocumentoDenuncia',$this -> getKeyName(),'DODE_DOCUMENTO_LOCAL');
     }
 
     public function Escaneos()

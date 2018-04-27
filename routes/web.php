@@ -5,7 +5,7 @@ DB::listen(function($query){
     //echo "<pre style=\"z-index:5000\">{$query->sql}</pre>";
 });
 
-Route::middleware('preventBackHistory') -> group(function(){
+//Route::middleware('preventBackHistory') -> group(function(){
 
     Route::get('login',  'Auth\LoginController@showLoginForm') -> name('login');
     Route::post('login', 'Auth\LoginController@login');
@@ -28,9 +28,22 @@ Route::middleware('preventBackHistory') -> group(function(){
                 Route::get('/', 'PerfilController@index');
             });
 
-            Route::prefix('preferencias') -> group(function(){
+            /*Route::prefix('preferencias') -> group(function(){
                 Route::get('/', 'PreferenciasController@index');
-            });
+            });*/
+
+        });
+
+        Route::prefix('documento') -> namespace('Documento') -> group(function(){
+
+            Route::post('local/anexos',             'DocumentoController@localAnexos');
+            Route::post('local/escaneos',           'DocumentoController@localEscaneos');
+            Route::get('local/escaneos',            'DocumentoController@localArchivoEscaneo');
+            Route::post('local/anexos-escaneos',    'DocumentoController@localAnexosEscaneos');
+            Route::post('foraneo/anexos',           'DocumentoController@foraneoAnexos');
+            Route::post('foraneo/escaneos',         'DocumentoController@foraneoEscaneos');
+            Route::get('foraneo/escaneos',          'DocumentoController@foraneoArchivoEscaneo');
+            Route::post('foraneo/anexos-escaneos',  'DocumentoController@foraneoAnexosEscaneos');
 
         });
 
@@ -75,7 +88,6 @@ Route::middleware('preventBackHistory') -> group(function(){
 
         });
 
-
         // Panel de trabajo del personal de las direcciones y departamentos
         Route::redirect('panel', 'panel/documentos?view=all');
         Route::prefix('panel') -> namespace('Panel') -> group(function(){
@@ -100,6 +112,7 @@ Route::middleware('preventBackHistory') -> group(function(){
                     Route::post('post-data',       'DocumentoSemaforizadoController@postDataTable');
                 });
             });
+
         });
         
         // Configuración de catálogos, usuarios y sistema
@@ -217,4 +230,4 @@ Route::middleware('preventBackHistory') -> group(function(){
 
     });
 
-});
+//});

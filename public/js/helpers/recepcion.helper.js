@@ -9,8 +9,15 @@ App.loadScript('/js/helpers/helper.js', function(){
 				return '/recepcion/documentos/manager'
 			},
 
-			verAcuse : function( id ){
-				console.log(id)
+			anexos : function( id ){
+				App.openModal({
+					id    : 'anexos-escaneos',
+					size  : 'modal-lg',
+					url   : '/documento/local/anexos-escaneos',
+					data  : { id },
+					btnOk : false,
+					btnCancelText : 'Cerrar'
+				});
 			},
 
 			reloadTables : function( tables ){

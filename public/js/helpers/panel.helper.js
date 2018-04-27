@@ -4,14 +4,23 @@ var hPanel = function(){
 
 	var url_manager = '/panel/documentos/manager';
 
-	var _verAnexosEscaneos = function(id){
+	var _verAnexos = function(id){
 		App.openModal({
-			id : 'ver-anexos-escaneos',
-			size : 'modal-lg',
-			url  : '/panel/documentos/anexos-escaneos',
+			id    : 'anexos-escaneos',
+			url   : '/documento/local/anexos',
+			data  : { id },
 			btnOk : false,
-			btnCancelText : 'Cerrar',
-			data : { seguimiento : id }
+			btnCancelText : 'Cerrar'
+		});
+	};
+
+	var _verEscaneos = function(id){
+		App.openModal({
+			id    : 'anexos-escaneos',
+			url   : '/documento/local/escaneos',
+			data  : { id },
+			btnOk : false,
+			btnCancelText : 'Cerrar'
 		});
 	};
 
@@ -102,10 +111,10 @@ var hPanel = function(){
 
 	return {
 		verAnexos : function( id ){
-			_verAnexosEscaneos(id);
+			_verAnexos(id);
 		},
 		verEscaneos : function( id ){
-			_verAnexosEscaneos(id);
+			_verEscaneos(id);
 		},
 		cambiarEstado : function( id ){
 			_cambiarEstado(id);

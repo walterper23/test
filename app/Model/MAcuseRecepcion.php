@@ -1,8 +1,6 @@
 <?php
 namespace App\Model;
 
-/* Presenter */
-
 class MAcuseRecepcion extends BaseModel
 {
 	protected $table        = 'acuses_recepcion';
@@ -10,6 +8,11 @@ class MAcuseRecepcion extends BaseModel
 	protected $prefix       = 'ACUS';
 	
 	/* Methods */
+
+	public function getNombre()
+	{
+		return $this -> attributes['ACUS_NOMBRE'];
+	}
 
 	public function getNumero()
 	{

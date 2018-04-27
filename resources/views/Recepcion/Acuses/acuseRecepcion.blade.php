@@ -1,24 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>{{ title($nombre_acuse) }}</title>
 	<style type="text/css">
 		
-		@page { margin: 10px 30px; font-family: 'Calibri'; }
-		
-		* {  font-size: 11pt }
-
-		body {
-			background-image: url('/img/background/acuse-bg.png');
-			background-repeat : no-repeat;
-			background-size: 20% 20%;
-			background-position: right center;
+		@page {
+			header: page-header;
+			footer: page-footer;
 		}
 		
-    	
-    	header { position: fixed; top: 0px; left: 0px; right: 0px; height: 50px; }
-    	
-    	footer { position: fixed; bottom: 5px; left: 0px; right: 0px; height: 15px; opacity: 0.5; }
+		body {
+			font-family: 'Calibri';
+			font-size: 10pt;
+			background-image: url('/img/background/acuse-bg.png');
+			background-repeat : no-repeat;
+			background-position: right center;
+		}
 		
 		.text-center {
 			text-align: center;
@@ -34,131 +32,154 @@
 		}
 
 		table {
+			width: 100%;
 			border-spacing: 0;
 			margin: 0 auto;
 		}
 
 		table td {
-			padding: 2px 4px;
+			padding: 3px 5px;
 		}
 
 		.odd {
-			background-color: #DDD;
-		}
-		.even {
-			background-color: transparent;
+			background-color: #DDDDDD;
 		}
 
-		table.border {
-			border: 1px #999 solid;
+		.even {
+			background-color: rgb(250,250,250);
+		}
+
+		.border {
+			border: 1px black solid;
 		}
 	</style>
 </head>
 <body>
-	
-	<table width="100%" style="opacity: 0.7">
-		<tr>
-			<td width="10%" class="text-left">{{ Html::image('img/favicon/logo.png','',['width'=>'50']) }}</td>
-			<td width="23%" class="text-left bold">{{ title(config_var('Sistema.Nombre')) }}</td>
-			<td width="34%" class="text-center bold">{!! strtoupper(str_replace('\n', '<br>', config_var('Institucion.Nombre'))) !!}</td>
-			<td width="33%" class="text-right">{{ Html::image(config_var('Institucion.Banner.Login'),'',['width'=>'140']) }}</td>
-		</tr>
-	</table>
 
+	<htmlpageheader name="page-header">
+		<table>
+			<tr>
+				<td width="10%" class="text-left">{{ Html::image('img/favicon/logo.png','',['width'=>'50']) }}</td>
+				<td width="23%" class="text-left bold" style="font-size: 9pt">{{ title(config_var('Sistema.Nombre')) }}</td>
+				<td width="34%" class="text-center bold">{!! strtoupper(str_replace(['\n','á','é','í','ó','ú'],['<br>','a','e','i','o','u'], config_var('Institucion.Nombre'))) !!}</td>
+				<td width="33%" class="text-right">{{ Html::image(config_var('Institucion.Banner.Login'),'',['width'=>'150']) }}</td>
+			</tr>
+		</table>
+	</htmlpageheader>
+	
+	<br>
 	<h3 class="text-center">ACUSE DE RECEPCIÓN DE DOCUMENTO</h3>
 
 	<p class="text-right"><b>ACUSE DE RECEPCIÓN:</b><br>
 	{{ $acuse -> getNumero() }}<br>
 	<b>Fecha y hora:</b> {{ $detalle -> presenter() -> getFechaHora() }}</p>
 
-	<p align="justify">El presente acuse de recepción hace constar que el C. RICARDO CRUZ LEYVA ha hecho entrega del documento clasificado como DENUNCIA con los siguientes puntos informativos:</p>
+	<p align="justify">
+		El presente acuse de recepción hace constar que
+		@if (! empty($detalle -> getEntregoNombre()) )
+		el <b>C. {{ $detalle -> getEntregoNombre() }}</b>
+		@else
+		se
+		@endif
+		ha hecho entrega del documento clasificado como <b>{{ $documento -> TipoDocumento -> getNombre() }}</b> con los siguientes puntos informativos:
+	</p>
 
-	<table width="98%" class="border">
+	<table class="border">
 		<tr class="odd">
-			<td width="30%" class="bold">TIPO DE DOCUMENTO</td>
-			<td width="70%">{{ $documento -> TipoDocumento -> getNombre() }}</td>
+			<td width="30%" class="bold">Tipo de documento</td>
+			<td width="70%">
+				{{ $documento -> TipoDocumento -> getNombre() }}
+				@if ( $documento -> getTipoDocumento() == 2 )
+				&nbsp;&nbsp;&nbsp;&nbsp;<b>Expediente</b>
+				&nbsp;&nbsp;&nbsp;&nbsp;{{ $documento -> DocumentoDenuncia -> Denuncia -> getNoExpediente() }}
+				@endif
+			</td>
 		</tr>
 		<tr class="even">
-			<td class="bold">NÓ. DOCUMENTO</td>
+			<td class="bold">Nó. documento</td>
 			<td>{{ $documento -> getNumero() }}</td>
 		</tr>
 		<tr class="odd">
-			<td class="bold">ASUNTO</td>
+			<td class="bold">Asunto</td>
 			<td>{{ $detalle -> getDescripcion() }}</td>
 		</tr>
 		<tr class="even">
-			<td class="bold">MUNICIPIO</td>
+			<td class="bold">Municipio</td>
 			<td>{{ $detalle -> Municipio -> getNombre() }}</td>
 		</tr>
 		<tr class="odd">
-			<td class="bold">NOMBRE DEL RESPONSABLE</td>
+			<td class="bold">Nombre del responsable</td>
 			<td>{{ $detalle -> getResponsable() }}</td>
 		</tr>
 	</table>
 
 	<p align="justify">Además se reciben los siguientes anexos al documento y se registran las observaciones adicionales:</p>
 
-	<table width="98%" class="border">
+	<table class="border">
 		<tr class="odd">
-			<td width="30%" class="bold">ANEXOS</td>
+			<td width="30%" class="bold">Anexos</td>
 			<td width="70%">{{ $detalle -> getAnexos() }}</td>
 		</tr>
 		<tr class="even">
-			<td class="bold">OBSERVACIONES</td>
+			<td class="bold">Observaciones</td>
 			<td>{{ $detalle -> getObservaciones() }}</td>
 		</tr>
 	</table>
 
 	<p align="justify">A continuación se presenta la información de quién hace entrega del documento:</p>
 
-	<table width="98%" class="border">
+	<table class="border">
 		<tr class="odd">
-			<td width="30%" class="bold">NOMBRE COMPLETO</td>
+			<td width="30%" class="bold">Nombre completo</td>
 			<td width="70%">{{ $detalle -> getEntregoNombre() }}</td>
 		</tr>
 		<tr class="even">
-			<td class="bold">TÉLEFONO</td>
+			<td class="bold">Teléfono</td>
 			<td>{{ $detalle -> getEntregoTelefono() }}</td>
 		</tr>
 		<tr class="odd">
-			<td class="bold">CORREO ELECTRÓNICO</td>
+			<td class="bold">Correo electrónico</td>
 			<td>{{ $detalle -> getEntregoEmail() }}</td>
 		</tr>
 		<tr class="even">
-			<td class="bold">IDENTIFICACIÓN</td>
+			<td class="bold">Identificación</td>
 			<td>{{ $detalle -> getEntregoIdentificacion() }}</td>
 		</tr>
 	</table>
 
 	<br><br><br><br>
 
-	<table width="80%" border="0" style="margin: 0 auto;">
+	<table width="80%">
 		<tr>
-			<td width="45%" style="border-bottom: 1px #000 solid"></td>
+			@if (! empty($detalle -> getEntregoNombre()) )
+			<td width="45%" style="border-bottom: 1pt #000000 solid"></td>
 			<td width="10%"></td>
-			<td width="45%" style="border-bottom: 1px #000 solid"></td>
+			@endif
+			<td width="45%" style="border-bottom: 1pt #000000 solid"></td>
 		</tr>
 		<tr>
+			@if (! empty($detalle -> getEntregoNombre()) )
 			<td class="text-center" style="vertical-align: top;">
 				<b>Entregado por</b><br>
 				{{ $detalle -> getEntregoNombre() }}
 			</td>
 			<td></td>
+			@endif
 			<td class="text-center" style="vertical-align: top;">
 				<b>Recibido por</b><br>
 				{{ $usuario -> UsuarioDetalle -> presenter() -> nombreCompleto() }}
 			</td>
 		</tr>
 	</table>
-
-	<footer>
-		<table width="100%">
+	
+	<htmlpagefooter name="page-footer">
+		<table style="font-size: 8pt">
 			<tr>
 				<td width="50%" class="text-left"><b>Acuse generado:</b> {{ date('Y-m-d h:i:s a') }}</td>
-				<td width="50%" class="text-right">Página <b>1</b> de <b>1</b></td>
+				<td width="50%" class="text-right">Página <b>{PAGENO}</b> de <b>{nb}</b></td>
 			</tr>
 		</table>
-	</footer>
+	</htmlpagefooter>
 	
 </body>
 </html>

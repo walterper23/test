@@ -38,11 +38,12 @@ class AcuseRecepcionController extends BaseController
             'usuario'      => $acuseRecepcion -> Usuario,
         ];
 
-        //return view('Recepcion.Acuses.acuseRecepcion') -> with($data);
-
         $pdf = PDF::loadView('Recepcion.Acuses.acuseRecepcion', $data);
 
-        return $pdf -> stream();
+        if ($mode == 1)
+            return $pdf -> download( $nombre_acuse );
+        else
+            return $pdf -> stream( $nombre_acuse );
 
     }
 

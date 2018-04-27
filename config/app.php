@@ -185,7 +185,7 @@ return [
         Yajra\DataTables\HtmlServiceProvider::class,
         Yajra\DataTables\ButtonsServiceProvider::class,
         App\Providers\FieldServiceProvider::class,
-        Barryvdh\DomPDF\ServiceProvider::class,
+        niklasravnsborg\LaravelPdf\PdfServiceProvider::class
 
     ],
 
@@ -240,8 +240,8 @@ return [
         'Html' => Collective\Html\HtmlFacade::class,
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
         'Field' => App\Componentes\Field\FieldFacade::class,
-        'PDF' => Barryvdh\DomPDF\Facade::class,
-
+        'PDF' => niklasravnsborg\LaravelPdf\Facades\Pdf::class
+    
     ],
 
 ];
