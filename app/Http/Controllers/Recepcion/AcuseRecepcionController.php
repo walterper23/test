@@ -28,15 +28,19 @@ class AcuseRecepcionController extends BaseController
         $mode = $request -> get('d',0); // Si el documento será visualizado o descargado por el usuario
 
         // Buscamos el registro del acuse, y luego la información del documento
-        $acuseRecepcion = MAcuseRecepcion::with('DocumentoLocal','Detalle') -> where('ACUS_NOMBRE', $nombre_acuse) -> limit(1) -> first();
+        $acuseRecepcion = MAcuseRecepcion::with('Detalle') -> where('ACUS_NOMBRE', $nombre_acuse) -> limit(1) -> first();
 
         $data = [
             'nombre_acuse' => $nombre_acuse,
             'acuse'        => $acuseRecepcion,
-            'documento'    => $acuseRecepcion -> DocumentoLocal,
             'detalle'      => $acuseRecepcion -> Detalle,
             'usuario'      => $acuseRecepcion -> Usuario,
         ];
+
+        if ($acuseRecepcion -> getCaptura() == 1) // Acuse de documento local
+            $data['documento'] = $acuseRecepcion -> DocumentoLocal;
+        else                                      // Acuse de documento foráneo 
+            $data['documento'] = $acuseRecepcion -> DocumentoForaneo;
 
         $pdf = PDF::loadView('Recepcion.Acuses.acuseRecepcion', $data);
 

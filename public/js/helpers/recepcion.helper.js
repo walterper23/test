@@ -9,6 +9,14 @@ App.loadScript('/js/helpers/helper.js', function(){
 				return '/recepcion/documentos/manager'
 			},
 
+			nuevoAnexo : function(id, url){
+				App.openModal({
+					id   : id,
+					url  : url,
+					data : { recepcion : true }
+				});
+			},
+
 			anexos : function( id ){
 				App.openModal({
 					id    : 'anexos-escaneos',
@@ -21,7 +29,6 @@ App.loadScript('/js/helpers/helper.js', function(){
 			},
 
 			reloadTables : function( tables ){
-				console.log(tables[0])
 				App.reloadTable(tables[0], function(){
 					App.reloadTable(tables[1], function(){
 						App.reloadTable(tables[2], function(){

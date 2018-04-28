@@ -34,17 +34,17 @@
             <a href="{{ url('recepcion/documentos/nueva-recepcion') }}" class="btn-block-option">
                 <i class="fa fa-plus"></i> Nueva recepci&oacute;n
             </a>
-            <button type="button" class="btn-block-option" onclick="hRecepcion.reload('dataTableBuilder')">
+            <button type="button" class="btn-block-option" onclick="hRecibirRecepcionForanea.reload('dataTableBuilder')">
                 <i class="fa fa-refresh"></i> Actualizar
             </button>
             <div class="dropdown">
                 <button type="button" class="btn-block-option dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cog"></i> Opciones</button>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="#" onclick="location.href='{{ url('recepcion/documentos/nueva-recepcion') }}'">
+                    <a class="dropdown-item" href="{{ url('recepcion/documentos/nueva-recepcion') }}'">
                         <i class="fa fa-fw fa-plus mr-5"></i>Nueva recepción
                     </a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#" onclick="hRecepcion.reloadTables(['denuncias-datatables','documentos-denuncias-datatables','documentos-datatables'])">
+                    <a class="dropdown-item" href="#" onclick="hRecibirRecepcionForanea.reloadTables(['denuncias-datatables','documentos-denuncias-datatables','documentos-datatables'])">
                         <i class="fa fa-fw fa-refresh mr-5"></i>Actualizar registros
                     </a>
                 </div>

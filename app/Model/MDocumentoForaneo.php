@@ -53,6 +53,11 @@ class MDocumentoForaneo extends BaseModel
 
     /* Relationships */
 
+    public function AcuseRecepcion()
+    {
+        return $this -> hasOne('App\Model\MAcuseRecepcion','ACUS_DOCUMENTO',$this -> getKeyName()) -> where('ACUS_CAPTURA',2);
+    }
+
     public function Denuncia()
     {
         return $this -> hasOne('App\Model\MDenuncia','DENU_DOCUMENTO',$this -> getKeyName());

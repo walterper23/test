@@ -11,6 +11,7 @@ use DB;
 use App\Http\Controllers\BaseController;
 
 /* Models */
+use App\Model\MAcuseRecepcion;
 use App\Model\MDenuncia;
 use App\Model\MDetalle;
 use App\Model\MDocumento;
@@ -172,7 +173,7 @@ class RecibirRecepcionForaneaController extends BaseController
 		try {
 			DB::beginTransaction();
 
-				$documentoForaneo = MDocumentoForaneo::find( $request -> id);
+				$documentoForaneo = MDocumentoForaneo::with('AcuseRecepcion') -> find( $request -> id );
 
 				if ($documentoForaneo -> recepcionado())
 				{
@@ -200,12 +201,38 @@ class RecibirRecepcionForaneaController extends BaseController
 				$documentoForaneo -> DOFO_RECEPCIONADO    = 1; // Documento recepcionado por Oficialía de Partes
 				$documentoForaneo -> save();
 
-				if ($documentoForaneo -> getTipoDocumento() == 1)
+				// Crear el acuse de recepción
+				$nombre_acuse = sprintf('ARD/%s/%s/%s/',date('Y'),date('m'),$documento -> getCodigo());
+
+				if ($documentoForaneo -> getTipoDocumento() == 1){
+
+					$denuncia = new MDenuncia; // Crear el registro de la denuncia
+					$denuncia -> DENU_DOCUMENTO = $documento -> getKey();
+					$denuncia -> save();
+
+					$nombre_acuse = sprintf('%sDENU/%s',$nombre_acuse,$denuncia -> getCodigo());
 					$tables = ['recibir-denuncias-datatable',null,true];
-				else if ($documentoForaneo -> getTipoDocumento() == 2)
+				}
+				else if ($documentoForaneo -> getTipoDocumento() == 2){
+					$nombre_acuse = sprintf('%sDOCTO/DENU/%s',$nombre_acuse,$documento -> DocumentoDenuncia -> getCodigo());
 					$tables = ['recibir-documentos-denuncias-datatable',null,true];
-				else
+				}
+				else{
+					$nombre_acuse = sprintf('%sDOCTO/%s',$nombre_acuse,$documento -> getCodigo());
 					$tables = ['recibir-documentos-datatable',null,true];
+				}
+
+				// Creamos el registro del acuse de recepción del documento
+				$acuse = new MAcuseRecepcion;
+				$acuse -> ACUS_NUMERO    = $nombre_acuse;
+				$acuse -> ACUS_NOMBRE    = sprintf('%s.pdf',str_replace('/','_', $nombre_acuse));
+				$acuse -> ACUS_DOCUMENTO = $documento -> getKey();
+				$acuse -> ACUS_CAPTURA   = 1; // Documento localmente
+				$acuse -> ACUS_DETALLE   = $documentoForaneo -> AcuseRecepcion -> ACUS_DETALLE;
+				$acuse -> ACUS_USUARIO   = $documentoForaneo -> AcuseRecepcion -> ACUS_USUARIO;
+				$acuse -> ACUS_ENTREGO   = $documentoForaneo -> AcuseRecepcion -> ACUS_ENTREGO;
+				$acuse -> ACUS_RECIBIO   = $documentoForaneo -> AcuseRecepcion -> ACUS_RECIBIO;
+				$acuse -> save();
 
 				$message = sprintf('Documento foráneo <b>#%s</b> recepcionado', $documentoForaneo -> getCodigo());
 

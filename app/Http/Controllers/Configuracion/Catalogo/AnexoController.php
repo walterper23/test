@@ -64,7 +64,7 @@ class AnexoController extends BaseController
         return $dataTables->getData();
     }
 
-    public function formNuevoAnexo(){
+    public function formNuevoAnexo(Request $request){
         try {
 
             $data = [];
@@ -72,9 +72,10 @@ class AnexoController extends BaseController
             $data['title']         = 'Nuevo anexo';
             $data['url_send_form'] = url('configuracion/catalogos/anexos/manager');
             $data['form_id']       = $this -> form_id;
-            $data['modelo']           = null;
-            $data['action']           = 1;
-            $data['id']               = null;
+            $data['modelo']        = null;
+            $data['action']        = 1;
+            $data['recepcion']     = $request -> get('recepcion',false);
+            $data['id']            = null;
 
             return view('Configuracion.Catalogo.Anexo.formAnexo')->with($data);
 
@@ -88,13 +89,25 @@ class AnexoController extends BaseController
         try {
             $anexo = new MAnexo;
             $anexo -> ANEX_NOMBRE = $request -> nombre;
-            $anexo -> save();            
-
-            $tables = ['dataTableBuilder',null,true];
+            $anexo -> save();
 
             $message = sprintf('<i class="fa fa-fw fa-clipboard"></i> Anexo <b>%s</b> creado',$anexo -> getCodigo());
-
-            return $this -> responseSuccessJSON($message,$tables);
+            
+            if ($request -> recepcion)
+            {
+                return $this -> responseSuccessJSON([
+                    'message' => $message,
+                    'anexo'   => [
+                        'id'     => $anexo -> getKey(),
+                        'nombre' => $anexo -> getNombre()
+                    ]
+                ]);
+            }
+            else
+            {
+                $tables = ['dataTableBuilder',null,true];
+                return $this -> responseSuccessJSON($message,$tables);
+            }
 
         } catch(Exception $error) {
 

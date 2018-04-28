@@ -19,6 +19,11 @@ class MAcuseRecepcion extends BaseModel
 		return $this -> attributes['ACUS_NUMERO'];
 	}
 
+	public function getCaptura()
+	{
+		return $this -> attributes['ACUS_CAPTURA'];
+	}
+
 	/* Relationships */
 
 	public function Detalle()
@@ -28,12 +33,12 @@ class MAcuseRecepcion extends BaseModel
 
 	public function DocumentoLocal()
 	{
-		return $this -> belongsTo('App\Model\MDocumento','ACUS_DOCUMENTO_LOCAL','DOCU_DOCUMENTO');
+		return $this -> belongsTo('App\Model\MDocumento','ACUS_DOCUMENTO','DOCU_DOCUMENTO');
 	}
 
 	public function DocumentoForaneo()
 	{
-		return $this -> belongsTo('App\Model\MDocumentoForaneo','ACUS_DOCUMENTO_FORANEO','DOFO_DOCUMENTO');
+		return $this -> belongsTo('App\Model\MDocumentoForaneo','ACUS_DOCUMENTO','DOFO_DOCUMENTO');
 	}
 
 	public function Usuario()

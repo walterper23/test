@@ -137,7 +137,6 @@ var App = function(){
         },
         reloadTable : function(table, callback = null , resetPaging = false){
 			if(typeof table == 'string' && table.length){
-				console.log('si viene')
             	_reloadTable(table, callback, resetPaging);
         	}else if(table instanceof Array){
 				var callback = table[1] || null;

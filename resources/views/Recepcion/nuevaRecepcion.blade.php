@@ -108,7 +108,6 @@
             $('#addAnexo').on('click',function(){
                 selectAnexo.trigger('change');
             });
-            
 
         }
 
@@ -117,8 +116,6 @@
                 return false;
             }
 
-            //var formData = new FormData($(form)[0]);
-            
             AppAlert.waiting({
                 type  : 'info',
                 title : 'Recepcionar documento',

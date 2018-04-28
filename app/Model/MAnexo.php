@@ -14,6 +14,12 @@ class MAnexo extends BaseModel
 	protected $primaryKey   = 'ANEX_ANEXO';
 	protected $prefix       = 'ANEX';
 	
+	/* Methods */
+
+	public function getNombre()
+	{
+		return $this -> attributes['ANEX_NOMBRE'];
+	}
 
     /* Presenter */    
     public function presenter(){

@@ -20,6 +20,10 @@ class DocumentoController extends BaseController
     }
 
 
+    public function local()
+    {
+
+    }
 
     public function localAnexos(Request $request)
     {
@@ -43,7 +47,6 @@ class DocumentoController extends BaseController
 
     public function localArchivoEscaneo(Request $request)
     {
-
         $scan = $request -> get('scan');
 
         if (is_null($scan)) abort(404);
@@ -67,6 +70,10 @@ class DocumentoController extends BaseController
         $data['escaneos'] = $this -> getEscaneos( $documento, 'col-md-6' );
 
         return view('Documento.modalAnexosEscaneos') -> with($data);
+    }
+
+    public function foraneo()
+    {
 
     }
 
@@ -82,7 +89,13 @@ class DocumentoController extends BaseController
 
     public function foraneoAnexosEscaneos(Request $request)
     {
-        
+        $documento = MDocumentoForaneo::find( $request -> id );
+
+        $data['title']    = sprintf('Anexos y escaneos del documento foráneo #%s', $documento -> getCodigo() );
+        $data['anexos']   = $this -> getAnexos( $documento, 'col-md-6' );
+        $data['escaneos'] = $this -> getEscaneos( $documento, 'col-md-6' );
+
+        return view('Documento.modalAnexosEscaneos') -> with($data);
     }
 
     private function getAnexos( $documento, $size = '' )
@@ -104,6 +117,5 @@ class DocumentoController extends BaseController
 
         return view('Documento.contenedorEscaneos') -> with($data);
     }
-
 
 }

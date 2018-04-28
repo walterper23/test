@@ -9,6 +9,17 @@ App.loadScript('/js/helpers/helper.js', function(){
 				return '/recepcion/documentos/foraneos/manager'
 			},
 
+			anexos : function( id ){
+				App.openModal({
+					id    : 'anexos-escaneos',
+					size  : 'modal-lg',
+					url   : '/documento/foraneo/anexos-escaneos',
+					data  : { id },
+					btnOk : false,
+					btnCancelText : 'Cerrar'
+				});
+			},
+
 			recibir : function( id ){
 				AppAlert.confirm({
 					title : 'Recibir documento',

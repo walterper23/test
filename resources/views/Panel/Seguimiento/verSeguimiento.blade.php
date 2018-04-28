@@ -70,8 +70,8 @@
                             @endif
                             <td class="bg-primary text-white font-w700">Opciones</td>
                             <td>
-                                @if (! empty($seguimiento -> DETA_ANEXOS) || $seguimiento -> Escaneos -> count() > 0)
-                                    @if (! empty($seguimiento -> DETA_ANEXOS) )
+                                @if (! empty($detalle -> DETA_ANEXOS) || $seguimiento -> Escaneos -> count() > 0)
+                                    @if (! empty($detalle -> DETA_ANEXOS) )
                                     <button type="button" class="btn btn-sm btn-rounded btn-alt-primary" onclick="hPanel.verAnexos({{ $seguimiento -> Documento -> getKey()  }})">
                                         <i class="fa fa-fw fa-clipboard"></i> Anexos
                                     </button>

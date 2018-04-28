@@ -40,7 +40,7 @@
             <div class="dropdown">
                 <button type="button" class="btn-block-option dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cog"></i> Opciones</button>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="#" onclick="location.href='{{ url('recepcion/documentos/nueva-recepcion') }}'">
+                    <a class="dropdown-item" href="{{ url('recepcion/documentos/nueva-recepcion') }}">
                         <i class="fa fa-fw fa-plus mr-5"></i>Nueva recepción
                     </a>
                     <div class="dropdown-divider"></div>
@@ -80,9 +80,9 @@
 @endpush
 
 @push('js-custom')
-    @if (isset($acuse))
+    @if (request() -> session() -> has('urlAcuseAutomatico'))
     <script type="text/javascript">
-    hRecepcion.verAcuse({{ $acuse }});
+        window.open('{{ request() -> session() -> get('urlAcuseAutomatico') }}', '_blank');
     </script>
     @endif
 

@@ -109,7 +109,7 @@ class MDocumento extends BaseModel
 
     public function AcuseRecepcion()
     {
-        return $this -> hasOne('App\Model\MAcuseRecepcion','ACUS_DOCUMENTO_LOCAL',$this -> getKeyName());
+        return $this -> hasOne('App\Model\MAcuseRecepcion','ACUS_DOCUMENTO',$this -> getKeyName()) -> where('ACUS_CAPTURA',1);
     }
 
     public function Denuncia()

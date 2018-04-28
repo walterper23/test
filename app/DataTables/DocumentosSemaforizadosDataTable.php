@@ -8,7 +8,7 @@ class DocumentosSemaforizadosDataTable extends CustomDataTable
     protected function setSourceData()
     {
         $this -> sourceData = MDocumentoSemaforizado::with(['Documento'=>function($documento){
-            $documento -> with('Detalle','Seguimientos');
+            $documento -> with('Detalle','Seguimientos','AcuseRecepcion');
         }]) -> existente() -> orderBy('DOSE_SEMAFORO','DESC') -> get();
     }
 
@@ -62,7 +62,8 @@ class DocumentosSemaforizadosDataTable extends CustomDataTable
                 'render' => function($semaforo){
                     $buttons = '';
 
-                    $buttons .= sprintf('<button type="button" class="btn btn-sm btn-circle btn-alt-primary" onclick="hSemaforo.view(%d)" title="Ver documento"><i class="fa fa-fw fa-eye"></i></button>', $semaforo -> getKey());
+                    $url = url( sprintf('recepcion/acuse/documento/%s',$semaforo -> Documento -> AcuseRecepcion -> getNombre()) );
+                    $buttons .= sprintf(' <a class="btn btn-sm btn-circle btn-alt-success" href="%s" target="_blank" title="Acuse de Recepción"><i class="fa fa-fw fa-file-text"></i></a>', $url);
                     
                     $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" title="Cambio de estado"><i class="fa fa-fw fa-flash"></i></button>', $semaforo -> getKey());
 

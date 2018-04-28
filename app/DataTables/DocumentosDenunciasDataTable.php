@@ -13,7 +13,7 @@ class DocumentosDenunciasDataTable extends CustomDataTable
 
     protected function setSourceData()
     {
-        $this -> sourceData = MDocumento::with('Detalle') -> select('DOCU_DOCUMENTO','DOCU_NUMERO_DOCUMENTO','DOCU_DETALLE')
+        $this -> sourceData = MDocumento::with('Detalle','AcuseRecepcion') -> select('DOCU_DOCUMENTO','DOCU_NUMERO_DOCUMENTO','DOCU_DETALLE')
                             -> where('DOCU_SYSTEM_TIPO_DOCTO',2) -> existente() -> noGuardado() -> orderBy('DOCU_DOCUMENTO','DESC') -> get(); // Documentos de denuncias
     }
 
@@ -21,8 +21,8 @@ class DocumentosDenunciasDataTable extends CustomDataTable
         return [
             [
                 'title'  => '#',
-                'render' => function($query){
-                    return $query -> getCodigo();
+                'render' => function($documento){
+                    return $documento -> getCodigo();
                 }
             ],
             [
@@ -31,28 +31,27 @@ class DocumentosDenunciasDataTable extends CustomDataTable
             ],
             [
                 'title'  => 'ASUNTO',
-                'render' => function($query){
-                    return $query -> Detalle -> getDescripcion();
+                'render' => function($documento){
+                    return $documento -> Detalle -> getDescripcion();
                 }
             ],
             [
                 'title' => 'RECEPCIÓN',
-                'render' => function($query){
-                    return $query -> Detalle -> getFechaRecepcion();
+                'render' => function($documento){
+                    return $documento -> Detalle -> getFechaRecepcion();
                 }
             ],
             [
                 'title'  => 'Opciones',
-                'render' => function($query){
+                'render' => function($documento){
                     $buttons = '';
 
-                    $buttons .= sprintf('<button type="button" class="btn btn-sm btn-circle btn-alt-primary" onclick="hRecepcion.view(%d)" title="Ver documento"><i class="fa fa-fw fa-eye"></i></button>', $query -> getKey());
+                    //$buttons .= sprintf('<button type="button" class="btn btn-sm btn-circle btn-alt-primary" onclick="hRecepcion.view(%d)" title="Ver documento"><i class="fa fa-fw fa-eye"></i></button>', $documento -> getKey());
                     
-                    $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcion.view(%d)" title="Ver anexos del documento"><i class="fa fa-fw fa-clipboard"></i></button>', $query -> getKey());
+                    $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcion.anexos(%d)" title="Ver anexos del documento"><i class="fa fa-fw fa-clipboard"></i></button>', $documento -> getKey());
 
-                    $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-success" onclick="hRecepcion.view(%d)" title="Acuse de Recepción"><i class="fa fa-fw fa-file-text"></i></button>', $query -> getKey());
-
-                    /*$buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hTipoDocumento.delete('.$query->DOCU_DOCUMENTO.')"><i class="fa fa-trash"></i></button>';*/
+                    $url = url( sprintf('recepcion/acuse/documento/%s',$documento -> AcuseRecepcion -> getNombre()) );
+                    $buttons .= sprintf(' <a class="btn btn-sm btn-circle btn-alt-success" href="%s" target="_blank" title="Acuse de Recepción"><i class="fa fa-fw fa-file-text"></i></a>', $url);
                     
                     return $buttons;
                 }

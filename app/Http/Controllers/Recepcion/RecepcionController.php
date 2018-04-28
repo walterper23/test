@@ -13,6 +13,7 @@ use DB;
 use App\Http\Controllers\BaseController;
 
 /* Models */
+use App\Model\MAcuseRecepcion;
 use App\Model\MArchivo;
 use App\Model\MDenuncia;
 use App\Model\MDetalle;
@@ -213,6 +214,8 @@ class RecepcionController extends BaseController
 			$seguimiento -> SEGU_DEPARTAMENTO_DESTINO = config_var('Sistema.Depto.Destino');  // Departamento del procurador, por default
 			$seguimiento -> SEGU_ESTADO_DOCUMENTO     = 1; // Documento recepcionado. Estado de documento por default
 			$seguimiento -> save();
+
+			$nombre_acuse = sprintf('ARD/%s/%s/%s/',date('Y'),date('m'),$documento -> getCodigo());
 			
 			if ($request -> tipo_documento == 1) // Si el tipo de documento es denuncia ...
 			{
@@ -220,6 +223,7 @@ class RecepcionController extends BaseController
 				$denuncia -> DENU_DOCUMENTO = $documento -> getKey();
 				$denuncia -> save();
 				$redirect = '?view=denuncias';
+				$nombre_acuse = sprintf('%sDENU/%s',$nombre_acuse,$denuncia -> getCodigo());
 			}
 			else if ( $request -> tipo_documento == 2 ) // Si el tipo de documento es un documento para denuncia ...
 			{
@@ -234,20 +238,38 @@ class RecepcionController extends BaseController
 				$documentoDenuncia -> save();
 
 				$redirect = '?view=documentos-denuncias';
+				$nombre_acuse = sprintf('%sDOCTO/DENU/%s',$nombre_acuse,$documentoDenuncia -> getCodigo());
 			}
 			else
 			{
 				$redirect = '?view=documentos';
+				$nombre_acuse = sprintf('%sDOCTO/%s',$nombre_acuse,$documento -> getCodigo());
 			}
-
-			$redirect .= sprintf('&acuse=%d',$documento -> getKey()) ;
 
 			// Guardamos los archivos o escaneos que se hayan agregado al archivo
 			foreach ($request -> escaneos ?? [] as $escaneo) {
 				$this -> nuevoEscaneo($documento, $escaneo,['escaneo_nombre'=>'A ver uno','escaneo_descripcion'=>'a ver dos']);
 			}
+			
+			// Creamos el registro del acuse de recepción del documento
+			$acuse = new MAcuseRecepcion;
+			$acuse -> ACUS_NUMERO    = $nombre_acuse;
+			$acuse -> ACUS_NOMBRE    = sprintf('%s.pdf',str_replace('/','_', $nombre_acuse));
+			$acuse -> ACUS_DOCUMENTO = $documento -> getKey();
+			$acuse -> ACUS_CAPTURA   = 1; // Documento localmente
+			$acuse -> ACUS_DETALLE   = $detalle -> getKey();
+			$acuse -> ACUS_USUARIO   = userKey();
+			$acuse -> ACUS_ENTREGO   = $request -> nombre;
+			$acuse -> ACUS_RECIBIO   = user() -> UsuarioDetalle -> presenter() -> nombreCompleto();
+			$acuse -> save();
 
 			DB::commit();
+			
+			if ($request -> acuse) // Si el usuario ha indicado que quiere abrir inmediatamente el acuse de recepción
+			{
+				$url = url( sprintf('recepcion/acuse/documento/%s?d=0',$acuse -> getNombre()) );
+				$request -> session() -> flash('urlAcuseAutomatico', $url);
+			}
 
 			return redirect('recepcion/documentos/recepcionados' . $redirect);
 

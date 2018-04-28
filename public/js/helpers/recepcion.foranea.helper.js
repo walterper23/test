@@ -9,8 +9,23 @@ App.loadScript('/js/helpers/helper.js', function(){
 				return '/recepcion/documentos-foraneos/manager'
 			},
 
-			verAcuse : function( id ){
-				console.log(id)
+			nuevoAnexo : function(id, url){
+				App.openModal({
+					id   : id,
+					url  : url,
+					data : { recepcion : true }
+				});
+			},
+
+			anexos : function( id ){
+				App.openModal({
+					id    : 'anexos-escaneos',
+					size  : 'modal-lg',
+					url   : '/documento/foraneo/anexos-escaneos',
+					data  : { id },
+					btnOk : false,
+					btnCancelText : 'Cerrar'
+				});
 			},
 
 			enviar : function( id ){

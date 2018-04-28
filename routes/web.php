@@ -34,16 +34,24 @@ DB::listen(function($query){
 
         });
 
+        // Rutas libres de permiso para visualizar los documentos, sus anexos y sus escaneos
         Route::prefix('documento') -> namespace('Documento') -> group(function(){
 
-            Route::post('local/anexos',             'DocumentoController@localAnexos');
-            Route::post('local/escaneos',           'DocumentoController@localEscaneos');
-            Route::get('local/escaneos',            'DocumentoController@localArchivoEscaneo');
-            Route::post('local/anexos-escaneos',    'DocumentoController@localAnexosEscaneos');
-            Route::post('foraneo/anexos',           'DocumentoController@foraneoAnexos');
-            Route::post('foraneo/escaneos',         'DocumentoController@foraneoEscaneos');
-            Route::get('foraneo/escaneos',          'DocumentoController@foraneoArchivoEscaneo');
-            Route::post('foraneo/anexos-escaneos',  'DocumentoController@foraneoAnexosEscaneos');
+            Route::prefix('local') -> group(function(){
+                Route::get('/',                 'DocumentoController@local');
+                Route::post('anexos',           'DocumentoController@localAnexos');
+                Route::post('escaneos',         'DocumentoController@localEscaneos');
+                Route::get('escaneos',          'DocumentoController@localArchivoEscaneo');
+                Route::post('anexos-escaneos',  'DocumentoController@localAnexosEscaneos');
+            });
+            
+            Route::prefix('foraneo') -> group(function(){
+                Route::get('/',                 'DocumentoController@foraneo');
+                Route::post('anexos',           'DocumentoController@foraneoAnexos');
+                Route::post('escaneos',         'DocumentoController@foraneoEscaneos');
+                Route::get('escaneos',          'DocumentoController@foraneoArchivoEscaneo');
+                Route::post('anexos-escaneos',  'DocumentoController@foraneoAnexosEscaneos');
+            });
 
         });
 

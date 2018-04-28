@@ -44,7 +44,7 @@
                                 <i class="fa fa-fw fa-arrow-down"></i>
                             </button>
                             @can('SIS.ADMIN.ANEXOS')
-                            <button type="button" class="btn btn-alt-primary" tabindex="-1" onclick="hRecepcion.new('form-anexo','{{ url('configuracion/catalogos/anexos/nuevo') }}')">
+                            <button type="button" class="btn btn-alt-primary" tabindex="-1" onclick="hRecepcion.nuevoAnexo('form-anexo','{{ url('configuracion/catalogos/anexos/nuevo') }}')">
                                 <i class="fa fa-fw fa-plus"></i> Nuevo
                             </button>
                             @endcan
@@ -59,6 +59,10 @@
                 <div class="col-md-9 ml-auto">
                     <button type="button" class="btn btn-danger btn-rounded btn-sm" data-toggle="modal" data-target="#modal-escaneos"><i class="fa fa-fw fa-clipboard"></i> Escaneos <span class="badge badge-pill badge-secondary" id="conteo-escaneos"></span></button>
                     <button type="button" class="btn btn-success btn-rounded btn-sm" data-toggle="modal" data-target="#modal-entrega"><i class="fa fa-fw fa-vcard-o"></i> Quién entrega</span></button>
+                    <div class="custom-control custom-checkbox custom-control-inline">
+                        <input class="custom-control-input" name="acuse" id="acuse" value="option1" checked="" type="checkbox">
+                        <label class="custom-control-label" for="acuse">Abrir acuse de recepción automáticamente</label>
+                    </div>
                 </div>
             </div>
         </div>
