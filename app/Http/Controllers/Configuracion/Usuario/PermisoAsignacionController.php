@@ -98,15 +98,16 @@ class PermisoAsignacionController extends BaseController
         // Recuperar el usuario y sus permisos
         $usuario = MUsuario::with('Permisos','Direcciones','Departamentos') -> where('USUA_USUARIO',$request -> usuario) -> existente() -> first();
         
+        // Editamos los permisos del usuario
         $this -> editarPermisosUsuario( $usuario, $request );
 
+        // Editamos las asignaciones del usuario
         $this -> editarAsignacionesUsuario( $usuario, $request );
 
         // Eliminamos el caché de los permisos del usuario, para cargar de nuevo los permisos
         Cache::forget(sprintf('Permisos.Usuario.Actual.%d', $usuario -> getKey()));
 
         return $this -> responseSuccessJSON('<i class="fa fa-fw fa-lock"></i> Los cambios se han guardado correctamente');
-
     }
 
     public function editarPermisosUsuario( $usuario, $request )
@@ -189,7 +190,6 @@ class PermisoAsignacionController extends BaseController
         }
 
         return true;
-
     }
 
 }

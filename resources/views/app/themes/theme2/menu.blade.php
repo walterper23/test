@@ -50,16 +50,19 @@ If your sidebar menu includes icons and you would like to hide them, you can add
         </ul>
     </li>
     @endcan
-    @can('REC.DOCUMENTO.FORANEO')
+    @if (user() -> canAtLeast('REC.DOCUMENTO.FORANEO','REC.VER.FORANEO') )
     <li>
         <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="fa fa-fw fa-files-o"></i>Recepción foránea</a>
         <ul>
+            @can('REC.DOCUMENTO.FORANEO')
             <li>
                 <a href="{{ url('recepcion/documentos-foraneos/nueva-recepcion') }}">Nueva recepci&oacute;n</a>
             </li>
+            @endcan
             <!--li>
                 <a href="{{ url('recepcion/documentos-foraneos/en-captura') }}">En captura</a>
             </li-->
+            @can('REC.VER.FORANEO')
             <li>
                 <a class="nav-submenu" data-toggle="nav-submenu" href="{{ url('recepcion/documentos-foraneos/recepcionados') }}">Recepcionados</a>
                 <ul>
@@ -74,6 +77,7 @@ If your sidebar menu includes icons and you would like to hide them, you can add
                     </li>
                 </ul>
             </li>
+            @endcan
         </ul>
     </li>
     @endcan

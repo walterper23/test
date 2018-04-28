@@ -1,9 +1,7 @@
 'use strict';
 
 var AppForm = function(){
-
 	var self;
-
 	this.context_   = 'body';
 	this.form_ 	    = 'form';
 	this.btnOk_     = '#modal-btn-ok';
@@ -85,29 +83,35 @@ var AppForm = function(){
 		});
 	};
 
-	this.successSubmitHandler = function( data ){
-		if( data.status ){
-			self.closeContext()
+	this.beforeSubmitHandler = function(){
+		Codebase.blocks( self.context.find('div.modal-content>div.block'), 'state_loading');
+	};
 
-			if(data.tables != undefined){
-				App.reloadTable(data.tables)
-			}
-
-			if(data.message != undefined){
-				AppAlert.notify({
-					icon : data.icon,
-					type : data.type,
-					message : data.message
-				})
-			}
+	this.successSubmitHandler = function( result ){
+		if( result.status ){
+			self.closeContext().reloadTables(result).displayMessage(result);
 		}else{
 
 		}
 	};
 
-	this.beforeSubmitHandler = function(){
-		Codebase.blocks( self.context.find('div.modal-content>div.block'), 'state_loading');
+	this.reloadTables = function( result ){
+		if(result.tables != undefined){
+			App.reloadTable(result.tables)
+		}
+		return this;
 	};
+
+	this.displayMessage = function( result ){
+		if(result.message != undefined){
+			AppAlert.notify({
+				icon : result.icon,
+				type : result.type,
+				message : result.message
+			})
+		}
+		return this;
+	}
 
 	this.displayErrors = function( result ){
 		if( result.responseJSON.errors != undefined ){
@@ -139,6 +143,6 @@ var AppForm = function(){
 
 	this.closeContext = function(){
 		self.context.modal('hide');
+		return this;
 	};
-
 }

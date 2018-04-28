@@ -6,7 +6,6 @@
 @endsection
 
 @push('css-style')
-    {{ Html::style('js/plugins/sweetalert2/sweetalert2.min.css') }}
     {{ Html::style('js/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css') }}
     {{ Html::style('js/plugins/select2/select2.min.css') }}
     {{ Html::style('js/plugins/select2/select2-bootstrap.min.css') }}

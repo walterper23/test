@@ -51,7 +51,6 @@
     {{ Html::script('js/plugins/jquery-validation/jquery.validate.min.js') }}
     {{ Html::script('js/helpers/recepcion.helper.js') }}
     {{ Html::script('js/app-form.js') }}
-    {{ Html::script('js/app-alert.js') }}
 @endpush
 
 @push('js-custom')

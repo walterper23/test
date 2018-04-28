@@ -4,10 +4,6 @@
 	{{ title('Seguimiento de documento') }}
 @endsection
 
-@push('css-style')
-    {{ Html::style('js/plugins/sweetalert2/sweetalert2.min.css') }}
-@endpush
-
 @section('breadcrumb')
     <nav class="breadcrumb bg-body-light mb-0">
         <a class="breadcrumb-item" href="{{ url() -> previous() }}"><i class="fa fa-server"></i> Panel de trabajo</a>
@@ -157,15 +153,6 @@
 @endsection
 
 @push('js-script')
-    {{ Html::script('js/plugins/jquery-validation/jquery.validate.min.js') }}
     {{ Html::script('js/helpers/panel.helper.js') }}
     {{ Html::script('js/app-form.js') }}
-    {{ Html::script('js/app-alert.js') }}
-@endpush
-
-@push('js-custom')
-<script type="text/javascript">
-
-
-</script>
 @endpush

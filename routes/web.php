@@ -75,9 +75,8 @@ DB::listen(function($query){
 
             });
 
-
             // Recepción de documentos foráneos
-            Route::prefix('documentos-foraneos') -> middleware('can:REC.DOCUMENTO.FORANEO') -> group(function(){
+            Route::prefix('documentos-foraneos') -> group(function(){
                 Route::get('/',                'RecepcionForaneaController@index');
                 Route::get('recepcionados',    'RecepcionForaneaController@index');
                 Route::post('post-data',       'RecepcionForaneaController@postDataTable');
@@ -95,6 +94,7 @@ DB::listen(function($query){
             Route::prefix('documentos') -> group(function(){
 
                 Route::get('/',                       'PanelController@index');
+                Route::get('foraneos',                'PanelController@verRecepcionesForaneas');
                 Route::post('anexos-escaneos',        'PanelController@verAnexosEscaneos');
                 Route::post('cambio-estado',          'PanelController@formCambioEstadoDocumento');
                 Route::post('editar-cambio-estado',   'PanelController@formEditarCambioEstadoDocumento');

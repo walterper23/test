@@ -35,6 +35,8 @@ class RecepcionForaneaController extends BaseController
 	public function __construct()
 	{
 		parent::__construct();
+		$this -> middleware('can:REC.VER.FORANEO',['only' => ['index','postDataTable']]);
+		$this -> middleware('can:REC.DOCUMENTO.FORANEO',['only' => ['formNuevaRecepcion','manager']]);
 		$this -> setLog('RecepcionForaneaController.log');
 	}
 
@@ -126,17 +128,10 @@ class RecepcionForaneaController extends BaseController
 				break;
 		}
 
-
 		return $dataTables -> getData();
 	}
 
 	public function formNuevaRecepcion(){
-
-		// Verificar que el usuario tenga asignada al menos una dirección, para poder recepcionar un documento foráneo
-		if ( user() -> Direcciones() -> existente() -> count() == 0 )
-		{
-			return view('Recepcion.sinDireccion');
-		}
 
 		$data = [];
 

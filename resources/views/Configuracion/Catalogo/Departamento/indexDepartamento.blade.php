@@ -7,7 +7,6 @@
 @push('css-style')
     {{ Html::style('js/plugins/datatables/dataTables.bootstrap4.min.css') }}
     {{ Html::style('js/plugins/datatables/buttons1.4.2/css/datatables.buttons.bootstrap4.min.css') }}
-    {{ Html::style('js/plugins/sweetalert2/sweetalert2.min.css') }}
 @endpush
 
 @section('breadcrumb')
@@ -52,12 +51,10 @@
 @endsection
 
 @push('js-script')
-    {{ Html::script('js/plugins/jquery-validation/jquery.validate.min.js') }}
     {{ Html::script('js/plugins/datatables/jquery.dataTables.min.js') }}
     {{ Html::script('js/plugins/datatables/dataTables.bootstrap4.min.js') }}
     {{ Html::script('js/helpers/departamento.helper.js') }}
     {{ Html::script('js/app-form.js') }}
-    {{ Html::script('js/app-alert.js') }}
 @endpush
 
 @push('js-custom')

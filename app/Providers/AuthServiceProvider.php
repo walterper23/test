@@ -39,10 +39,11 @@ class AuthServiceProvider extends ServiceProvider
             }
         });
 
+        // Recuperamos todos los permisos disponibles en el sistema
         $permisosSistema = Cache::rememberForever('Permisos.Sistema',function(){
             return \App\Model\MPermiso::with('Recurso') -> get();
         });
-
+        
         foreach ($permisosSistema as $permiso) {
             GateContract::define($permiso -> getCodigo(), function($user) use ($permiso){
                 return permisoUsuario( $permiso -> getCodigo() );

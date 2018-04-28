@@ -7,7 +7,6 @@
 @push('css-style')
     {{ Html::style('js/plugins/datatables/dataTables.bootstrap4.min.css') }}
     {{ Html::style('js/plugins/datatables/buttons1.4.2/css/datatables.buttons.bootstrap4.min.css') }}
-    {{ Html::style('js/plugins/sweetalert2/sweetalert2.min.css') }}
 @endpush
 
 @section('breadcrumb')
@@ -32,19 +31,23 @@
         </li>
         <li class="nav-item ml-auto">
             <div class="block-options mr-15">
+            @can('REC.DOCUMENTO.FORANEO')
             <a href="{{ url('recepcion/documentos-foraneos/nueva-recepcion') }}" class="btn-block-option">
                 <i class="fa fa-plus"></i> Nueva recepci&oacute;n
             </a>
+            @endcan
             <button type="button" class="btn-block-option" onclick="hRecepcion.reload('dataTableBuilder')">
                 <i class="fa fa-refresh"></i> Actualizar
             </button>
             <div class="dropdown">
                 <button type="button" class="btn-block-option dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cog"></i> Opciones</button>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="#" onclick="location.href='{{ url('recepcion/documentos-foraneos/nueva-recepcion') }}'">
+                    @can('REC.DOCUMENTO.FORANEO')
+                    <a class="dropdown-item" href="{{ url('recepcion/documentos-foraneos/nueva-recepcion') }}'">
                         <i class="fa fa-fw fa-plus mr-5"></i>Nueva recepción
                     </a>
                     <div class="dropdown-divider"></div>
+                    @endcan
                     <a class="dropdown-item" href="#" onclick="hRecepcion.reloadTables(['denuncias-datatables','documentos-denuncias-datatables','documentos-datatables'])">
                         <i class="fa fa-fw fa-refresh mr-5"></i>Actualizar registros
                     </a>
@@ -74,12 +77,10 @@
 @endsection
 
 @push('js-script')
-    {{ Html::script('js/plugins/jquery-validation/jquery.validate.min.js') }}
     {{ Html::script('js/plugins/datatables/jquery.dataTables.min.js') }}
     {{ Html::script('js/plugins/datatables/dataTables.bootstrap4.min.js') }}
     {{ Html::script('js/helpers/recepcion.foranea.helper.js') }}
     {{ Html::script('js/app-form.js') }}
-    {{ Html::script('js/app-alert.js') }}
 @endpush
 
 @push('js-custom')

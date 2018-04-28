@@ -4,10 +4,6 @@
 	{{ title('Configuración de usuario') }}
 @endsection
 
-@push('css-style')
-    {{ Html::style('js/plugins/sweetalert2/sweetalert2.min.css') }}
-@endpush
-
 @section('breadcrumb')
     <nav class="breadcrumb bg-body-light mb-0">
         <a class="breadcrumb-item" href="javascript:void(0)"><i class="fa fa-cogs"></i> Configuraci&oacute;n</a>
@@ -43,9 +39,7 @@
 @endsection
 
 @push('js-script')
-    {{ Html::script('js/plugins/jquery-validation/jquery.validate.min.js') }}
     {{ Html::script('js/app-form.js') }}
-    {{ Html::script('js/app-alert.js') }}
 @endpush
 
 @push('js-custom')

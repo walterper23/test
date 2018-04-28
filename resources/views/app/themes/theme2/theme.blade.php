@@ -27,6 +27,8 @@
 
         <!-- Stylesheets -->
         <!-- Page JS Plugins CSS -->
+        {{ Html::style('js/plugins/sweetalert2/sweetalert2.min.css') }}
+        
         @stack('css-style')
 
         <!-- Codebase framework -->
@@ -138,6 +140,9 @@
         {{ Html::script('js/core/js.cookie.min.js') }}
         {{ Html::script('js/codebase.js') }}
         {{ Html::script('js/app.js') }}
+
+        {{ Html::script('js/plugins/jquery-validation/jquery.validate.min.js') }}
+        {{ Html::script('js/app-alert.js') }}
 
         @stack('js-script')
 

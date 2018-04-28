@@ -28,9 +28,11 @@
             </li>
             <li class="nav-item ml-auto">
                 <div class="block-options mr-15">
+                @can('USU.ADMIN.USUARIOS')
                 <button type="button" class="btn-block-option d-none d-sm-inline" onclick="hUsuario.new_('form-usuario','{{ url('configuracion/usuarios/nuevo') }}')">
                     <i class="fa fa-user-plus"></i> Nuevo usuario
                 </button>
+                @endcan
                 <div class="dropdown">
                     <button type="button" class="btn-block-option dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cog"></i> Opciones</button>
                     <div class="dropdown-menu dropdown-menu-right">
@@ -131,10 +133,8 @@
 
 @push('js-script')
     {{ Html::script('js/plugins/select2/select2.full.min.js') }}
-    {{ Html::script('js/plugins/jquery-validation/jquery.validate.min.js') }}
     {{ Html::script('js/helpers/usuario.helper.js') }}
     {{ Html::script('js/app-form.js') }}
-    {{ Html::script('js/app-alert.js') }}
 @endpush
 
 @push('js-custom')
@@ -192,6 +192,21 @@
                 }
             });
             
+        };
+
+        this.successSubmitHandler = function( result ){
+            var config = {
+                type: result.type,
+                message : result.message
+            };
+
+            if( result.status ){
+                config.onShown = function(){
+                    location.reload();
+                }
+            }
+
+            AppAlert.notify(config);
         };
 
         this.rules = function(){

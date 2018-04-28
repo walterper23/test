@@ -27,7 +27,6 @@ class PanelController extends BaseController
 
 	public function index(Request $request)
 	{
-
 		$view = $request -> get('view','all');
 
 		$search = $request -> get('search');
@@ -151,12 +150,10 @@ class PanelController extends BaseController
 		$data['finalizados'] = sizeof($documentos['finalizados']);
 
 		return view('Panel.Documentos.index') -> with($data);
-
 	}
 
 	public function manager(Request $request)
 	{
-
         switch ($request -> action) {
             case 1: // Nuevo cambio de estado de documento
                 $response = $this -> cambiarEstadoDocumento( $request );
@@ -178,18 +175,6 @@ class PanelController extends BaseController
                 break;
         }
         return $response;
-    }
-
-    // Método para mostrar una interfaz con los anexos y los escaneos que contiene un documento
-    public function verAnexosEscaneos(Request $request)
-    {
-    	// Recuperar el documento
-    	$documento;
-
-    	$data['title'] = 'Anexos y Documentos';
-
-
-		return view('Panel.Documentos.verAnexosEscaneos') -> with($data);
     }
 
     // Formulario para realizar el cambio de estado de un documento
@@ -273,8 +258,7 @@ class PanelController extends BaseController
 					-> whereNull('DOSE_SEGUIMIENTO_B')
 					-> first();
 		
-		if ($semaforo)
-			$data['contestar'] = true;
+		$data['contestar'] = $semaforo;
 
 		return view('Panel.Documentos.formCambioEstadoDocumento') -> with($data);
 	}
@@ -344,21 +328,19 @@ class PanelController extends BaseController
 			$documentoSemaforizado -> save();
 		}
 		
-		if($request -> estado_documento == 1) // Permitir semaforizar el documento, si aun estára en seguimiento
+		if($request -> estado_documento == 1 && $request -> get('semaforizar') == 1) // Permitir semaforizar el documento, si aun estará en seguimiento
 		{
-			if ($request -> get('semaforizar') == 1)
-			{
-				$fecha_limite = \Carbon\Carbon::now() -> addDays( config_var('Sistema.Dias.Limite.Semaforo') ) -> format('Y-m-d');
+			// Calculamos la fecha límite para responder a la solicitud de contestación
+			$fecha_limite = \Carbon\Carbon::now() -> addDays( config_var('Sistema.Dias.Limite.Semaforo') ) -> format('Y-m-d');
 
-				$semaforo = new MDocumentoSemaforizado;
-				$semaforo -> DOSE_DOCUMENTO     = $seguimientoAnterior -> SEGU_DOCUMENTO;
-				$semaforo -> DOSE_USUARIO       = userKey();
-				$semaforo -> DOSE_ESTADO        = 1; // En espera de contestación
-				$semaforo -> DOSE_SOLICITUD     = $request -> instruccion;
-				$semaforo -> DOSE_FECHA_LIMITE  = $fecha_limite;
-				$semaforo -> DOSE_SEGUIMIENTO_A = $seguimientoNuevo -> getKey();
-				$semaforo -> save();
-			}
+			$semaforo = new MDocumentoSemaforizado;
+			$semaforo -> DOSE_DOCUMENTO     = $seguimientoAnterior -> SEGU_DOCUMENTO;
+			$semaforo -> DOSE_USUARIO       = userKey();
+			$semaforo -> DOSE_ESTADO        = 1; // En espera de contestación
+			$semaforo -> DOSE_SOLICITUD     = $request -> instruccion;
+			$semaforo -> DOSE_FECHA_LIMITE  = $fecha_limite;
+			$semaforo -> DOSE_SEGUIMIENTO_A = $seguimientoNuevo -> getKey();
+			$semaforo -> save();
 		}
 
 		return $this -> responseSuccessJSON(sprintf('<i class="fa fa-fw fa-flash"></i> Seguimiento <b>#%s</b> creado',$seguimientoNuevo -> getCodigo(5)));
@@ -416,6 +398,9 @@ class PanelController extends BaseController
 
 	public function formAsignarNoExpedienteDenuncia(Request $request)
 	{
+		if (user() -> cant('DOC.CREAR.NO.EXPE'))
+			abort(403);
+
 		$data = [
 			'title'         => 'Nó. de expediende de denuncia',
 			'url_send_form' => url('panel/documentos/manager'),
@@ -428,13 +413,12 @@ class PanelController extends BaseController
 
 		if (is_null($denuncia))
 		{
-			// Si no existe el documento ni la denuncia ...
+			abort(404);
 		}
 
 		$data['no_expediente'] = $denuncia -> getNoExpediente();
 
 		return view('Panel.Documentos.formAsignarNoExpedienteDenuncia') -> with($data);
-		
 	}
 
 	public function asignarNoExpedienteDenuncia( $request )
@@ -449,6 +433,12 @@ class PanelController extends BaseController
 		$message = sprintf('Nó. expediente <b>%s</b> asignado a Documento <b>#%s</b>',$denuncia -> getNoExpediente(), $denuncia -> DENU_DOCUMENTO);
 
 		return $this -> responseSuccessJSON($message);
+	}
+
+	public function verRecepcionesForaneas(Request $request)
+	{
+
+		
 
 	}
 

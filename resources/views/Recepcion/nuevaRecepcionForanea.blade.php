@@ -5,7 +5,6 @@
 @endsection
 
 @push('css-style')
-    {{ Html::style('js/plugins/sweetalert2/sweetalert2.min.css') }}
     {{ Html::style('js/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css') }}
     {{ Html::style('js/plugins/select2/select2.min.css') }}
     {{ Html::style('js/plugins/select2/select2-bootstrap.min.css') }}
@@ -56,13 +55,11 @@
 @endsection
 
 @push('js-script')
-    {{ Html::script('js/plugins/jquery-validation/jquery.validate.min.js') }}
     {{ Html::script('js/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}
     {{ Html::script('js/plugins/bootstrap-datepicker/locales/bootstrap-datepicker.es.min.js') }}
     {{ Html::script('js/plugins/select2/select2.full.min.js') }}
     {{ Html::script('js/helpers/recepcion.foranea.helper.js') }}
     {{ Html::script('js/app-form.js') }}
-    {{ Html::script('js/app-alert.js') }}
 @endpush
 
 @push('js-custom')

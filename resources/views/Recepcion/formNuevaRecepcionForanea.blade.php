@@ -23,26 +23,7 @@
             {!! Field::text('numero','',['label'=>'Nó.','required']) !!}
         </div>
         <div class="col-md-5">
-            {!! Field::select('direccion',null,['label'=>'Dirección','required'],$direcciones) !!}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-7">
-            {!! Field::select('municipio',5,['label'=>'Municipio','required'],$municipios) !!}
-        </div>
-        <div class="col-md-5">
-            <div class="form-group row">
-                <label class="col-md-3 col-form-label" for="departamento" required>Departamento</label>
-                <div class="col-md-9">
-                    <select name="departamento" id="departamento" class="form-control">
-                        <option value="">Seleccione una opción</option>
-                        @foreach( $departamentos as $depto )
-                            {!! sprintf('<option data-direccion="%d" value="%d">%s</option>',$depto[0],$depto[1],$depto[2]) !!}                 
-                        @endforeach
-                        <option data-direccion value="0">- Ninguno -</option>
-                    </select>
-                </div>
-            </div>
+            {!! Field::select('municipio',4,['label'=>'Municipio','required'],$municipios) !!}
         </div>
     </div>
     <div class="row">

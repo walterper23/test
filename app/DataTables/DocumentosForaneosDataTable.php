@@ -88,10 +88,6 @@ class DocumentosForaneosDataTable extends CustomDataTable
 
                     $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-success" onclick="hRecepcion.view(%d)" title="Acuse de Recepción"><i class="fa fa-fw fa-file-text"></i></button>', $documento -> getKey());
 
-
-
-                    //$buttons .= '<button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcion.delete('.$query->DOFO_DOCUMENTO.')"><i class="fa fa-file-pdf-o"></i></button>';
-
                     return $buttons;
                 }
             ]

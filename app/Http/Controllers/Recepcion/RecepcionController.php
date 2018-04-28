@@ -207,10 +207,10 @@ class RecepcionController extends BaseController
 			$seguimiento = new MSeguimiento;
 			$seguimiento -> SEGU_USUARIO              = userKey();
 			$seguimiento -> SEGU_DOCUMENTO            = $documento -> getKey();
-			$seguimiento -> SEGU_DIRECCION_ORIGEN     = config_var('Sistema.Direcc.Origen'); // Dirección de la recepción, por default
-			$seguimiento -> SEGU_DEPARTAMENTO_ORIGEN  = config_var('Sistema.Depto.Origen'); // Departamento de la recepción, por default
+			$seguimiento -> SEGU_DIRECCION_ORIGEN     = config_var('Sistema.Direcc.Origen');  // Dirección de la recepción, por default
+			$seguimiento -> SEGU_DEPARTAMENTO_ORIGEN  = config_var('Sistema.Depto.Origen');   // Departamento de la recepción, por default
 			$seguimiento -> SEGU_DIRECCION_DESTINO    = config_var('Sistema.Direcc.Destino'); // Dirección del procurador, por default
-			$seguimiento -> SEGU_DEPARTAMENTO_DESTINO = config_var('Sistema.Depto.Destino'); // Departamento del procurador, por default
+			$seguimiento -> SEGU_DEPARTAMENTO_DESTINO = config_var('Sistema.Depto.Destino');  // Departamento del procurador, por default
 			$seguimiento -> SEGU_ESTADO_DOCUMENTO     = 1; // Documento recepcionado. Estado de documento por default
 			$seguimiento -> save();
 			
