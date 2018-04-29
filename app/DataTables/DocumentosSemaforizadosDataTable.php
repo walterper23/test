@@ -8,8 +8,8 @@ class DocumentosSemaforizadosDataTable extends CustomDataTable
     protected function setSourceData()
     {
         $this -> sourceData = MDocumentoSemaforizado::with(['Documento'=>function($documento){
-            $documento -> with('Detalle','Seguimientos','AcuseRecepcion');
-        }]) -> existente() -> orderBy('DOSE_SEMAFORO','DESC') -> get();
+            $documento -> with('Detalle','AcuseRecepcion');
+        },'SeguimientoA','SeguimientoB']) -> existente() -> orderBy('DOSE_SEMAFORO','DESC') -> get();
     }
 
     protected function columnsTable()
@@ -36,7 +36,11 @@ class DocumentosSemaforizadosDataTable extends CustomDataTable
             [
                 'title'  => 'SOLICITUD',
                 'render' => function($semaforo){
-                    return sprintf('%s<br><div class="font-size-sm text-muted"><i class="fa fa-calendar"></i> %s</div>',$semaforo -> DOSE_SOLICITUD,$semaforo -> DOSE_CREATED_AT);
+                    $seguimiento = sprintf('<a class="text-danger" href="#" onclick="hSemaforo.verSeguimiento(1,%d)"><i class="fa fa-fw fa-flash"></i> <b>#%s</b></a>',
+                        $semaforo -> getKey(), $semaforo -> SeguimientoA -> getCodigo() );
+
+                    return sprintf('%s<br><div class="font-size-xs text-muted">
+                                    <i class="fa fa-calendar"></i> %s %s</div>',$semaforo -> getSolicitud(),$semaforo -> DOSE_CREATED_AT, $seguimiento);
                 }
             ],
             [
@@ -54,7 +58,14 @@ class DocumentosSemaforizadosDataTable extends CustomDataTable
             [
                 'title'  => 'RESPUESTA',
                 'render' => function($semaforo){
-                    return sprintf('%s<br><div class="font-size-sm text-muted"><i class="fa fa-calendar"></i> %s</div>',$semaforo -> DOSE_CONTESTACION,$semaforo -> DOSE_CONTESTACION_FECHA);
+                    if ($semaforo -> respondido())
+                    {
+                        $seguimiento = sprintf('<a class="text-danger" href="#" onclick="hSemaforo.verSeguimiento(2,%d)"><i class="fa fa-fw fa-flash"></i> <b>#%s</b></a>',
+                        $semaforo -> getKey(), $semaforo -> SeguimientoB -> getCodigo() );
+
+                        return sprintf('%s<br><div class="font-size-xs text-muted">
+                                    <i class="fa fa-calendar"></i> %s %s</div>',$semaforo -> getRespuesta(),$semaforo -> getRespuestaFecha(), $seguimiento);
+                    }
                 }
             ],
             [
@@ -63,9 +74,7 @@ class DocumentosSemaforizadosDataTable extends CustomDataTable
                     $buttons = '';
 
                     $url = url( sprintf('recepcion/acuse/documento/%s',$semaforo -> Documento -> AcuseRecepcion -> getNombre()) );
-                    $buttons .= sprintf(' <a class="btn btn-sm btn-circle btn-alt-success" href="%s" target="_blank" title="Acuse de Recepción"><i class="fa fa-fw fa-file-text"></i></a>', $url);
-                    
-                    $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" title="Cambio de estado"><i class="fa fa-fw fa-flash"></i></button>', $semaforo -> getKey());
+                    $buttons .= sprintf(' <a class="btn btn-sm btn-circle btn-alt-success font-size-xs" href="%s" target="_blank" title="Acuse de Recepción"><i class="fa fa-fw fa-file-text"></i></a>', $url);
 
                     $url_seguimiento = url( sprintf('panel/documentos/seguimiento?search=%d',$semaforo -> DOSE_SEGUIMIENTO_A ) );
                     $buttons .= sprintf(' <a href="%s" class="btn btn-sm btn-circle btn-alt-success" title="Ver seguimiento"><i class="fa fa-fw fa-paper-plane"></i></a>', $url_seguimiento);

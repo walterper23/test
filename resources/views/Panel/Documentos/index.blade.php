@@ -143,8 +143,8 @@
                             </div>
                         </div>
                         <div class="col-md-5">
-                            <a class="font-w700 text-primary-darker" title="Seguimiento #{{ $seguimiento -> getCodigo(5) }}" href="{{ url_ver_seguimiento( $seguimiento ) }}">
-                                <span class="text-danger"><i class="fa fa-fw fa-flash"></i> #{{ $seguimiento -> getCodigo(5) }}</span> :: {{ $seguimiento -> EstadoDocumento -> getNombre() }}
+                            <a class="font-w700 text-primary-darker" title="Seguimiento #{{ $seguimiento -> getCodigo() }}" href="{{ url_ver_seguimiento( $seguimiento ) }}">
+                                <span class="text-danger"><i class="fa fa-fw fa-flash"></i> #{{ $seguimiento -> getCodigo() }}</span> :: {{ $seguimiento -> EstadoDocumento -> getNombre() }}
                             </a>
                             <p><span class="font-w600"><i class="fa fa-fw fa-comment-o"></i> Observaciones:</span> {{ $seguimiento -> getObservacion() }}</p>
                             <p><span class="font-w600"><i class="fa fa-fw fa-street-view"></i> Instrucción al destino:</span> {{ $seguimiento -> getInstruccion() }}</p>

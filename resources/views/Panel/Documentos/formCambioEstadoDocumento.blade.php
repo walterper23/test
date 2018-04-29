@@ -10,11 +10,11 @@
 		
 		@isset($contestar)
 		<div class="form-group row">
-            <div class="col-sm-3">
-	        	<div class="custom-control custom-checkbox mt-5">
-	                <input class="custom-control-input" name="contestar" id="contestar" value="1" type="checkbox">
-	                <label class="custom-control-label" for="contestar">Contestar a la solicitud realizada por el origen</label>
-            	</div>
+            <div class="col-md-3">
+            	<label class="css-control css-control-primary css-checkbox">
+                    <input class="css-control-input" name="contestar" id="contestar" value="1" type="checkbox">
+                    <span class="css-control-indicator"></span> <span class="font-w600">Contestar la solicitud realizada por el origen</span>
+                </label>
             </div>
             <div class="col-md-9">
             	<textarea placeholder="Respuesta a la solicitud realizada por el origen" noresize="" id="contestacion" class="form-control" name="contestacion" cols="20" rows="2"></textarea>
@@ -26,8 +26,8 @@
 		{!! Field::select('estado_documento',1,['label'=>'Seguimiento','required'],[1=>'En seguimiento',2=>'Rechazar documento',3=>'Finalizar documento (resolver)']) !!}
         {!! Field::select('direccion_origen',null,['label'=>'Dirección origen','required','autofocus'],$direcciones_origen) !!}
         <div class="form-group row">
-            <label class="col-sm-3 col-form-label" for="departamento_origen">Departamento origen</label>
-            <div class="col-sm-9">
+            <label class="col-md-3 col-form-label" for="departamento_origen">Departamento origen</label>
+            <div class="col-md-9">
             	<select name="departamento_origen" id="departamento_origen" class="form-control">
 					<option value="">Seleccione una opción</option>
             		@foreach( $departamentos_origen as $depto )
@@ -37,10 +37,10 @@
             	</select>
             </div>
         </div>
-        {!! Field::select('direccion_destino',null,['label'=>'Dirección destino','autofocus'],$direcciones_destino) !!}
+        {!! Field::select('direccion_destino',null,['label'=>'Dirección destino','autofocus','required'],$direcciones_destino) !!}
         <div class="form-group row">
-            <label class="col-sm-3 col-form-label" for="departamento_destino">Departamento destino</label>
-            <div class="col-sm-9">
+            <label class="col-md-3 col-form-label" for="departamento_destino">Departamento destino</label>
+            <div class="col-md-9">
             	<select name="departamento_destino" id="departamento_destino" class="form-control">
 					<option value="">Seleccione una opción</option>
             		@foreach( $departamentos_destino as $depto )
@@ -54,14 +54,21 @@
         {!! Field::textarea('observacion','',['label'=>'Observaciones','size'=>'20x2','placeholder'=>'Opcional','noresize']) !!}
         <hr>
         {!! Field::textarea('instruccion','',['label'=>'Instrucción al destino','size'=>'20x2','placeholder'=>'Opcional','noresize']) !!}
-        @can('SEG.SEMAFORO.SOLICITAR')
+        @can('SEG.ADMIN.SEMAFORO')
         <div class="form-group row">
-        	<label class="col-sm-3 col-form-label" for="semaforizar">Semaforizar</label>
-            <div class="col-sm-9">
-	        	<div class="custom-control custom-checkbox mt-5">
-	                <input class="custom-control-input" name="semaforizar" id="semaforizar" value="1" type="checkbox">
-	                <label class="custom-control-label" for="semaforizar">Solicitar al destino, contestar a este Cambio de Estado</label>
-            	</div>
+        	<label class="col-md-3 col-form-label" for="semaforizar">Semaforizar</label>
+            <div class="col-md-9">
+            	@isset($contestar)
+            	<label class="css-control css-control-primary css-checkbox disabled">
+                    <input class="css-control-input" type="checkbox" disabled="">
+                    <span class="css-control-indicator"></span> <i class="fa fa-fw fa-warning"></i> No se puede semaforizar. En espera de respuesta a la última solicitud realizada. 
+                </label>
+                @else
+				<label class="css-control css-control-primary css-checkbox">
+                    <input class="css-control-input" name="semaforizar" id="semaforizar" value="1" type="checkbox">
+                    <span class="css-control-indicator"></span> <i class="fa fa-fw fa-flag"></i> Solicitar al destino, contestar a este Cambio de Estado
+                </label>
+                @endisset
             </div>
         </div>
         @endcan
@@ -138,6 +145,14 @@
 
 		this.rules = function(){
 			return {
+				contestacion : {
+					required : {
+						depends : function(element){
+							return $('#contestar').is(':checked');
+						}
+					},
+					minlenght : 1
+				},
 				estado_documento : { required : true },
 				direccion_origen : { required : true },
 				direccion_destino : {
@@ -153,6 +168,10 @@
 
 		this.messages = function(){
 			return {
+				contestacion : {
+					required : 'Introduzca la respuesta a la solicitud',
+					minlenght : 'Mínimo {0} caracteres'
+				},
 				estado_documento : { required : 'Especifique el seguimiento del documento' },
 				direccion_origen : { required : 'Especifique una dirección de origen' },
 				direccion_destino : { required : 'Especifique una dirección de destino' },

@@ -14,6 +14,11 @@ class MSeguimiento extends BaseModel
 
     /* Methods */
 
+    public function getCodigo( $size = 5, $str = '0', $direction = STR_PAD_LEFT )
+    {
+        return parent::getCodigo($size);
+    }
+
     public function getInstruccion()
     {
         return $this -> attributes['SEGU_INSTRUCCION'];

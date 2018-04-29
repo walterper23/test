@@ -32,6 +32,20 @@ class MDocumentoSemaforizado extends BaseModel
         return $this -> attributes['DOSE_FECHA_LIMITE'];
     }
 
+    public function getSolicitud()
+    {
+        return $this -> attributes['DOSE_SOLICITUD'];
+    }
+
+    public function getRespuesta()
+    {
+        return $this -> attributes['DOSE_RESPUESTA'];
+    }
+
+    public function getRespuestaFecha()
+    {
+        return $this -> attributes['DOSE_RESPUESTA_FECHA'];
+    }
 
 
     /* Relationships */

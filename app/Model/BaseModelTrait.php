@@ -64,7 +64,7 @@ trait BaseModelTrait
     }
 
     // Método para devolver el ID del registro como un código de longitud indicada
-    public function getCodigo( $size = 3, $str = '0', $direction = STR_PAD_LEFT)
+    public function getCodigo( $size = 3, $str = '0', $direction = STR_PAD_LEFT )
     {
         return str_pad($this -> getKey(), $size, $str, $direction);
     }

@@ -323,8 +323,8 @@ class PanelController extends BaseController
 
 			$documentoSemaforizado -> DOSE_ESTADO              = 3; // Respondido
 			$documentoSemaforizado -> DOSE_SEGUIMIENTO_B       = $seguimientoNuevo -> getKey();
-			$documentoSemaforizado -> DOSE_CONTESTACION        = $request -> contestacion;
-			$documentoSemaforizado -> DOSE_CONTESTACION_FECHA  = \Carbon\Carbon::now();
+			$documentoSemaforizado -> DOSE_RESPUESTA           = $request -> contestacion;
+			$documentoSemaforizado -> DOSE_RESPUESTA_FECHA     = \Carbon\Carbon::now();
 			$documentoSemaforizado -> save();
 		}
 		
@@ -426,20 +426,14 @@ class PanelController extends BaseController
 		if (user() -> cant('DOC.CREAR.NO.EXPE'))
 			abort(403);
 
-		$denuncia = MDenuncia::where('DENU_DOCUMENTO',$request -> id) -> first();
-		$denuncia -> DENU_NO_EXPEDIENTE = $request -> expediente;
-		$denuncia -> save();
+		$documento = MDocumento::with('Denuncia') -> find( $request -> id );
 
-		$message = sprintf('Nó. expediente <b>%s</b> asignado a Documento <b>#%s</b>',$denuncia -> getNoExpediente(), $denuncia -> DENU_DOCUMENTO);
+		$documento -> Denuncia -> DENU_NO_EXPEDIENTE = $request -> expediente;
+		$documento -> Denuncia -> save();
+
+		$message = sprintf('Nó. expediente <b>%s</b> asignado a Documento <b>#%s</b>',$documento -> Denuncia -> getNoExpediente(), $documento -> getCodigo());
 
 		return $this -> responseSuccessJSON($message);
-	}
-
-	public function verRecepcionesForaneas(Request $request)
-	{
-
-		
-
 	}
 
 }

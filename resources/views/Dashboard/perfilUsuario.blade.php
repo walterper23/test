@@ -4,7 +4,6 @@
 	{{ title('Perfil de usuario') }}
 @endsection
 
-
 @section('userInfo')
 <div class="bg-image bg-image-bottom" style="background-image: url('/img/background/photo23@2x.jpg');" id="context-{{ $form_id }}">
     <div class="bg-primary-dark-op">
@@ -51,7 +50,6 @@
         					{!! Field::password('password_confirmation','',['label'=>'Confirme contraseña']) !!}
                         </div>
                     </div>
-
 					<h4 class="text-white mt-20">Información personal</h4>
                     <div class="row">
     					<div class="col-md-7">
@@ -86,12 +84,6 @@
         this.context_ = '#context-{{ $form_id }}';
         this.form_    = '#{{ $form_id }}';
         this.btnOk_   = '#btn-ok';
-
-        this.start = function(){
-
-            var self = this;
-
-        };
 
         this.successSubmitHandler = function( result ){
 
@@ -192,7 +184,6 @@
             });
         };
 
-    }).init().start();
-
+    }).init();
 </script>
 @endpush
