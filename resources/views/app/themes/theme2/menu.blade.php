@@ -182,7 +182,7 @@ If your sidebar menu includes icons and you would like to hide them, you can add
                     <li>
                         <a href="{{ url('configuracion/sistema/estados-documentos') }}">Estados de documentos</a>
                     </li>
-                    <li>
+                    <!--li>
                         <a href="{{ url('configuracion/sistema/documentos-archivados') }}">Documentos archivados</a>
                     </li>
                     <li>
@@ -190,7 +190,7 @@ If your sidebar menu includes icons and you would like to hide them, you can add
                     </li>
                     <li>
                         <a href="{{ url('configuracion/sistema/bitacora') }}">Bitácora</a>
-                    </li>
+                    </li-->
                 </ul>
             </li>
             @endcan

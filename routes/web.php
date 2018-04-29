@@ -5,7 +5,7 @@ DB::listen(function($query){
     //echo "<pre style=\"z-index:5000\">{$query->sql}</pre>";
 });
 
-//Route::middleware('preventBackHistory') -> group(function(){
+Route::middleware('preventBackHistory') -> group(function(){
 
     Route::get('login',  'Auth\LoginController@showLoginForm') -> name('login');
     Route::post('login', 'Auth\LoginController@login');
@@ -19,13 +19,15 @@ DB::listen(function($query){
 
     Route::middleware('auth') -> group(function(){
 
+        // Dashboard del usuario. Para las notificaciones principalmente.
         Route::get('/', 'Dashboard\DashboardController@index');
 
         // Perfil del usuario y configuración de preferencias
         Route::prefix('usuario') -> namespace('Dashboard') -> group(function(){
 
             Route::prefix('perfil') -> group(function(){
-                Route::get('/', 'PerfilController@index');
+                Route::get('/',        'PerfilController@index');
+                Route::post('manager', 'PerfilController@manager');
             });
 
             /*Route::prefix('preferencias') -> group(function(){
@@ -58,14 +60,13 @@ DB::listen(function($query){
         // Recepcion de documentos locales y foráneos
         Route::prefix('recepcion') -> namespace('Recepcion') -> group(function(){
             
-            Route::redirect('/', '/recepcion/documentos/recepcionados?view=denuncias');
-
             Route::get('acuse/documento/{acuse}', 'AcuseRecepcionController@index');
+            
+            Route::redirect('/',          '/recepcion/documentos/recepcionados?view=denuncias');
+            Route::redirect('documentos', '/recepcion/documentos/recepcionados?view=denuncias');
             
             // Recepción de documentos locales
             Route::prefix('documentos') -> middleware('can:REC.DOCUMENTO.LOCAL') -> group(function(){
-
-                Route::redirect('/', '/recepcion/documentos/recepcionados?view=denuncias');
 
                 Route::get('recepcionados',    'RecepcionController@index');
                 Route::post('post-data',       'RecepcionController@postDataTable');
@@ -180,7 +181,6 @@ DB::listen(function($query){
 
             // Administración de usuarios, sus permisos y asignaciones
             Route::prefix('usuarios') -> middleware('can:USU.ADMIN.USUARIOS') -> namespace('Usuario') -> group(function(){
-                
                 Route::get('/',           'UsuarioController@index');
                 Route::post('post-data',  'UsuarioController@postDataTable');
                 Route::get('ver/{id}',    'UsuarioController@verUsuario');
@@ -188,7 +188,6 @@ DB::listen(function($query){
                 Route::post('editar',     'UsuarioController@editarUsuario');
                 Route::post('password',   'UsuarioController@formPassword');
                 Route::post('manager',    'UsuarioController@manager');
-
             });
 
             Route::prefix('usuarios/permisos-asignaciones') -> middleware('can:USU.ADMIN.PERMISOS.ASIG') -> namespace('Usuario') -> group(function(){
@@ -238,4 +237,4 @@ DB::listen(function($query){
 
     });
 
-//});
+});

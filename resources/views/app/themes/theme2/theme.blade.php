@@ -121,12 +121,33 @@
                 <!-- END Breadcrumb -->
 
                 <!-- Page Content -->
+                
+                <!-- User Info -->
+                @yield('userInfo')
+                <!-- END User Info -->
+                
+                <!-- Main Content -->
                 <div class="content">
                     @yield('content')
                 </div>
+                <!-- END Main Content -->
+
                 <!-- END Page Content -->
             </main>
             <!-- END Main Container -->
+
+            <!-- Footer -->
+            <footer id="page-footer" class="opacity-0" style="opacity: 1;">
+                <div class="content py-20 font-size-xs clearfix">
+                    <div class="float-left">
+                        <span class="font-w600 text-primary">SIGESD 1.0</span> &copy; <span class="js-year-copy">2018</span>
+                    </div>
+                    <div class="float-right">
+                        Powered by <span class="font-w600 text-danger">ITCh</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- END Footer -->
 
         </div>
         <!-- END Page Container -->

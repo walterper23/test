@@ -20,19 +20,9 @@
 @endsection
 
 @section('content')
-
-    <div class="row gutters-tiny">
-        <div class="col-6 col-md-4 col-xl-2">
-            <a class="block block-rounded block-bordered block-link-pop text-center" href="{{ url('configuracion/catalogos/anexos') }}">
-                <div class="block-content">
-                    <p class="font-size-h1">
-                        <strong>{{ $anexos }}</strong>
-                    </p>
-                    <p class="font-w600"><i class="fa fa-fw fa-clipboard"></i> Anexos</p>
-                </div>
-            </a>
-        </div>
-        <div class="col-6 col-md-4 col-xl-2">
+    <div class="row gutters-tiny justify-content-center">
+        @can('SIS.ADMIN.DIRECC')
+        <div class="col-6 col-md-4 col-xl-3">
             <a class="block block-rounded block-bordered block-link-pop text-center" href="{{ url('configuracion/catalogos/direcciones') }}">
                 <div class="block-content">
                     <p class="font-size-h1 text-success">
@@ -42,7 +32,9 @@
                 </div>
             </a>
         </div>
-        <div class="col-6 col-md-4 col-xl-2">
+        @endcan
+        @can('SIS.ADMIN.DEPTOS')
+        <div class="col-6 col-md-4 col-xl-3">
             <a class="block block-rounded block-bordered block-link-pop text-center" href="{{ url('configuracion/catalogos/departamentos') }}">
                 <div class="block-content">
                     <p class="font-size-h1 text-warning">
@@ -52,7 +44,9 @@
                 </div>
             </a>
         </div>
-        <div class="col-6 col-md-4 col-xl-2">
+        @endcan
+        @can('SIS.ADMIN.PUESTOS')
+        <div class="col-6 col-md-4 col-xl-3">
             <a class="block block-rounded block-bordered block-link-pop text-center" href="{{ url('configuracion/catalogos/puestos') }}">
                 <div class="block-content">
                     <p class="font-size-h1 text-corporate">
@@ -62,7 +56,23 @@
                 </div>
             </a>
         </div>
-        <div class="col-6 col-md-4 col-xl-2">
+        @endcan
+    </div>
+    <div class="row gutters-tiny justify-content-center">
+        @can('SIS.ADMIN.ANEXOS')
+        <div class="col-6 col-md-4 col-xl-3">
+            <a class="block block-rounded block-bordered block-link-pop text-center" href="{{ url('configuracion/catalogos/anexos') }}">
+                <div class="block-content">
+                    <p class="font-size-h1">
+                        <strong>{{ $anexos }}</strong>
+                    </p>
+                    <p class="font-w600"><i class="fa fa-fw fa-clipboard"></i> Anexos</p>
+                </div>
+            </a>
+        </div>
+        @endcan
+        @can('SIS.ADMIN.ESTA.DOC')
+        <div class="col-6 col-md-4 col-xl-3">
             <a class="block block-rounded block-bordered block-link-pop text-center" href="{{ url('configuracion/catalogos/estados-documentos') }}">
                 <div class="block-content">
                     <p class="font-size-h1 text-danger">
@@ -72,7 +82,9 @@
                 </div>
             </a>
         </div>
-        <div class="col-6 col-md-4 col-xl-2">
+        @endcan
+        @can('USU.ADMIN.USUARIOS')
+        <div class="col-6 col-md-4 col-xl-3">
             <a class="block block-rounded block-bordered block-link-pop text-center" href="{{ url('configuracion/usuarios') }}">
                 <div class="block-content">
                     <p class="font-size-h1 text-elegance">
@@ -82,6 +94,6 @@
                 </div>
             </a>
         </div>
+        @endcan
     </div>
-
 @endsection

@@ -6,7 +6,7 @@ use App\Model\Catalogo\MPuesto;
 class PuestosDataTable extends CustomDataTable{
     
     protected function setSourceData(){
-        $this->sourceData = MPuesto::with(['Direccion','Departamento']) -> select(['PUES_PUESTO','PUES_DIRECCION','PUES_DEPARTAMENTO','PUES_NOMBRE','PUES_CREATED_AT','PUES_ENABLED']) -> where('PUES_DELETED',0);
+        $this->sourceData = MPuesto::with('Direccion','Departamento') -> select(['PUES_PUESTO','PUES_DIRECCION','PUES_DEPARTAMENTO','PUES_NOMBRE','PUES_CREATED_AT','PUES_ENABLED']) -> existente() -> get();
     }
 
     protected function columnsTable(){
@@ -24,21 +24,17 @@ class PuestosDataTable extends CustomDataTable{
             [
                 'title' => 'Dirección',
                 'render' => function($query){
-                    return $query -> Direccion -> presenter() -> link();
+                    return $query -> Direccion -> getNombre();
                 }
             ],
             [
                 'title' => 'Departamento',
                 'render' => function($query){
                     if( $query -> Departamento != null ){
-                        return $query -> Departamento -> presenter() -> link();
+                        return $query -> Departamento -> getNombre();
                     }
-                    return '- Ninguno -';
+                    return '<p class="font-size-xs text-muted">- Ninguno -</p>';
                 }
-            ],
-            [
-                'title' => 'Fecha',
-                'data' => 'PUES_CREATED_AT'
             ],
             [
                 'title' => 'Activo',
@@ -52,8 +48,9 @@ class PuestosDataTable extends CustomDataTable{
             [
                 'title' => 'Opciones',
                 'render' => function($query){
+                        //<button type="button" class="btn btn-sm btn-circle btn-alt-primary" onclick="hPuesto.view(%d)"><i class="fa fa-eye"></i></button>
+                    
                     $buttons = sprintf('
-                        <button type="button" class="btn btn-sm btn-circle btn-alt-primary" onclick="hPuesto.view(%d)"><i class="fa fa-eye"></i></button>
                         <button type="button" class="btn btn-sm btn-circle btn-alt-success" onclick="hPuesto.edit_(%d)"><i class="fa fa-pencil"></i></button>
                         <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hPuesto.delete_(%d)"><i class="fa fa-trash"></i></button>',
                         $query -> getKey(), $query -> getKey(), $query -> getKey()

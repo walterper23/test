@@ -24,9 +24,19 @@ class MUsuarioDetalle extends BaseModel
         return $this -> attributes['USDE_APELLIDOS'];
     }
 
+    public function getGenero()
+    {
+        return $this -> attributes['USDE_GENERO'];
+    }
+
     public function getEmail()
     {
         return $this -> attributes['USDE_EMAIL'];
+    }
+
+    public function getTelefono()
+    {
+        return $this -> attributes['USDE_TELEFONO'];
     }
     
     /* Relationships */
