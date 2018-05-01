@@ -38,7 +38,7 @@
                 <label for="anexo" class="col-md-3 col-form-label">Lista de anexos</label>
                 <div class="col-md-9">
                     <div class="input-group">
-                        {{ Form::select('anexo',$anexos,null,['id'=>'anexo','class'=>'form-control','placeholder'=>'Seleccione una opción']) }}
+                        {{ Form::select('anexo',$anexos,null,['id'=>'anexo','class'=>'form-control js-select2','placeholder'=>'Seleccione una opción']) }}
                         <div class="input-group-prepend">
                             <button type="button" class="btn btn-alt-danger" id="addAnexo">
                                 <i class="fa fa-fw fa-arrow-down"></i>
@@ -82,34 +82,33 @@
                     </div>
                     <div class="block-content">
                         <ul>
-                            <li>Agregue archivos <b>PDF</b> al archivo que esta recepcionando.</li>
-                            <li>Cada archivo no debe ser mayor a <b>3 Mb</b>.</li>
+                            <li>Agregue archivos <span class="badge badge-danger">PDF</span> al archivo que esta recepcionando</li>
+                            <li>Introduzca un nombre para cada archivo</li>
+                            <li>Cada archivo no debe ser mayor a <span class="badge badge-danger">3 Mb</span></li>
                         </ul>
-                        <div class="form-group row">
-                            <label class="col-md-4 col-form-label" for="">Escaneo #1</label>
-                            <div class="col-8">
-                                <div class="custom-file">
-                                    <input type="file" class="custom-file-input" id="example-file-multiple-input-custom" name="escaneos[]" multiple="">
-                                    <label class="custom-file-label" for="example-file-multiple-input-custom">Choose files</label>
+                        <div id="escaneo_group">
+                            <div class="form-group row">
+                                <div class="col-lg-12">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-secondary escaneo_buscar">
+                                                <i class="fa fa-file-pdf-o"></i> Buscar
+                                            </button>
+                                        </div>
+                                        <input class="form-control" name="escaneo_nombre[]" placeholder="Nombre del archivo" type="text" disabled="">
+                                        <div class="input-group-append">
+                                            <button type="button" class="btn btn-danger escaneo_eliminar">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <input type="file" name="escaneo[]" style="display: none;" accept="application/pdf">
                                 </div>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-md-4 col-form-label" for="">Escaneo #2</label>
-                            <div class="col-8">
-                                <div class="custom-file">
-                                    <input type="file" class="custom-file-input" id="example-file-multiple-input-custom" name="escaneos[]" multiple="">
-                                    <label class="custom-file-label" for="example-file-multiple-input-custom">Choose files</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-md-4 col-form-label" for="">Escaneo #3</label>
-                            <div class="col-8">
-                                <div class="custom-file">
-                                    <input type="file" class="custom-file-input" id="example-file-multiple-input-custom" name="escaneos[]" multiple="">
-                                    <label class="custom-file-label" for="example-file-multiple-input-custom">Choose files</label>
-                                </div>
+                            <div class="col-lg-12">
+                                <a href="javascript:void(0)" class="text-danger mb-20" id="escaneo_nuevo"><i class="fa fa-fw fa-plus"></i> Nuevo archivo</a>
                             </div>
                         </div>
                     </div>

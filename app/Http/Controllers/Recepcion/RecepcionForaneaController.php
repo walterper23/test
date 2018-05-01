@@ -246,11 +246,6 @@ class RecepcionForaneaController extends BaseController
 				$redirect = '?view=documentos';
 				$nombre_acuse = sprintf('%sDOCTO/%s',$nombre_acuse,$documento -> getCodigo());
 			}
-
-			// Guardamos los archivos o escaneos que se hayan agregado al archivo
-			foreach ($request -> escaneos ?? [] as $escaneo) {
-				$this -> nuevoEscaneo($documento, $escaneo,['escaneo_nombre'=>'A ver uno','escaneo_descripcion'=>'a ver dos']);
-			}
 			
 			// Creamos el registro del acuse de recepción del documento
 			$acuse = new MAcuseRecepcion;
@@ -264,19 +259,34 @@ class RecepcionForaneaController extends BaseController
 			$acuse -> ACUS_RECIBIO   = user() -> UsuarioDetalle -> presenter() -> nombreCompleto();
 			$acuse -> save();
 
+			// Lista de los nombres de los escaneos
+			$escaneo_nombres = $request -> escaneo_nombre ?? [];
+
+			// Guardamos los archivos o escaneos que se hayan agregado al archivo
+			foreach ($request -> escaneo ?? [] as $key => $escaneo) {
+
+				$nombre = $escaneo -> getClientOriginalName();
+				if( isset($escaneo_nombres[$key]) && !empty(trim($escaneo_nombres[$key])) )
+				{
+					$nombre = trim($escaneo_nombres[$key]);
+				}
+
+				$this -> nuevoEscaneo($documento, $escaneo,['escaneo_nombre'=>$nombre]);
+			}
+
+			DB::commit();
+			
 			if ($request -> acuse) // Si el usuario ha indicado que quiere abrir inmediatamente el acuse de recepción
 			{
 				$url = url( sprintf('recepcion/acuse/documento/%s?d=0',$acuse -> getNombre()) );
 				$request -> session() -> flash('urlAcuseAutomatico', $url);
 			}
 
-			DB::commit();
-
 			return redirect('recepcion/documentos-foraneos/recepcionados' . $redirect);
 
 		}catch(Exception $error){
 			DB::rollback();
-			return $this -> responseDangerJSON($error -> getMessage());
+			dd($error->getMessage());
 		}
 
 	}
@@ -285,7 +295,7 @@ class RecepcionForaneaController extends BaseController
 	public function nuevoEscaneo(MDocumentoForaneo $documento, $file, $data)
 	{
 		$archivo = new MArchivo;
-		$archivo -> ARCH_FOLDER   = 'storage/app/escaneos';
+		$archivo -> ARCH_FOLDER   = 'app/escaneos';
 		$archivo -> ARCH_FILENAME = '';
 		$archivo -> ARCH_PATH     = '';
 		$archivo -> ARCH_TYPE     = $file -> extension();
@@ -298,7 +308,6 @@ class RecepcionForaneaController extends BaseController
 		$escaneo -> ESCA_ARCHIVO            = $archivo -> getKey(); 
 		$escaneo -> ESCA_DOCUMENTO_FORANEO  = $documento -> getKey(); 
 		$escaneo -> ESCA_NOMBRE             = $data['escaneo_nombre']; 
-		$escaneo -> ESCA_DESCRIPCION        = $data['escaneo_descripcion']; 
 		$escaneo -> save();
 
 		$filename = sprintf('docto_foraneo_%d_scan_%d_arch_%d_%s.pdf',$documento -> getKey(), $escaneo -> getKey(), $archivo -> getKey(), time());
@@ -306,7 +315,7 @@ class RecepcionForaneaController extends BaseController
 		$file -> storeAs('',$filename,'escaneos');
 		
 		$archivo -> ARCH_FILENAME = $filename;
-		$archivo -> ARCH_PATH     = 'storage/app/escaneos/' . $filename;
+		$archivo -> ARCH_PATH     = 'app/escaneos/' . $filename;
 		$archivo -> save();
 	}
 

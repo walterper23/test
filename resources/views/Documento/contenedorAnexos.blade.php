@@ -4,6 +4,6 @@
 	@if (! empty($anexos))
 		<p>{{ $anexos }}</p>
 	@else
-		<p class="text-danger">El documento no tiene anexos</p>
+		<p class="font-size-sm text-muted">El documento no tiene anexos</p>
 	@endif
 </div>

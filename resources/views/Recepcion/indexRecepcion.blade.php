@@ -82,7 +82,9 @@
 @push('js-custom')
     @if (request() -> session() -> has('urlAcuseAutomatico'))
     <script type="text/javascript">
-        window.open('{{ request() -> session() -> get('urlAcuseAutomatico') }}', '_blank');
+        setTimeout(function(){
+            window.open('{{ request() -> session() -> get('urlAcuseAutomatico') }}', '_blank');
+        },1000);
     </script>
     @endif
 

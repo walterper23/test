@@ -66,8 +66,28 @@ a {
 }
 
 .form-control {
-	border: 1px solid #A3ACB5;
+	border: 1px solid #A3A4A6;
 	padding: 8px 8px;
+}
+
+.form-control::-webkit-input-placeholder, {
+	opacity: 0.65 !important;
+}
+
+.form-control::-moz-placeholder{
+	opacity: 0.65 !important;
+}
+
+.form-control:-ms-input-placeholder{
+	opacity: 0.65 !important;
+}
+
+.form-control::-ms-input-placeholder{
+	opacity: 0.65 !important;
+}
+
+.form-control::placeholder{
+	opacity: 0.65 !important;
 }
 
 textarea.form-control {
@@ -106,4 +126,8 @@ textarea.form-control {
 
 span.select2-selection.select2-selection--single, span.select2-selection__rendered, span.select2-selection__arrow {
 	height: 34px !important;
+}
+
+span.select2-container--default .select2-selection--single {
+	border-color: #A3A4A6
 }

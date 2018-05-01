@@ -32,9 +32,9 @@
         <li class="nav-item ml-auto">
             <div class="block-options mr-15">
             @can('REC.DOCUMENTO.FORANEO')
-            <a href="{{ url('recepcion/documentos-foraneos/nueva-recepcion') }}" class="btn-block-option">
-                <i class="fa fa-plus"></i> Nueva recepci&oacute;n
-            </a>
+            <button type="button" class="btn-block-option d-none d-sm-inline" onclick="location.href='{{ url('recepcion/documentos-foraneos/nueva-recepcion') }}'">
+                <i class="fa fa-fw fa-plus"></i> Nueva recepción
+            </button>
             @endcan
             <button type="button" class="btn-block-option" onclick="hRecepcionForanea.reload('dataTableBuilder')">
                 <i class="fa fa-refresh"></i> Actualizar
@@ -86,7 +86,9 @@
 @push('js-custom')
     @if (request() -> session() -> has('urlAcuseAutomatico'))
     <script type="text/javascript">
-        window.open('{{ request() -> session() -> get('urlAcuseAutomatico') }}', '_blank');
+        setTimeout(function(){
+            window.open('{{ request() -> session() -> get('urlAcuseAutomatico') }}', '_blank');
+        },1000);
     </script>
     @endif
 

@@ -57,7 +57,7 @@ class DocumentoController extends BaseController
 
         return response() -> file($pathToFile, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="archivo.pdf"'
+            'Content-Disposition' => sprintf('inline; filename="%s.pdf"', $escaneo -> getNombre())
         ]);
     }
 

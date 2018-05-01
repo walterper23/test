@@ -65,6 +65,9 @@
 @push('js-custom')
 <script type="text/javascript">
     'use strict';
+
+    $('#modal-escaneos').modal('show');
+
     var formRecepcion = new AppForm;
     $.extend(formRecepcion, new function(){
 
@@ -84,6 +87,9 @@
             var labelNumero = $('label[for=numero]');
             var selectDenuncia = $('#denuncia');
             var txtAnexo = this.form.find('#anexos');
+            var escaneoNuevo = $('#escaneo_nuevo');
+            var escaneoGroup = $('#escaneo_group');
+            var escaneoInput = escaneoGroup.html();
 
             selectDenuncia.closest('div.form-group.row').hide();
 
@@ -107,6 +113,26 @@
             
             $('#addAnexo').on('click',function(){
                 selectAnexo.trigger('change');
+            });
+
+            escaneoNuevo.on('click',function(){
+                if (! escaneoGroup.find('input[type=text]:disabled').length)
+                    escaneoGroup.append( escaneoInput );
+            });
+
+            escaneoGroup.on('click','.escaneo_buscar',function(){
+                $(this).closest('.form-group').find('input[type=file]').change(function(){
+                    var inputText = $(this).closest('.form-group').find('input[type=text]');
+                    if ( this.value.length ){
+                        inputText.prop('disabled',false).focus();
+                    }else{
+                        inputText.prop('disabled',true)
+                    }
+                }).click();
+            });
+
+            escaneoGroup.on('click','.escaneo_eliminar',function(){
+                $(this).closest('.form-group').remove();
             });
 
         }
