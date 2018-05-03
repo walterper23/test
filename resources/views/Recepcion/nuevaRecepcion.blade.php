@@ -65,9 +65,6 @@
 @push('js-custom')
 <script type="text/javascript">
     'use strict';
-
-    $('#modal-escaneos').modal('show');
-
     var formRecepcion = new AppForm;
     $.extend(formRecepcion, new function(){
 

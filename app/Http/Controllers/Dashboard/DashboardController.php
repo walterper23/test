@@ -1,8 +1,13 @@
 <?php
 namespace App\Http\Controllers\Dashboard;
 
-use App\Http\Controllers\BaseController; 
 use Illuminate\Http\Request;
+
+/* Controllers */
+use App\Http\Controllers\BaseController;
+
+/* Models */
+use App\Model\MNotificacion;
 
 class DashboardController extends BaseController
 {
@@ -12,40 +17,27 @@ class DashboardController extends BaseController
 
     public function index(){
 
-        // Verificar si el usuario tiene acceso a reportes y gráficas
-        // Este apartado incluye dentro las notificaciones
-        if ( user() -> can('REPO.GENERAR.REPORTE') )
-        {
+        $data_notificaciones['recepcion_local']   = [];
+        $data_notificaciones['recepcion_foranea'] = [];
+        $data_notificaciones['panel_trabajo']     = [];
+        $data_notificaciones['semaforizacion']    = [];
 
-        }
+        $permisos_usuario = user() -> Permisos -> pluck('SYPE_PERMISO') -> toArray();
 
-        // Verificar si el usuario tiene acceso a recepción de documentos locales
-        if ( user() -> can('REC.DOCUMENTO.LOCAL') )
-        {
-            return redirect('recepcion/documentos/recepcionados');
-        }
+        $notificaciones = MNotificacion::existente() -> where(function($query){
+            $query -> whereNull('NOTI_VISTO_ELIMINADO');
+            // faltan agregar mas validaciones
+        })
+        -> whereIn('NOTI_PERMISO',$permisos_usuario)
+        -> get();
 
-        // Verificar si el usuario tiene acceso a recepción de documentos foráneos
-        if ( user() -> can('REC.DOCUMENTO.FORANEO') )
-        {
-            
-        }
+        $notificaciones -> map(function($notificacion) use (&$data_notificaciones){
 
-        // Verificar si el usuario tiene acceso a panel de trabajo de documentos
-        if ( user() -> can('SEG.PANEL.TRABAJO') )
-        {
-            
-        }
+            $data_notificaciones['recepcion_local'][] = $notificacion;
 
-        // Verificar si el usuario tiene acceso a la administración del sistema
-        if ( user() -> can('REPO.GENERAR.REPORTE') )
-        {
-            
-        }
+        });
 
-        // Si no tiene accesos, hay que mostrar una pantalla por default del sistema
-
-        return view('Dashboard.indexDashboard');
+        return view('Dashboard.indexDashboard') -> with($data_notificaciones);
     }
 
 }

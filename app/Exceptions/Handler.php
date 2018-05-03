@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Routing\Router;
 
 class Handler extends ExceptionHandler
 {
@@ -44,6 +45,14 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+
+        $classException = 'App\Exceptions\\' . class_basename($exception);
+        if ( class_exists($classException)
+            && method_exists($classException, 'render')
+                && $response = call_user_func_array([$classException,'render'], [$request]) ) {
+                    return Router::toResponse($request, $response);
+        }
+
         return parent::render($request, $exception);
     }
 

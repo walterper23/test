@@ -19,7 +19,7 @@
 
 @section('content')
     <div class="block block-themed block-mode-loading-refresh">
-        <div class="block-header bg-flat-dark">
+        <div class="block-header bg-earth">
             <h3 class="block-title"><i class="fa fa-fw fa-flag mr-5"></i> Documentos semaforizados</h3>
             <div class="block-options">
                 <button type="button" class="btn-block-option d-none d-sm-inline" onclick="hSemaforo.reload('dataTableBuilder')">

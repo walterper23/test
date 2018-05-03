@@ -5,13 +5,12 @@ If you would like to use the same navigation in both mobiles and desktops, you c
 If your sidebar menu includes headings, they won't be visible in your header navigation by default
 If your sidebar menu includes icons and you would like to hide them, you can add the class 'nav-main-header-no-icons'
 -->
-
     <li>
-        <a href="{{ url('/') }}"><i class="si si-home"></i>Inicio</a>
+        <a href="{{ url('/') }}" @if(request() -> is('/')) class="active" @endif><i class="si si-home"></i>Inicio</a>
     </li>
     @can('REC.DOCUMENTO.LOCAL')
     <li>
-        <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="fa fa-fw fa-files-o"></i>Recepción</a>
+        <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)"><i class="fa fa-fw fa-files-o"></i>Recepción</a>
         <ul>
             <li>
                 <a href="{{ url('recepcion/documentos/nueva-recepcion') }}">Nueva recepci&oacute;n</a>
@@ -52,7 +51,7 @@ If your sidebar menu includes icons and you would like to hide them, you can add
     @endcan
     @if (user() -> canAtLeast('REC.DOCUMENTO.FORANEO','REC.VER.FORANEO') )
     <li>
-        <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="fa fa-fw fa-files-o"></i>Recepción foránea</a>
+        <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)"><i class="fa fa-fw fa-files-o"></i>Recepción foránea</a>
         <ul>
             @can('REC.DOCUMENTO.FORANEO')
             <li>
@@ -83,7 +82,7 @@ If your sidebar menu includes icons and you would like to hide them, you can add
     @endcan
     @can('SEG.PANEL.TRABAJO')
     <li>
-        <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="fa fa-server"></i>Panel de trabajo</a>
+        <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)"><i class="fa fa-server"></i>Panel de trabajo</a>
         <ul>
             <li>
                 <a href="{{ url('panel/documentos/?view=recents') }}">Recientes</a>
@@ -110,7 +109,7 @@ If your sidebar menu includes icons and you would like to hide them, you can add
     @endcan
     @can('REPO.GENERAR.REPORTE')
     <li>
-        <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="fa fa-file-pdf-o"></i>Reportes</a>
+        <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)"><i class="fa fa-file-pdf-o"></i>Reportes</a>
         <ul>
             <li>
                 <a href="{{ url('panel/reportes/generar') }}">Generar reporte</a>
@@ -123,10 +122,10 @@ If your sidebar menu includes icons and you would like to hide them, you can add
     @endcan
     @if( user() -> canAtLeast('SIS.ADMIN.ANEXOS','SIS.ADMIN.DIRECC','SIS.ADMIN.DEPTOS','SIS.ADMIN.PUESTOS','SIS.ADMIN.ESTA.DOC') )
     <li>
-        <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="fa fa-fw fa-cogs"></i>Configuración</a>
+        <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)"><i class="fa fa-fw fa-cogs"></i>Configuración</a>
         <ul>
             <li>
-                <a class="nav-submenu" data-toggle="nav-submenu" href="#">Catálogos</a>
+                <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)">Catálogos</a>
                 <ul>
                     @can('SIS.ADMIN.ANEXOS')
                     <li>
@@ -157,7 +156,7 @@ If your sidebar menu includes icons and you would like to hide them, you can add
             </li>
             @if( user() -> canAtLeast('USU.ADMIN.USUARIOS','USU.ADMIN.PERMISOS.ASIG') )
             <li>
-                <a class="nav-submenu" data-toggle="nav-submenu" href="#">Usuarios</a>
+                <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)">Usuarios</a>
                 <ul>
                     @can('USU.ADMIN.USUARIOS')
                     <li>
@@ -174,7 +173,7 @@ If your sidebar menu includes icons and you would like to hide them, you can add
             @endif
             @can('SIS.ADMIN.CONFIG')
             <li>
-                <a class="nav-submenu" data-toggle="nav-submenu" href="#">Sistema</a>
+                <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)">Sistema</a>
                 <ul>
                     <li>
                         <a href="{{ url('configuracion/sistema/tipos-documentos') }}">Tipos de documentos</a>

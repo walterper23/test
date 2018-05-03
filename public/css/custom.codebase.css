@@ -131,3 +131,8 @@ span.select2-selection.select2-selection--single, span.select2-selection__render
 span.select2-container--default .select2-selection--single {
 	border-color: #A3A4A6
 }
+
+.alert {
+	margin-bottom: 5px !important;
+	padding: 0.5rem 0.75rem;
+}

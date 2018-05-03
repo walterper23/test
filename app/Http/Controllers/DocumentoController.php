@@ -51,7 +51,7 @@ class DocumentoController extends BaseController
 
         if (is_null($scan)) abort(404);
 
-        $escaneo = MEscaneo::with('Archivo') -> find( $scan );
+        $escaneo = MEscaneo::with('Archivo') -> findOrFail( $scan );
 
         $pathToFile = storage_path($escaneo -> Archivo -> getPath());
 
