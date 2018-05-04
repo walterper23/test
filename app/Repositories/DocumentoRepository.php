@@ -3,14 +3,20 @@ namespace App\Repositories;
 
 use App\Model\MDocumento;
 
-class DocumentoRepository implements InterfaceRepository
+class DocumentoRepository extends BaseRepository
 {
-
-	protected $model;
-
 	public function __construct(MDocumento $model)
 	{
-		$this -> model = $model
+		parent::__construct($model);
+	}
+
+
+
+	public function getDocumentosByFecha()
+	{
+
+
+
 	}
 
 }

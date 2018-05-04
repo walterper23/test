@@ -6,7 +6,6 @@ class MDocumentoSemaforizado extends BaseModel
     protected $table        = 'documentos_semaforizados';
     protected $primaryKey   = 'DOSE_SEMAFORO';
     protected $prefix       = 'DOSE';
-    
 
     /* Methods */
 

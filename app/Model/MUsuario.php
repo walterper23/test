@@ -93,10 +93,9 @@ class MUsuario extends Authenticatable
         foreach ($permisos as $permiso)
         {
             if ($this -> can($permiso))
-            {
                 return true;
-            }   
         }
+        
         return false;
     }
 

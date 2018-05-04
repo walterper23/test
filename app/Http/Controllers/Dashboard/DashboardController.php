@@ -40,4 +40,60 @@ class DashboardController extends BaseController
         return view('Dashboard.indexDashboard') -> with($data_notificaciones);
     }
 
+
+    public function manager(Request $request)
+    {
+        switch ($request -> action) {
+            case 'documentos-hoy':
+                $response = $this -> documentosHoy( $request );
+                break;
+            case 'documentos-semana':
+                $response = $this -> documentosSemana( $request );
+                break;
+            case 'documentos-mes':
+                $response = $this -> documentosMes( $request );
+                break;
+            case 'documentos-anual':
+                $response = $this -> documentosAnual( $request );
+                break;
+            default:
+                abort(404);
+                break;
+        }
+
+        return $response;
+    }
+
+    public function documentosHoy( $request )
+    {
+        $data = [];
+
+
+        return response() -> json($data);
+    }
+
+    public function documentosSemana( $request )
+    {
+        $data = [];
+
+
+        return response() -> json($data);
+    }
+
+    public function documentosMes( $request )
+    {
+        $data = [];
+
+
+        return response() -> json($data);
+    }
+
+    public function documentosAnual( $request )
+    {
+        $data = [];
+
+
+        return response() -> json($data);
+    }
+
 }

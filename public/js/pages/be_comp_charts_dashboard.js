@@ -5,7 +5,7 @@
 var BeCompCharts = function() {
 
     // Chart.js Charts, for more examples you can check out http://www.chartjs.org/docs
-    var initChartsChartJS = function () {
+    var initChartsChartJS = function ( documentos_data ) {
         // Set Global Chart.js configuration
         Chart.defaults.global.defaultFontColor              = '#555555';
         Chart.defaults.scale.gridLines.color                = "rgba(0,0,0,.04)";
@@ -24,36 +24,12 @@ var BeCompCharts = function() {
         var chartPieCon2    = jQuery('#js-chartjs-pie-2');
 
         // Set Chart and Chart Data variables
-        var chartLinesBarsRadarData, chartPolarPieDonutData;
+        var documentosHoy, documentosSemana, documentosMes, documentosAnual;
 
-        // Polar/Pie/Donut Data
-        var chartPolarPieDonutData = {
-            labels: [
-                'Earnings',
-                'Sales',
-                'Tickets'
-            ],
-            datasets: [{
-                data: [
-                    50,
-                    25,
-                    25
-                ],
-                backgroundColor: [
-                    'rgba(156,204,101,1)',
-                    'rgba(255,202,40,1)',
-                    'rgba(239,83,80,1)'
-                ],
-                hoverBackgroundColor: [
-                    'rgba(156,204,101,.5)',
-                    'rgba(255,202,40,.5)',
-                    'rgba(239,83,80,.5)'
-                ]
-            }]
-        };
 
-        var chartLinesBarsRadarData = {
-            labels: ['LUN', 'MAR', 'MIE', 'JUE', 'VIE'],
+
+        var documentosHoy = {
+            labels: ['Denuncia', 'Docto. denuncia', 'Circular', 'Ficha', 'Invitación'],
             datasets: [
                 {
                     label: 'This Week',
@@ -65,33 +41,117 @@ var BeCompCharts = function() {
                     pointHoverBackgroundColor: '#fff',
                     pointHoverBorderColor: 'rgba(66,165,245,1)',
                     data: [25, 38, 62, 45, 90, 115, 130]
+                }
+            ]
+        };
+
+        var documentosSemana = {
+            labels: ['Lun', 'Mar', 'Mie', 'Jue', 'Vie'],
+            datasets: [
+                {
+                    label: 'Denuncia',
+                    fill: true,
+                    backgroundColor: 'rgba(234,28,24,.75)',
+                    borderColor: 'rgba(189,21,17,1)',
+                    pointBackgroundColor: 'rgba(66,165,245,1)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(66,165,245,1)',
+                    data: [25, 38, 62, 5, 5]
                 },
                 {
-                    label: 'Last Week',
+                    label: 'Docto. denuncia',
                     fill: true,
-                    backgroundColor: 'rgba(66,165,245,.25)',
+                    backgroundColor: 'rgba(66,165,245,.75)',
                     borderColor: 'rgba(66,165,245,1)',
                     pointBackgroundColor: 'rgba(66,165,245,1)',
                     pointBorderColor: '#fff',
                     pointHoverBackgroundColor: '#fff',
                     pointHoverBorderColor: 'rgba(66,165,245,1)',
-                    data: [112, 90, 142, 130, 170, 188, 196]
+                    data: [25, 38, 62, 5, 5]
+                },
+                {
+                    label: 'Documentos',
+                    fill: true,
+                    backgroundColor: 'rgba(156,204,101,.75)',
+                    borderColor: 'rgba(156,204,101,1)',
+                    pointBackgroundColor: 'rgba(66,165,245,1)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(66,165,245,1)',
+                    data: [25, 38, 62, 5, 6]
                 }
             ]
         };
 
-        chartBars1  = new Chart(chartBarsCon1, { type: 'bar', data: chartLinesBarsRadarData });
-        chartBars2  = new Chart(chartBarsCon2, { type: 'bar', data: chartLinesBarsRadarData });
+        // Polar/Pie/Donut Data
+        var documentosMes = {
+            labels: [
+                'En seguimiento',
+                'Resueltos',
+                'Rechazados'
+            ],
+            datasets: [{
+                data: [
+                    50,
+                    25,
+                    25
+                ],
+                backgroundColor: [
+                    'rgba(239,83,80,1)',
+                    'rgba(156,204,101,1)',
+                    'rgba(255,202,40,1)',
+                ],
+                hoverBackgroundColor: [
+                    'rgba(239,83,80,.5)',
+                    'rgba(156,204,101,.5)',
+                    'rgba(255,202,40,.5)',
+                ]
+            }]
+        };
 
-        chartPie1   = new Chart(chartPieCon1, { type: 'pie', data: chartPolarPieDonutData });
-        chartPie2   = new Chart(chartPieCon2, { type: 'pie', data: chartPolarPieDonutData });
+        var documentosAnual = {
+            labels: [
+                'En seguimiento',
+                'Resueltos',
+                'Rechazados'
+            ],
+            datasets: [{
+                data: [
+                    50,
+                    25,
+                    25
+                ],
+                backgroundColor: [
+                    'rgba(239,83,80,1)',
+                    'rgba(156,204,101,1)',
+                    'rgba(255,202,40,1)',
+                ],
+                hoverBackgroundColor: [
+                    'rgba(239,83,80,.5)',
+                    'rgba(156,204,101,.5)',
+                    'rgba(255,202,40,.5)',
+                ]
+            }]
+        };
+
+        chartBars1  = new Chart(chartBarsCon1, { type: 'bar', data: documentosHoy });
+        chartBars2  = new Chart(chartBarsCon2, { type: 'bar', data: documentosSemana });
+
+        chartPie1   = new Chart(chartPieCon1, { type: 'pie', data: documentosMes });
+        chartPie2   = new Chart(chartPieCon2, { type: 'pie', data: documentosAnual });
 
     };
 
     return {
         init: function () {
-            // Init Chart.js Charts
-            initChartsChartJS();
+            App.ajaxRequest({
+                url : '',
+                data  : '',
+                success : function(result){
+                    initChartsChartJS( result );
+                }
+            });
         }
     };
 }();
