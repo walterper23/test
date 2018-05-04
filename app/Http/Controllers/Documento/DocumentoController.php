@@ -1,8 +1,10 @@
 <?php
 namespace App\Http\Controllers\Documento;
 
-use App\Http\Controllers\BaseController; 
 use Illuminate\Http\Request;
+
+/* Controllers */
+use App\Http\Controllers\BaseController; 
 
 /* Models */
 use App\Model\MDocumento;
