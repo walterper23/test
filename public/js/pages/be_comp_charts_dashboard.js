@@ -5,7 +5,7 @@
 var BeCompCharts = function() {
 
     // Chart.js Charts, for more examples you can check out http://www.chartjs.org/docs
-    var initChartsChartJS = function ( documentos_data ) {
+    var initChartsChartJS = function ( data ) {
         // Set Global Chart.js configuration
         Chart.defaults.global.defaultFontColor              = '#555555';
         Chart.defaults.scale.gridLines.color                = "rgba(0,0,0,.04)";
@@ -26,13 +26,11 @@ var BeCompCharts = function() {
         // Set Chart and Chart Data variables
         var documentosHoy, documentosSemana, documentosMes, documentosAnual;
 
-
-
         var documentosHoy = {
-            labels: ['Denuncia', 'Docto. denuncia', 'Circular', 'Ficha', 'Invitación'],
+            labels: data.hoy.labels,
             datasets: [
                 {
-                    label: 'This Week',
+                    label: 'Recepción local',
                     fill: true,
                     backgroundColor: 'rgba(66,165,245,.75)',
                     borderColor: 'rgba(66,165,245,1)',
@@ -40,7 +38,18 @@ var BeCompCharts = function() {
                     pointBorderColor: '#fff',
                     pointHoverBackgroundColor: '#fff',
                     pointHoverBorderColor: 'rgba(66,165,245,1)',
-                    data: [25, 38, 62, 45, 90, 115, 130]
+                    data: data.hoy.locales
+                },
+                {
+                    label: 'Recepción foránea',
+                    fill: true,
+                    backgroundColor: 'rgba(156,204,101,.75)',
+                    borderColor: 'rgba(156,204,101,1)',
+                    pointBackgroundColor: 'rgba(66,165,245,1)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(66,165,245,1)',
+                    data: data.hoy.foraneos
                 }
             ]
         };
@@ -57,7 +66,7 @@ var BeCompCharts = function() {
                     pointBorderColor: '#fff',
                     pointHoverBackgroundColor: '#fff',
                     pointHoverBorderColor: 'rgba(66,165,245,1)',
-                    data: [25, 38, 62, 5, 5]
+                    data: data.semana.denuncias
                 },
                 {
                     label: 'Docto. denuncia',
@@ -68,7 +77,7 @@ var BeCompCharts = function() {
                     pointBorderColor: '#fff',
                     pointHoverBackgroundColor: '#fff',
                     pointHoverBorderColor: 'rgba(66,165,245,1)',
-                    data: [25, 38, 62, 5, 5]
+                    data: data.semana.doctos_denuncias
                 },
                 {
                     label: 'Documentos',
@@ -79,7 +88,7 @@ var BeCompCharts = function() {
                     pointBorderColor: '#fff',
                     pointHoverBackgroundColor: '#fff',
                     pointHoverBorderColor: 'rgba(66,165,245,1)',
-                    data: [25, 38, 62, 5, 6]
+                    data: data.semana.documentos
                 }
             ]
         };
@@ -92,11 +101,7 @@ var BeCompCharts = function() {
                 'Rechazados'
             ],
             datasets: [{
-                data: [
-                    50,
-                    25,
-                    25
-                ],
+                data: data.mes,
                 backgroundColor: [
                     'rgba(239,83,80,1)',
                     'rgba(156,204,101,1)',
@@ -117,11 +122,7 @@ var BeCompCharts = function() {
                 'Rechazados'
             ],
             datasets: [{
-                data: [
-                    50,
-                    25,
-                    25
-                ],
+                data: data.anual,
                 backgroundColor: [
                     'rgba(239,83,80,1)',
                     'rgba(156,204,101,1)',
@@ -146,8 +147,8 @@ var BeCompCharts = function() {
     return {
         init: function () {
             App.ajaxRequest({
-                url : '',
-                data  : '',
+                url : '/manager',
+                data  : { action : 'reporte-documentos'},
                 success : function(result){
                     initChartsChartJS( result );
                 }

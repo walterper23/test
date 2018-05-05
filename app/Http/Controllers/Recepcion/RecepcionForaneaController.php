@@ -324,6 +324,7 @@ class RecepcionForaneaController extends BaseController
 	{
 		$documento = MDocumentoForaneo::find( $request -> id );
 		$documento -> DOFO_SYSTEM_TRANSITO = 1;
+		$documento -> DOFO_FECHA_ENVIADO   = Carbon::now();
 		$documento -> save();
 
 		$message = sprintf('Documento #<b>%s</b> enviado <i class="fa fa-fw fa-car"></i>',$documento -> getCodigo());

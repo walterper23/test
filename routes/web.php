@@ -19,20 +19,22 @@ Route::middleware('preventBackHistory') -> group(function(){
 
     Route::middleware('auth') -> group(function(){
 
-        // Dashboard del usuario. Para las notificaciones principalmente.
-        Route::get('/', 'Dashboard\DashboardController@index');
-
         // Perfil del usuario y configuración de preferencias
-        Route::prefix('usuario') -> namespace('Dashboard') -> group(function(){
+        Route::prefix('/') -> namespace('Dashboard') -> group(function(){
 
-            Route::prefix('perfil') -> group(function(){
-                Route::get('/',        'PerfilController@index');
-                Route::post('manager', 'PerfilController@manager');
+            // Dashboard del usuario. Para las notificaciones principalmente.
+            Route::get('/',        'DashboardController@index');
+            Route::post('manager', 'DashboardController@manager');
+
+            Route::prefix('usuario') -> group(function(){
+                Route::prefix('perfil') -> group(function(){
+                    Route::get('/',        'PerfilController@index');
+                    Route::post('manager', 'PerfilController@manager');
+                });
+                /*Route::prefix('preferencias') -> group(function(){
+                    Route::get('/', 'PreferenciasController@index');
+                });*/
             });
-
-            /*Route::prefix('preferencias') -> group(function(){
-                Route::get('/', 'PreferenciasController@index');
-            });*/
 
         });
 

@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Recepcion;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
+use Carbon\Carbon;
 use Validator;
 use Exception;
 use DB;
@@ -129,6 +130,7 @@ class RecibirRecepcionForaneaController extends BaseController
 		}
 
 		$documento -> DOFO_SYSTEM_TRANSITO = 2; // Documento recibido en Oficialía de Partes
+		$documento -> DOFO_FECHA_RECIBIDO  = Carbon::now(); // Fecha y hora de recibido
 		$documento -> save();
 
 		if ($documento -> getTipoDocumento() == 1)
@@ -152,7 +154,8 @@ class RecibirRecepcionForaneaController extends BaseController
 			// El documento ya fue validado
 		}
 
-		$documento -> DOFO_VALIDADO = 1; // Documento validado por Oficialía de Partes
+		$documento -> DOFO_VALIDADO       = 1; // Documento validado por Oficialía de Partes
+		$documento -> DOFO_FECHA_VALIDADO = Carbon::now(); // Fecha y hora de validado
 		$documento -> save();
 
 		if ($documento -> getTipoDocumento() == 1)
@@ -197,8 +200,9 @@ class RecibirRecepcionForaneaController extends BaseController
 					'ESCA_DOCUMENTO_LOCAL' => $documento -> getKey()
 				]);
 
-				$documentoForaneo -> DOFO_DOCUMENTO_LOCAL = $documento -> getKey();
-				$documentoForaneo -> DOFO_RECEPCIONADO    = 1; // Documento recepcionado por Oficialía de Partes
+				$documentoForaneo -> DOFO_DOCUMENTO_LOCAL     = $documento -> getKey();
+				$documentoForaneo -> DOFO_RECEPCIONADO        = 1; // Documento recepcionado por Oficialía de Partes
+				$documentoForaneo -> DOFO_FECHA_RECEPCIONADO  = Carbon::now(); // Fecha y hora de recepcionado
 				$documentoForaneo -> save();
 
 				// Crear el acuse de recepción

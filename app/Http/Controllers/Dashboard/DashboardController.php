@@ -6,7 +6,11 @@ use Illuminate\Http\Request;
 /* Controllers */
 use App\Http\Controllers\BaseController;
 
+/* Repositories */
+use App\Repositories\DocumentoRepository;
+
 /* Models */
+use App\Model\MDocumento;
 use App\Model\MNotificacion;
 
 class DashboardController extends BaseController
@@ -15,7 +19,9 @@ class DashboardController extends BaseController
         $this -> setLog('DashboardController.log');
     }
 
-    public function index(){
+    public function index(Request $request){
+
+        $this -> reporteDocumentos($request);
 
         $data_notificaciones['recepcion_local']   = [];
         $data_notificaciones['recepcion_foranea'] = [];
@@ -44,17 +50,8 @@ class DashboardController extends BaseController
     public function manager(Request $request)
     {
         switch ($request -> action) {
-            case 'documentos-hoy':
-                $response = $this -> documentosHoy( $request );
-                break;
-            case 'documentos-semana':
-                $response = $this -> documentosSemana( $request );
-                break;
-            case 'documentos-mes':
-                $response = $this -> documentosMes( $request );
-                break;
-            case 'documentos-anual':
-                $response = $this -> documentosAnual( $request );
+            case 'reporte-documentos' :
+                $response = $this -> reporteDocumentos( $request );
                 break;
             default:
                 abort(404);
@@ -64,36 +61,67 @@ class DashboardController extends BaseController
         return $response;
     }
 
-    public function documentosHoy( $request )
+    public function reporteDocumentos($request, DocumentoRepository $documentos)
     {
-        $data = [];
+        $anio_actual = \Carbon\Carbon::now() -> year;
+        $documentos = [];
+            
 
+        $data = [
+            'hoy' => $this -> documentosHoy( $documentos ),
+            'semana' => $this -> documentosSemana( $documentos ),
+            'mes' => $this -> documentosMes( $documentos ),
+            'anual' => $this -> documentosAnual( $documentos )
+        ];
 
         return response() -> json($data);
     }
 
-    public function documentosSemana( $request )
+    public function documentosHoy( $documentos )
     {
-        $data = [];
+        $data = [
+            'labels' => [],
+            'locales' => [],
+            'foraneos' => []
+        ];
 
-
-        return response() -> json($data);
+        return $data;
     }
 
-    public function documentosMes( $request )
+    public function documentosSemana( $documentos )
     {
-        $data = [];
+        $data['denuncias'] = $documentos -> filter(function($doc){
+            if( $doc -> getTipoDocumento() == 1 )
+                return $doc;
+        }) -> count();
 
+        $data['doctos_denuncias'] = $documentos -> filter(function($doc){
+            if( $doc -> getTipoDocumento() == 2 )
+                return $doc;
+        }) -> count();
 
-        return response() -> json($data);
+        $data['documentos'] = $documentos -> filter(function($doc){
+            if( $doc -> getTipoDocumento() > 2 )
+                return $doc;
+        }) -> count();
+
+        return $data;
     }
 
-    public function documentosAnual( $request )
+    public function documentosMes( $documentos )
     {
         $data = [];
 
 
-        return response() -> json($data);
+        return $data;
+    }
+
+    public function documentosAnual( $documentos )
+    {
+        $data = [];
+
+
+        return $data;
     }
 
 }

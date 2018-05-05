@@ -127,6 +127,11 @@ class MDocumento extends BaseModel
         return $this -> belongsTo('App\Model\MDocumentoDenuncia',$this -> getKeyName(),'DODE_DOCUMENTO_LOCAL');
     }
 
+    public function DocumentoForaneo()
+    {
+        return $this -> hasOne('App\Model\MDocumentoForaneo','DOFO_DOCUMENTO_LOCAL',$this -> getKeyName());
+    }
+
     public function Escaneos()
     {
         return $this -> hasMany('App\Model\MEscaneo','ESCA_DOCUMENTO_LOCAL',$this -> getKeyName());
