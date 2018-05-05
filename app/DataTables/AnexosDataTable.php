@@ -3,8 +3,8 @@ namespace App\DataTables;
 
 use App\Model\Catalogo\MAnexo;
 
-class AnexosDataTable extends CustomDataTable{
-    
+class AnexosDataTable extends CustomDataTable
+{
     protected function setSourceData(){
         $this->sourceData = MAnexo::select('ANEX_ANEXO','ANEX_NOMBRE','ANEX_ENABLED','ANEX_CREATED_AT') -> where('ANEX_DELETED',0);
     }

@@ -1,6 +1,11 @@
 <?php
 namespace App\Repositories;
 
-interface InterfaceRepository{
+interface InterfaceRepository
+{
+
+	public function find($id);
+
+	public function save();
 	
 }

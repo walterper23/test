@@ -15,9 +15,8 @@ class CustomDataTable {
 	protected $sourceData;
 	private $columns;
 
-	public function __construct()
+	public function __construct(DataTables $datatables)
 	{
-		$datatables = new DataTables;
 		$this->instanceTable = $datatables;
 		$this->builderHtml   = $datatables->getHtmlBuilder();
 		$this->setSourceData();

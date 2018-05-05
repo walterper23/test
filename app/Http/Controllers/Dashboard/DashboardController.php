@@ -15,8 +15,11 @@ use App\Model\MNotificacion;
 
 class DashboardController extends BaseController
 {
-    public function __construct(){
+    protected $documentosRepository;
+
+    public function __construct(DocumentoRepository $repository){
         $this -> setLog('DashboardController.log');
+        $this -> documentosRepository = $repository;
     }
 
     public function index(Request $request){
@@ -61,17 +64,19 @@ class DashboardController extends BaseController
         return $response;
     }
 
-    public function reporteDocumentos($request, DocumentoRepository $documentos)
+    public function reporteDocumentos($request)
     {
         $anio_actual = \Carbon\Carbon::now() -> year;
-        $documentos = [];
             
+        // Buscar todos los documentos existentes. No elimininados
+        $documentos = $this -> documentosRepository -> getReporteDocumentos();
+
 
         $data = [
             'hoy' => $this -> documentosHoy( $documentos ),
-            'semana' => $this -> documentosSemana( $documentos ),
-            'mes' => $this -> documentosMes( $documentos ),
-            'anual' => $this -> documentosAnual( $documentos )
+            //'semana' => $this -> documentosSemana( $documentos ),
+            //'mes' => $this -> documentosMes( $documentos ),
+            //'anual' => $this -> documentosAnual( $documentos )
         ];
 
         return response() -> json($data);
@@ -79,10 +84,15 @@ class DashboardController extends BaseController
 
     public function documentosHoy( $documentos )
     {
+
+        $documentos -> groupByTipo();
+
+        dd($documentos);
+
         $data = [
-            'labels' => [],
-            'locales' => [],
-            'foraneos' => []
+            'labels' => [], // Denuncia, Ficha, Circular, Documento denuncia
+            'locales' => [], // [1, 2, 3, 4]
+            'foraneos' => [] // [1, 2, 3, 4]
         ];
 
         return $data;
