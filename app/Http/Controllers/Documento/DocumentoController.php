@@ -102,7 +102,7 @@ class DocumentoController extends BaseController
 
     private function getAnexos( $documento, $size = '' )
     {
-        $data['anexos'] = $documento -> Detalle -> getAnexos();
+        $data['anexos'] = $documento -> Detalle -> presenter() -> getAnexos();
 
         if (! empty($size))
             $data['size'] = $size;

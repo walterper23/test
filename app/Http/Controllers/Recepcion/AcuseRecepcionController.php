@@ -24,12 +24,21 @@ class AcuseRecepcionController extends BaseController
 
     public function index(Request $request, $nombre_acuse)
     {
-
         $mode = $request -> get('d',0); // Si el documento será visualizado o descargado por el usuario
 
         // Buscamos el registro del acuse, y luego la información del documento
         $acuseRecepcion = MAcuseRecepcion::with('Detalle') -> where('ACUS_NOMBRE', $nombre_acuse) -> limit(1) -> first();
 
+        $pdf = $this -> makeAcuseRecepcion($acuseRecepcion, $nombre_acuse);       
+
+        if ($mode == 1)
+            return $pdf -> download( $nombre_acuse );
+        else
+            return $pdf -> stream( $nombre_acuse );
+    }
+
+    public function makeAcuseRecepcion($acuseRecepcion, $nombre_acuse = '')
+    {
         $data = [
             'nombre_acuse' => $nombre_acuse,
             'acuse'        => $acuseRecepcion,
@@ -41,14 +50,10 @@ class AcuseRecepcionController extends BaseController
             $data['documento'] = $acuseRecepcion -> DocumentoLocal;
         else                                      // Acuse de documento foráneo 
             $data['documento'] = $acuseRecepcion -> DocumentoForaneo;
-
+        
         $pdf = PDF::loadView('Recepcion.Acuses.acuseRecepcion', $data);
 
-        if ($mode == 1)
-            return $pdf -> download( $nombre_acuse );
-        else
-            return $pdf -> stream( $nombre_acuse );
-
+        return $pdf;
     }
 
 

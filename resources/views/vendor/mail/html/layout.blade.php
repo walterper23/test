@@ -6,6 +6,9 @@
 </head>
 <body>
     <style>
+
+        @include('vendor.mail.html.themes.default')
+
         @media only screen and (max-width: 600px) {
             .inner-body {
                 width: 100% !important;

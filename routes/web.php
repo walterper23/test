@@ -1,7 +1,7 @@
 <?php
 
 DB::listen(function($query){
-    //\Illuminate\Support\Facades\Log::info($query -> sql);
+    \Illuminate\Support\Facades\Log::info($query -> sql);
     //echo "<pre style=\"z-index:5000\">{$query->sql}</pre>";
 });
 

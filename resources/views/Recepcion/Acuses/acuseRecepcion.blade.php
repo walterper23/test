@@ -118,7 +118,7 @@
 	<table class="border">
 		<tr class="odd">
 			<td width="30%" class="bold">Anexos</td>
-			<td width="70%">{{ $detalle -> getAnexos() }}</td>
+			<td width="70%">{!! $detalle -> presenter() -> getAnexos() !!}</td>
 		</tr>
 		<tr class="even">
 			<td class="bold">Observaciones</td>

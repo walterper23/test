@@ -11,6 +11,7 @@ use DB;
 
 /* Controllers */
 use App\Http\Controllers\BaseController;
+use App\Http\Controllers\Dashboard\NotificacionController;
 
 /* Models */
 use App\Model\MAcuseRecepcion;
@@ -275,6 +276,10 @@ class RecepcionController extends BaseController
 			}
 
 			DB::commit();
+
+			// Mandamos el correo de notificación a los usuarios que tengan la preferencia asignada
+			$notificacion = new NotificacionController;
+			$notificacion -> mandarNotificacionCorreo($documento);
 			
 			if ($request -> acuse) // Si el usuario ha indicado que quiere abrir inmediatamente el acuse de recepción
 			{

@@ -16,4 +16,9 @@ class MDetallePresenter extends Presenter
 		return $created_at;
 	}
 
+	public function getAnexos()
+	{
+		return nl2br( str_replace('\n', '<br/>', $this -> model -> getAnexos()) );
+	}
+
 }

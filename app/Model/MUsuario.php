@@ -131,6 +131,12 @@ class MUsuario extends Authenticatable
         return $this -> belongsToMany('App\Model\MPermiso','usuarios_permisos','USPE_USUARIO','USPE_PERMISO');
     }
 
+    public function Preferencias()
+    {
+        return $this -> belongsToMany('App\Model\MPreferencia','usuarios_preferencias','USPR_USUARIO','USPR_PREFERENCIA');
+    }
+
+
     /* Notifications */
 
     /*public function sendPasswordResetNotification($token)

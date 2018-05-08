@@ -17,8 +17,6 @@ body {
     width: 100% !important;
     -webkit-hyphens: auto;
     -webkit-text-size-adjust: none;
-    word-break: break-all;
-    word-break: break-word;
 }
 
 p,
@@ -82,7 +80,7 @@ img {
 /* Layout */
 
 .wrapper {
-    background-color: #f5f8fa;
+    background-color: #3097D1;
     margin: 0;
     padding: 0;
     width: 100%;
@@ -108,11 +106,11 @@ img {
 }
 
 .header a {
-    color: #bbbfc3;
+    color: #ffffff;
     font-size: 19px;
     font-weight: bold;
     text-decoration: none;
-    text-shadow: 0 1px 0 white;
+    text-shadow: 0px 1px 2px #333;
 }
 
 /* Body */
@@ -164,7 +162,7 @@ img {
 }
 
 .footer p {
-    color: #AEAEAE;
+    color: #ffffff;
     font-size: 12px;
     text-align: center;
 }

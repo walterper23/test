@@ -23,8 +23,6 @@ class DashboardController extends BaseController
 
     public function index(Request $request){
 
-        $this -> reporteDocumentos($request);
-
         $data_notificaciones['recepcion_local']   = [];
         $data_notificaciones['recepcion_foranea'] = [];
         $data_notificaciones['panel_trabajo']     = [];

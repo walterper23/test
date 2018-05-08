@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\BaseController; 
 use Illuminate\Http\Request;
+use \Illuminate\Support\Facades\Mail;
 
 /* Models */
 use App\Model\MNotificacion;
@@ -19,7 +20,6 @@ class NotificacionController extends BaseController
 
         return view('Dashboard.indexDashboard');
     }
-
 
     // Método para creación de una nueva notificación
     public static function nuevaNotificacion( $type, $data )
@@ -87,6 +87,37 @@ class NotificacionController extends BaseController
         $notificacion -> save();
 
         return true;
+    }
+
+    public function mandarNotificacionCorreo($documento)
+    {
+
+        if( $documento -> getTipoDocumento() == 1 ) // Denuncia
+        {
+            $preferencia = \App\Model\MPreferencia::find(1);
+        }
+        else if( $documento -> getTipoDocumento() == 2 ) // Documento para denuncia
+        {
+            $preferencia = \App\Model\MPreferencia::find(2);
+        }
+        else // Otro tipo de documento
+        {
+            $preferencia = \App\Model\MPreferencia::find(3);
+        }
+
+        $usuarios = $preferencia -> Usuarios() -> with('UsuarioDetalle') -> get();
+
+        $correos = $usuarios -> map(function($usuario){
+            return $usuario -> UsuarioDetalle -> getEmail();
+        });
+
+        $correos = $correos -> toArray();
+
+        $correos = ['rcl6395@gmail.com','notificaciones.sigesd@qroo.gob.mx'];
+
+
+        Mail::to($correos) -> send( new \App\Mail\NuevoDocumentoRecibido($documento) );
+
     }
 
 }
