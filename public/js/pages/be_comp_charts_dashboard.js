@@ -55,7 +55,7 @@ var BeCompCharts = function() {
         };
 
         var documentosSemana = {
-            labels: ['Lun', 'Mar', 'Mie', 'Jue', 'Vie'],
+            labels: data.semana.labels,
             datasets: [
                 {
                     label: 'Denuncia',
@@ -96,42 +96,54 @@ var BeCompCharts = function() {
         // Polar/Pie/Donut Data
         var documentosMes = {
             labels: [
+                'En recepción',
                 'En seguimiento',
                 'Resueltos',
-                'Rechazados'
+                'Rechazados',
+                'Eliminados',
             ],
             datasets: [{
                 data: data.mes,
                 backgroundColor: [
+                    'rgba(66,165,245,1)',
                     'rgba(239,83,80,1)',
                     'rgba(156,204,101,1)',
                     'rgba(255,202,40,1)',
+                    'rgba(204,204,204,1)',
                 ],
                 hoverBackgroundColor: [
-                    'rgba(239,83,80,.5)',
-                    'rgba(156,204,101,.5)',
-                    'rgba(255,202,40,.5)',
+                    'rgba(66,165,245,.75)',
+                    'rgba(239,83,80,.75)',
+                    'rgba(156,204,101,.75)',
+                    'rgba(255,202,40,.75)',
+                    'rgba(204,204,204,0.75)',
                 ]
             }]
         };
 
         var documentosAnual = {
             labels: [
+                'En recepción',
                 'En seguimiento',
                 'Resueltos',
-                'Rechazados'
+                'Rechazados',
+                'Eliminados',
             ],
             datasets: [{
                 data: data.anual,
                 backgroundColor: [
+                    'rgba(66,165,245,1)',
                     'rgba(239,83,80,1)',
                     'rgba(156,204,101,1)',
                     'rgba(255,202,40,1)',
+                    'rgba(204,204,204,1)',
                 ],
                 hoverBackgroundColor: [
-                    'rgba(239,83,80,.5)',
-                    'rgba(156,204,101,.5)',
-                    'rgba(255,202,40,.5)',
+                    'rgba(66,165,245,.75)',
+                    'rgba(239,83,80,.75)',
+                    'rgba(156,204,101,.75)',
+                    'rgba(255,202,40,.75)',
+                    'rgba(204,204,204,0.75)',
                 ]
             }]
         };

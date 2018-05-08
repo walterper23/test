@@ -7,9 +7,16 @@ class MDocumento extends BaseModel
     protected $primaryKey   = 'DOCU_DOCUMENTO';
     protected $prefix       = 'DOCU';
 
+    /* Methods */
+
     public function getNumero()
     {
         return $this -> attributes['DOCU_NUMERO_DOCUMENTO'];
+    }
+
+    public function getEstadoDocumento()
+    {
+        return $this -> attributes['DOCU_SYSTEM_ESTADO_DOCTO'];
     }
 
     public function getTipoDocumento()
@@ -17,7 +24,20 @@ class MDocumento extends BaseModel
         return $this -> attributes['DOCU_SYSTEM_TIPO_DOCTO'];
     }
 
-    /* Methods */
+    public function getTipoRecepcion()
+    {
+        return $this -> attributes['DOCU_TIPO_RECEPCION'];
+    }
+
+    public function isLocal()
+    {
+        return $this -> getTipoRecepcion() == 1;
+    }
+
+    public function isForaneo()
+    {
+        return $this -> getTipoRecepcion() == 2;
+    }
 
     public function marcarImportante()
     {

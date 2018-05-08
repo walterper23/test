@@ -8,7 +8,7 @@
 <div class="row gutters-tiny">
     <!-- Row #2 -->
     <div class="col-md-6">
-        <div class="block block-themed block-mode-loading-refresh">
+        <div class="block block-themed">
             <div class="block-header bg-corporate">
                 <h3 class="block-title">
                     Recepción local <small></small>
@@ -17,29 +17,23 @@
                     <button type="button" class="btn-block-option" data-toggle="block-option" data-action="content_toggle"></button>
                 </div>
             </div>
-            <div class="block-content">
-                @forelse( $recepcion_local as $notificacion )
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="alert alert-{{ $notificacion -> getColor() }} alert-dismissable" role="alert">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                            </button>
-                            <p class="mb-0">
-                                <span class="font-size-xs text-muted""><i>{{ $notificacion -> getFechaCreacion() }}</i></span>
-                                <i class="fa fa-fw fa-angle-double-right"></i> {{ $notificacion -> getContenido() }}
-                            </p>
-                        </div>
-                    </div>
+            <div class="block-content notificacion">
+                @foreach( $recepcion_local as $notificacion )
+                <div class="alert alert-{{ $notificacion -> getColor() }} alert-dismissable" role="alert">
+                    <button type="button" class="close cerrar-notificacion" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <p class="mb-0">
+                        <span class="font-size-xs text-muted""><i>{{ $notificacion -> getFechaCreacion() }}</i></span>
+                        <i class="fa fa-fw fa-angle-double-right"></i> {{ $notificacion -> getContenido() }}
+                    </p>
                 </div>
-                @empty
-                <p class="text-muted text-md mb-10">No hay notificaciones</p>
-                @endforelse
+                @endforeach
             </div>
         </div>
     </div>
     <div class="col-md-6">
-        <div class="block block-themed block-mode-loading-refresh">
+        <div class="block block-themed">
             <div class="block-header bg-flat-dark">
                 <h3 class="block-title">
                     Recepción foránea <small></small>
@@ -48,8 +42,8 @@
                     <button type="button" class="btn-block-option" data-toggle="block-option" data-action="content_toggle"></button>
                 </div>
             </div>
-            <div class="block-content">
-                @forelse( $recepcion_foranea as $notificacion )
+            <div class="block-content notificacion">
+                @foreach( $recepcion_foranea as $notificacion )
                 <div class="row">
                     <div class="col-md-12">
                         <div class="alert alert-{{ $notificacion -> getColor() }} alert-dismissable" role="alert">
@@ -63,14 +57,12 @@
                         </div>
                     </div>
                 </div>
-                @empty
-                <p class="text-muted text-md mb-10">No hay notificaciones</p>
-                @endforelse
+                @endforeach
             </div>
         </div>
     </div>
     <div class="col-md-6">
-        <div class="block block-themed block-mode-loading-refresh">
+        <div class="block block-themed">
             <div class="block-header bg-primary">
                 <h3 class="block-title">
                     Panel de Trabajo <small></small>
@@ -79,8 +71,8 @@
                     <button type="button" class="btn-block-option" data-toggle="block-option" data-action="content_toggle"></button>
                 </div>
             </div>
-            <div class="block-content">
-                @forelse( $panel_trabajo as $notificacion )
+            <div class="block-content notificacion">
+                @foreach( $panel_trabajo as $notificacion )
                 <div class="row">
                     <div class="col-md-12">
                         <div class="alert alert-{{ $notificacion -> getColor() }} alert-dismissable" role="alert">
@@ -94,14 +86,12 @@
                         </div>
                     </div>
                 </div>
-                @empty
-                <p class="text-muted text-md mb-10">No hay notificaciones</p>
-                @endforelse
+                @endforeach
             </div>
         </div>
     </div>
     <div class="col-md-6">
-        <div class="block block-themed block-mode-loading-refresh">
+        <div class="block block-themed">
             <div class="block-header bg-earth">
                 <h3 class="block-title">
                     Semaforización de documentos <small></small>
@@ -110,8 +100,8 @@
                     <button type="button" class="btn-block-option" data-toggle="block-option" data-action="content_toggle"></button>
                 </div>
             </div>
-            <div class="block-content">
-                @forelse( $semaforizacion as $notificacion )
+            <div class="block-content notificacion">
+                @foreach( $semaforizacion as $notificacion )
                 <div class="row">
                         <div class="alert alert-{{ $notificacion -> getColor() }} alert-dismissable" role="alert">
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -123,9 +113,7 @@
                             </p>
                         </div>
                 </div>
-                @empty
-                <p class="text-muted text-md mb-10">No hay notificaciones</p>
-                @endforelse
+                @endforeach
             </div>
         </div>
     </div>
@@ -209,4 +197,28 @@
 @push('js-script')
 {{ Html::script('js/plugins/chartjs/Chart.bundle.min.js') }}
 {{ Html::script('js/pages/be_comp_charts_dashboard.js') }}
+{{ Html::script('js/helpers/dashboard.helper.js') }}
+@endpush
+
+@push('js-custom')
+<script>
+
+    var areas_notificaciones = $('div.notificacion');
+    var notificaciones = $('button.cerrar-notificacion');
+
+    notificaciones.on('click', function(){
+        setTimeout(revisar,150);
+    })
+
+    revisar();
+
+    function revisar(){
+        areas_notificaciones.each(function(index,element){
+            if (! $(element).html().trim().length )
+            {
+                $(element).html('<p class="text-muted text-md mb-10">No hay notificaciones</p>');
+            }
+        });
+    }
+</script>
 @endpush
