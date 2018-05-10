@@ -23,15 +23,19 @@ class FieldBuilder {
 
     // Ruta de la carpeta donde se encuentran las plantillas de los distintos campos de formularios
     protected $folderTemplates = 'vendor.form.fields';
+
+    //  Opción por default para los controles select
+    protected $defaultOption = ['' => 'Seleccione una opción'];
     
     // Método que se llama en primer lugar al llamar a algún método estático de esta clase Field
-    public function __call($type, $params){
+    public function __call($type, $params)
+    {
         array_unshift($params,$type); // Agregamos el nombre del input solicitado al array de parámetros
         return call_user_func_array([$this,'input'],$params);
     }
 
-    private function input($type, $name, $value = null, $attributes = [], $options = []){
-
+    private function input($type, $name, $value = null, $attributes = [], $options = [])
+    {
         $this -> type       = $type; // Tipo de control de formulario
         $this -> name       = $name; // Atributo name="" del control
         $this -> value      = $value; // Atributo value="" del control
@@ -39,11 +43,10 @@ class FieldBuilder {
         $this -> options    = $options; // Array de opciones, en caso de un control Select
 
         return $this -> makeField();
-
     }
 
-    private function makeField(){
-
+    private function makeField()
+    {
         $this -> buildAttributes();
 
         if( $this -> _buildLabel() ) // Si se debe crear el label
@@ -58,17 +61,28 @@ class FieldBuilder {
         return view($template)->with($config);
     }
 
-    private function buildAttributes(){
-        
+    private function buildAttributes()
+    {
         if( !$this -> _getId() ) // Si no se debe incluir el atributo ID al control...
             unset($this -> attributes['id']); // ... lo removemos de los atributos
         
-        if( $this -> type == 'select' ){
-            if( !isset($this -> attributes['placeholder']) )
-                $this -> attributes['placeholder'] = 'Seleccione una opción';
-            else if( is_bool($this -> attributes['placeholder']) && $this -> attributes['placeholder'] == false )
+        if( $this -> type == 'select' )
+        {
+            if( isset($this -> attributes['placeholder']) && $this -> attributes['placeholder'] !== true ){
+                if( $this -> attributes['placeholder'] === false )
+                    $this -> prepareControlSelect(false); // Preparamos el select para que no agregue Seleccione una opción por default
+                else
+                    $this -> prepareControlSelect(true, $this -> attributes['placeholder']); // Preparamos el select para que no agregue Seleccione una opción por default
+                
                 unset($this -> attributes['placeholder']); // Removemos el atributo Placeholder de los atributos
-        }else if( $this -> type == 'selectTwo' ){
+            }
+            else
+            {
+                $this -> prepareControlSelect(); // Preparamos el select para que agregue Seleccione una opción por default
+            }
+        }
+        else if( $this -> type == 'selectTwo' )
+        {
             if( !isset($this -> attributes['placeholder']) )
                 $this -> attributes['data-placeholder'] = 'Seleccione una opción';
             else if( is_bool($this -> attributes['placeholder']) && $this -> attributes['placeholder'] == false )
@@ -113,12 +127,14 @@ class FieldBuilder {
 
     // Método para saber si se debe crear el atributo id=""
     private function _getId(){
-        if( isset($this -> attributes['id']) ){
+        if( isset($this -> attributes['id']) )
+        {
             if( is_string(($this -> attributes['id'])) )
                 return true;
             else if( is_bool($this -> attributes['id']) && $this -> attributes['id'] == false )
                 return false;
-            else{
+            else
+            {
                 $this -> attributes['id'] = '';
                 return true;
             }
@@ -197,15 +213,10 @@ class FieldBuilder {
             case 'email':
                 return Form::email($this -> name, $this -> value, $this -> attributes);
             case 'select':
-                if (is_null($this -> value) && sizeof($this -> options) == 1)
-                    $this -> value = key( $this -> options );
                 return Form::select($this -> name, $this -> options, $this -> value, $this -> attributes);
             case 'selectTwo':
                 $this -> attributes['class'] .= ' js-select2';
                 $this -> attributes['style'] = 'width:100%;';
-                if (is_null($this -> value) && sizeof($this -> options) == 1)
-                    $this -> value = key( $this -> options );
-                else $this -> value = '';
                 return Form::select($this -> name, $this -> options, $this -> value, $this -> attributes);
             case 'password':
                 return Form::password($this -> name, $this -> attributes);
@@ -222,6 +233,25 @@ class FieldBuilder {
             default:
                 return Form::input($this -> type, $this -> name, $this -> value, $this -> attributes);
         }
+    }
+
+    // Método para preparar la configuración de opciones de un select
+    private function prepareControlSelect($defaultOption = true, $textOption = null)
+    {
+        if (sizeof($this -> options) > 1 && $defaultOption) // Si hay varias opciones y si se ha indicado añadir la opción ...
+        {
+            $option = $this -> defaultOption;
+            if (! is_null($textOption))
+                $option = ['' => $textOption];
+
+            $this -> options = $option + $this -> options; // ... añadimos la opción de Seleccionar una opción al principio de las opciones 
+        }
+
+        if (is_null($this -> value))
+            $this -> value = '';
+
+        if (sizeof($this -> options) == 1)
+            $this -> value = key( $this -> options ); // Recuperamos el valor del primer índice de las opciones
     }
 
     // Método para recuperar la plantilla de diseño para el control solicitado

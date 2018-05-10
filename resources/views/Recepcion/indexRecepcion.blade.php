@@ -34,9 +34,9 @@
             <button type="button" class="btn-block-option d-none d-sm-inline" onclick="location.href='{{ url('recepcion/documentos/nueva-recepcion') }}'">
                 <i class="fa fa-fw fa-plus"></i> Nueva recepción
             </button>
-            <button type="button" class="btn-block-option d-none d-sm-inline" onclick="hRecepcion.reloadTables(['denuncias-datatables','documentos-denuncias-datatables','documentos-datatables'])">
+            <!--button type="button" class="btn-block-option d-none d-sm-inline" onclick="hRecepcion.reloadTables(['denuncias-datatables','documentos-denuncias-datatables','documentos-datatables'])">
                 <i class="fa fa-fw fa-refresh"></i> Actualizar
-            </button>
+            </button-->
             <div class="dropdown">
                 <button type="button" class="btn-block-option dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cog"></i> Opciones</button>
                 <div class="dropdown-menu dropdown-menu-right">

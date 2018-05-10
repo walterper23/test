@@ -17,12 +17,9 @@ use App\Model\MDenuncia;
 use App\Model\MDetalle;
 use App\Model\MDocumento;
 use App\Model\MDocumentoForaneo;
-use App\Model\MDocumentoDenuncia;
 use App\Model\MEscaneo;
 use App\Model\MMunicipio;
 use App\Model\MSeguimiento;
-use App\Model\Catalogo\MAnexo;
-use App\Model\Sistema\MSistemaTipoDocumento;
 
 /* DataTables */
 use App\DataTables\RecibirDenunciasForaneasDataTable;
@@ -204,6 +201,17 @@ class RecibirRecepcionForaneaController extends BaseController
 				$documentoForaneo -> DOFO_RECEPCIONADO        = 1; // Documento recepcionado por Oficialía de Partes
 				$documentoForaneo -> DOFO_FECHA_RECEPCIONADO  = Carbon::now(); // Fecha y hora de recepcionado
 				$documentoForaneo -> save();
+
+				// Guardamos el primer seguimiento del documento
+				$seguimiento = new MSeguimiento;
+				$seguimiento -> SEGU_USUARIO              = userKey();
+				$seguimiento -> SEGU_DOCUMENTO            = $documento -> getKey();
+				$seguimiento -> SEGU_DIRECCION_ORIGEN     = config_var('Sistema.Direcc.Origen');  // Dirección de la recepción, por default
+				$seguimiento -> SEGU_DEPARTAMENTO_ORIGEN  = config_var('Sistema.Depto.Origen');   // Departamento de la recepción, por default
+				$seguimiento -> SEGU_DIRECCION_DESTINO    = config_var('Sistema.Direcc.Destino'); // Dirección del procurador, por default
+				$seguimiento -> SEGU_DEPARTAMENTO_DESTINO = config_var('Sistema.Depto.Destino');  // Departamento del procurador, por default
+				$seguimiento -> SEGU_ESTADO_DOCUMENTO     = 1; // Documento recepcionado. Estado de documento por default
+				$seguimiento -> save();
 
 				// Crear el acuse de recepción
 				$nombre_acuse = sprintf('ARD/%s/%s/%s/',date('Y'),date('m'),$documento -> getCodigo());

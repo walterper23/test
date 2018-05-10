@@ -91,18 +91,35 @@ class NotificacionController extends BaseController
 
     public function mandarNotificacionCorreo($documento)
     {
+        if ($documento -> getTipoRecepcion() == 1){ // Recepción local
 
-        if( $documento -> getTipoDocumento() == 1 ) // Denuncia
-        {
-            $preferencia = \App\Model\MPreferencia::find(1);
+            if( $documento -> getTipoDocumento() == 1 ) // Denuncia
+            {
+                $preferencia = \App\Model\MPreferencia::find(1);
+            }
+            else if( $documento -> getTipoDocumento() == 2 ) // Documento para denuncia
+            {
+                $preferencia = \App\Model\MPreferencia::find(2);
+            }
+            else // Otro tipo de documento
+            {
+                $preferencia = \App\Model\MPreferencia::find(3);
+            }
         }
-        else if( $documento -> getTipoDocumento() == 2 ) // Documento para denuncia
+        else
         {
-            $preferencia = \App\Model\MPreferencia::find(2);
-        }
-        else // Otro tipo de documento
-        {
-            $preferencia = \App\Model\MPreferencia::find(3);
+            if( $documento -> getTipoDocumento() == 1 ) // Denuncia
+            {
+                $preferencia = \App\Model\MPreferencia::find(4);
+            }
+            else if( $documento -> getTipoDocumento() == 2 ) // Documento para denuncia
+            {
+                $preferencia = \App\Model\MPreferencia::find(5);
+            }
+            else // Otro tipo de documento
+            {
+                $preferencia = \App\Model\MPreferencia::find(6);
+            }   
         }
 
         $usuarios = $preferencia -> Usuarios() -> with('UsuarioDetalle') -> get();
@@ -115,8 +132,11 @@ class NotificacionController extends BaseController
 
         $correos = ['rcl6395@gmail.com','notificaciones.sigesd@qroo.gob.mx'];
 
+        if ($documento -> getTipoRecepcion() == 1) // Recepción local
+            Mail::to($correos) -> queue( new \App\Mail\NuevoDocumentoRecibido($documento) );
+        else
+            Mail::to($correos) -> queue( new \App\Mail\NuevoDocumentoForaneoRecibido($documento) );
 
-        Mail::to($correos) -> send( new \App\Mail\NuevoDocumentoRecibido($documento) );
 
     }
 

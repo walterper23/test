@@ -19,6 +19,21 @@ class MDocumentoForaneo extends BaseModel
         return $this -> attributes['DOFO_SYSTEM_TIPO_DOCTO'];
     }
 
+    public function getTipoRecepcion()
+    {
+        return 2;
+    }
+
+    public function isLocal()
+    {
+        return $this -> getTipoRecepcion() == 1;
+    }
+
+    public function isForaneo()
+    {
+        return $this -> getTipoRecepcion() == 2;
+    }
+
     public function enviado()
     {
         return $this -> attributes['DOFO_SYSTEM_TRANSITO'] == 1;

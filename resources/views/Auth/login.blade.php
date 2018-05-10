@@ -100,11 +100,11 @@
                                                 <i class="si si-login mr-10"></i> Entrar
                                             </button>
                                         </div>
-                                        <div class="col-12">
+                                        <!--div class="col-12">
                                             <a class="btn btn-block btn-noborder btn-rounded btn-alt-secondary" href="{{ url('/password/reset') }}">
                                                 <i class="fa fa-warning text-muted mr-5"></i> Olvid&eacute; mi contrase&ntilde;a
                                             </a>
-                                        </div>
+                                        </div-->
                                     </div>
                                 {{ Form::close() }}
                             </div>

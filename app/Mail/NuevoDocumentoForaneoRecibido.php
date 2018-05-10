@@ -10,7 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 /* Controllers */
 use App\Http\Controllers\Recepcion\AcuseRecepcionController;
 
-class NuevoDocumentoRecibido extends Mailable implements ShouldQueue
+class NuevoDocumentoForaneoRecibido extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -36,13 +36,18 @@ class NuevoDocumentoRecibido extends Mailable implements ShouldQueue
         $acuseRecepcion = $this -> documento -> AcuseRecepcion;
 
         $controller = new AcuseRecepcionController;
-        $pdf = $controller -> makeAcuseRecepcion($acuseRecepcion, $acuseRecepcion -> getNombre() );
+        $pdf = $controller -> makeAcuseRecepcion($acuseRecepcion, $acuseRecepcion -> getNombre());
 
-        $seguimiento = $this -> documento -> Seguimientos -> first();
+        $view = 'documentos';
 
-        $url = url( sprintf('panel/documentos/seguimiento?search=%d&read=1', $seguimiento -> getKey()) );
+        if ($this -> documento -> getTipoDocumento() == 2)
+            $view = 'documentos-denuncias';
+        if ($this -> documento -> getTipoDocumento() > 2)
+            $view = 'documentos';
+        
+        $url = url( sprintf('recepcion/documentos-foraneos/recepcionados?view=' . $view) );
 
-        $subject = sprintf('Nueva recepción :: %s %s',$this -> documento -> TipoDocumento -> getNombre() . ' ' . $this -> documento -> getNumero());
+        $subject = sprintf('Nueva recepción foránea :: %s %s',$this -> documento -> TipoDocumento -> getNombre(), $this -> documento -> getNumero());
 
         $data = [
             'url' => $url,
@@ -52,7 +57,7 @@ class NuevoDocumentoRecibido extends Mailable implements ShouldQueue
         return $this -> view('email.nuevoDocumentoRecibido') -> with($data)
                         -> subject($subject)
                         -> attachData($pdf -> Output(), $acuseRecepcion -> getNombre(), [
-                                'mime' => 'application/pdf',
-                            ]);
+                            'mime' => 'application/pdf',
+                        ]);
     }
 }
