@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Configuracion\Catalogo;
 use Illuminate\Http\Request;
 use App\Http\Requests\ManagerDireccionRequest;
 use Illuminate\Support\Facades\Input;
-use Carbon\Carbon;
-use Validator;
 
 /* Controllers */
 use App\Http\Controllers\BaseController;
@@ -76,7 +74,6 @@ class DireccionController extends BaseController {
 
 			$direccion = new MDireccion;
 			$direccion -> DIRE_NOMBRE     = $request -> nombre;
-			$direccion -> DIRE_CREATED_AT = Carbon::now();
 			$direccion -> save();
 
 			// Lista de tablas que se van a recargar automáticamente

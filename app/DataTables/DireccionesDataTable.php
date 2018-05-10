@@ -6,8 +6,8 @@ use App\Model\Catalogo\MDireccion;
 class DireccionesDataTable extends CustomDataTable{
 
     protected function setSourceData(){
-        $this->sourceData = MDireccion::select(['DIRE_DIRECCION','DIRE_NOMBRE','DIRE_CREATED_AT','DIRE_ENABLED'])
-                             -> where('DIRE_DELETED',0);
+        $this->sourceData = MDireccion::with('DepartamentosExistentes') -> select(['DIRE_DIRECCION','DIRE_NOMBRE','DIRE_CREATED_AT','DIRE_ENABLED'])
+                             -> existente() -> get();
     }
 
     protected function columnsTable(){
@@ -25,7 +25,7 @@ class DireccionesDataTable extends CustomDataTable{
             [
                 'title' => 'Departamentos',
                 'render' => function($query){
-                    return $query -> Departamentos -> count();
+                    return $query -> DepartamentosExistentes -> count();
                 }
             ],
             [
