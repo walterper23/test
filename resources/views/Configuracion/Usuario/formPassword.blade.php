@@ -1,17 +1,15 @@
-@extends('vendor.templateModal')
+@extends('vendor.modal.template')
 
 @section('title')<i class="fa fa-fw fa-key"></i> {!! $title !!}@endsection
 
 @section('content')
-	@component('vendor.contentModal')
-    {!! Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) !!}
-	    {!! Form::hidden('action',$action) !!}
-	    {!! Form::hidden('id',$id) !!}
-        {!! Field::email('usuario',$usuario,['label'=>'Usuario','addClass'=>'text-lowercase','disabled'=>'disabled']) !!}
-	    {!! Field::password('password','',['label'=>'Contraseña','required']) !!}
-	    {!! Field::password('password_confirmation','',['label'=>'Confirmar contraseña','required']) !!}
-	{!! Form::close() !!}
-	@endcomponent
+{!! Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) !!}
+    {!! Form::hidden('action',$action) !!}
+    {!! Form::hidden('id',$id) !!}
+    {!! Field::email('usuario',$usuario,['label'=>'Usuario','addClass'=>'text-lowercase','disabled'=>'disabled']) !!}
+    {!! Field::password('password','',['label'=>'Contraseña','required']) !!}
+    {!! Field::password('password_confirmation','',['label'=>'Confirmar contraseña','required']) !!}
+{!! Form::close() !!}
 @endsection
 
 @push('js-custom')

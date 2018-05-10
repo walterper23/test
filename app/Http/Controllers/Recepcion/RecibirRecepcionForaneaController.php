@@ -183,6 +183,7 @@ class RecibirRecepcionForaneaController extends BaseController
 				$documento = new MDocumento;
 				$documento -> DOCU_SYSTEM_TIPO_DOCTO   = $documentoForaneo -> DOFO_SYSTEM_TIPO_DOCTO;
 				$documento -> DOCU_SYSTEM_ESTADO_DOCTO = 2; // Documento recepcionado
+				$documento -> DOCU_TIPO_RECEPCION      = 2; // Recepción foránea
 				$documento -> DOCU_DETALLE             = $documentoForaneo -> DOFO_DETALLE;
 				$documento -> DOCU_NUMERO_DOCUMENTO    = $documentoForaneo -> DOFO_NUMERO_DOCUMENTO;
 				$documento -> save();

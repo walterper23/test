@@ -1,13 +1,8 @@
 @extends('app.layoutMaster')
 
-@section('title')
-	{{ title('Configuración de estados de documentos') }}
-@endsection
+@section('title', title('Configuración de estados de documentos') )
 
-@push('css-style')
-    {{ Html::style('js/plugins/datatables/dataTables.bootstrap4.min.css') }}
-    {{ Html::style('js/plugins/datatables/buttons1.4.2/css/datatables.buttons.bootstrap4.min.css') }}
-@endpush
+@include('vendor.plugins.datatables')
 
 @section('breadcrumb')
     <nav class="breadcrumb bg-body-light mb-0">
@@ -38,8 +33,8 @@
                             <i class="fa fa-fw fa-sitemap mr-5"></i>Ordenar por departamento
                         </a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="javascript:void(0)">
-                            <i class="fa fa-fw fa-pencil mr-5"></i>Edit Profile
+                        <a class="dropdown-item" href="javascript:void(0)" onclick="hEstadoDocumento.reload('dataTableBuilder')">
+                            <i class="fa fa-fw fa-refresh mr-5"></i>Actualizar registros
                         </a>
                     </div>
                 </div>
@@ -54,8 +49,6 @@
 @endsection
 
 @push('js-script')
-    {{ Html::script('js/plugins/datatables/jquery.dataTables.min.js') }}
-    {{ Html::script('js/plugins/datatables/dataTables.bootstrap4.min.js') }}
     {{ Html::script('js/helpers/estado_documento.helper.js') }}
     {{ Html::script('js/app-form.js') }}
 @endpush

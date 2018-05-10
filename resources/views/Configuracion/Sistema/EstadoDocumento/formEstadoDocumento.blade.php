@@ -1,15 +1,13 @@
-@extends('vendor.templateModal')
+@extends('vendor.modal.template')
 
 @section('title')<i class="fa fa-fw fa-tags"></i> {!! $title !!} @endsection
 
 @section('content')
-	@component('vendor.contentModal')
-    {{ Form::model($model,['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) }}
-	    {{ Form::hidden('action',$action) }}
-	    {{ Form::hidden('id',$id) }}
-		{!! Field::text('nombre',$model -> SYED_NOMBRE,['label'=>'Nombre','placeholder'=>'Nombre del tipo de documento','autofocus','required']) !!}
-	{{ Form::close() }}
-	@endcomponent
+{{ Form::model($model,['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) }}
+    {{ Form::hidden('action',$action) }}
+    {{ Form::hidden('id',$id) }}
+	{!! Field::text('nombre',$model -> SYED_NOMBRE,['label'=>'Nombre','placeholder'=>'Nombre del tipo de documento','autofocus','required']) !!}
+{{ Form::close() }}
 @endsection
 
 @push('js-custom')

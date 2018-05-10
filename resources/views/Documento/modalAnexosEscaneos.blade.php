@@ -1,16 +1,16 @@
-@extends('vendor.templateModal',['headerColor'=>'bg-pulse'])
+@extends('vendor.modal.template',['headerColor'=>'bg-pulse'])
 
-@section('title')<i class="fa fa-fw fa-clipboard"></i> {!! $title !!}@endsection
+@section('title')
+	<i class="fa fa-fw fa-clipboard"></i> {!! $title !!}
+@endsection
 
 @section('content')
-	@component('vendor.contentModal')
-    	<div class="col-12">
-    		<div class="row">
-				{!! $anexos or '' !!}
-				{!! $escaneos or '' !!}
-			</div>
-		</div>
-	@endcomponent
+<div class="col-12">
+	<div class="row">
+		{!! $anexos or '' !!}
+		{!! $escaneos or '' !!}
+	</div>
+</div>
 @endsection
 
 @push('js-custom')

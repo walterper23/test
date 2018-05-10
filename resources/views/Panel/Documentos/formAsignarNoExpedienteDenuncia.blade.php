@@ -1,15 +1,13 @@
-@extends('vendor.templateModal',['headerColor'=>'bg-danger'])
+@extends('vendor.modal.template',['headerColor'=>'bg-danger'])
 
 @section('title')<i class="fa fa-fw fa-legal"></i> {!! $title !!}@endsection
 
 @section('content')
-    @component('vendor.contentModal')
-    {{ Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) }}
-        {{ Form::hidden('action',$action) }}
-        {{ Form::hidden('id',$id) }}
-        {!! Field::text('expediente',$no_expediente,['label'=>'Nó. expediente','required','labelWidth'=>'col-md-4','width'=>'col-md-8','autofocus']) !!}
-    {{ Form::close() }}
-    @endcomponent
+{{ Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) }}
+    {{ Form::hidden('action',$action) }}
+    {{ Form::hidden('id',$id) }}
+    {!! Field::text('expediente',$no_expediente,['label'=>'Nó. expediente','required','labelWidth'=>'col-md-4','width'=>'col-md-8','autofocus']) !!}
+{{ Form::close() }}
 @endsection
 
 @push('js-custom')

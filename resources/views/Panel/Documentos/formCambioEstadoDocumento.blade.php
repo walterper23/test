@@ -1,79 +1,77 @@
-@extends('vendor.templateModal',['headerColor'=>'bg-danger'])
+@extends('vendor.modal.template',['headerColor'=>'bg-danger'])
 
 @section('title')<i class="fa fa-fw fa-flash"></i> {!! $title !!}@endsection
 
 @section('content')
-    @component('vendor.contentModal')
-    {{ Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) }}
-        <input type="hidden" name="action" value="{{ $action }}"> 
-        {{ Form::hidden('seguimiento',$seguimiento) }}
-		
-		@isset($contestar)
-		<div class="form-group row">
-            <div class="col-md-3">
-            	<label class="css-control css-control-primary css-checkbox">
-                    <input class="css-control-input" name="contestar" id="contestar" value="1" type="checkbox">
-                    <span class="css-control-indicator"></span> <span class="font-w600">Contestar la solicitud realizada por el origen</span>
-                </label>
-            </div>
-            <div class="col-md-9">
-            	<textarea placeholder="Respuesta a la solicitud realizada por el origen" noresize="" id="contestacion" class="form-control" name="contestacion" cols="20" rows="2"></textarea>
-            </div>
+{{ Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) }}
+    <input type="hidden" name="action" value="{{ $action }}"> 
+    {{ Form::hidden('seguimiento',$seguimiento) }}
+	
+	@isset($contestar)
+	<div class="form-group row">
+        <div class="col-md-3">
+        	<label class="css-control css-control-primary css-checkbox">
+                <input class="css-control-input" name="contestar" id="contestar" value="1" type="checkbox">
+                <span class="css-control-indicator"></span> <span class="font-w600">Contestar la solicitud realizada por el origen</span>
+            </label>
         </div>
-		<hr>
-		@endisset
+        <div class="col-md-9">
+        	<textarea placeholder="Respuesta a la solicitud realizada por el origen" noresize="" id="contestacion" class="form-control" name="contestacion" cols="20" rows="2"></textarea>
+        </div>
+    </div>
+	<hr>
+	@endisset
 
-		{!! Field::select('estado_documento',1,['label'=>'Seguimiento','required'],[1=>'En seguimiento',2=>'Rechazar documento',3=>'Finalizar documento (resolver)']) !!}
-        {!! Field::select('direccion_origen',null,['label'=>'Dirección origen','required','autofocus'],$direcciones_origen) !!}
-        <div class="form-group row">
-            <label class="col-md-3 col-form-label" for="departamento_origen">Departamento origen</label>
-            <div class="col-md-9">
-            	<select name="departamento_origen" id="departamento_origen" class="form-control">
-					<option value="">Seleccione una opción</option>
-            		@foreach( $departamentos_origen as $depto )
-						{!! sprintf('<option data-direccion="%d" value="%d">%s</option>',$depto[0],$depto[1],$depto[2]) !!}
-					@endforeach
-					<option data-direccion value="0">- Ninguno -</option>
-            	</select>
-            </div>
+	{!! Field::select('estado_documento',1,['label'=>'Seguimiento','required'],[1=>'En seguimiento',2=>'Rechazar documento',3=>'Finalizar documento (resolver)']) !!}
+    {!! Field::select('direccion_origen',null,['label'=>'Dirección origen','required','autofocus'],$direcciones_origen) !!}
+    <div class="form-group row">
+        <label class="col-md-3 col-form-label" for="departamento_origen">Departamento origen</label>
+        <div class="col-md-9">
+        	<select name="departamento_origen" id="departamento_origen" class="form-control">
+				<option value="">Seleccione una opción</option>
+        		@foreach( $departamentos_origen as $depto )
+					{!! sprintf('<option data-direccion="%d" value="%d">%s</option>',$depto[0],$depto[1],$depto[2]) !!}
+				@endforeach
+				<option data-direccion value="0">- Ninguno -</option>
+        	</select>
         </div>
-        {!! Field::select('direccion_destino',null,['label'=>'Dirección destino','autofocus','required'],$direcciones_destino) !!}
-        <div class="form-group row">
-            <label class="col-md-3 col-form-label" for="departamento_destino">Departamento destino</label>
-            <div class="col-md-9">
-            	<select name="departamento_destino" id="departamento_destino" class="form-control">
-					<option value="">Seleccione una opción</option>
-            		@foreach( $departamentos_destino as $depto )
-						{!! sprintf('<option data-direccion="%d" value="%d">%s</option>',$depto[0],$depto[1],$depto[2]) !!}
-					@endforeach
-					<option data-direccion value="0">- Ninguno -</option>
-            	</select>
-            </div>
+    </div>
+    {!! Field::select('direccion_destino',null,['label'=>'Dirección destino','autofocus','required'],$direcciones_destino) !!}
+    <div class="form-group row">
+        <label class="col-md-3 col-form-label" for="departamento_destino">Departamento destino</label>
+        <div class="col-md-9">
+        	<select name="departamento_destino" id="departamento_destino" class="form-control">
+				<option value="">Seleccione una opción</option>
+        		@foreach( $departamentos_destino as $depto )
+					{!! sprintf('<option data-direccion="%d" value="%d">%s</option>',$depto[0],$depto[1],$depto[2]) !!}
+				@endforeach
+				<option data-direccion value="0">- Ninguno -</option>
+        	</select>
         </div>
-        {!! Field::select('estado','',['label'=>'Estado de Documento','required'],$estados) !!}
-        {!! Field::textarea('observacion','',['label'=>'Observaciones','size'=>'20x2','placeholder'=>'Opcional','noresize']) !!}
-        <hr>
-        {!! Field::textarea('instruccion','',['label'=>'Instrucción al destino','size'=>'20x2','placeholder'=>'Opcional','noresize']) !!}
-        @can('SEG.ADMIN.SEMAFORO')
-        <div class="form-group row">
-        	<label class="col-md-3 col-form-label" for="semaforizar">Semaforizar</label>
-            <div class="col-md-9">
-            	@isset($contestar)
-            	<label class="css-control css-control-primary css-checkbox disabled">
-                    <input class="css-control-input" type="checkbox" disabled="">
-                    <span class="css-control-indicator"></span> <i class="fa fa-fw fa-warning"></i> No se puede semaforizar. En espera de respuesta a la última solicitud realizada. 
-                </label>
-                @else
-				<label class="css-control css-control-primary css-checkbox">
-                    <input class="css-control-input" name="semaforizar" id="semaforizar" value="1" type="checkbox">
-                    <span class="css-control-indicator"></span> <i class="fa fa-fw fa-flag"></i> Solicitar al destino, contestar a este Cambio de Estado
-                </label>
-                @endisset
-            </div>
+    </div>
+    {!! Field::select('estado','',['label'=>'Estado de Documento','required'],$estados) !!}
+    {!! Field::textarea('observacion','',['label'=>'Observaciones','size'=>'20x2','placeholder'=>'Opcional','noresize']) !!}
+    <hr>
+    {!! Field::textarea('instruccion','',['label'=>'Instrucción al destino','size'=>'20x2','placeholder'=>'Opcional','noresize']) !!}
+    @can('SEG.ADMIN.SEMAFORO')
+    <div class="form-group row">
+    	<label class="col-md-3 col-form-label" for="semaforizar">Semaforizar</label>
+        <div class="col-md-9">
+        	@isset($contestar)
+        	<label class="css-control css-control-primary css-checkbox disabled">
+                <input class="css-control-input" type="checkbox" disabled="">
+                <span class="css-control-indicator"></span> <i class="fa fa-fw fa-warning"></i> No se puede semaforizar. En espera de respuesta a la última solicitud realizada. 
+            </label>
+            @else
+			<label class="css-control css-control-primary css-checkbox">
+                <input class="css-control-input" name="semaforizar" id="semaforizar" value="1" type="checkbox">
+                <span class="css-control-indicator"></span> <i class="fa fa-fw fa-flag"></i> Solicitar al destino, contestar a este Cambio de Estado
+            </label>
+            @endisset
         </div>
-        @endcan
-    {{ Form::close() }}
-    @endcomponent
+    </div>
+    @endcan
+{{ Form::close() }}
 @endsection
 
 @push('js-custom')

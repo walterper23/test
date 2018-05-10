@@ -1,13 +1,8 @@
 @extends('app.layoutMaster')
 
-@section('title')
-	{{ title('Configuración de roles') }}
-@endsection
+@section('title', title('Configuración de roles') )
 
-@push('css-style')
-    {{ Html::style('js/plugins/datatables/dataTables.bootstrap4.min.css') }}
-    {{ Html::style('js/plugins/datatables/buttons1.4.2/css/datatables.buttons.bootstrap4.min.css') }}
-@endpush
+@include('vendor.plugins.datatables')
 
 @section('breadcrumb')
 	<nav class="breadcrumb bg-body-light mb-0">
@@ -51,8 +46,6 @@
 @endsection
 
 @push('js-script')
-    {{ Html::script('js/plugins/datatables/jquery.dataTables.min.js') }}
-    {{ Html::script('js/plugins/datatables/dataTables.bootstrap4.min.js') }}
     {{ Html::script('js/helpers/rol.helper.js') }}
     {{ Html::script('js/app-form.js') }}
 @endpush

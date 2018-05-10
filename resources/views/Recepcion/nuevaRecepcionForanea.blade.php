@@ -1,14 +1,9 @@
 @extends('app.layoutMaster')
 
-@section('title')
-	{{ title('Nueva recepción de documento foráneo') }}
-@endsection
+@section('title', title('Nueva recepción de documento foráneo') )
 
-@push('css-style')
-    {{ Html::style('js/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css') }}
-    {{ Html::style('js/plugins/select2/select2.min.css') }}
-    {{ Html::style('js/plugins/select2/select2-bootstrap.min.css') }}
-@endpush
+@include('vendor.plugins.datepicker')
+@include('vendor.plugins.select2')
 
 @section('breadcrumb')
     <nav class="breadcrumb bg-body-light mb-0">
@@ -55,9 +50,6 @@
 @endsection
 
 @push('js-script')
-    {{ Html::script('js/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}
-    {{ Html::script('js/plugins/bootstrap-datepicker/locales/bootstrap-datepicker.es.min.js') }}
-    {{ Html::script('js/plugins/select2/select2.full.min.js') }}
     {{ Html::script('js/helpers/recepcion.foranea.helper.js') }}
     {{ Html::script('js/app-form.js') }}
 @endpush

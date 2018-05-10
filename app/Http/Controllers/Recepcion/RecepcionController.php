@@ -125,7 +125,6 @@ class RecepcionController extends BaseController
 				break;
 		}
 
-
 		return $dataTables -> getData();
 	}
 
@@ -150,7 +149,7 @@ class RecepcionController extends BaseController
 							-> toArray();
 
 		$data['municipios'] = MMunicipio::selectRaw('MUNI_MUNICIPIO AS id, CONCAT(MUNI_CLAVE," - ",MUNI_NOMBRE) AS nombre')
-							-> where('MUNI_ENABLED',1)
+							-> disponible()
 							-> pluck('nombre','id')
 							-> toArray();
 
@@ -202,6 +201,7 @@ class RecepcionController extends BaseController
 			$documento = new MDocumento;
 			$documento -> DOCU_SYSTEM_TIPO_DOCTO   = $request -> tipo_documento;
 			$documento -> DOCU_SYSTEM_ESTADO_DOCTO = 2; // Documento recepcionado
+			$documento -> DOCU_TIPO_RECEPCION      = 1; // Recepción local
 			$documento -> DOCU_DETALLE             = $detalle -> getKey();
 			$documento -> DOCU_NUMERO_DOCUMENTO    = $request -> numero;
 			$documento -> save();
@@ -328,13 +328,6 @@ class RecepcionController extends BaseController
 	public function verRecepcion( $request )
 	{
 
-		$documento = MDocumento::find( $request -> id );
-
-		dd($documento);
-
-		return view('Recepcion.verDocumento')->with($data);
-
 	}
-
 
 }

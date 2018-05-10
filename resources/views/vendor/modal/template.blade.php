@@ -11,9 +11,9 @@
 
 @stack('css-custom')
 
+<div class="block-content">
 @yield('content')
-
-@yield('content-custom')
+</div>
 
 @stack('js-script')
 

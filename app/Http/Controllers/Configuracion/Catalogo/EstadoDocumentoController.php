@@ -3,8 +3,6 @@ namespace App\Http\Controllers\Configuracion\Catalogo;
 
 use App\Http\Requests\ManagerEstadoDocumentoRequest;
 use Illuminate\Support\Facades\Input;
-use Carbon\Carbon;
-use Validator;
 
 /* Controllers */
 use App\Http\Controllers\BaseController;
@@ -70,7 +68,7 @@ class EstadoDocumentoController extends BaseController
 
 			$direcciones = MDireccion::with(['DepartamentosExistentesDisponibles'=>function($query){
 				
-				// Si el usuario no puede administrar todOs lOs departamentos, buscamos solos los departamentos que tenga asignados		
+				// Si el usuario no puede administrar todos lOs departamentos, buscamos solos los departamentos que tenga asignados		
 				if (! (user() -> can('SIS.ADMIN.DEPTOS')) )
 				{
 					$ids_departamentos = user() -> Departamentos -> pluck('DEPA_DEPARTAMENTO') -> toArray();
@@ -80,18 +78,18 @@ class EstadoDocumentoController extends BaseController
 
 			}]) -> select('DIRE_DIRECCION','DIRE_NOMBRE') -> existenteDisponible();
 
-			// Si el usuario no puede administrar todas las direcciones, buscamos solos las direcciones que tenga asignadas		
+			// Si el usuario no puede administrar todas las direcciones, agregamos la condición de buscar solos las direcciones que tenga asignadas		
 			if (! (user() -> can('SIS.ADMIN.DIRECC')) )
 			{
 				$ids_direcciones = user() -> Direcciones -> pluck('DIRE_DIRECCION') -> toArray();
 				$direcciones -> whereIn('DIRE_DIRECCION',$ids_direcciones);
 			}
 
-			$direcciones = $direcciones -> orderBy('DIRE_NOMBRE');
+			$direcciones = $direcciones -> orderBy('DIRE_NOMBRE') -> get();
 
 			$data['departamentos'] = [];
 
-			foreach ($direcciones -> get() as $direccion)
+			foreach ($direcciones as $direccion)
 			{
 				$departamentos = $direccion -> DepartamentosExistentesDisponibles;
 				foreach ($departamentos as $departamento)

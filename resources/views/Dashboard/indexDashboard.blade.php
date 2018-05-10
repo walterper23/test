@@ -1,8 +1,6 @@
 @extends('app.layoutMaster')
 
-@section('title')
-	{{ title('Inicio') }}
-@endsection
+@section('title', title('Inicio') )
 
 @section('content')
 <div class="row gutters-tiny">
@@ -202,17 +200,16 @@
 
 @push('js-custom')
 <script>
-
     var areas_notificaciones = $('div.notificacion');
     var notificaciones = $('button.cerrar-notificacion');
 
     notificaciones.on('click', function(){
-        setTimeout(revisar,150);
+        setTimeout(consultarNotificaciones,150);
     })
 
-    revisar();
+    consultarNotificaciones();
 
-    function revisar(){
+    function consultarNotificaciones(){
         areas_notificaciones.each(function(index,element){
             if (! $(element).html().trim().length )
             {

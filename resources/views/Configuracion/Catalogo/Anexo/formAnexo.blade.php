@@ -1,16 +1,14 @@
-@extends('vendor.templateModal')
+@extends('vendor.modal.template')
 
 @section('title')<i class="fa fa-fw fa-clipboard"></i> {!! $title !!}@endsection
 
 @section('content')
-	@component('vendor.contentModal')
     {!! Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) !!}
 	    {!! Form::hidden('action',$action) !!}
 	    {!! Form::hidden('id',$id) !!}
 	    {!! Form::hidden('recepcion',$recepcion) !!}
         {!! Field::text('nombre',(optional($modelo) -> ANEX_NOMBRE),['label'=>'Nombre','placeholder'=>'Nombre del anexo','required','autofocus']) !!}
 	{!! Form::close() !!}
-	@endcomponent
 @endsection
 
 @push('js-custom')

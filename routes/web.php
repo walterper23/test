@@ -186,7 +186,6 @@ Route::middleware('preventBackHistory') -> group(function(){
             Route::prefix('usuarios') -> middleware('can:USU.ADMIN.USUARIOS') -> namespace('Usuario') -> group(function(){
                 Route::get('/',           'UsuarioController@index');
                 Route::post('post-data',  'UsuarioController@postDataTable');
-                Route::get('ver/{id}',    'UsuarioController@verUsuario');
                 Route::post('nuevo',      'UsuarioController@formUsuario');
                 Route::post('editar',     'UsuarioController@editarUsuario');
                 Route::post('password',   'UsuarioController@formPassword');

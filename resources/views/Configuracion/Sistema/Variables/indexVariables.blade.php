@@ -1,8 +1,6 @@
 @extends('app.layoutMaster')
 
-@section('title')
-    {{ title('Configuración de variables') }}
-@endsection
+@section('title', title('Configuración de variables') )
 
 @section('breadcrumb')
     <nav class="breadcrumb bg-body-light mb-0">

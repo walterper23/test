@@ -1,10 +1,10 @@
-@extends('vendor.templateModal',['headerColor'=>'bg-earth'])
+@extends('vendor.modal.template',['headerColor'=>'bg-earth'])
 
 @section('title')<i class="fa fa-fw fa-user-plus"></i> {!! $title !!}@endsection
 
 @section('content')
     <!-- Validation Wizard Classic -->
-    <div id="js-wizard-validation-form" class="block mb-0">
+    <div id="js-wizard-validation-form" style="margin: -18px">
         <!-- Step Tabs -->
         <ul class="nav nav-tabs nav-tabs-block nav-fill" role="tablist">
             <li class="nav-item">
@@ -54,18 +54,16 @@
             <!-- Steps Navigation -->
             <div class="block-content block-content-sm block-content-full bg-body-light">
                 <div class="row">
-                    <div class="col-6">
+                    <div class="col-12">
                         <button type="button" class="btn btn-alt-secondary" data-close="modal"><i class="fa fa-fw fa-times text-danger"></i> Cancelar</button>
-                    </div>
-                    <div class="col-6 text-right">
-                        <button type="button" class="btn btn-alt-secondary disabled" data-wizard="prev">
-                            <i class="fa fa-angle-left mr-5"></i> Anterior
+                        <button type="submit" class="btn btn-alt-primary d-none pull-right" data-wizard="finish">
+                            <i class="fa fa-check mr-5"></i> Finalizar
                         </button>
-                        <button type="button" class="btn btn-alt-secondary" data-wizard="next">
+                        <button type="button" class="btn btn-alt-secondary pull-right" data-wizard="next">
                             Siguiente <i class="fa fa-angle-right ml-5"></i>
                         </button>
-                        <button type="submit" class="btn btn-alt-primary d-none" data-wizard="finish">
-                            <i class="fa fa-check mr-5"></i> Finalizar
+                        <button type="button" class="btn btn-alt-secondary disabled pull-right mr-5" data-wizard="prev">
+                            <i class="fa fa-angle-left mr-5"></i> Anterior
                         </button>
                     </div>
                 </div>

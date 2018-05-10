@@ -1,8 +1,6 @@
 @extends('app.layoutMaster')
 
-@section('title')
-	{{ title('Perfil de usuario') }}
-@endsection
+@section('title', title('Perfil de usuario') )
 
 @section('userInfo')
 <div class="bg-image bg-image-bottom" style="background-image: url('/img/background/photo23@2x.jpg');" id="context-{{ $form_id }}">

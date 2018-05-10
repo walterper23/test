@@ -1,39 +1,29 @@
-@extends('vendor.templateModal')
+@extends('vendor.modal.template')
 
 @section('title')<i class="fa fa-flash"></i> {!! $title !!}@endsection
 
-@push('css-style')
-    {{ Html::style('js/plugins/select2/select2.min.css') }}
-    {{ Html::style('js/plugins/select2/select2-bootstrap.min.css') }}
-@endpush
-
 @section('content')
-	@component('vendor.contentModal')
-    {!! Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) !!}
-	    {!! Form::hidden('action',$action) !!}
-	    {!! Form::hidden('id',$id) !!}
-        {!! Field::select('direccion',(optional($modelo) -> ESDO_DIRECCION),['label'=>'Dirección','required'],$direcciones) !!}
-        <div class="form-group row">
-            <label class="col-sm-3 col-form-label" for="departamento" required>Departamento</label>
-            <div class="col-sm-9">
-            	<select name="departamento" id="departamento" class="form-control">
-					<option value="">Seleccione una opción</option>
-            		@foreach( $departamentos as $depto )
-						{!! sprintf('<option data-direccion="%d" value="%d">%s</option>',$depto[0],$depto[1],$depto[2]) !!}					
-					@endforeach
-					<option data-direccion value="0">- Ninguno -</option>
-            	</select>
-            </div>
+{!! Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) !!}
+    {!! Form::hidden('action',$action) !!}
+    {!! Form::hidden('id',$id) !!}
+    {!! Field::select('direccion',(optional($modelo) -> ESDO_DIRECCION),['label'=>'Dirección','required'],$direcciones) !!}
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label" for="departamento" required>Departamento</label>
+        <div class="col-sm-9">
+        	<select name="departamento" id="departamento" class="form-control">
+				<option value="">Seleccione una opción</option>
+        		@foreach( $departamentos as $depto )
+					{!! sprintf('<option data-direccion="%d" value="%d">%s</option>',$depto[0],$depto[1],$depto[2]) !!}					
+				@endforeach
+				<option data-direccion value="0">- Ninguno -</option>
+        	</select>
         </div>
-        {!! Field::text('nombre',(optional($modelo) -> ESDO_NOMBRE),['label'=>'Nombre','placeholder'=>'Nombre del estado de documento','required','maxlength'=>150]) !!}
-	{!! Form::close() !!}
-	@endcomponent
+    </div>
+    {!! Field::text('nombre',(optional($modelo) -> ESDO_NOMBRE),['label'=>'Nombre','placeholder'=>'Nombre del estado de documento','required','maxlength'=>150]) !!}
+{!! Form::close() !!}
 @endsection
 
 @push('js-custom')
-
-{{ Html::script('js/plugins/select2/select2.full.min.js') }}
-
 <script type="text/javascript">
 	'use strict';
 	var formEstadoDocumento = new AppForm;
@@ -43,8 +33,6 @@
 		this.form_    = '#{{$form_id}}';
 
 		this.start = function(){
-
-			Codebase.helper('select2');
 
 			var selectDireccion = $('#direccion');
 			var selectDepartamento = $('#departamento');

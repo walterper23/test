@@ -1,8 +1,6 @@
 @extends('app.layoutMaster')
 
-@section('title')
-	{{ title('Catálogos') }}
-@endsection
+@section('title', title('Catálogos') )
 
 @push('css-custom')
 <style>

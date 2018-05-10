@@ -1,16 +1,14 @@
-@extends('vendor.templateModal')
+@extends('vendor.modal.template')
 
 @section('title')<i class="fa fa-fw fa-sitemap"></i> {!! $title !!}@endsection
 
 @section('content')
-	@component('vendor.contentModal')
-    {!! Form::model($modelo,['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) !!}
-    	{!! Form::hidden('action',$action) !!}
-		{!! Form::hidden('id',$id) !!}
-	    {!! Field::select('direccion',(optional($modelo) -> DEPA_DIRECCION),['label'=>'Direccion'],$direcciones) !!}
-		{!! Field::text('nombre',(optional($modelo) -> DEPA_NOMBRE),['label'=>'Nombre','placeholder'=>'Nombre del departamento','autofocus']) !!}
-	{!! Form::close() !!}
-	@endcomponent
+{!! Form::model($modelo,['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) !!}
+	{!! Form::hidden('action',$action) !!}
+	{!! Form::hidden('id',$id) !!}
+    {!! Field::select('direccion',(optional($modelo) -> DEPA_DIRECCION),['label'=>'Direccion'],$direcciones) !!}
+	{!! Field::text('nombre',(optional($modelo) -> DEPA_NOMBRE),['label'=>'Nombre','placeholder'=>'Nombre del departamento','autofocus']) !!}
+{!! Form::close() !!}
 @endsection
 
 @push('js-custom')

@@ -67,16 +67,6 @@ class UsuarioController extends BaseController
 		return $dataTables -> getData();
 	}
 
-	public function verUsuario( $id_usuario )
-	{
-		$usuario = MUsuario::find( $id_usuario );
-
-		$data['usuario'] = $usuario;
-
-		return view('Configuracion.Usuario.verUsuario') -> with($data);
-	}
-
-
 	public function formUsuario()
 	{
 		$data['title']         = 'Nuevo usuario';

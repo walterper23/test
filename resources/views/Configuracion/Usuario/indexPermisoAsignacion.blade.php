@@ -1,13 +1,8 @@
 @extends('app.layoutMaster')
 
-@section('title')
-    {{ title('Configuración de permisos y asignaciones de usuarios') }}
-@endsection
+@section('title', title('Configuración de permisos y asignaciones de usuarios') )
 
-@push('css-style')
-    {{ Html::style('js/plugins/select2/select2.min.css') }}
-    {{ Html::style('js/plugins/select2/select2-bootstrap.min.css') }}
-@endpush
+@include('vendor.plugins.select2')
 
 @section('breadcrumb')
     <nav class="breadcrumb bg-body-light mb-0">
@@ -132,7 +127,6 @@
 @endsection
 
 @push('js-script')
-    {{ Html::script('js/plugins/select2/select2.full.min.js') }}
     {{ Html::script('js/helpers/usuario.helper.js') }}
     {{ Html::script('js/app-form.js') }}
 @endpush

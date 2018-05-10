@@ -1,8 +1,6 @@
 @extends('app.layoutMaster')
 
-@section('title')
-	{{ title('Seguimiento de documento') }}
-@endsection
+@section('title', title('Seguimiento de documento') )
 
 @section('breadcrumb')
     <nav class="breadcrumb bg-body-light mb-0">

@@ -1,28 +1,26 @@
-@extends('vendor.templateModal')
+@extends('vendor.modal.template')
 
 @section('title')<i class="fa fa-fw fa-user-secret"></i> {!! $title !!}@endsection
 
 @section('content')
-	@component('vendor.contentModal')
-	{{ Form::model($modelo,['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) }}
-		{{ Form::hidden('action',$action) }}	
-		{{ Form::hidden('id',$id) }}
-		{!! Field::select('direccion',optional($modelo) -> PUES_DIRECCION,['label'=>'Dirección','required'],$direcciones) !!}
-		<div class="form-group row">
-            <label class="col-sm-3 col-form-label" for="departamento" required>Departamento</label>
-            <div class="col-sm-9">
-            	<select name="departamento" id="departamento" class="form-control">
-					<option value="">Seleccione una opción</option>
-            		@foreach( $departamentos as $depto )
-						{!! sprintf('<option data-direccion="%d" value="%d">%s</option>',$depto[0],$depto[1],$depto[2]) !!}					
-					@endforeach
-					<option data-direccion value="0">- Ninguno -</option>
-            	</select>
-            </div>
+{{ Form::model($modelo,['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) }}
+	{{ Form::hidden('action',$action) }}	
+	{{ Form::hidden('id',$id) }}
+	{!! Field::select('direccion',optional($modelo) -> PUES_DIRECCION,['label'=>'Dirección','required'],$direcciones) !!}
+	<div class="form-group row">
+        <label class="col-sm-3 col-form-label" for="departamento" required>Departamento</label>
+        <div class="col-sm-9">
+        	<select name="departamento" id="departamento" class="form-control">
+				<option value="">Seleccione una opción</option>
+        		@foreach( $departamentos as $depto )
+					{!! sprintf('<option data-direccion="%d" value="%d">%s</option>',$depto[0],$depto[1],$depto[2]) !!}					
+				@endforeach
+				<option data-direccion value="0">- Ninguno -</option>
+        	</select>
         </div>
-        {!! Field::text('nombre',optional($modelo) -> getNombre(),['label'=>'Nombre','placeholder'=>'Nombre del puesto','required','autofocus']) !!}
-	{{ Form::close() }}
-	@endcomponent
+    </div>
+    {!! Field::text('nombre',optional($modelo) -> getNombre(),['label'=>'Nombre','placeholder'=>'Nombre del puesto','required','autofocus']) !!}
+{{ Form::close() }}
 @endsection
 
 @push('js-custom')
