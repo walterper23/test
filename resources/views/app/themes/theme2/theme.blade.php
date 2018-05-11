@@ -140,7 +140,7 @@
             <footer id="page-footer" class="opacity-0" style="opacity: 1;">
                 <div class="content py-20 font-size-xs clearfix">
                     <div class="float-left">
-                        <span class="font-w600 text-primary">SIGESD 1.0</span> &copy; <span class="js-year-copy">2018</span>
+                        <span class="font-w600 text-primary">SIGESD 1.0</span> &copy; <span class="js-year-copy">{{ date('Y') }}</span>
                     </div>
                     <div class="float-right">
                         Powered by <span class="font-w600 text-danger">ITCh</span>

@@ -17,7 +17,7 @@
                     <!-- END Avatar -->
 
                     <!-- Personal -->
-                    <h1 class="h3 text-white font-w700 mb-10">{{ $usuario -> getNombre() }}</h1>
+                    <h1 class="h3 text-white font-w700 mb-10">{{ $usuario -> getDescripcion() }}</h1>
                     <h2 class="h5 text-white-op">
                         {{ $detalle -> presenter() -> nombreCompleto() }}
                         <a class="text-primary-light" href="javascript:void(0)">#{{ $detalle -> getNoTrabajador() }}</a>
@@ -28,7 +28,7 @@
                     <button type="button" class="btn btn-rounded btn-hero btn-sm btn-alt-primary mb-5" id="btn-ok">
                         <i class="fa fa-fw fa-check mr-5"></i> Guardar cambios
                     </button>
-                    <a type="button" class="btn btn-rounded btn-hero btn-sm btn-alt-secondary mb-5" href="{{ url() -> previous() }}">
+                    <a class="btn btn-rounded btn-hero btn-sm btn-alt-secondary mb-5" href="{{ url() -> previous() }}">
                         <i class="fa fa-times mr-5 text-danger"></i> Cancelar
                     </a>
                     <!-- END Actions -->
@@ -40,7 +40,7 @@
                     <div class="row">
                         <div class="col-md-7">
                             {!! Field::text('usuario',$usuario -> getAuthUsername(),['label'=>'Nombre de usuario','disabled','readonly']) !!}
-        					{!! Field::text('descripcion',$usuario -> getNombre(),['label'=>'Nombre de perfil','required']) !!}
+        					{!! Field::text('descripcion',$usuario -> getDescripcion(),['label'=>'Nombre de perfil','required']) !!}
         				</div>
                         <div class="col-md-5">
                             {!! Field::password('password_actual','',['label'=>'Contraseña actual','required']) !!}

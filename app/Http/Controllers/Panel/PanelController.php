@@ -188,26 +188,53 @@ class PanelController extends BaseController
 			'seguimiento'   => $request -> seguimiento,
 		];
 
-		// Cargamos al usuario sus direcciones y departamentos asignados
-		user() -> with(['Direcciones','Departamentos'=>function($query){
-			return $query -> with('Direccion');
-		}]);
+		$direcciones = MDireccion::with(['DepartamentosExistentesDisponibles'=>function($query){
+				
+			// Si el usuario no puede administrar todos lOs departamentos, buscamos solos los departamentos que tenga asignados		
+			if (! (user() -> can('SIS.ADMIN.DEPTOS')) )
+			{
+				$ids_departamentos = user() -> Departamentos -> pluck('DEPA_DEPARTAMENTO') -> toArray();
+				$query -> whereIn('DEPA_DEPARTAMENTO',$ids_departamentos);
+			}
+			return $query;
 
-		// Obtener las direcciones asignadas al usuario
-		$data['direcciones_origen'] = user() -> Direcciones -> pluck('DIRE_NOMBRE','DIRE_DIRECCION') -> toArray();
+		}]) -> select('DIRE_DIRECCION','DIRE_NOMBRE') -> existenteDisponible();
 
-		// Obtener los departamentos asignados al usuario
-		$usuario_departamentos = user() -> Departamentos;
+		// Si el usuario no puede administrar todas las direcciones, agregamos la condición de buscar solos las direcciones que tenga asignadas		
+		if (! (user() -> can('SIS.ADMIN.DIRECC')) )
+		{
+			$ids_direcciones = user() -> Direcciones -> pluck('DIRE_DIRECCION') -> toArray();
+			$direcciones -> whereIn('DIRE_DIRECCION',$ids_direcciones);
+		}
+
+		// Si el usuario no puede administrar todas las direcciones, agregamos la condición de buscar solos las direcciones que tenga asignadas		
+		if (! (user() -> can('SIS.ADMIN.DIRECC')) )
+		{
+			$ids_direcciones = user() -> Direcciones -> pluck('DIRE_DIRECCION') -> toArray();
+			$direcciones -> whereIn('DIRE_DIRECCION',$ids_direcciones);
+		}
+
+		$direcciones = $direcciones -> orderBy('DIRE_NOMBRE') -> get();
+
 
 		$data['departamentos_origen'] = [];
-		foreach ($usuario_departamentos as $departamento)
+		
+		foreach ($direcciones as $direccion)
 		{
-			$data['departamentos_origen'][] = [
-				$departamento -> Direccion -> getKey(),
-				$departamento -> getKey(),
-				$departamento -> getNombre()
-			];
+			$departamentos = $direccion -> DepartamentosExistentesDisponibles;
+			foreach ($departamentos as $departamento)
+			{
+				$data['departamentos_origen'][] = [
+					$direccion -> getKey(),
+					$departamento -> getKey(),
+					$departamento -> getNombre()
+				];
+			}
 		}
+		
+		$data['direcciones_origen'] = $direcciones -> pluck('DIRE_NOMBRE','DIRE_DIRECCION') -> toArray();
+		
+		/*************************************************************************************/
 
 		// Obtener todas las direcciones de destino existentes y disponibles con sus departamentos existentes y disponibles
 		$direcciones = MDireccion::with('DepartamentosExistentesDisponibles')
@@ -235,15 +262,9 @@ class PanelController extends BaseController
 	
 		// Obtener los estados de documentos de sus direcciones y departamentos
 		$estados = MEstadoDocumento::select('ESDO_NOMBRE','ESDO_ESTADO_DOCUMENTO') -> existenteDisponible()
-					-> where(function($query){
-						// Recuperar las direcciones asignadas al usuario
-						$ids_direcciones = user() -> Direcciones -> pluck('DIRE_DIRECCION') -> toArray();
-
-						// Recuperar los departamentos asignados al usuario
-						$ids_departamentos = user() -> Departamentos -> pluck('DEPA_DEPARTAMENTO') -> toArray();
-
-						$query -> orWhereIn('ESDO_DIRECCION',$ids_direcciones);
-						$query -> orWhereIn('ESDO_DEPARTAMENTO',$ids_departamentos);
+					-> where(function($query) use ($data){
+						$query -> orWhereIn('ESDO_DIRECCION',$data['direcciones_origen']);
+						$query -> orWhereIn('ESDO_DEPARTAMENTO',$data['departamentos_origen']);
 					})
 					-> pluck('ESDO_NOMBRE','ESDO_ESTADO_DOCUMENTO')
 					-> toArray();

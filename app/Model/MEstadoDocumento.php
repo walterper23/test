@@ -18,6 +18,15 @@ class MEstadoDocumento extends BaseModel
     	return $this -> attributes['ESDO_NOMBRE'];
     }
 
+    public function getDireccion()
+    {
+        return $this -> attributes['ESDO_DIRECCION'];
+    }
+
+    public function getDepartamento()
+    {
+        return $this -> attributes['ESDO_DEPARTAMENTO'];
+    }
 
     /* Relationships */
 

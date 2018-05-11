@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Configuracion\Catalogo;
 use Illuminate\Http\Request;
 use App\Http\Requests\ManagerAnexoRequest;
 use Illuminate\Support\Facades\Input;
-use Carbon\Carbon;
-use Validator;
 
 /* Controllers */
 use App\Http\Controllers\BaseController;

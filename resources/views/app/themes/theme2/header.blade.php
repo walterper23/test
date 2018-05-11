@@ -5,7 +5,7 @@
         <div class="content-header-item">
             <a class="link-effect font-w700" href="/">
                 <span class="font-size-xl text-dual-primary-dark">
-                    {{-- Html::image('img/favicon/logo.png','Logo',['class'=>'mb-5','width'=>'30']) }} {{ config_var('Sistema.Siglas') --}}
+                    {{ Html::image('img/favicon/logo.png','Logo',['class'=>'mb-5','width'=>'30']) }} {{ config_var('Sistema.Siglas') }}
                 </span>
             </a>
         </div>
@@ -27,12 +27,12 @@
     <div class="content-header-section">
         <!-- User Dropdown -->
         <div class="btn-group" role="group">
-            <a class="btn btn-rounded btn-dual-secondary" href="/">
+            <a class="btn btn-rounded btn-dual-secondary mr-5" href="{{ url('/') }}">
                 <i class="fa fa-bell"></i>
-                <span class="badge badge-primary badge-pill"></span>
+                <span class="badge badge-primary badge-pill">3</span>
             </a>
             <button type="button" class="btn btn-rounded btn-dual-primary" id="page-header-user-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                {{ user() -> getNombre() }}<i class="fa fa-angle-down ml-5"></i>
+                {{ user() -> getDescripcion() }}<i class="fa fa-angle-down ml-5"></i>
             </button>
             <div class="dropdown-menu dropdown-menu-right min-width-150" aria-labelledby="page-header-user-dropdown">
                 <a class="dropdown-item" href="{{ url('usuario/perfil') }}">

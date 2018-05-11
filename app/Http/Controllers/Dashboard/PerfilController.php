@@ -58,7 +58,7 @@ class PerfilController extends BaseController
     		DB::beginTransaction();
 
 	    	// Editamos sus campos de información
-	    	$usuario -> USUA_NOMBRE   = $request -> descripcion;
+	    	$usuario -> USUA_DESCRIPCION = $request -> descripcion;
 	    	
 	    	// Si se recibió una contraseña nueva, se la actualizamos al usuario
 	    	if ( $request -> has('password') && !is_null($request -> get('password')) )

@@ -11,11 +11,13 @@
         <label class="col-sm-3 col-form-label" for="departamento" required>Departamento</label>
         <div class="col-sm-9">
         	<select name="departamento" id="departamento" class="form-control">
-				<option value="">Seleccione una opción</option>
-        		@foreach( $departamentos as $depto )
-					{!! sprintf('<option data-direccion="%d" value="%d">%s</option>',$depto[0],$depto[1],$depto[2]) !!}					
-				@endforeach
-				<option data-direccion value="0">- Ninguno -</option>
+				@if(sizeof($direcciones) > 0)
+					<option value="">Seleccione una opción</option>
+	        		@foreach( $departamentos as $depto )
+						{!! sprintf('<option data-direccion="%d" value="%d">%s</option>',$depto[0],$depto[1],$depto[2]) !!}					
+					@endforeach
+					<option data-direccion value="0">- Ninguno -</option>
+				@endif
         	</select>
         </div>
     </div>
@@ -42,15 +44,23 @@
 				selectDepartamento.val('');
 				options.hide();
 				if( this.value.length ){
-					selectDepartamento.find('option[value=0]').show();
-					selectDepartamento.find('option[data-direccion='+this.value+']').show();
+					var departamentosDireccion = selectDepartamento.find('option[data-direccion='+this.value+']');
+					var departamentoNinguno = selectDepartamento.find('option[value=0]').first();
+					departamentoNinguno.show();
+					if ( departamentosDireccion.length ){
+						departamentosDireccion.show();
+						if( departamentosDireccion.length == 1 ){
+							selectDepartamento.val( departamentosDireccion.first().val() );
+						}
+					}else{
+						selectDepartamento.val( departamentoNinguno.val() );
+					}
 				}
 			});
 
-			if( selectDireccion.find('option').length == 1 ){
-				selectDireccion.find('option:first').attr('selected','selected').trigger('change');
-			}
-
+			if( selectDireccion.find('option').length == 1 )
+				selectDireccion.change()
+			
 		};
 	
 		this.rules = function(){

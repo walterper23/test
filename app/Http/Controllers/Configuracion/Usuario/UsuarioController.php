@@ -83,9 +83,9 @@ class UsuarioController extends BaseController
 			DB::beginTransaction();
 
 			$usuario = new MUsuario;
-			$usuario -> USUA_USERNAME = $request -> usuario;
-			$usuario -> USUA_PASSWORD = $request -> password;
-			$usuario -> USUA_NOMBRE   = $request -> descripcion;
+			$usuario -> USUA_USERNAME    = $request -> usuario;
+			$usuario -> USUA_PASSWORD    = $request -> password;
+			$usuario -> USUA_DESCRIPCION = $request -> descripcion;
 
 			if( $request -> genero == 'HOMBRE')
 			{

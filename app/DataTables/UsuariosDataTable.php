@@ -6,7 +6,7 @@ use App\Model\MUsuario;
 class UsuariosDataTable extends CustomDataTable {
     
     protected function setSourceData(){
-        $this->sourceData = MUsuario::with('UsuarioDetalle') -> select('USUA_USUARIO','USUA_DETALLE','USUA_USERNAME','USUA_NOMBRE','USUA_RECENT_LOGIN','USUA_CREATED_AT','USUA_ENABLED') -> existente();
+        $this->sourceData = MUsuario::with('UsuarioDetalle') -> select('USUA_USUARIO','USUA_DETALLE','USUA_USERNAME','USUA_DESCRIPCION','USUA_RECENT_LOGIN','USUA_CREATED_AT','USUA_ENABLED') -> existente();
     }
 
     protected function columnsTable(){
@@ -31,7 +31,7 @@ class UsuariosDataTable extends CustomDataTable {
             ],
             [
                 'title' => 'Descripción',
-                'data' => 'USUA_NOMBRE'
+                'data' => 'USUA_DESCRIPCION'
             ],
             [
                 'title' => 'Último acceso',

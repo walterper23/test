@@ -15,7 +15,7 @@
                 <!-- Layout API, functionality initialized in Codebase() -> uiApiLayout() -->
                 <a class="link-effect text-dual-primary-dark" data-toggle="layout" data-action="sidebar_style_inverse_toggle" href="javascript:void(0)">
                     <strong>{{ user() -> UsuarioDetalle -> presenter() -> nombreCompleto() }}</strong>
-                    <p>{{ user() -> getNombre() }}</p>
+                    <p>{{ user() -> getDescripcion() }}</p>
                 </a>
             </li>
         </ul>
