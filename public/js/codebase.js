@@ -984,6 +984,21 @@ var Codebase = function() {
         });
     };
 
+    // Bootstrap Custom File Input Filename
+    var uiHelperCoreCustomFileInput = function() {
+        // Populate custom Bootstrap file inputs with selected filename
+        jQuery('[data-toggle="custom-file-input"]:not(.js-custom-file-input-enabled)').each(function(index, element) {
+            var el = jQuery(element);
+
+            // Add .js-custom-file-input-enabled class to tag it as activated
+            el.addClass('js-custom-file-input-enabled').on('change', function(e) {
+                var fileName = (e.target.files.length > 1) ? e.target.files.length + ' ' + (el.data('lang-files') || 'Files') : e.target.files[0].name;
+
+                el.next('.custom-file-label').css('overflow-x', 'hidden').html(fileName);
+            });
+        });
+    };
+
     /*
      ********************************************************************************************
      *
@@ -1037,6 +1052,9 @@ var Codebase = function() {
                 if (e.target.type !== 'checkbox'
                         && e.target.type !== 'button'
                         && e.target.tagName.toLowerCase() !== 'a'
+                        && !jQuery(e.target).parent('a').length
+                        && !jQuery(e.target).parent('button').length
+                        && !jQuery(e.target).parent('.custom-control').length
                         && !jQuery(e.target).parent('label').length) {
                     var row    = jQuery(this);
                     var tbody  = row.parent('tbody');
@@ -1085,6 +1103,9 @@ var Codebase = function() {
                 if (e.target.type !== 'checkbox'
                         && e.target.type !== 'button'
                         && e.target.tagName.toLowerCase() !== 'a'
+                        && !jQuery(e.target).parent('a').length
+                        && !jQuery(e.target).parent('button').length
+                        && !jQuery(e.target).parent('.custom-control').length
                         && !jQuery(e.target).parent('label').length) {
                     var checkbox       = jQuery('input:checkbox', this);
                     var checkedStatus  = checkbox.prop('checked');
@@ -1317,7 +1338,6 @@ var Codebase = function() {
      *
      */
     var uiHelperDatepicker = function(){
-
         // Init datepicker (with .js-datepicker and .input-daterange class)
         jQuery('.js-datepicker:not(.js-datepicker-enabled)').add('.input-daterange:not(.js-datepicker-enabled)').each(function(){
             var el = jQuery(this);
@@ -1328,11 +1348,9 @@ var Codebase = function() {
             // Init
             el.datepicker({
                 weekStart: el.data('week-start') || 0,
-                autoclose: el.data('autoclose') || true,
-                todayHighlight: el.data('today-highlight') || true,
-                format: el.data('date-format') || 'yyyy-mm-dd',
-                orientation: 'bottom', // Position issue when using BS4, set it to bottom until officially supported
-                language: 'es'
+                autoclose: el.data('autoclose') || false,
+                todayHighlight: el.data('today-highlight') || false,
+                orientation: 'bottom' // Position issue when using BS4, set it to bottom until officially supported
             });
         });
     };
@@ -1419,7 +1437,6 @@ var Codebase = function() {
      *
      */
     var uiHelperSelect2 = function(){
-
         // Init Select2 (with .js-select2 class)
         jQuery('.js-select2:not(.js-select2-enabled)').each(function(){
             var el = jQuery(this);
@@ -1428,13 +1445,7 @@ var Codebase = function() {
             el.addClass('js-select2-enabled');
 
             // Init
-            el.select2({
-                language: {
-                    noResults : function(){
-                        return 'No se encontraron resultados';
-                    }
-                }
-            });
+            el.select2();
         });
     };
 
@@ -1683,6 +1694,7 @@ var Codebase = function() {
             uiHelperCoreSlimscroll();
             uiHelperCorePageLoader('hide');
             uiHelperCoreRipple();
+            uiHelperCoreCustomFileInput();
         },
         layout: function(mode) {
             uiApiLayout(mode);
@@ -1757,6 +1769,9 @@ var Codebase = function() {
                     break;
                 case 'core-page-loader':
                     uiHelperCorePageLoader('hide');
+                    break;
+                case 'core-custom-file-input':
+                    uiHelperCoreCustomFileInput();
                     break;
                 case 'print-page':
                     uiHelperPrint();
