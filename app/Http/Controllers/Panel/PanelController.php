@@ -263,8 +263,8 @@ class PanelController extends BaseController
 		// Obtener los estados de documentos de sus direcciones y departamentos
 		$estados = MEstadoDocumento::select('ESDO_NOMBRE','ESDO_ESTADO_DOCUMENTO') -> existenteDisponible()
 					-> where(function($query) use ($data){
-						$query -> orWhereIn('ESDO_DIRECCION',$data['direcciones_origen']);
-						$query -> orWhereIn('ESDO_DEPARTAMENTO',$data['departamentos_origen']);
+						$query -> orWhereIn('ESDO_DIRECCION',array_keys($data['direcciones_origen']));
+						$query -> orWhereIn('ESDO_DEPARTAMENTO',array_keys($data['departamentos_origen']));
 					})
 					-> pluck('ESDO_NOMBRE','ESDO_ESTADO_DOCUMENTO')
 					-> toArray();

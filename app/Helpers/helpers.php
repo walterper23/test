@@ -10,10 +10,7 @@ if (! function_exists('config_var'))
             return \App\Model\Sistema\MSistemaConfig::select('SYCO_VARIABLE','SYCO_VALOR') -> pluck('SYCO_VALOR','SYCO_VARIABLE') -> toArray();
         });
 
-        if (isset($config[$key_var]))
-            return $config[$key_var];
-        else
-            return $default;
+        return $config[$key_var];
     }
 }
 

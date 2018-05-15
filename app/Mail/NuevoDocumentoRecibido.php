@@ -42,7 +42,7 @@ class NuevoDocumentoRecibido extends Mailable implements ShouldQueue
 
         $url = url( sprintf('panel/documentos/seguimiento?search=%d&read=1', $seguimiento -> getKey()) );
 
-        $subject = sprintf('Nueva recepción :: %s %s',$this -> documento -> TipoDocumento -> getNombre() . ' ' . $this -> documento -> getNumero());
+        $subject = sprintf('Nueva recepción :: %s %s',$this -> documento -> TipoDocumento -> getNombre(), $this -> documento -> getNumero());
 
         $data = [
             'url' => $url,
