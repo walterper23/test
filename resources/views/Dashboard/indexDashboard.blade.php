@@ -3,9 +3,9 @@
 @section('title', title('Inicio') )
 
 @section('content')
-<div class="row gutters-tiny">
+<div class="row gutters-tiny justify-content-center">
     <!-- Row #2 -->
-    <div class="col-md-6">
+    <div class="{{ sizeof($recepcion_local) ? 'col-md-6' : 'col-md-3' }}">
         <div class="block block-themed">
             <div class="block-header bg-corporate">
                 <h3 class="block-title">
@@ -30,7 +30,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-6">
+    <div class="{{ sizeof($recepcion_foranea) ? 'col-md-6' : 'col-md-3' }}">
         <div class="block block-themed">
             <div class="block-header bg-flat-dark">
                 <h3 class="block-title">
@@ -59,7 +59,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-6">
+    <div class="{{ sizeof($panel_trabajo) ? 'col-md-6' : 'col-md-3' }}">
         <div class="block block-themed">
             <div class="block-header bg-primary">
                 <h3 class="block-title">
@@ -88,7 +88,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-6">
+    <div class="{{ sizeof($semaforizacion) ? 'col-md-6' : 'col-md-3' }}">
         <div class="block block-themed">
             <div class="block-header bg-earth">
                 <h3 class="block-title">
@@ -117,7 +117,7 @@
     </div>
     <!-- END Row #2 -->
     
-    <div class="col-md-4 invisible" data-toggle="appear">
+    <div class="col-md-6 col-sm-12 invisible" data-toggle="appear">
         <!-- Bars Chart -->
         <div class="block">
             <div class="block-header block-header-default">
@@ -135,7 +135,7 @@
         </div>
         <!-- END Bars Chart -->
     </div>
-    <div class="col-md-4 invisible" data-toggle="appear">
+    <div class="col-md-6 col-sm-12 invisible" data-toggle="appear">
         <!-- Bars Chart -->
         <div class="block">
             <div class="block-header block-header-default">
@@ -153,7 +153,7 @@
         </div>
         <!-- END Bars Chart -->
     </div>
-    <div class="col-md-4 invisible" data-toggle="appear">
+    <div class="col-md-4 col-sm-12 invisible" data-toggle="appear">
         <!-- Pie Chart -->
         <div class="block">
             <div class="block-header block-header-default">
@@ -171,7 +171,7 @@
         </div>
         <!-- END Pie Chart -->
     </div>
-    <div class="col-md-4 invisible" data-toggle="appear">
+    <div class="col-md-4 col-sm-12 invisible" data-toggle="appear">
         <!-- Pie Chart -->
         <div class="block">
             <div class="block-header block-header-default">
