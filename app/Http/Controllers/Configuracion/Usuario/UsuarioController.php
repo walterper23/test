@@ -44,13 +44,16 @@ class UsuarioController extends BaseController
 			case 2: // Editar
 				$response = $this -> editarUsuario( $request );
 				break;
-			case 3: // Activar / Desactivar
+			case 3: // Ver
+				$response = $this -> verUsuario( $request );
+				break;
+			case 4: // Activar / Desactivar
 				$response = $this -> activarUsuario( $request );
 				break;
-			case 4: // Eliminar
+			case 5: // Eliminar
 				$response = $this -> eliminarUsuario( $request );
 				break;
-			case 5: // Cambiar contraseña
+			case 6: // Cambiar contraseña
 				$response = $this -> modificarPassword( $request );
 				break;
 			default:
@@ -145,7 +148,7 @@ class UsuarioController extends BaseController
 			$usuario -> USUA_PASSWORD = $request -> password;
 			$usuario -> save();
 
-			return response() -> json(['status'=>true,'message'=>'Contraseña modificada correctamente']);
+			return $this -> responseWarningJSON('<i class="fa fa-key"></i> Contraseña modificada correctamente');
 
 		}catch(Exception $error)
 		{
@@ -156,9 +159,6 @@ class UsuarioController extends BaseController
 	public function activarUsuario( $request )
 	{
 		try {
-
-			throw new Exception("Error Processing Request", 1);
-			
 
 			// Validar que el usuario en sesión no pueda activar/desactivar su usuario
 			if ( $request -> id != userKey() )
@@ -183,7 +183,7 @@ class UsuarioController extends BaseController
 			}
 
 		} catch(Exception $error) {
-			return $this -> responseDangerJSON('Ocurrió un error al guardar los cambios. Error ' . $error -> getCode() );
+			return $this -> responseDangerJSON('Ocurrió un error al guardar los cambios. Error ' . $error -> getMessage() );
 		}
 	}
 

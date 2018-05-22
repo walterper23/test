@@ -3,9 +3,7 @@ namespace App\Http\Controllers\Recepcion;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\ManagerRecepcionRequest;
-use Illuminate\Support\Facades\Input;
 use Illuminate\Filesystem\Filesystem;
-use Validator;
 use Exception;
 use DB;
 

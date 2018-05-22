@@ -120,6 +120,10 @@ textarea.form-control {
 	margin-bottom: 3px;
 }
 
+.block-content {
+	padding: 20px;
+}
+
 .block-content p {
 	margin-bottom: 0;
 }

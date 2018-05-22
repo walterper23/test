@@ -177,6 +177,10 @@ class DashboardController extends BaseController
                 $conteos['documentos'][ $dia_documento ]++;
         }
 
+        $documentos_foraneos = $documentos_foraneos -> filter(function($docto) use($inicio_semana, $fin_semana){
+            return ($docto -> DETA_FECHA_RECEPCION >= $inicio_semana && $docto -> DETA_FECHA_RECEPCION <= $fin_semana);
+        }); // Sólo los documentos del mes actual
+
         foreach ($documentos_foraneos as $docto) {
             $dia_documento = substr($docto -> DETA_FECHA_RECEPCION,-2); // capturamos el día de recepción
 

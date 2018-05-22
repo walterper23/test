@@ -168,10 +168,8 @@ class AnexoController extends BaseController
                 return $this -> responseWarningJSON($message);
             }
 
-            return $this -> responseTypeJSON($message,$type);
-
         } catch(Exception $error) {
-            return response()->json(['status'=>false,'message'=>'Ocurrió un error al guardar los cambios. Error ' . $error->getCode() ]);
+
         }
     }
 
