@@ -18,7 +18,7 @@ class MAnexo extends BaseModel
 
 	public function getNombre()
 	{
-		return $this -> attributes['ANEX_NOMBRE'];
+		return $this -> getAttribute('ANEX_NOMBRE');
 	}
 
     /* Presenter */    

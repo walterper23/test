@@ -91,7 +91,7 @@ class AnexoController extends BaseController
 
             $message = sprintf('<i class="fa fa-fw fa-clipboard"></i> Anexo <b>%s</b> creado',$anexo -> getCodigo());
             
-            if ($request -> recepcion)
+            if ($request -> has('recepcion') && $request -> recepcion)
             {
                 return $this -> responseSuccessJSON([
                     'message' => $message,
@@ -112,13 +112,14 @@ class AnexoController extends BaseController
         }
     }
 
-    public function formEditarAnexo(){
+    public function formEditarAnexo(Request $request){
         try {
             $data['title']         = 'Editar anexo';
             $data['url_send_form'] = url('configuracion/catalogos/anexos/manager');
             $data['form_id']       = $this -> form_id;
             $data['modelo']        = MAnexo::find( Input::get('id') );
             $data['action']        = 2;
+            $data['recepcion']     = $request -> get('recepcion',false);
             $data['id']            = Input::get('id');
 
             return view('Configuracion.Catalogo.Anexo.formAnexo')->with($data);

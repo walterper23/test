@@ -7,7 +7,7 @@
 	    {!! Form::hidden('action',$action) !!}
 	    {!! Form::hidden('id',$id) !!}
 	    {!! Form::hidden('recepcion',$recepcion) !!}
-        {!! Field::text('nombre',(optional($modelo) -> ANEX_NOMBRE),['label'=>'Nombre','placeholder'=>'Nombre del anexo','required','autofocus']) !!}
+        {!! Field::text('nombre',(optional($modelo) -> getNombre()),['label'=>'Nombre','placeholder'=>'Nombre del anexo','required','autofocus']) !!}
 	{!! Form::close() !!}
 @endsection
 
