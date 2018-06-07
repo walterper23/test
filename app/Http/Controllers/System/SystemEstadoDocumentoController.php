@@ -1,21 +1,18 @@
 <?php
-namespace App\Http\Controllers\Configuracion\Sistema;
+namespace App\Http\Controllers\Configuracion\System;
 
 use Illuminate\Http\Request;
-use App\Http\Requests\ManagerSistemaEstadoDocumentoRequest;
-use Illuminate\Support\Facades\Input;
-use Carbon\Carbon;
-use Validator;
+use App\Http\Requests\SystemEstadoDocumentoRequest;
 use Exception;
 
 /* Controllers */
 use App\Http\Controllers\BaseController;
-use App\DataTables\SistemaEstadosDocumentosDataTable;
+use App\DataTables\SystemEstadosDocumentosDataTable;
 
 /* Models */
-use App\Model\Sistema\MSistemaEstadoDocumento;
+use App\Model\System\MSystemEstadoDocumento;
 
-class SistemaEstadoDocumentoController extends BaseController
+class SystemEstadoDocumentoController extends BaseController
 {
 	private $form_id;
 
@@ -24,7 +21,7 @@ class SistemaEstadoDocumentoController extends BaseController
 		$this -> form_id = 'form-estado-documento';
 	}
 
-	public function index(SistemaEstadosDocumentosDataTable $dataTables)
+	public function index(SystemEstadosDocumentosDataTable $dataTables)
 	{
 
 		$data['table']    = $dataTables;
@@ -34,7 +31,7 @@ class SistemaEstadoDocumentoController extends BaseController
 		return view('Configuracion.Sistema.EstadoDocumento.indexEstadoDocumento') -> with($data);
 	}
 
-	public function manager(ManagerSistemaEstadoDocumentoRequest $request)
+	public function manager(SystemEstadoDocumentoRequest $request)
 	{
 		switch ($request -> action) {
 			case 2: // Editar
@@ -48,7 +45,7 @@ class SistemaEstadoDocumentoController extends BaseController
 		return $response;
 	}
 
-	public function postDataTable(SistemaEstadosDocumentosDataTable $dataTables)
+	public function postDataTable(SystemEstadosDocumentosDataTable $dataTables)
 	{
 		return $dataTables->getData();
 	}
@@ -61,7 +58,7 @@ class SistemaEstadoDocumentoController extends BaseController
 			$data['form_id']       = $this -> form_id;
 			$data['url_send_form'] = url('configuracion/sistema/estados-documentos/manager');
 			$data['action']        = 2;
-			$data['model']         = MSistemaEstadoDocumento::find( $request -> id );
+			$data['model']         = MSystemEstadoDocumento::find( $request -> id );
 			$data['id']            = $request -> id;
 
 			return view('Configuracion.Sistema.EstadoDocumento.formEstadoDocumento') -> with($data);
@@ -74,7 +71,7 @@ class SistemaEstadoDocumentoController extends BaseController
 	{
 		try {
 
-			$estadoDocumento = MSistemaEstadoDocumento::findOrFail( $request -> id );
+			$estadoDocumento = MSystemEstadoDocumento::findOrFail( $request -> id );
 			$estadoDocumento -> SYED_NOMBRE = $request -> nombre;
 			$estadoDocumento -> save();
 

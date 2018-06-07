@@ -2,11 +2,9 @@
 namespace App\Http\Controllers\Recepcion;
 
 use Illuminate\Http\Request;
-use App\Http\Requests\ManagerRecepcionForaneaRequest;
-use Illuminate\Support\Facades\Input;
+use App\Http\Requests\RecepcionForaneaRequest;
 use Illuminate\Filesystem\Filesystem;
 use Carbon\Carbon;
-use Validator;
 use Exception;
 use DB;
 
@@ -25,7 +23,7 @@ use App\Model\MEscaneo;
 use App\Model\MMunicipio;
 use App\Model\MSeguimiento;
 use App\Model\Catalogo\MAnexo;
-use App\Model\Sistema\MSistemaTipoDocumento;
+use App\Model\System\MSystemTipoDocumento;
 
 /* DataTables */
 use App\DataTables\DenunciasForaneasDataTable;
@@ -83,7 +81,7 @@ class RecepcionForaneaController extends BaseController
 		return view('Recepcion.indexRecepcionForanea') -> with($data);
 	}
 
-	public function manager(ManagerRecepcionForaneaRequest $request){
+	public function manager(RecepcionForaneaRequest $request){
 
 		switch ($request -> action) {
 			case 0: // Guardar recepción en captura
@@ -138,7 +136,7 @@ class RecepcionForaneaController extends BaseController
 		$data = [];
 
 		// Recuperamos los tipos de documentos que se pueden recepcionar
-		$data['tipos_documentos'] = MSistemaTipoDocumento::where('SYTD_ENABLED',1) -> get();
+		$data['tipos_documentos'] = MSystemTipoDocumento::where('SYTD_ENABLED',1) -> get();
 
 		user() -> Direcciones() -> with('Departamentos');
 

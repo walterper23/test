@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Recepcion;
 
 use Illuminate\Http\Request;
-use App\Http\Requests\ManagerAnexoRequest;
+use App\Http\Requests\AnexoRequest;
 use Illuminate\Support\Facades\Input;
 use Carbon\Carbon;
 use Validator;

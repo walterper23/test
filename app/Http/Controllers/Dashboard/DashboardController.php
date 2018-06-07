@@ -11,7 +11,7 @@ use App\Http\Controllers\BaseController;
 use App\Model\MDocumento;
 use App\Model\MDocumentoForaneo;
 use App\Model\MNotificacion;
-use App\Model\Sistema\MSistemaTipoDocumento;
+use App\Model\System\MSystemTipoDocumento;
 
 class DashboardController extends BaseController
 {
@@ -97,7 +97,7 @@ class DashboardController extends BaseController
         $locales  = [];
         $foraneos = [];
 
-        $tipos_documentos = MSistemaTipoDocumento::orderBy('SYTD_TIPO_DOCUMENTO') -> get(); // Recuperamos todos los tipos de documentos existentes
+        $tipos_documentos = MSystemTipoDocumento::orderBy('SYTD_TIPO_DOCUMENTO') -> get(); // Recuperamos todos los tipos de documentos existentes
         // Recorremos todos los tipos de documentos existentes para iniciar los contadores en 0
         $tipos_documentos -> map(function($tipo) use(&$locales, &$foraneos){
             $locales[ $tipo -> getKey()  ] = 0;

@@ -7,7 +7,6 @@ class MMunicipio extends Model
 {
     protected $table          = 'municipios';
     protected $primaryKey     = 'MUNI_MUNICIPIO';
-    protected $prefix         = 'MUNI';
     public    $timestamps     = false;
 
     /* Methods */

@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Recepcion;
 
 use Illuminate\Http\Request;
-use App\Http\Requests\ManagerRecepcionRequest;
+use App\Http\Requests\RecepcionLocalRequest;
 use Illuminate\Filesystem\Filesystem;
 use Exception;
 use DB;
@@ -22,7 +22,7 @@ use App\Model\MEscaneo;
 use App\Model\MMunicipio;
 use App\Model\MSeguimiento;
 use App\Model\Catalogo\MAnexo;
-use App\Model\Sistema\MSistemaTipoDocumento;
+use App\Model\System\MSystemTipoDocumento;
 
 /* DataTables */
 use App\DataTables\DenunciasDataTable;
@@ -79,7 +79,7 @@ class RecepcionController extends BaseController
 		abort(404);
 	}
 
-	public function manager(ManagerRecepcionRequest $request){
+	public function manager(RecepcionLocalRequest $request){
 
 		switch ($request -> action) {
 			case 0: // Guardar recepción en captura
@@ -131,7 +131,7 @@ class RecepcionController extends BaseController
 		$data = [];
 
 		// Recuperamos los tipos de documentsos que se pueden recepcionar
-		$data['tipos_documentos'] = MSistemaTipoDocumento::existenteDisponible() -> get();
+		$data['tipos_documentos'] = MSystemTipoDocumento::existenteDisponible() -> get();
 
 		$data['denuncias'] = MDenuncia::select('DENU_DENUNCIA','DENU_NO_EXPEDIENTE')
 							-> join('documentos','DENU_DOCUMENTO','=','DOCU_DOCUMENTO')

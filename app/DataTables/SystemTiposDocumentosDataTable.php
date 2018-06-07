@@ -1,14 +1,14 @@
 <?php
 namespace App\DataTables;
 
-use App\Model\Sistema\MSistemaTipoDocumento;
+use App\Model\System\MSystemTipoDocumento;
 
-class SistemaTiposDocumentosDataTable extends CustomDataTable
+class SystemTiposDocumentosDataTable extends CustomDataTable
 {
 
     protected function setSourceData()
     {
-        $this -> sourceData = MSistemaTipoDocumento::select('SYTD_TIPO_DOCUMENTO','SYTD_NOMBRE','SYTD_CREATED_AT','SYTD_ENABLED')
+        $this -> sourceData = MSystemTipoDocumento::select('SYTD_TIPO_DOCUMENTO','SYTD_NOMBRE','SYTD_CREATED_AT','SYTD_ENABLED')
                                 -> where('SYTD_DELETED',0) -> orderBy('SYTD_TIPO_DOCUMENTO','ASC');
     }
 

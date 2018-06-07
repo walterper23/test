@@ -159,7 +159,7 @@ class MDocumento extends BaseModel
 
     public function EstadoDocumento()
     {
-        return $this -> hasOne('App\Model\Sistema\MSistemaEstadoDocumento','SYED_ESTADO_DOCUMENTO','DOCU_SYSTEM_ESTADO_DOCTO');
+        return $this -> hasOne('App\Model\System\MSystemEstadoDocumento','SYED_ESTADO_DOCUMENTO','DOCU_SYSTEM_ESTADO_DOCTO');
     }
 
     public function Seguimientos()
@@ -169,7 +169,7 @@ class MDocumento extends BaseModel
 
     public function TipoDocumento()
     {
-        return $this -> hasOne('App\Model\Sistema\MSistemaTipoDocumento','SYTD_TIPO_DOCUMENTO','DOCU_SYSTEM_TIPO_DOCTO');
+        return $this -> hasOne('App\Model\System\MSystemTipoDocumento','SYTD_TIPO_DOCUMENTO','DOCU_SYSTEM_TIPO_DOCTO');
     }
 
 }

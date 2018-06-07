@@ -3,7 +3,6 @@ namespace App\Presenters;
 
 class MArchivoPresenter extends Presenter {
 
-	
 	public function getSize( $type = 'Kb' )
 	{
 		$size = $this -> model -> getSize();

@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Configuracion\Catalogo;
 
 use Illuminate\Http\Request;
-use App\Http\Requests\ManagerPuestoRequest;
+use App\Http\Requests\PuestoRequest;
 use Illuminate\Support\Facades\Input;
 use Carbon\Carbon;
 use Validator;
@@ -35,7 +35,7 @@ class PuestoController extends BaseController {
 		return view('Configuracion.Catalogo.Puesto.indexPuesto')->with($data);
 	}
 
-	public function manager(ManagerPuestoRequest $request){
+	public function manager(PuestoRequest $request){
 
 		$action = Input::get('action');
 

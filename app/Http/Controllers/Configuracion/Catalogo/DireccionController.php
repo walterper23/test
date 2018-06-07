@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Configuracion\Catalogo;
 
 use Illuminate\Http\Request;
-use App\Http\Requests\ManagerDireccionRequest;
+use App\Http\Requests\DireccionRequest;
 use Illuminate\Support\Facades\Input;
 
 /* Controllers */
@@ -25,7 +25,7 @@ class DireccionController extends BaseController {
 		return view('Configuracion.Catalogo.Direccion.indexDireccion')->with($data);
 	}
 
-	public function manager(ManagerDireccionRequest $request){
+	public function manager(DireccionRequest $request){
 
 		switch ($request -> action) {
 			case 1: // Nuevo
@@ -34,10 +34,13 @@ class DireccionController extends BaseController {
 			case 2: // Editar
 				$response = $this -> editarDireccion( $request );
 				break;
-			case 3: // Activar / Desactivar
+			case 3: // Visualizar dirección
+                $response = $this -> verDireccion( $request );
+                break;
+			case 4: // Activar / Desactivar
 				$response = $this -> activarDireccion( $request );
 				break;
-			case 4: // Eliminar
+			case 5: // Eliminar
 				$response = $this -> eliminarDireccion( $request );
 				break;
 			default:
@@ -123,6 +126,19 @@ class DireccionController extends BaseController {
 			return response()->json(['status'=>false,'message'=>'Ocurrió un error al guardar los cambios. Error ' . $error->getMessage() ]);
 		}
 	}
+
+	public function verDireccion( $request )
+    {
+        try {
+            $direccion         = MDireccion::find( $request -> id );
+            $data['direccion'] = $direccion;
+            $data['title']     = sprintf('Dirección #%s', $direccion -> getCodigo() );
+            return view('Configuracion.Catalogo.Direccion.verDireccion') -> with($data);
+        } catch(Exception $error) {
+
+        }
+
+    }
 
 	public function activarDireccion( $request ){
 		try{

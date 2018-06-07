@@ -3,7 +3,6 @@ namespace App\Model;
 
 class MUsuarioPreferencia extends BaseModel
 {
-    
 	protected $table        = 'usuarios_preferencias';
 	protected $primaryKey   = 'USPR_USUARIO_PREFERENCIA';
 	protected $prefix       = 'USPR';

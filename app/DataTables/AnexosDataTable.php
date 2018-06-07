@@ -37,8 +37,8 @@ class AnexosDataTable extends CustomDataTable
             [
                 'title'  => 'Opciones',
                 'render' => function($query){
-                        //<button type="button" class="btn btn-sm btn-circle btn-alt-primary" onclick="hAnexo.view(%d)"><i class="fa fa-eye"></i></button>
                     $buttons = sprintf('
+                        <button type="button" class="btn btn-sm btn-circle btn-alt-primary" onclick="hAnexo.view(%d)"><i class="fa fa-eye"></i></button>
                         <button type="button" class="btn btn-sm btn-circle btn-alt-success" onclick="hAnexo.edit_(%d)"><i class="fa fa-pencil"></i></button>
                         <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hAnexo.delete_(%d)"><i class="fa fa-trash"></i></button>',
                         $query -> getKey(), $query -> getKey(), $query -> getKey()

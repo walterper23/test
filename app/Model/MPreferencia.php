@@ -3,13 +3,11 @@ namespace App\Model;
 
 class MPreferencia extends BaseModel
 {
-    
 	protected $table        = 'preferencias';
 	protected $primaryKey   = 'PREF_PREFERENCIA';
 	protected $prefix       = 'PREF';
 	
 	/* Methods */
-
 
 
 	/* Relationships */

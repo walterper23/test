@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Configuracion\Catalogo;
 
 use Illuminate\Http\Request;
-use App\Http\Requests\ManagerAnexoRequest;
+use App\Http\Requests\AnexoRequest;
 use Illuminate\Support\Facades\Input;
 
 /* Controllers */
@@ -31,7 +31,7 @@ class AnexoController extends BaseController
         return view('Configuracion.Catalogo.Anexo.indexAnexo')->with($data);
     }
 
-    public function manager(ManagerAnexoRequest $request)
+    public function manager(AnexoRequest $request)
     {
         switch ($request -> action) {
             case 1: // Nuevo
@@ -148,7 +148,15 @@ class AnexoController extends BaseController
 
     public function verAnexo( $request )
     {
-        
+        try {
+            $anexo         = MAnexo::find( $request -> id );
+            $data['anexo'] = $anexo;
+            $data['title'] = sprintf('Anexo #%s', $anexo -> getCodigo() );
+            return view('Configuracion.Catalogo.Anexo.verAnexo') -> with($data);
+        } catch(Exception $error) {
+
+        }
+
     }
 
     public function activarAnexo( $request )

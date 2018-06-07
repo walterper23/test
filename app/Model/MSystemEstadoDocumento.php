@@ -1,20 +1,16 @@
 <?php
-namespace App\Model\Sistema;
+namespace App\Model\System;
 
-/* Models */
-use App\Model\BaseModel;
+use Illuminate\Database\Eloquent\Model;
 
 /* Presenter */
-use App\Presenters\MSistemaEstadoDocumentoPresenter;
+use App\Presenters\MSystemEstadoDocumentoPresenter;
 
-class MSistemaEstadoDocumento extends BaseModel {
-    
+class MSystemEstadoDocumento extends Model
+{
     protected $table          = 'system_estados_documentos';
     protected $primaryKey     = 'SYED_ESTADO_DOCUMENTO';
     public    $timestamps     = false;
-
-    protected $fieldEnabled   = 'SYED_ENABLED';
-    protected $fieldUpdated   = 'SYED_UPDATED';
 
     public function getNombre(){
     	return $this -> attributes['SYED_NOMBRE'];
@@ -27,7 +23,7 @@ class MSistemaEstadoDocumento extends BaseModel {
     /* Presenter */
 
     public function presenter(){
-        return new MSistemaEstadoDocumentoPresenter($this);
+        return new MSystemEstadoDocumentoPresenter($this);
     }
 
 }

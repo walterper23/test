@@ -3,19 +3,20 @@ namespace App\DataTables;
 
 use App\Model\Catalogo\MDepartamento;
 
-class DepartamentosDataTable extends CustomDataTable{
+class DepartamentosDataTable extends CustomDataTable
+{
 
     protected function setSourceData(){
-        $this->sourceData = MDepartamento::with('direccion') -> select(['DEPA_DEPARTAMENTO','DEPA_DIRECCION','DEPA_NOMBRE','DEPA_CREATED_AT','DEPA_ENABLED'])
-                            -> where('DEPA_DELETED',0);
+        $this -> sourceData = MDepartamento::with('direccion') -> select(['DEPA_DEPARTAMENTO','DEPA_DIRECCION','DEPA_NOMBRE','DEPA_CREATED_AT','DEPA_ENABLED'])
+                            -> existente() -> get();
     }
 
     protected function columnsTable(){
         return [
             [
                 'title' => '#',
-                'render' => function($query){
-                    return $query -> getCodigo();
+                'render' => function($departamento){
+                    return $departamento -> getCodigo();
                 }
             ],
             [
@@ -24,8 +25,8 @@ class DepartamentosDataTable extends CustomDataTable{
             ],
             [
                 'title' => 'Dirección',
-                'render' => function($query){
-                    return $query -> Direccion -> presenter() -> link();
+                'render' => function($departamento){
+                    return $departamento -> Direccion -> presenter() -> link();
                 }
             ],
             [
@@ -34,21 +35,22 @@ class DepartamentosDataTable extends CustomDataTable{
             ],
             [
                 'title' => 'Activo',
-                'render' => function($query){
-                    $checked = ($query -> disponible()) ? ' checked=""' : '';
+                'render' => function($departamento){
+                    $checked = ($departamento -> disponible()) ? ' checked=""' : '';
                     
                     return sprintf('<label class="css-control css-control-sm css-control-primary css-switch">
-                            <input type="checkbox" class="css-control-input"%s onclick="hDepartamento.active({id:%d})"><span class="css-control-indicator"></span></label>',$checked,$query -> getKey());
+                            <input type="checkbox" class="css-control-input"%s onclick="hDepartamento.active({id:%d})"><span class="css-control-indicator"></span></label>',$checked,$departamento -> getKey());
                 }
             ],
             [
                 'title' => 'Opciones',
-                'render' => function($query){
-                    $buttons = '';
-
-                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-success" onclick="hDepartamento.edit_('.$query->DEPA_DEPARTAMENTO.')"><i class="fa fa-pencil"></i></button>';
-                
-                    $buttons .= '<button type="button" class="btn btn-xs btn-rounded btn-noborder btn-outline-danger" onclick="hDepartamento.delete_('.$query->DEPA_DEPARTAMENTO.')"><i class="fa fa-trash"></i></button>';
+                'render' => function($departamento){
+                    $buttons = sprintf('
+                        <button type="button" class="btn btn-sm btn-circle btn-alt-primary" onclick="hDepartamento.view(%d)"><i class="fa fa-eye"></i></button>
+                        <button type="button" class="btn btn-sm btn-circle btn-alt-success" onclick="hDepartamento.edit_(%d)"><i class="fa fa-pencil"></i></button>
+                        <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hDepartamento.delete_(%d)"><i class="fa fa-trash"></i></button>',
+                        $departamento -> getKey(), $departamento -> getKey(), $departamento -> getKey()
+                    );
                     
                     return $buttons;
                 }

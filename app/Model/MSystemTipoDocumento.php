@@ -1,13 +1,13 @@
 <?php
-namespace App\Model\Sistema;
+namespace App\Model\System;
 
 /* Models */
 use App\Model\BaseModel;
 
 /* Presenter */
-use App\Presenters\MSistemaTipoDocumentoPresenter;
+use App\Presenters\MSystemTipoDocumentoPresenter;
 
-class MSistemaTipoDocumento extends BaseModel
+class MSystemTipoDocumento extends BaseModel
 {
     protected $table       = 'system_tipos_documentos';
     protected $primaryKey  = 'SYTD_TIPO_DOCUMENTO';
@@ -33,7 +33,7 @@ class MSistemaTipoDocumento extends BaseModel
 
     public function Documentos()
     {
-        return $this -> hasMany('App\Model\MDocumento','DOCU_TIPO_DOCUMENTO',$this -> getKey());
+        return $this -> hasMany('App\Model\MDocumento','DOCU_TIPO_DOCUMENTO',$this -> getKeyName());
     }
 
 
@@ -42,7 +42,7 @@ class MSistemaTipoDocumento extends BaseModel
 
     public function presenter()
     {
-        return new MSistemaTipoDocumentoPresenter($this);
+        return new MSystemTipoDocumentoPresenter($this);
     }
 
 }

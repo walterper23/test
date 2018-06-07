@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Configuracion\Catalogo;
 
 use Illuminate\Http\Request;
-use App\Http\Requests\ManagerEstadoDocumentoRequest;
+use App\Http\Requests\EstadoDocumentoRequest;
 use Illuminate\Support\Facades\Input;
 
 /* Controllers */
@@ -27,7 +27,7 @@ class EstadoDocumentoController extends BaseController
 		return view('Configuracion.Catalogo.EstadoDocumento.indexEstadoDocumento')->with($data);
 	}
 
-	public function manager(ManagerEstadoDocumentoRequest $request)
+	public function manager(EstadoDocumentoRequest $request)
 	{
 		switch ($request -> action) {
 			case 1: // Nuevo

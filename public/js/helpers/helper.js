@@ -107,7 +107,7 @@ var Helper = function(){
 		},
 		view : function( id ){
 			_view({
-				modal : 'modal-view',
+				modal : 'view',
 				url   : this.manager(),
 				data  : { action : 3, id },
 				btnOk : false,

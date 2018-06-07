@@ -7,7 +7,7 @@ if (! function_exists('config_var'))
     function config_var( $key_var, $default = '' )
     {
         $config = Cache::rememberForever('System.Config.Variables',function(){
-            return \App\Model\Sistema\MSistemaConfig::select('SYCO_VARIABLE','SYCO_VALOR') -> pluck('SYCO_VALOR','SYCO_VARIABLE') -> toArray();
+            return \App\Model\System\MSystemConfig::select('SYCO_VARIABLE','SYCO_VALOR') -> pluck('SYCO_VALOR','SYCO_VARIABLE') -> toArray();
         });
 
         return $config[$key_var];

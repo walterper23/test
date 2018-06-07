@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ManagerAnexoRequest extends FormRequest
+class DireccionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +24,8 @@ class ManagerAnexoRequest extends FormRequest
     public function rules()
     {
         return [
-            'action' => 'required|in:1,2,3,4,5',
-            'id'     => 'required_if:action:2,3,4,5',
+            'action' => 'required|in:1,2,3,4',
+            'id'     => 'required_if:action:2,3,4',
             'nombre' => 'required_if:action,1,2|min:1,max:255'
         ];
     }
@@ -34,7 +34,6 @@ class ManagerAnexoRequest extends FormRequest
         return [
             'action.required' => 'Petición no especificada',
             'action.in'       => 'Petición no válida',
-            'id.required_if'  => 'Especifique el identificador del recurso',
             'nombre.required' => 'Introduzca un nombre',
             'nombre.min'      => 'Mínimo :min caracter',
             'nombre.max'      => 'Máximo :max caracteres'

@@ -201,35 +201,35 @@ Route::middleware('preventBackHistory') -> group(function(){
             });
 
             // Administración de las configuraciones del sistema
-            Route::prefix('sistema') -> middleware('can:SIS.ADMIN.CONFIG') -> namespace('Sistema') -> group(function(){
+            Route::prefix('sistema') -> middleware('can:SIS.ADMIN.CONFIG') -> namespace('System') -> group(function(){
                 
                 // Administración del catálogo de los tipos de documentos del sistema
                 Route::prefix('tipos-documentos') -> group(function(){
-                    Route::get('/',          'SistemaTipoDocumentoController@index');
-                    Route::post('post-data', 'SistemaTipoDocumentoController@postDataTable');
-                    Route::post('nuevo',     'SistemaTipoDocumentoController@formNuevoTipoDocumento');
-                    Route::post('editar',    'SistemaTipoDocumentoController@formEditarTipoDocumento');
-                    Route::post('manager',   'SistemaTipoDocumentoController@manager');
+                    Route::get('/',          'SystemTipoDocumentoController@index');
+                    Route::post('post-data', 'SystemTipoDocumentoController@postDataTable');
+                    Route::post('nuevo',     'SystemTipoDocumentoController@formNuevoTipoDocumento');
+                    Route::post('editar',    'SystemTipoDocumentoController@formEditarTipoDocumento');
+                    Route::post('manager',   'SystemTipoDocumentoController@manager');
                 });
 
                 // Administración del catálogo de estados de documentos del sistema
                 Route::prefix('estados-documentos') -> group(function(){
-                    Route::get('/',          'SistemaEstadoDocumentoController@index');
-                    Route::post('post-data', 'SistemaEstadoDocumentoController@postDataTable');
-                    Route::post('editar',    'SistemaEstadoDocumentoController@formEditarEstadoDocumento');
-                    Route::post('manager',   'SistemaEstadoDocumentoController@manager');
+                    Route::get('/',          'SystemEstadoDocumentoController@index');
+                    Route::post('post-data', 'SystemEstadoDocumentoController@postDataTable');
+                    Route::post('editar',    'SystemEstadoDocumentoController@formEditarEstadoDocumento');
+                    Route::post('manager',   'SystemEstadoDocumentoController@manager');
                 });
 
                 // Configuración de las variables del sistema
                 Route::prefix('variables') -> group(function(){
-                    Route::get('/',          'SistemaVariableController@index');
-                    Route::post('manager',   'SistemaVariableController@manager');
+                    Route::get('/',          'SystemVariableController@index');
+                    Route::post('manager',   'SystemVariableController@manager');
                 });
 
                 // Administración de la bitácora del sistema
                 Route::prefix('bitacora') -> group(function(){
-                    Route::get('/',          'SistemaBitacoraController@index');
-                    Route::post('manager',   'SistemaBitacoraController@manager');
+                    Route::get('/',          'SystemBitacoraController@index');
+                    Route::post('manager',   'SystemBitacoraController@manager');
 
                 });
 

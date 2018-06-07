@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Configuracion\Catalogo;
 
 use Illuminate\Http\Request;
-use App\Http\Requests\ManagerDepartamentoRequest;
+use App\Http\Requests\DepartamentoRequest;
 use Illuminate\Support\Facades\Input;
 use Carbon\Carbon;
 use Validator;
@@ -30,7 +30,7 @@ class DepartamentoController extends BaseController
     	return view('Configuracion.Catalogo.Departamento.indexDepartamento') -> with($data);
 	}
 
-	public function manager(ManagerDepartamentoRequest $request)
+	public function manager(DepartamentoRequest $request)
 	{
 
 		switch ($request -> action) {
@@ -40,10 +40,13 @@ class DepartamentoController extends BaseController
 			case 2: // Editar
 				$response = $this -> editarDepartamento( $request );
 				break;
-			case 3: // Activar / Desactivar
+			case 3: // Visualizar departamento
+                $response = $this -> verDepartamento( $request );
+                break;
+			case 4: // Activar / Desactivar
 				$response = $this -> activarDepartamento( $request );
 				break;
-			case 4: // Eliminar
+			case 5: // Eliminar
 				$response = $this -> eliminarDepartamento( $request );
 				break;
 			default:
@@ -135,6 +138,19 @@ class DepartamentoController extends BaseController
 
 		}
 	}
+
+	public function verDepartamento( $request )
+    {
+        try {
+            $departamento         = MDepartamento::find( $request -> id );
+            $data['departamento'] = $departamento;
+            $data['title']        = sprintf('Departamento #%s', $departamento -> getCodigo() );
+            return view('Configuracion.Catalogo.Departamento.verDepartamento') -> with($data);
+        } catch(Exception $error) {
+
+        }
+
+    }
 
 	public function activarDepartamento( $request ){
 		try {

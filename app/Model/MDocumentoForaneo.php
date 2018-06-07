@@ -95,7 +95,7 @@ class MDocumentoForaneo extends BaseModel
 
     public function TipoDocumento()
     {
-        return $this -> hasOne('App\Model\Sistema\MSistemaTipoDocumento','SYTD_TIPO_DOCUMENTO','DOFO_SYSTEM_TIPO_DOCTO');
+        return $this -> hasOne('App\Model\System\MSystemTipoDocumento','SYTD_TIPO_DOCUMENTO','DOFO_SYSTEM_TIPO_DOCTO');
     }
 
 }

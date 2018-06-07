@@ -1,31 +1,29 @@
 <?php
-namespace App\Http\Controllers\Configuracion\Sistema;
+namespace App\Http\Controllers\Configuracion\System;
 
 use Illuminate\Http\Request;
-use App\Http\Requests\ManagerTipoDocumentoRequest;
+use App\Http\Requests\SystemTipoDocumentoRequest;
 use Illuminate\Support\Facades\Input;
-use Carbon\Carbon;
-use Validator;
 use Exception;
 
 /* Controllers */
 use App\Http\Controllers\BaseController;
-use App\DataTables\SistemaTiposDocumentosDataTable;
+use App\DataTables\SystemTiposDocumentosDataTable;
 
 /* Models */
-use App\Model\Sistema\MSistemaTipoDocumento;
+use App\Model\System\MSystemTipoDocumento;
 
-class SistemaTipoDocumentoController extends BaseController
+class SystemTipoDocumentoController extends BaseController
 {
 	private $form_id = 'form-tipo-documento';
 
 	public function __construct()
 	{
 		parent::__construct();
-		$this -> setLog('SistemaTipoDocumentoController.log');
+		$this -> setLog('SystemTipoDocumentoController.log');
 	}
 
-	public function index(SistemaTiposDocumentosDataTable $dataTables)
+	public function index(SystemTiposDocumentosDataTable $dataTables)
 	{
 		$data['table']    = $dataTables;
 		$data['form_id']  = $this -> form_id;
@@ -34,7 +32,7 @@ class SistemaTipoDocumentoController extends BaseController
 		return view('Configuracion.Sistema.TipoDocumento.indexTipoDocumento') -> with($data);
 	}
 
-	public function manager(ManagerTipoDocumentoRequest $request)
+	public function manager(SystemTipoDocumentoRequest $request)
 	{
 		switch ($request -> action) {
 			case 1: // Nuevo
@@ -57,7 +55,7 @@ class SistemaTipoDocumentoController extends BaseController
 		return $response;
 	}
 
-	public function postDataTable(SistemaTiposDocumentosDataTable $dataTables)
+	public function postDataTable(SystemTiposDocumentosDataTable $dataTables)
 	{
 		return $dataTables->getData();
 	}
@@ -81,7 +79,7 @@ class SistemaTipoDocumentoController extends BaseController
 	public function nuevoTipoDocumento( $request )
 	{
 		try {
-			$tipoDocumento = new MSistemaTipoDocumento;
+			$tipoDocumento = new MSystemTipoDocumento;
 			$tipoDocumento -> SYTD_NOMBRE          = $request -> nombre;
 			$tipoDocumento -> SYTD_ETIQUETA_NUMERO = 'Nó. Oficio';
 			$tipoDocumento -> SYTD_RIBBON_COLOR    = 'default';
@@ -105,7 +103,7 @@ class SistemaTipoDocumentoController extends BaseController
 			$data['form_id']       = $this -> form_id;
 			$data['url_send_form'] = url('configuracion/sistema/tipos-documentos/manager');
 			$data['action']        = 2;
-			$data['model']         = MSistemaTipoDocumento::find( Input::get('id') );
+			$data['model']         = MSystemTipoDocumento::find( Input::get('id') );
 			$data['id']            = Input::get('id');
 
 			return view('Configuracion.Sistema.TipoDocumento.formTipoDocumento') -> with($data);
@@ -117,7 +115,7 @@ class SistemaTipoDocumentoController extends BaseController
 	public function editarTipoDocumento( $request )
 	{
 		try {
-			$tipoDocumento = MSistemaTipoDocumento::findOrFail( $request -> id );
+			$tipoDocumento = MSystemTipoDocumento::findOrFail( $request -> id );
 			$tipoDocumento -> SYTD_NOMBRE = $request -> nombre;
 			$tipoDocumento -> save();
 
@@ -135,7 +133,7 @@ class SistemaTipoDocumentoController extends BaseController
 	public function activarTipoDocumento( $request )
 	{
 		try {
-			$tipoDocumento = MSistemaTipoDocumento::find( $request -> id );
+			$tipoDocumento = MSystemTipoDocumento::find( $request -> id );
 			$tipoDocumento -> cambiarDisponibilidad() -> save();
 			
 			if( $tipoDocumento -> disponible() ){
@@ -160,7 +158,7 @@ class SistemaTipoDocumentoController extends BaseController
             	return $this -> responseDangerJSON('<i class="fa fa-fw fa-warning"></i> No es posible eliminar el tipo de documento.');
         	}
 
-            $tipoDocumento = MSistemaTipoDocumento::find( $request -> id );
+            $tipoDocumento = MSystemTipoDocumento::find( $request -> id );
             $tipoDocumento -> eliminar() -> save();
 
             $tables = 'dataTableBuilder';
