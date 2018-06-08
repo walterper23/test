@@ -17,7 +17,6 @@ use App\Model\Catalogo\MDepartamento;
 
 class DepartamentoController extends BaseController
 {
-	
 	private $form_id = 'form-departamento';
 
 	public function index(DepartamentosDataTable $dataTables)
@@ -143,8 +142,15 @@ class DepartamentoController extends BaseController
     {
         try {
             $departamento         = MDepartamento::find( $request -> id );
-            $data['departamento'] = $departamento;
             $data['title']        = sprintf('Departamento #%s', $departamento -> getCodigo() );
+
+            $data['detalles'] = [
+                ['Código', $departamento -> getCodigo()],
+                ['Dirección', $departamento -> Direccion -> getNombre()],
+                ['Nombre', $departamento -> getNombre()],
+                ['Fecha',  $departamento -> presenter() -> getFechaCreacion()]
+            ];
+
             return view('Configuracion.Catalogo.Departamento.verDepartamento') -> with($data);
         } catch(Exception $error) {
 
@@ -154,19 +160,20 @@ class DepartamentoController extends BaseController
 
 	public function activarDepartamento( $request ){
 		try {
-			$departamento = MDepartamento::find( $request -> id );
-			
-			if( $departamento -> cambiarDisponibilidad() -> disponible() ){
-				$type = 'info';
-				$message = sprintf('<i class="fa fa-fw fa-check"></i> Departamento <b>%s</b> activado',$departamento -> getCodigo());
-			}else{
-				$type = 'warning';
-				$message = sprintf('<i class="fa fa-fw fa-warning"></i> Departamento <b>%s</b> desactivado',$departamento -> getCodigo());
-			}
+			$departamento = MDepartamento::findOrFail( $request -> id );
+            $departamento -> cambiarDisponibilidad() -> save();
+            
+            if ( $departamento -> disponible() )
+            {
+                $message = sprintf('<i class="fa fa-fw fa-check"></i> Departamento <b>%s</b> activado',$departamento -> getCodigo());
+                return $this -> responseInfoJSON($message);
+            }
+            else
+            {
+                $message = sprintf('<i class="fa fa-fw fa-warning"></i> Departamento <b>%s</b> desactivado',$departamento -> getCodigo());
+                return $this -> responseWarningJSON($message);
+            }
 
-			$departamento -> save();
-
-			return $this -> responseSuccessJSON($message,$type);
 		} catch(Exception $error) {
 			return response() -> json(['status'=>false,'message'=>'Ocurrió un error al guardar los cambios. Error ' . $error->getCode() ]);
 		}

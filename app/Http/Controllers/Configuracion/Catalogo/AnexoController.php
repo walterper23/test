@@ -151,8 +151,14 @@ class AnexoController extends BaseController
     {
         try {
             $anexo         = MAnexo::find( $request -> id );
-            $data['anexo'] = $anexo;
             $data['title'] = sprintf('Anexo #%s', $anexo -> getCodigo() );
+
+            $data['detalles'] = [
+                ['Código', $anexo -> getCodigo()],
+                ['Nombre', $anexo -> getNombre()],
+                ['Fecha',  $anexo -> presenter() -> getFechaCreacion()]
+            ];
+
             return view('Configuracion.Catalogo.Anexo.verAnexo') -> with($data);
         } catch(Exception $error) {
 

@@ -12,22 +12,22 @@ class MNotificacion extends BaseModel
 
 	public function getColor()
 	{
-		return $this -> attributes['NOTI_COLOR'];
+		return $this -> getAttribute('NOTI_COLOR');
 	}
 
 	public function getContenido()
 	{
-		return $this -> attributes['NOTI_CONTENIDO'];
+		return $this -> getAttribute('NOTI_CONTENIDO');
 	}
 
 	public function getUrl()
 	{
-		return $this -> attributes['NOTI_URL'];
+		return $this -> getAttribute('NOTI_URL');
 	}
 
 	public function getFechaCreacion()
 	{
-		return $this -> attributes['NOTI_CREATED_AT'];
+		return $this -> getAttribute('NOTI_CREATED_AT');
 	}
 
 

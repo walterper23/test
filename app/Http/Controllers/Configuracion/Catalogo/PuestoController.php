@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Configuracion\Catalogo;
 use Illuminate\Http\Request;
 use App\Http\Requests\PuestoRequest;
 use Illuminate\Support\Facades\Input;
-use Carbon\Carbon;
-use Validator;
 
 /* Controllers */
 use App\Http\Controllers\BaseController;
@@ -16,8 +14,8 @@ use App\Model\Catalogo\MDepartamento;
 use App\Model\Catalogo\MDireccion;
 use App\Model\Catalogo\MPuesto;
 
-class PuestoController extends BaseController {
-
+class PuestoController extends BaseController
+{
 	private $form_id;
 
 	public function __construct(){
@@ -46,10 +44,13 @@ class PuestoController extends BaseController {
 			case 2: // Editar
 				$response = $this -> editarPuesto( $request );
 				break;
-			case 3: // Activar / Desactivar
+			case 3: // Visualizar puesto
+                $response = $this -> verPuesto( $request );
+                break;
+			case 4: // Activar / Desactivar
 				$response = $this -> activarPuesto( $request );
 				break;
-			case 4: // Eliminar
+			case 5: // Eliminar
 				$response = $this -> eliminarPuesto( $request );
 				break;
 			default:
@@ -193,16 +194,40 @@ class PuestoController extends BaseController {
 		}
 	}
 
+	public function verPuesto( $request )
+    {
+        try {
+            $puesto = MPuesto::find( $request -> id );
+            $data['title'] = sprintf('Puesto #%s', $puesto -> getCodigo() );
+
+            $data['detalles'] = [
+                ['Código', $puesto -> getCodigo()],
+                ['Dirección', $puesto -> Direccion -> getNombre()],
+                ['Departamento', $puesto -> Departamento ? $puesto -> Departamento -> getNombre() : ''],
+                ['Nombre', $puesto -> getNombre()],
+                ['Fecha',  $puesto -> presenter() -> getFechaCreacion()]
+            ];
+
+            return view('Configuracion.Catalogo.Anexo.verAnexo') -> with($data);
+        } catch(Exception $error) {
+
+        }
+
+    }
+
 	public function activarPuesto( $request ){
 		try {
 			$puesto = MPuesto::find( $request -> id );
 
 			$puesto -> cambiarDisponibilidad() -> save();
 
-			if( $puesto -> disponible() ){
+			if( $puesto -> disponible() )
+			{
 				$message = sprintf('<i class="fa fa-fw fa-check"></i> Puesto <b>%s</b> activado',$puesto -> getCodigo());
 				return $this -> responseInfoJSON($message);
-			}else{
+			}
+			else
+			{
 				$message = sprintf('<i class="fa fa-fw fa-warning"></i> Puesto <b>%s</b> desactivado',$puesto -> getCodigo());
 				return $this -> responseWarningJSON($message);
 			}

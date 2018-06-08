@@ -131,8 +131,15 @@ class DireccionController extends BaseController {
     {
         try {
             $direccion         = MDireccion::find( $request -> id );
-            $data['direccion'] = $direccion;
             $data['title']     = sprintf('Dirección #%s', $direccion -> getCodigo() );
+            
+            $data['detalles'] = [
+                ['Código', $direccion -> getCodigo()],
+                ['Nombre', $direccion -> getNombre()],
+                ['Nó. departamentos', $direccion -> Departamentos -> count()],
+                ['Fecha',  $direccion -> presenter() -> getFechaCreacion()]
+            ];
+
             return view('Configuracion.Catalogo.Direccion.verDireccion') -> with($data);
         } catch(Exception $error) {
 
@@ -142,19 +149,21 @@ class DireccionController extends BaseController {
 
 	public function activarDireccion( $request ){
 		try{
-			$direccion = MDireccion::find( $request -> id );
 
-			if( $direccion -> cambiarDisponibilidad() -> disponible() ){
-				$type = 'info';
-				$message = sprintf('<i class="fa fa-fw fa-check"></i> Dirección <b>%s</b> activada',$direccion -> getCodigo());
-			}else{
-				$type = 'warning';
-				$message = sprintf('<i class="fa fa-fw fa-warning"></i> Dirección <b>%s</b> desactivada',$direccion -> getCodigo());
-			}
+			$direccion = MDireccion::findOrFail( $request -> id );
+            $direccion -> cambiarDisponibilidad() -> save();
+            
+            if ( $direccion -> disponible() )
+            {
+                $message = sprintf('<i class="fa fa-fw fa-check"></i> Dirección <b>%s</b> activada',$direccion -> getCodigo());
+                return $this -> responseInfoJSON($message);
+            }
+            else
+            {
+                $message = sprintf('<i class="fa fa-fw fa-warning"></i> Dirección <b>%s</b> desactivada',$direccion -> getCodigo());
+                return $this -> responseWarningJSON($message);
+            }
 
-			$direccion -> save();
-
-			return $this -> responseSuccessJSON($message,$type);
 		} catch(Exception $error) {
 			return response()->json(['status'=>false,'message'=>'Ocurrió un error al guardar los cambios. Error ' . $error->getCode() ]);
 		}

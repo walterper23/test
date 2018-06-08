@@ -26,7 +26,7 @@ class DepartamentosDataTable extends CustomDataTable
             [
                 'title' => 'Dirección',
                 'render' => function($departamento){
-                    return $departamento -> Direccion -> presenter() -> link();
+                    return $departamento -> Direccion -> getNombre();
                 }
             ],
             [

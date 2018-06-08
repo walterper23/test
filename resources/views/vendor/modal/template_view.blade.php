@@ -12,15 +12,15 @@
 @stack('css-custom')
 
 <div class="block-content">
-@yield('content')
+    @each('vendor.modal.view_detail',$detalles,'detalle')
 </div>
 
 @stack('js-script')
 
 <script type="text/javascript">
 	'use strict';
-	var anexo = new AppForm;
-	$.extend(anexo, new function(){
+	var modal_view = new AppForm;
+	$.extend(modal_view, new function(){
 		this.context_ = '#modal-view';
 	}).init();
 </script>
