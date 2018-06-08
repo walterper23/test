@@ -201,27 +201,30 @@ class PanelController extends BaseController
     // Formulario para realizar el cambio de estado de un documento
     public function formCambioEstadoDocumento(Request $request)
     {
-        $seguimiento = MSeguimiento::find( $request -> seguimiento );
+        $documento = MDocumento::find( $request -> documento );
+
+        // Recuperar las direcciones asignadas al usuario
+        $ids_direcciones_origen = user() -> Direcciones() -> pluck('DIRE_DIRECCION') -> toArray();
+
+        // Recuperar los departamentos asignados al usuario
+        $ids_departamentos_origen = user() -> Departamentos() -> pluck('DEPA_DEPARTAMENTO') -> toArray();
         
         $data = [
             'title'         => 'Cambio de Estado de Documento',
             'url_send_form' => url('panel/documentos/manager'),
             'form_id'       => 'form-cambio-estado-documento',
             'action'        => 1,
-            'seguimiento'   => $request -> seguimiento,
+            'documento'     => $documento -> getKey(),
         ];
 
-        // Recuperar las direcciones asignadas al usuario
-        $data['direcciones_origen'] = user() -> Direcciones() -> pluck('DIRE_DIRECCION') -> toArray();
+        // Buscar el último seguimiento del documento
+        $seguimiento = $documento -> Seguimientos -> last();
 
-        // Recuperar los departamentos asignados al usuario
-        $data['departamentos_origen'] = user() -> Departamentos() -> pluck('DEPA_DEPARTAMENTO') -> toArray();
-
-        $data['direccion_origen']    = $seguimiento -> DireccionOrigen -> getNombre();
+        $data['direccion_origen']    = $seguimiento -> DireccionDestino -> getNombre();
         $data['departamento_origen'] = '';
 
-        if( $seguimiento -> DepartamentoOrigen )
-            $data['departamento_origen'] = $seguimientos -> DepartamentoOrigen -> getNombre();
+        if( $seguimiento -> DepartamentoDestino )
+            $data['departamento_origen'] = $seguimiento -> DepartamentoDestino -> getNombre();
 
         // Obtener todas las direcciones de destino existentes y disponibles con sus departamentos existentes y disponibles
         $direcciones = MDireccion::with('DepartamentosExistentesDisponibles')
@@ -249,9 +252,9 @@ class PanelController extends BaseController
     
         // Obtener los estados de documentos de sus direcciones y departamentos
         $estados = MEstadoDocumento::select('ESDO_NOMBRE','ESDO_ESTADO_DOCUMENTO') -> existenteDisponible()
-                    -> where(function($query) use ($data){
-                        $query -> orWhereIn('ESDO_DIRECCION',$data['direcciones_origen']);
-                        $query -> orWhereIn('ESDO_DEPARTAMENTO',$data['departamentos_origen']);
+                    -> where(function($query) use ($ids_direcciones_origen, $ids_departamentos_origen){
+                        $query -> orWhereIn('ESDO_DIRECCION',$ids_direcciones_origen);
+                        $query -> orWhereIn('ESDO_DEPARTAMENTO',$ids_departamentos_origen);
                     })
                     -> pluck('ESDO_NOMBRE','ESDO_ESTADO_DOCUMENTO')
                     -> toArray();
@@ -262,6 +265,7 @@ class PanelController extends BaseController
         $semaforo = MDocumentoSemaforizado::where('DOSE_DOCUMENTO',$seguimiento -> SEGU_DOCUMENTO)
                     -> whereIn('DOSE_ESTADO',[1,2]) // En espera, No atendido
                     -> whereNull('DOSE_SEGUIMIENTO_B')
+                    -> get()
                     -> first();
         
         $data['contestar'] = $semaforo;
@@ -311,8 +315,8 @@ class PanelController extends BaseController
         $seguimientoNuevo = new MSeguimiento;
         $seguimientoNuevo -> SEGU_USUARIO              = userKey();
         $seguimientoNuevo -> SEGU_DOCUMENTO            = $seguimientoAnterior -> SEGU_DOCUMENTO;
-        $seguimientoNuevo -> SEGU_DIRECCION_ORIGEN     = $request -> direccion_origen;
-        $seguimientoNuevo -> SEGU_DEPARTAMENTO_ORIGEN  = $departamento_origen;
+        $seguimientoNuevo -> SEGU_DIRECCION_ORIGEN     = $seguimientoAnterior -> SEGU_DIRECCION_DESTINO;
+        $seguimientoNuevo -> SEGU_DEPARTAMENTO_ORIGEN  = $seguimientoAnterior -> SEGU_DEPARTAMENTO_DESTINO;
         $seguimientoNuevo -> SEGU_DIRECCION_DESTINO    = $request -> direccion_destino;
         $seguimientoNuevo -> SEGU_DEPARTAMENTO_DESTINO = $departamento_destino;
         $seguimientoNuevo -> SEGU_ESTADO_DOCUMENTO     = $request -> estado;

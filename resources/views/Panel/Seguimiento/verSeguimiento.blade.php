@@ -29,8 +29,8 @@
                 @endif
             </h3>
             <div class="block-options">
-                @if (! $seguimiento -> Documento -> finalizado() && ! $seguimiento -> Documento -> rechazado() && user() -> can('SEG.CAMBIAR.ESTADO'))
-                <button type="button" class="btn btn-sm btn-danger" onclick="hPanel.cambiarEstado({{ $seguimiento -> getKey() }})">
+                @if (user() -> can('SEG.CAMBIAR.ESTADO') && ! $seguimiento -> Documento -> finalizado() && ! $seguimiento -> Documento -> rechazado())
+                <button type="button" class="btn btn-sm btn-danger" onclick="hPanel.cambiarEstado({{ $documento -> getKey() }})">
                     <i class="fa fa-fw fa-flash"></i> Cambiar estado
                 </button>
                 @endif

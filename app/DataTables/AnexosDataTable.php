@@ -13,8 +13,8 @@ class AnexosDataTable extends CustomDataTable
         return [
             [
                 'title' => '#',
-                'render' => function($query){
-                    return $query -> getCodigo();
+                'render' => function($anexo){
+                    return $anexo -> getCodigo();
                 }
             ],
             [
@@ -27,21 +27,21 @@ class AnexosDataTable extends CustomDataTable
             ],
             [
                 'title' => 'Activo',
-                'render' => function($query){
-                    $checked = $query -> disponible() ? ' checked=""' : '';
+                'render' => function($anexo){
+                    $checked = $anexo -> disponible() ? ' checked=""' : '';
                     
                     return sprintf('<label class="css-control css-control-sm css-control-primary css-switch">
-                            <input type="checkbox" class="css-control-input"%s onclick="hAnexo.active({id:%d})"><span class="css-control-indicator"></span></label>',$checked,$query -> getKey());
+                            <input type="checkbox" class="css-control-input"%s onclick="hAnexo.active({id:%d})"><span class="css-control-indicator"></span></label>',$checked,$anexo -> getKey());
                 }
             ],
             [
                 'title'  => 'Opciones',
-                'render' => function($query){
+                'render' => function($anexo){
                     $buttons = sprintf('
                         <button type="button" class="btn btn-sm btn-circle btn-alt-primary" onclick="hAnexo.view(%d)"><i class="fa fa-eye"></i></button>
                         <button type="button" class="btn btn-sm btn-circle btn-alt-success" onclick="hAnexo.edit_(%d)"><i class="fa fa-pencil"></i></button>
                         <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hAnexo.delete_(%d)"><i class="fa fa-trash"></i></button>',
-                        $query -> getKey(), $query -> getKey(), $query -> getKey()
+                        $anexo -> getKey(), $anexo -> getKey(), $anexo -> getKey()
                     );
                     
                     return $buttons;

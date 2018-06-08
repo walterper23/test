@@ -49,6 +49,13 @@ App.loadScript('/js/helpers/helper.js', function(){
 				})
 			},
 
+			delete_ : function(id){
+				this.delete({
+					title : 'Eliminar recepción',
+					data : { action : 4, id }
+				})
+			}
+
 		}
 	}())
 })

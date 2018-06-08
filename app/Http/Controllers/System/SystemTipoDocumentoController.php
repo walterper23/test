@@ -41,10 +41,13 @@ class SystemTipoDocumentoController extends BaseController
 			case 2: // Editar
 				$response = $this -> editarTipoDocumento( $request );
 				break;
-			case 3: // Activar / Desactivar
+			case 3: // Visualizar tipo de documento
+				$response = $this -> verTipoDocumento( $request );
+				break;
+			case 4: // Activar / Desactivar
 				$response = $this -> activarTipoDocumento( $request );
 				break;
-			case 4: // Eliminar tipo de documento
+			case 5: // Eliminar tipo de documento
 				$response = $this -> eliminarTipoDocumento( $request );
 				break;
 			default:
@@ -103,7 +106,7 @@ class SystemTipoDocumentoController extends BaseController
 			$data['form_id']       = $this -> form_id;
 			$data['url_send_form'] = url('configuracion/sistema/tipos-documentos/manager');
 			$data['action']        = 2;
-			$data['model']         = MSystemTipoDocumento::find( Input::get('id') );
+			$data['model']         = MSystemTipoDocumento::findOrFail( Input::get('id') );
 			$data['id']            = Input::get('id');
 
 			return view('Configuracion.Sistema.TipoDocumento.formTipoDocumento') -> with($data);
@@ -122,7 +125,7 @@ class SystemTipoDocumentoController extends BaseController
 			// Lista de tablas que se van a recargar automáticamente
 			$tables = 'dataTableBuilder';
 
-			$message = sprintf('<i class="fa fa-fw fa-file-o"></i> Tipo de documento <b>%s</b> modificado',$tipoDocumento -> getCodigo());
+			$message = sprintf('<i class="fa fa-fw fa-files-o"></i> Tipo de documento <b>%s</b> modificado',$tipoDocumento -> getCodigo());
 			
 			return $this -> responseSuccessJSON($message,$tables);
 		} catch(Exception $error) {
@@ -130,10 +133,29 @@ class SystemTipoDocumentoController extends BaseController
 		}
 	}
 
+	public function verTipoDocumento( $request )
+    {
+        try {
+            $tipoDocumento = MSystemTipoDocumento::find( $request -> id );
+            $data['title'] = sprintf('Tipo de Documento #%s', $tipoDocumento -> getCodigo() );
+
+            $data['detalles'] = [
+                ['Código', $tipoDocumento -> getCodigo()],
+                ['Nombre', $tipoDocumento -> getNombre()],
+                ['Fecha',  $tipoDocumento -> presenter() -> getFechaCreacion()]
+            ];
+
+            return view('Configuracion.Sistema.TipoDocumento.verTipoDocumento') -> with($data);
+        } catch(Exception $error) {
+
+        }
+
+    }
+
 	public function activarTipoDocumento( $request )
 	{
 		try {
-			$tipoDocumento = MSystemTipoDocumento::find( $request -> id );
+			$tipoDocumento = MSystemTipoDocumento::findOrFail( $request -> id );
 			$tipoDocumento -> cambiarDisponibilidad() -> save();
 			
 			if( $tipoDocumento -> disponible() ){
@@ -153,22 +175,22 @@ class SystemTipoDocumentoController extends BaseController
     {
         try {
 
-        	if( $request -> id == 1 ) // No permitir la eliminación del tipo de documento "Denuncia"
+        	if( $request -> id == 1 || $request -> id == 2 ) // No permitir la eliminación del tipo de documento "Denuncia" ni "Documento de denuncia"
         	{
             	return $this -> responseDangerJSON('<i class="fa fa-fw fa-warning"></i> No es posible eliminar el tipo de documento.');
         	}
 
-            $tipoDocumento = MSystemTipoDocumento::find( $request -> id );
+            $tipoDocumento = MSystemTipoDocumento::findOrFail( $request -> id );
             $tipoDocumento -> eliminar() -> save();
 
             $tables = 'dataTableBuilder';
 
             // Lista de tablas que se van a recargar automáticamente
-            $message = sprintf('<i class="fa fa-fw fa-warning"></i> Anexo <b>%s</b> eliminado',$tipoDocumento -> getCodigo());
+            $message = sprintf('<i class="fa fa-fw fa-warning"></i> Tipo de documento <b>%s</b> eliminado',$tipoDocumento -> getCodigo());
 
             return $this -> responseWarningJSON($message,'danger',$tables);
         } catch(Exception $error) {
-            return response()->json(['status'=>false,'message'=>'Ocurrió un error al eliminar el anexo. Error ' . $error->getMessage() ]);
+            return response()->json(['status'=>false,'message'=>'Ocurrió un error al eliminar el Tipo de documento. Error ' . $error->getMessage() ]);
         }
     }
 

@@ -4,8 +4,8 @@
 
 @section('content')
 {{ Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) }}
-    <input type="hidden" name="action" value="{{ $action }}"> 
-    {{ Form::hidden('seguimiento',$seguimiento) }}
+    {{ Form::hidden('action',$action) }}
+    {{ Form::hidden('documento',$documento) }}
 	
 	@isset($contestar)
 	<div class="form-group row">

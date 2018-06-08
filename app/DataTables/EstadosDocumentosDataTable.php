@@ -30,7 +30,7 @@ class EstadosDocumentosDataTable extends CustomDataTable{
                 'render' => function($query){
                     if (! is_null($query -> Departamento) )
                         return $query -> Departamento -> getNombre();
-                    return '- Ninguno -';
+                    return '<p class="font-size-xs text-muted">- Ninguno -</p>';
                 }
             ],
             [

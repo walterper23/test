@@ -328,4 +328,31 @@ class RecepcionController extends BaseController
 
 	}
 
+	public function eliminarRecepcion( $request )
+	{
+		try {
+            $documento = MDocumento::find( $request -> id );
+            $documento -> eliminar() -> save();
+
+            // Lista de tablas que se van a recargar automáticamente
+            switch ($documento -> getTipoDocumento()) {
+            	case 1:
+            		$tables = 'denuncias-datatable';
+            		break;
+            	case 2:
+            		$tables = 'documentos-denuncias-datatable';
+            		break;
+            	default:
+            		$tables = 'documentos-datatable';
+            		break;
+            }
+
+            $message = sprintf('<i class="fa fa-fw fa-warning"></i> Recepción <b>%s</b> eliminada',$documento -> getCodigo());
+
+            return $this -> responseWarningJSON($message,'danger',$tables);
+        } catch(Exception $error) {
+            return response()->json(['status'=>false,'message'=>'Ocurrió un error al eliminar la recepción. Error ' . $error->getMessage() ]);
+        }
+	}
+
 }

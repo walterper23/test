@@ -37,6 +37,9 @@ class SystemEstadoDocumentoController extends BaseController
 			case 2: // Editar
 				$response = $this -> editarEstadoDocumento( $request );
 				break;
+			case 3: // Visualizar estado de documento
+				$response = $this -> verEstadoDocumento( $request );
+				break;
 			default:
 				return response()->json(['message'=>'Petición no válida'],404);
 				break;
@@ -70,7 +73,6 @@ class SystemEstadoDocumentoController extends BaseController
 	public function editarEstadoDocumento( $request )
 	{
 		try {
-
 			$estadoDocumento = MSystemEstadoDocumento::findOrFail( $request -> id );
 			$estadoDocumento -> SYED_NOMBRE = $request -> nombre;
 			$estadoDocumento -> save();
@@ -81,10 +83,28 @@ class SystemEstadoDocumentoController extends BaseController
 			$message = sprintf('<i class="fa fa-fw fa-check"></i> Estado de documento <b>%s</b> modificado',$estadoDocumento -> getCodigo());
 
 			return $this -> responseSuccessJSON($message,$tables);
-
 		} catch(Exception $error) {
 			return response()->json(['status'=>false,'message'=>'Ocurrió un error al editar el Estado de Documento. Error ' . $error->getMessage() ]);
 		}
 	}
+
+	public function verEstadoDocumento( $request )
+    {
+        try {
+            $estadoDocumento = MSystemEstadoDocumento::find( $request -> id );
+            $data['title'] = sprintf('Estado de Documento #%s', $estadoDocumento -> getKey() );
+
+            $data['detalles'] = [
+                ['Código', $estadoDocumento -> getKey()],
+                ['Nombre', $estadoDocumento -> SYED_NOMBRE],
+                //['Fecha',  $estadoDocumento -> presenter() -> getFechaCreacion()]
+            ];
+
+            return view('Configuracion.Sistema.EstadoDocumento.verEstadoDocumento') -> with($data);
+        } catch(Exception $error) {
+        	return $error -> getMessage();
+        }
+
+    }
 
 }

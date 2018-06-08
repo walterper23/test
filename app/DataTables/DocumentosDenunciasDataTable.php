@@ -13,7 +13,7 @@ class DocumentosDenunciasDataTable extends CustomDataTable
 
     protected function setSourceData()
     {
-        $this -> sourceData = MDocumento::with('Detalle','AcuseRecepcion') -> select('DOCU_DOCUMENTO','DOCU_NUMERO_DOCUMENTO','DOCU_DETALLE')
+        $this -> sourceData = MDocumento::with('Detalle','AcuseRecepcion') -> select('DOCU_DOCUMENTO','DOCU_NUMERO_DOCUMENTO','DOCU_DETALLE','DOCU_SYSTEM_ESTADO_DOCTO')
                             -> where('DOCU_SYSTEM_TIPO_DOCTO',2) -> existente() -> noGuardado() -> orderBy('DOCU_DOCUMENTO','DESC') -> get(); // Documentos de denuncias
     }
 
@@ -44,15 +44,22 @@ class DocumentosDenunciasDataTable extends CustomDataTable
             [
                 'title'  => 'Opciones',
                 'render' => function($documento){
-                    $buttons = '';
+                    $url = url( sprintf('recepcion/acuse/documento/%s',$documento -> AcuseRecepcion -> getNombre()) );
 
                     //$buttons .= sprintf('<button type="button" class="btn btn-sm btn-circle btn-alt-primary" onclick="hRecepcion.view(%d)" title="Ver documento"><i class="fa fa-fw fa-eye"></i></button>', $documento -> getKey());
                     
-                    $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcion.anexos(%d)" title="Ver anexos del documento"><i class="fa fa-fw fa-clipboard"></i></button>', $documento -> getKey());
+                    $buttons = sprintf('
+                        <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcion.anexos(%d)" title="Anexos del documento">
+                            <i class="fa fa-fw fa-clipboard"></i>
+                        </button>
+                        <a class="btn btn-sm btn-circle btn-alt-success" href="%s" target="_blank" title="Acuse de Recepción"><i class="fa fa-fw fa-file-text"></i></a>', $documento -> getKey(), $url
+                    );
 
-                    $url = url( sprintf('recepcion/acuse/documento/%s',$documento -> AcuseRecepcion -> getNombre()) );
-                    $buttons .= sprintf(' <a class="btn btn-sm btn-circle btn-alt-success" href="%s" target="_blank" title="Acuse de Recepción"><i class="fa fa-fw fa-file-text"></i></a>', $url);
-                    
+                    if( user() -> can('REC.ELIMINAR') && $documento -> recepcionado() )
+                    {
+                        $buttons .= sprintf('<button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcion.delete_(%d)"><i class="fa fa-trash"></i></button>', $documento -> getKey());
+                    }
+
                     return $buttons;
                 }
             ]

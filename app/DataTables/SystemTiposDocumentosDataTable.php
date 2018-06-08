@@ -9,7 +9,7 @@ class SystemTiposDocumentosDataTable extends CustomDataTable
     protected function setSourceData()
     {
         $this -> sourceData = MSystemTipoDocumento::select('SYTD_TIPO_DOCUMENTO','SYTD_NOMBRE','SYTD_CREATED_AT','SYTD_ENABLED')
-                                -> where('SYTD_DELETED',0) -> orderBy('SYTD_TIPO_DOCUMENTO','ASC');
+                                -> existente() -> orderBy('SYTD_TIPO_DOCUMENTO','ASC') -> get();
     }
 
     protected function columnsTable()
@@ -17,8 +17,8 @@ class SystemTiposDocumentosDataTable extends CustomDataTable
         return [
             [
                 'title'  => '#',
-                'render' => function($query){
-                    return $query -> getCodigo();
+                'render' => function($tipoDocumento){
+                    return $tipoDocumento -> getCodigo();
                 }
             ],
             [
@@ -31,22 +31,24 @@ class SystemTiposDocumentosDataTable extends CustomDataTable
             ],
             [
                 'title' => 'Activo',
-                'render' => function($query){
-                    $checked = $query -> disponible() ? 'checked=""' : '';
+                'render' => function($tipoDocumento){
+                    $checked = $tipoDocumento -> disponible() ? 'checked=""' : '';
                     
                     return sprintf('<label class="css-control css-control-sm css-control-primary css-switch">
                                 <input type="checkbox" class="css-control-input" %s onclick="hSistemaTipoDocumento.active({id:%d})"><span class="css-control-indicator"></span>
-                            </label>',$checked,$query -> getKey());
+                            </label>',$checked,$tipoDocumento -> getKey());
                 }
             ],
             [
                 'title'  => 'Opciones',
-                'render' => function($query){
+                'render' => function($tipoDocumento){
 
-                    $buttons = sprintf('<button type="button" class="btn btn-sm btn-circle btn-alt-success" onclick="hSistemaTipoDocumento.edit_(%d)"><i class="fa fa-pencil"></i></button>', $query -> getKey());
+                    $buttons = sprintf('
+                        <button type="button" class="btn btn-sm btn-circle btn-alt-primary" onclick="hSistemaTipoDocumento.view(%d)"><i class="fa fa-eye"></i></button>
+                        <button type="button" class="btn btn-sm btn-circle btn-alt-success" onclick="hSistemaTipoDocumento.edit_(%d)"><i class="fa fa-pencil"></i></button>', $tipoDocumento -> getKey(), $tipoDocumento -> getKey());
 
-                    if ( $query -> getKey() != 1 )
-                        $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hSistemaTipoDocumento.delete_(%d)"><i class="fa fa-trash"></i></button>', $query -> getKey());
+                    if ( $tipoDocumento -> getKey() > 2 ) // Diferente de Denuncia y Documento para denuncia
+                        $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hSistemaTipoDocumento.delete_(%d)"><i class="fa fa-trash"></i></button>', $tipoDocumento -> getKey());
 
 
                     return $buttons;

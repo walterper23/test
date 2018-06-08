@@ -29,7 +29,7 @@ var hPanel = function(){
 			id : 'form-cambio-estado-documento',
 			size : 'modal-lg',
 			url  : '/panel/documentos/cambio-estado',
-			data : { seguimiento : id }
+			data : { documento : id }
 		});
 	};
 
