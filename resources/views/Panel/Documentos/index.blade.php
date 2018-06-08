@@ -27,6 +27,11 @@
 
         return url( $url );
     }
+
+    function filter_view($type, $count)
+    {
+        return sprintf('%s %s',$type,badge($count));
+    }
 @endphp
 
 @section('content')
@@ -41,7 +46,7 @@
                                 <div class="col-md-2 col-sm-4">
                                     <div class="btn-group" role="group" aria-label="Documentos a visualizar">
                                         <div class="btn-group show" role="group">
-                                            <button type="button" class="btn btn-alt-secondary dropdown-toggle" id="btnGroupDrop1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ver documentos</button>
+                                            <button type="button" class="btn btn-alt-secondary dropdown-toggle" id="btnGroupDrop1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{!! filter_view($view, $count) !!}</button>
                                             <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 34px, 0px); top: 0px; left: 0px; will-change: transform;">
                                                 <a class="dropdown-item" href="{{ url('panel/documentos?view=recents') }}">
                                                     <i class="fa fa-folder mx-5"></i> Recientes {!! badge($recientes) !!}
@@ -55,6 +60,9 @@
                                                 <a class="dropdown-item" href="{{ url('panel/documentos?view=archived') }}">
                                                     <i class="fa fa-fw fa-archive mr-5"></i> Archivados {!! badge($archivados) !!}
                                                 </a>
+                                                <a class="dropdown-item" href="{{ url('panel/documentos?view=rejected') }}">
+                                                    <i class="fa fa-fw fa-thumbs-down mr-5"></i> Rechazados {!! badge($rechazados) !!}
+                                                </a>
                                                 <a class="dropdown-item" href="{{ url('panel/documentos?view=finished') }}">
                                                     <i class="fa fa-fw fa-flag-checkered mr-5"></i> Finalizados {!! badge($finalizados) !!}
                                                 </a>
@@ -63,15 +71,15 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <form>
+                                    {{ Form::open(['method'=>'GET']) }}
                                         {{ Form::hidden('view',request() -> get('view','all')) }}
-                                    <div class="input-group">
-                                        <input type="search" class="form-control" id="search" name="search" placeholder="Nó. documento, Tipo documento, Nó. expediente, Asunto..." value="{{ request() -> get('search') }}">
-                                        <div class="input-group-append">
-                                            <button type="submit" class="btn btn-secondary"><i class="fa fa-search"></i></button>
+                                        <div class="input-group">
+                                            <input type="search" class="form-control" id="search" name="search" placeholder="Nó. documento, Tipo documento, Nó. expediente, Asunto..." value="{{ request() -> get('search') }}" {{ $field_search }}>
+                                            <div class="input-group-append">
+                                                <button type="submit" class="btn btn-secondary" {{ $field_search }}><i class="fa fa-search"></i></button>
+                                            </div>
                                         </div>
-                                    </div>
-                                    </form>
+                                    {{ Form::close() }}
                                 </div>
                             </div>
                         </div>
