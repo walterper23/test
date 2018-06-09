@@ -6,30 +6,31 @@ use App\Model\Catalogo\MEstadoDocumento;
 class EstadosDocumentosDataTable extends CustomDataTable{
 
     protected function setSourceData(){
-        $this -> sourceData = MEstadoDocumento::with(['Direccion','Departamento']) -> select('ESDO_ESTADO_DOCUMENTO','ESDO_DIRECCION','ESDO_DEPARTAMENTO','ESDO_NOMBRE','ESDO_CREATED_AT','ESDO_ENABLED') -> disponible() -> orderBy('ESDO_CREATED_AT','DESC') -> get();
+        $this -> sourceData = MEstadoDocumento::with('Direccion','Departamento')
+                        -> select('ESDO_ESTADO_DOCUMENTO','ESDO_DIRECCION','ESDO_DEPARTAMENTO','ESDO_NOMBRE','ESDO_CREATED_AT','ESDO_ENABLED')
+                        -> disponible() -> orderBy('ESDO_CREATED_AT','DESC') -> get();
     }
 
     protected function columnsTable(){
         return [
             [
                 'title'  => '#',
-                'render' => function($query){
-                    return $query -> getCodigo();
+                'render' => function($estado){
+                    return $estado -> getCodigo();
                 }
             ],
             [
                 'title' => 'Dirección',
-                'render' => function($query){
-                    if (! is_null($query -> Direccion) )
-                        return $query -> Direccion -> getNombre();
-                    return '- Ninguno -';
+                'render' => function($estado){
+                    if (! is_null($estado -> Direccion) )
+                        return $estado -> Direccion -> getNombre();
                 }
             ],
             [
                 'title' => 'Departamento',
-                'render' => function($query){
-                    if (! is_null($query -> Departamento) )
-                        return $query -> Departamento -> getNombre();
+                'render' => function($estado){
+                    if (! is_null($estado -> Departamento) )
+                        return $estado -> Departamento -> getNombre();
                     return '<p class="font-size-xs text-muted">- Ninguno -</p>';
                 }
             ],
@@ -43,24 +44,22 @@ class EstadosDocumentosDataTable extends CustomDataTable{
             ],
             [
                 'title' => 'Activo',
-                'render' => function($query){
-                    $checked = '';
-                    if($query->ESDO_ENABLED == 1){
-                        $checked = 'checked=""';
-                    }
-                    return '<label class="css-control css-control-sm css-control-primary css-switch">
-                                <input type="checkbox" class="css-control-input" '.$checked.' onclick="hEstadoDocumento.active({id:'.$query->ESDO_ESTADO_DOCUMENTO.'})"><span class="css-control-indicator"></span>
-                            </label>';
+                'render' => function($estado){
+                    $checked = $estado -> disponible() ? ' checked=""' : '';
+                    
+                    return sprintf('<label class="css-control css-control-sm css-control-primary css-switch">
+                            <input type="checkbox" class="css-control-input"%s onclick="hEstadoDocumento.active({id:%d})"><span class="css-control-indicator"></span></label>', $checked, $estado -> getKey());
                 }
             ],
             [
                 'title'  => 'Opciones',
-                'render' => function($query){
-                    $buttons = '';
-
-                    $buttons .= '<button type="button" class="btn btn-sm btn-circle btn-alt-success" onclick="hEstadoDocumento.edit_('.$query->ESDO_ESTADO_DOCUMENTO.')"><i class="fa fa-pencil"></i></button>';
-                
-                    $buttons .= '<button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hEstadoDocumento.delete_('.$query->ESDO_ESTADO_DOCUMENTO.')"><i class="fa fa-trash"></i></button>';
+                'render' => function($estado){
+                    $buttons = sprintf('
+                        <button type="button" class="btn btn-sm btn-circle btn-alt-primary" onclick="hEstadoDocumento.view(%d)"><i class="fa fa-eye"></i></button>
+                        <button type="button" class="btn btn-sm btn-circle btn-alt-success" onclick="hEstadoDocumento.edit_(%d)"><i class="fa fa-pencil"></i></button>
+                        <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hEstadoDocumento.delete_(%d)"><i class="fa fa-trash"></i></button>',
+                        $estado -> getKey(), $estado -> getKey(), $estado -> getKey()
+                    );
                     
                     return $buttons;
                 }

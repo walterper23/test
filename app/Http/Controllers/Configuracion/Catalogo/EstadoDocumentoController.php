@@ -36,10 +36,13 @@ class EstadoDocumentoController extends BaseController
 			case 2: // Editar
 				$response = $this -> editarEstadoDocumento( $request );
 				break;
-			case 3: // Activar / Desactivar
+			case 3: // Visualizar estado de documento
+				$response = $this -> verEstadoDocumento( $request );
+				break;
+			case 4: // Activar / Desactivar
 				$response = $this -> activarEstadoDocumento( $request );
 				break;
-			case 4: // Eliminar
+			case 5: // Eliminar
 				$response = $this -> eliminarEstadoDocumento( $request );
 				break;
 			default:
@@ -153,7 +156,7 @@ class EstadoDocumentoController extends BaseController
 				// Agregamos el ID del departamento del Estado de Documento a la lista
 				$ids_departamentos[] = $modelo -> getDepartamento();
 				// Si el usuario no puede administrar todos los departamentos, buscamos solos los departamentos que tenga asignados		
-				if ( (user() -> can('SIS.ADMIN.DEPTOS')) )
+				if (! (user() -> can('SIS.ADMIN.DEPTOS')) )
 				{
 					$ids_departamentos += user() -> Departamentos -> pluck('DEPA_DEPARTAMENTO') -> toArray();
 				}
@@ -203,7 +206,6 @@ class EstadoDocumentoController extends BaseController
 	public function editarEstadoDocumento( $request )
 	{
 		try {
-
 			$departamento = $request -> departamento;
 
 			if( $departamento == 0 )
@@ -225,6 +227,27 @@ class EstadoDocumentoController extends BaseController
 			
 		}
 	}
+
+	public function verEstadoDocumento( $request )
+    {
+        try {
+            $estado        = MEstadoDocumento::find( $request -> id );
+            $data['title'] = sprintf('Estado de Documento #%s', $estado -> getCodigo() );
+
+            $data['detalles'] = [
+                ['Código', $estado -> getCodigo()],
+                ['Dirección', $estado -> Direccion -> getNombre()],
+                ['Departamento', $estado -> Departamento ? $estado -> Departamento -> getNombre() : ''],
+                ['Nombre', $estado -> getNombre()],
+                ['Fecha',  $estado -> presenter() -> getFechaCreacion()]
+            ];
+
+            return view('Configuracion.Catalogo.EstadoDocumento.verEstadoDocumento') -> with($data);
+        } catch(Exception $error) {
+
+        }
+
+    }
 
 	public function activarEstadoDocumento( $request )
 	{

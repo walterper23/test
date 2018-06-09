@@ -31,13 +31,22 @@
                 <div class="dropdown">
                     <button type="button" class="btn-block-option dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cog"></i> Opciones</button>
                     <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="javascript:void(0)">
-                            <i class="fa fa-fw fa-bell mr-5"></i>News
+                        @can('USU.ADMIN.USUARIOS')
+                        <a class="dropdown-item" href="javascript:void(0)" onclick="hUsuario.new_('form-usuario','{{ url('configuracion/usuarios/nuevo') }}')">
+                            <i class="fa fa-fw fa-user-plus"></i> Nuevo usuario
                         </a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="javascript:void(0)">
-                            <i class="fa fa-fw fa-pencil mr-5"></i>Edit Profile
+                        @endcan
+                        @can('SIS.ADMIN.DIRECC')
+                        <a class="dropdown-item" href="javascript:void(0)" onclick="location.href='{{ url('configuracion/catalogos/direcciones') }}'">
+                            <i class="fa fa-fw fa-sitemap"></i> Direcciones
                         </a>
+                        @endcan
+                        @can('SIS.ADMIN.DEPTOS')
+                        <a class="dropdown-item" href="javascript:void(0)" onclick="location.href='{{ url('configuracion/catalogos/departamentos') }}'">
+                            <i class="fa fa-fw fa-sitemap"></i> Departamentos
+                        </a>
+                        @endcan
                     </div>
                 </div>
             </div>
@@ -53,14 +62,16 @@
             </div>
             <div class="tab-pane active" id="btabswo-static-one" role="tabpanel">
                 <div class="row">
-                    <div class="col-12">
+                    <div class="col-md-12">
                         <div class="alert alert-success" role="alert">
                             <p class="mb-0">A continuación se enlistan los permisos disponibles para los usuarios. Seleccione uno o más permisos para asignarselos al usuario especificado.</p>
                         </div>
                     </div>
+                </div>
+                <div class="row">
                     @foreach( $recursos as $recurso )
                     <div class="col-md-4">
-                        <div class="form-group row">
+                        <div class="form-group alert alert-success">
                             <label class="col-12"><p class="bg-success font-w700 text-white pl-5 pr-5">{{ $recurso -> getNombre() }}</p></label>
                             <div class="col-12">
                                 @foreach( $recurso -> Permisos() -> orderBy('SYPE_DESCRIPCION') -> get() as $permiso )
@@ -86,18 +97,20 @@
                             <p class="mb-o">Estas asignaciones permiten a los usuarios ver los documentos que llegan a las direcciones y/o departamentos que tenga asignado.</p>
                         </div>
                     </div>
+                </div>
+                <div class="row">
                     @foreach( $direcciones as $direccion )
 
                     @php $checked_dir = in_array($direccion -> getKey(), $direccionesUsuario) ? 'checked' : '' @endphp
 
                     <div class="col-md-4">
-                        <div class="form-group row">
+                        <div class="form-group alert alert-info">
                             <div class="col-12">
                                 <div class="custom-control custom-checkbox mb-5">
                                     <input class="custom-control-input" type="checkbox" name="direcciones[]" id="direccion-{{ $direccion -> getKey() }}" value="{{ $direccion -> getKey() }}" {{ $checked_dir }}>
-                                    <label class="custom-control-label bg-primary font-w700 text-white pl-5 pr-5" for="direccion-{{ $direccion -> getKey() }}">{{ $direccion -> getNombre() }}</label>
+                                    <label class="custom-control-label bg-primary font-w700 text-white pl-5 pr-5" for="direccion-{{ $direccion -> getKey() }}" style="width: 100%;">{{ $direccion -> getNombre() }}</label>
                                 </div>
-                                @foreach( $direccion -> DepartamentosExistentes() -> orderBy('DEPA_NOMBRE') -> get() as $departamento )
+                                @forelse( $direccion -> DepartamentosExistentes() -> orderBy('DEPA_NOMBRE') -> get() as $departamento )
                                 
                                 @php $checked_dep = in_array($departamento -> getKey(), $departamentosUsuario) ? 'checked' : '' @endphp
 
@@ -105,7 +118,9 @@
                                     <input class="custom-control-input" type="checkbox" name="departamentos[]" id="departamento-{{ $departamento -> getKey() }}" value="{{ $departamento -> getKey() }}" {{ $checked_dep }}>
                                     <label class="custom-control-label" for="departamento-{{ $departamento -> getKey() }}">{{ $departamento -> getNombre() }}</label>
                                 </div>
-                                @endforeach
+                                @empty
+                                <p class="text-center font-size-xs text-muted">- No hay departamentos -</p>
+                                @endforelse
                             </div>
                         </div>
                     </div>
@@ -151,11 +166,16 @@
             var self = this;
             var selectUsuario = $('#usuario').on('change',function(){
                 if ( this.value.length ){
-                    
+
                     checkboxPermisos.prop('checked',false);
                     checkboxDirecciones.prop('checked',false);
                     checkboxDepartamentos.prop('checked',false);
                     
+                    if (typeof (history.pushState) != "undefined") {
+                        var obj = { Page: '?user=' + this.value, Url: '?user=' + this.value };
+                        history.pushState(obj, obj.Page, obj.Url);
+                    }
+
                     App.ajaxRequest({
                         url  : self.form.attr('action'),
                         data : { action : 1, usuario : this.value },
@@ -165,8 +185,6 @@
                         success : function(result){
                             
                             $.each(result.permisos, function(index, permiso){
-                                console.log(checkboxPermisos)
-                                console.log(checkboxPermisos.filter('#permiso-'+permiso))
                                 checkboxPermisos.filter('#permiso-'+permiso).prop('checked',true);
                             });
 

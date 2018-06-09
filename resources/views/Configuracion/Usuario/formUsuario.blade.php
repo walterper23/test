@@ -19,7 +19,7 @@
         <!-- Wizard Progress Bar -->
         <div class="block-content block-content-sm">
             <div class="progress" data-wizard="progress" style="height: 8px;">
-                <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: 51%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
         </div>
         <!-- END Wizard Progress Bar -->
@@ -123,7 +123,7 @@
 
                     // Update progress bar if there is one
                     if (progress.length) {
-                        progress.css({ width: percent + 1 + '%' });
+                        progress.css({ width: percent + '%' });
                     }
                 },
                 onNext: function(tab, navigation, index) {

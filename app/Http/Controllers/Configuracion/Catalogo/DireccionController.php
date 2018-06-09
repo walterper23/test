@@ -17,7 +17,6 @@ class DireccionController extends BaseController {
 	private $form_id = 'form-direccion';
 	
 	public function index(DireccionesDataTable $dataTables){
-
 		$data['table']    = $dataTables;
 		$data['form_id']  = $this -> form_id;
 		$data['form_url'] = url('configuracion/catalogos/direcciones/nuevo');

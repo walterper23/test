@@ -26,12 +26,23 @@
                 <div class="dropdown">
                     <button type="button" class="btn-block-option dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cog"></i> Opciones</button>
                     <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="javascript:void(0)">
-                            <i class="fa fa-fw fa-sitemap mr-5"></i>Nueva direcci&oacute;n
+                        <a class="dropdown-item" href="javascript:void(0)" onclick="hPuesto.new('{{$form_id}}','{{$form_url}}')">
+                            <i class="fa fa-fw fa-user-secret"></i>Nuevo puesto
                         </a>
-                        <a class="dropdown-item" href="javascript:void(0)">
-                            <i class="fa fa-fw fa-sitemap mr-5"></i>Nuevo departamento
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="javascript:void(0)" onclick="hPuesto.reload('dataTableBuilder')">
+                            <i class="fa fa-fw fa-refresh"></i> Actualizar registros
                         </a>
+                        @can('SIS.ADMIN.DIRECC')
+                        <a class="dropdown-item" href="javascript:void(0)" onclick="hPuesto.new('form-direccion','{{ url('configuracion/catalogos/direcciones/nuevo') }}')">
+                            <i class="fa fa-fw fa-sitemap"></i> Nueva direcci&oacute;n
+                        </a>
+                        @endcan
+                        @can('SIS.ADMIN.DEPTOS')
+                        <a class="dropdown-item" href="javascript:void(0)" onclick="hPuesto.new('form-departamento','{{ url('configuracion/catalogos/departamentos/nuevo') }}')">
+                            <i class="fa fa-fw fa-sitemap"></i> Nuevo departamento
+                        </a>
+                        @endcan
                     </div>
                 </div>
             </div>
