@@ -26,7 +26,7 @@ class DocumentosForaneosDataTable extends CustomDataTable
                 }
             ],
             [
-                'title'  => 'TIPO DOCUMENTO',
+                'title'  => 'TIPO',
                 'render' => function($documento){
                     return $documento -> TipoDocumento -> getNombre();
                 }

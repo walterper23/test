@@ -49,7 +49,7 @@ class Handler extends ExceptionHandler
         $classException = 'App\Exceptions\\' . class_basename($exception);
         if ( class_exists($classException)
             && method_exists($classException, 'render')
-                && $response = call_user_func_array([$classException,'render'], [$request]) ) {
+                && $response = call_user_func_array([$classException,'render'], [$request, $exception]) ) {
                     return Router::toResponse($request, $response);
         }
 

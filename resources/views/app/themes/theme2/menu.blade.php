@@ -32,6 +32,7 @@ If your sidebar menu includes icons and you would like to hide them, you can add
                     </li>
                 </ul>
             </li>
+            @can('REC.RECIBIR.FORANEO')
             <li>
                 <a class="nav-submenu" data-toggle="nav-submenu" href="{{ url('recepcion/documentos/foraneos?view=denuncias') }}">Recepciones foráneas</a>
                 <ul>
@@ -46,6 +47,7 @@ If your sidebar menu includes icons and you would like to hide them, you can add
                     </li>
                 </ul>
             </li>
+            @endcan
         </ul>
     </li>
     @endcan

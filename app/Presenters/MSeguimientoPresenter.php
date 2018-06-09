@@ -6,7 +6,7 @@ class MSeguimientoPresenter extends Presenter
 
 	public function getFechaSeguimiento( $format = 'Y-m-d h:i:s a' )
 	{
-		$created_at = $this -> model -> SEGU_CREATED_AT;
+		$created_at = $this -> model -> getAttribute('SEGU_CREATED_AT');
 		
 		if (! is_null($format))
 		{

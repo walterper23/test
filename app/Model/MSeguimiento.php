@@ -1,9 +1,6 @@
 <?php
 namespace App\Model;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
-
 use App\Presenters\MSeguimientoPresenter;
 
 class MSeguimiento extends BaseModel
@@ -21,18 +18,18 @@ class MSeguimiento extends BaseModel
 
     public function getInstruccion()
     {
-        return $this -> attributes['SEGU_INSTRUCCION'];
+        return $this -> getAttribute('SEGU_INSTRUCCION');
     }
 
     public function getObservacion()
     {
-        return $this -> attributes['SEGU_OBSERVACION'];
+        return $this -> getAttribute('SEGU_OBSERVACION');
     }
 
     // Función para añadir el ID del usuario a la lista de usuarios que han leido el Seguimiento
     public function marcarComoLeido()
     {
-        $usuarios = $this -> attributes['SEGU_LEIDO']; // Recuperamos la lista de usuarios que han leido el seguimiento
+        $usuarios = $this -> getAttribute('SEGU_LEIDO'); // Recuperamos la lista de usuarios que han leido el seguimiento
         
         $lista = [];
 
@@ -53,7 +50,7 @@ class MSeguimiento extends BaseModel
 
     public function leido()
     {
-        $usuarios = $this -> attributes['SEGU_LEIDO']; // Recuperamos la lista de usuarios que han leido el seguimiento
+        $usuarios = $this -> getAttribute('SEGU_LEIDO'); // Recuperamos la lista de usuarios que han leido el seguimiento
 
         $lista = explode(',', $usuarios);
 

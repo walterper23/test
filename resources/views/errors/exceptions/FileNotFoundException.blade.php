@@ -10,7 +10,7 @@
                         <i class="fa fa-cubes"></i> Archivo no encontrado
                     </div>
                     <h1 class="h2 font-w700 mt-30 mb-10">Oops.. Lo sentimos</h1>
-                    <h2 class="h3 font-w400 text-muted mb-10">Pero el archivo solicitado no está disponible.</h2>
+                    <h2 class="h3 font-w400 text-muted mb-10">El archivo solicitado no está disponible.</h2>
                     <h4 class="h5 font-w400 text-muted mb-50">Contacte al Administrador del Sistema.</h4>
                     <a class="btn btn-hero btn-rounded btn-alt-secondary" href="{{ url()->previous() }}">
                         <i class="fa fa-arrow-left mr-10"></i> Regresar
