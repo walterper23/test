@@ -57,7 +57,7 @@ class DocumentosForaneosDataTable extends CustomDataTable
                     elseif (user() -> can('REC.DOCUMENTO.FORANEO'))
                         return sprintf('<button type="button" class="btn btn-sm btn-success" onclick="hRecepcionForanea.enviar(%d)" title="Enviar documento"><i class="fa fa-fw fa-car"></i> Enviar documento</button>', $documento -> getKey());
                     else
-                        return '<span class="badge badge-warning"><i class="fa fa-fw fa-car"></i> Aún no enviado</span>';
+                        return '<span class="badge badge-warning"><i class="fa fa-fw fa-car"></i> En espera</span>';
                 }
             ],
             [
@@ -66,7 +66,7 @@ class DocumentosForaneosDataTable extends CustomDataTable
                     if ($documento -> validado() )
                         return '<span class="badge badge-success"><i class="fa fa-fw fa-check"></i> Validado</span>';
                     else
-                        return '<span class="badge badge-danger"><i class="fa fa-fw fa-times"></i> Aún no validado</span>';
+                        return '<span class="badge badge-danger"><i class="fa fa-fw fa-hourglass-start"></i> En espera</span>';
                 }
             ],
             [
@@ -75,23 +75,32 @@ class DocumentosForaneosDataTable extends CustomDataTable
                     if ($documento -> recepcionado() )
                         return '<span class="badge badge-success"><i class="fa fa-fw fa-check"></i> Recepcionado</span>';
                     else
-                        return '<span class="badge badge-danger"><i class="fa fa-fw fa-times"></i> Aún no recepcionado</span>';
+                        return '<span class="badge badge-danger"><i class="fa fa-fw fa-hourglass-start"></i> En espera</span>';
                 }
             ],
 
             [
                 'title'  => 'Opciones',
                 'render' => function($documento){
-                    $buttons = '';
+                    $url = url( sprintf('recepcion/acuse/documento/%s',$documento -> AcuseRecepcion -> getNombre()) );
 
                     //$buttons .= sprintf('<button type="button" class="btn btn-sm btn-circle btn-alt-primary" onclick="hRecepcion.view(%d)" title="Ver documento"><i class="fa fa-fw fa-eye"></i></button>', $documento -> getKey());
                     
-                    $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcionForanea.anexos(%d)" title="Ver anexos del documento"><i class="fa fa-fw fa-clipboard"></i></button>', $documento -> getKey());
+                    $buttons = sprintf('
+                        <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcion.anexos(%d)" title="Anexos del documento">
+                            <i class="fa fa-fw fa-clipboard"></i>
+                        </button>
+                        <a class="btn btn-sm btn-circle btn-alt-success" href="%s" target="_blank" title="Acuse de Recepción"><i class="fa fa-fw fa-file-text"></i></a>', $documento -> getKey(), $url
+                    );
 
-                    $url = url( sprintf('recepcion/acuse/documento/%s',$documento -> AcuseRecepcion -> getNombre()) );
-                    $buttons .= sprintf(' <a class="btn btn-sm btn-circle btn-alt-success" href="%s" target="_blank" title="Acuse de Recepción"><i class="fa fa-fw fa-file-text"></i></a>', $url);
+                    if( user() -> can('REC.ELIMINAR.FORANEO') && ! $documento -> recibido() )
+                    {
+                        $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcion.delete_(%d)"><i class="fa fa-trash"></i></button>', $documento -> getKey());
+                    }
 
                     return $buttons;
+
+
                 }
             ]
         ];

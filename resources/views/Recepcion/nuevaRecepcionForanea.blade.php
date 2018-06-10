@@ -133,7 +133,9 @@
         }
 
         this.submitHandler = function(form){
-            if(!$(form).valid()){
+            var form = $(form);
+            
+            if(!form.valid()){
                 return false;
             }
 
@@ -143,11 +145,40 @@
                 text  : 'Confirme la información antes de continuar',
                 okBtnText : 'Continuar',
                 cancelBtnText : 'Regresar',
-                then : function(){
-                    $(form).unbind('submit').submit();
+                showLoader : true,
+                preConfirm : function(){
+                    return new Promise(function(resolve, reject) {
+                        App.ajaxRequest({
+                            url   : form.attr('action'),
+                            data  : new FormData(form[0]),
+                            cache : false,
+                            processData : false,
+                            contentType : false,
+                            success : function(result){
+                                resolve(result)
+                            }
+                        });
+
+                    });
+                },
+                then : function(result){
+                    if( result.status ){
+                        AppAlert.success({
+                            title : 'Recepción exitosa',
+                            text  : 'El documento ha sido recepcionado correctamente',
+                            then  : function(){
+                                location.href = result.message;
+                            }
+                        });
+                    }else{
+                        AppAlert.error({
+                            title : 'Recepción fallida',
+                            text  : result.message
+                        });
+                    }
                 }
-            })
-        }
+            });
+        };
 
         this.rules = function(){
             return {

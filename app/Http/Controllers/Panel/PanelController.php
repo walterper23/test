@@ -218,7 +218,7 @@ class PanelController extends BaseController
         ];
 
         // Buscar el último seguimiento del documento
-        $seguimiento = $documento -> Seguimientos -> last();
+        $seguimiento = $documento -> Seguimientos() -> with('DireccionOrigen','DepartamentoOrigen','DireccionDestino','DepartamentoDestino') -> get() -> last();
 
         $data['direccion_origen']    = $seguimiento -> DireccionDestino -> getNombre();
         $data['departamento_origen'] = '';
@@ -249,12 +249,25 @@ class PanelController extends BaseController
                 ];
             }
         }
+
+        $data['system_estados_documentos'][1] = 'En seguimiento';
+
+        if ( user() -> can('DOC.RECHAZAR') )
+            $data['system_estados_documentos'][2] = 'Rechazar documento';
+
+        if ( user() -> can('DOC.FINALIZAR') )
+            $data['system_estados_documentos'][3] = 'Finalizar documento (resolver)';
     
         // Obtener los estados de documentos de sus direcciones y departamentos
         $estados = MEstadoDocumento::select('ESDO_NOMBRE','ESDO_ESTADO_DOCUMENTO') -> existenteDisponible()
-                    -> where(function($query) use ($ids_direcciones_origen, $ids_departamentos_origen){
-                        $query -> orWhereIn('ESDO_DIRECCION',$ids_direcciones_origen);
-                        $query -> orWhereIn('ESDO_DEPARTAMENTO',$ids_departamentos_origen);
+                    -> where(function($query) use ($seguimiento){
+                        $query -> where(function($query) use($seguimiento){
+                            $query -> where('ESDO_DIRECCION',$seguimiento -> DireccionDestino -> getKey());
+                            $query -> whereNull('ESDO_DEPARTAMENTO');
+                        });
+
+                        if( $seguimiento -> DepartamentoDestino )
+                            $query -> orWhere('ESDO_DEPARTAMENTO',$seguimiento -> DepartamentoDestino -> getKey());
                     })
                     -> pluck('ESDO_NOMBRE','ESDO_ESTADO_DOCUMENTO')
                     -> toArray();

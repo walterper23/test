@@ -60,7 +60,7 @@
                     <button type="button" class="btn btn-danger btn-rounded btn-sm" data-toggle="modal" data-target="#modal-escaneos"><i class="fa fa-fw fa-clipboard"></i> Escaneos <span class="badge badge-pill badge-secondary" id="conteo-escaneos"></span></button>
                     <button type="button" class="btn btn-success btn-rounded btn-sm" data-toggle="modal" data-target="#modal-entrega"><i class="fa fa-fw fa-vcard-o"></i> Quién entrega</span></button>
                     <div class="custom-control custom-checkbox custom-control-inline">
-                        <input class="custom-control-input" name="acuse" id="acuse" value="option1" checked="" type="checkbox">
+                        <input class="custom-control-input" name="acuse" id="acuse" value="1" checked="" type="checkbox">
                         <label class="custom-control-label" for="acuse">Abrir acuse de recepción automáticamente</label>
                     </div>
                 </div>

@@ -95,7 +95,7 @@ App.loadScript('/js/plugins/sweetalert2/sweetalert2.min.js', function(){
                         showLoaderOnConfirm: options.showLoader,
                         preConfirm: options.preConfirm
                     }).then(function(result){
-                        if(result.value){ options.then(); }
+                        if(result.value){ options.then(result.value); }
                         else{ options.dismiss(); }
                     });
                 }

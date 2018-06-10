@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Recepcion;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
 use App\Http\Requests\RecepcionLocalRequest;
 use Illuminate\Filesystem\Filesystem;
 use Exception;
@@ -79,8 +80,8 @@ class RecepcionController extends BaseController
 		abort(404);
 	}
 
+	//public function manager(RecepcionLocalRequest $request){
 	public function manager(RecepcionLocalRequest $request){
-
 		switch ($request -> action) {
 			case 0: // Guardar recepción en captura
 				$response = $this -> capturarRecepcion( $request );
@@ -173,7 +174,6 @@ class RecepcionController extends BaseController
 	public function nuevaRecepcion( $request )
 	{
 		try {
-
 			// Reemplazamos los saltos de línea, por "\n"
 			$anexos = preg_replace('/\r|\n/','\n',$request -> anexos);
 			// Reemplazamos las "\n" repetidas
@@ -279,14 +279,13 @@ class RecepcionController extends BaseController
 			$notificacion = new NotificacionController;
 			$notificacion -> mandarNotificacionCorreo($documento);
 			
-			if ($request -> acuse) // Si el usuario ha indicado que quiere abrir inmediatamente el acuse de recepción
+			if ($request -> has('acuse') && $request -> acuse == 1) // Si el usuario ha indicado que quiere abrir inmediatamente el acuse de recepción
 			{
 				$url = url( sprintf('recepcion/acuse/documento/%s?d=0',$acuse -> getNombre()) );
 				$request -> session() -> flash('urlAcuseAutomatico', $url);
 			}
 
-			return redirect('recepcion/documentos/recepcionados' . $redirect);
-
+			return $this -> responseSuccessJSON(url('recepcion/documentos/recepcionados' . $redirect));
 		} catch(Exception $error) {
 			DB::rollback();
 			dd($error->getMessage());

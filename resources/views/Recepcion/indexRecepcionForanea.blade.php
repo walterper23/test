@@ -31,9 +31,9 @@
                 <i class="fa fa-fw fa-plus"></i> Nueva recepción
             </button>
             @endcan
-            <button type="button" class="btn-block-option" onclick="hRecepcionForanea.reload('dataTableBuilder')">
+            <!--button type="button" class="btn-block-option" onclick="hRecepcionForanea.reload('dataTableBuilder')">
                 <i class="fa fa-refresh"></i> Actualizar
-            </button>
+            </button-->
             <div class="dropdown">
                 <button type="button" class="btn-block-option dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cog"></i> Opciones</button>
                 <div class="dropdown-menu dropdown-menu-right">

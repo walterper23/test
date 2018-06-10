@@ -285,8 +285,7 @@ class RecepcionForaneaController extends BaseController
 				$request -> session() -> flash('urlAcuseAutomatico', $url);
 			}
 
-			return redirect('recepcion/documentos-foraneos/recepcionados' . $redirect);
-
+			return $this -> responseSuccessJSON(url('recepcion/documentos-foraneos/recepcionados' . $redirect));
 		}catch(Exception $error){
 			DB::rollback();
 			dd($error->getMessage());

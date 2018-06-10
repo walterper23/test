@@ -22,7 +22,7 @@
 	<hr>
 	@endisset
 
-	{!! Field::select('estado_documento',1,['label'=>'Seguimiento','required'],[1=>'En seguimiento',2=>'Rechazar documento',3=>'Finalizar documento (resolver)']) !!}
+	{!! Field::select('estado_documento',1,['label'=>'Seguimiento','required'],$system_estados_documentos) !!}
     {!! Field::text('direccion_origen',$direccion_origen,['label'=>'Dirección origen','disabled']) !!}
     {!! Field::text('departamento_origen',$departamento_origen,['label'=>'Departamento origen','disabled']) !!}
     {!! Field::select('direccion_destino',null,['label'=>'Dirección destino','autofocus','required'],$direcciones_destino) !!}

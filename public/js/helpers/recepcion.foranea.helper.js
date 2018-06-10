@@ -42,7 +42,6 @@ App.loadScript('/js/helpers/helper.js', function(){
 			},
 
 			reloadTables : function( tables ){
-				console.log(tables[0])
 				App.reloadTable(tables[0], function(){
 					App.reloadTable(tables[1], function(){
 						App.reloadTable(tables[2], function(){
