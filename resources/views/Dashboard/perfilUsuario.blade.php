@@ -104,11 +104,6 @@
                 password_actual : { required : true },
                 password : { minlength: 6, maxlength : 20 },
                 password_confirmation : {
-                    required : {
-                        depends : function(element){
-                            return $('#password').val().lenght > 0
-                        }
-                    },
                     minlength: 6,
                     maxlength : 20,
                     equalTo : '#password'
@@ -129,12 +124,10 @@
                     required  : 'Introduzca su contraseña actual',
                 },
                 password : {
-                    required  : 'Introduzca una contraseña',
                     minlength : 'Mínimo {0} caracteres',
                     maxlength : 'Máximo {0} caracteres'
                 },
                 password_confirmation : {
-                    required  : 'Confirme la contraseña',
                     minlength : 'Mínimo {0} caracteres',
                     maxlength : 'Máximo {0} caracteres',
                     equalTo   : 'Las contraseñas no coinciden',

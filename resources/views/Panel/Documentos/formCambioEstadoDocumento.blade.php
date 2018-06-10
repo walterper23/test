@@ -27,7 +27,7 @@
     {!! Field::text('departamento_origen',$departamento_origen,['label'=>'Departamento origen','disabled']) !!}
     {!! Field::select('direccion_destino',null,['label'=>'Dirección destino','autofocus','required'],$direcciones_destino) !!}
     <div class="form-group row">
-        <label class="col-md-3 col-form-label" for="departamento_destino">Departamento destino</label>
+        <label class="col-md-3 col-form-label" for="departamento_destino" required>Departamento destino</label>
         <div class="col-md-9">
         	<select name="departamento_destino" id="departamento_destino" class="form-control">
 				<option value="">Seleccione una opción</option>
@@ -94,7 +94,12 @@
 				optionsDeptoDestino.hide();
 				if( this.value.length ){
 					selectDepartamentoDestino.find('option[value=0]').show();
-					selectDepartamentoDestino.find('option[data-direccion='+this.value+']').show();
+
+					var optionsDestino = selectDepartamentoDestino.find('option[data-direccion='+this.value+']');
+					if ( optionsDestino.length > 0 )
+						selectDepartamentoDestino.find('option[data-direccion='+this.value+']').show();
+					else
+						selectDepartamentoDestino.val(0);
 				}
 			});
 
@@ -126,11 +131,17 @@
 							return $('#contestar').is(':checked');
 						}
 					},
-					minlenght : 1
+					minlength : 1
 				},
 				estado_documento : { required : true },
-				direccion_origen : { required : true },
 				direccion_destino : {
+					required : {
+						depends : function(element){
+							return selectSeguimiento.val() == 1;
+						}
+					}
+				},
+				departamento_destino : {
 					required : {
 						depends : function(element){
 							return selectSeguimiento.val() == 1;
@@ -145,12 +156,12 @@
 			return {
 				contestacion : {
 					required : 'Introduzca la respuesta a la solicitud',
-					minlenght : 'Mínimo {0} caracteres'
+					minlength : 'Mínimo {0} caracteres'
 				},
 				estado_documento : { required : 'Especifique el seguimiento del documento' },
-				direccion_origen : { required : 'Especifique una dirección de origen' },
 				direccion_destino : { required : 'Especifique una dirección de destino' },
-				estado : { required : 'Especifique un estado de documento' }
+				departamento_destino : { required : 'Especifique un departamento de destino' },
+				estado : { required : 'Especifique un estado de documento' },
 			};
 		};
 	}).init().start();

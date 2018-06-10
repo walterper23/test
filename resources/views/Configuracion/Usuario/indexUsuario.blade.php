@@ -32,9 +32,9 @@
                         <a class="dropdown-item" href="javascript:void(0)" onclick="hUsuario.reload('dataTableBuilder')">
                             <i class="fa fa-fw fa-refresh mr-5"></i>Actualizar registros
                         </a>
-                        <a class="dropdown-item" href="{{ url('configuracion/sistema/bitacora/accesos') }}">
+                        <!--a class="dropdown-item" href="{{ url('configuracion/sistema/bitacora/accesos') }}">
                             <i class="fa fa-fw fa-list-ul mr-5"></i>Bitácora de accesos
-                        </a>
+                        </a-->
                     </div>
                 </div>
             </div>

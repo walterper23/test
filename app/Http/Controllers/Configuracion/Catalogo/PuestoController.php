@@ -208,7 +208,7 @@ class PuestoController extends BaseController
                 ['Fecha',  $puesto -> presenter() -> getFechaCreacion()]
             ];
 
-            return view('Configuracion.Catalogo.Anexo.verAnexo') -> with($data);
+            return view('Configuracion.Catalogo.Puesto.verPuesto') -> with($data);
         } catch(Exception $error) {
 
         }

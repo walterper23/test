@@ -289,9 +289,9 @@ class PanelController extends BaseController
     // Método para cambiar el estado de un documento
     public function cambiarEstadoDocumento( $request )
     {
-        $seguimientoAnterior = MSeguimiento::with('Documento','Seguimientos') -> find( $request -> seguimiento );
+        $documento = MDocumento::find( $request -> documento );
 
-        $documento = $seguimientoAnterior -> Documento;
+        $ultimoSeguimiento = $documento -> Seguimientos -> last();
 
         if ($documento -> finalizado())
             return $this -> responseDangerJSON('<i class="fa fa-fw fa-warning"></i> El documento ya fue finalizado. No se permiten más cambios de estado.');
@@ -309,7 +309,7 @@ class PanelController extends BaseController
                 $documento -> save();
                 break;
             default:
-                if ($seguimientoAnterior -> Seguimientos -> count() == 1) // Si el documento solo tenía un seguimiento o cambio de estado ...
+                if ($documento -> Seguimientos -> count() == 1) // Si el documento solo tenía un seguimiento o cambio de estado ...
                 {
                     $documento -> DOCU_SYSTEM_ESTADO_DOCTO = 3; // ... lo cambiamos a Documento en seguimiento
                     $documento -> save();
@@ -317,19 +317,15 @@ class PanelController extends BaseController
                 break;
         }
 
-        $departamento_origen = $request -> departamento_origen;
-        if ($departamento_origen == 0)
-            $departamento_origen = null;
-
-        $departamento_destino = $request -> departamento_destino;
+        $departamento_destino = $request -> get('departamento_destino',0);
         if ($departamento_destino == 0)
             $departamento_destino = null;
 
         $seguimientoNuevo = new MSeguimiento;
         $seguimientoNuevo -> SEGU_USUARIO              = userKey();
-        $seguimientoNuevo -> SEGU_DOCUMENTO            = $seguimientoAnterior -> SEGU_DOCUMENTO;
-        $seguimientoNuevo -> SEGU_DIRECCION_ORIGEN     = $seguimientoAnterior -> SEGU_DIRECCION_DESTINO;
-        $seguimientoNuevo -> SEGU_DEPARTAMENTO_ORIGEN  = $seguimientoAnterior -> SEGU_DEPARTAMENTO_DESTINO;
+        $seguimientoNuevo -> SEGU_DOCUMENTO            = $ultimoSeguimiento -> SEGU_DOCUMENTO;
+        $seguimientoNuevo -> SEGU_DIRECCION_ORIGEN     = $ultimoSeguimiento -> SEGU_DIRECCION_DESTINO;
+        $seguimientoNuevo -> SEGU_DEPARTAMENTO_ORIGEN  = $ultimoSeguimiento -> SEGU_DEPARTAMENTO_DESTINO;
         $seguimientoNuevo -> SEGU_DIRECCION_DESTINO    = $request -> direccion_destino;
         $seguimientoNuevo -> SEGU_DEPARTAMENTO_DESTINO = $departamento_destino;
         $seguimientoNuevo -> SEGU_ESTADO_DOCUMENTO     = $request -> estado;
@@ -339,10 +335,10 @@ class PanelController extends BaseController
 
         if ($request -> get('contestar') == 1)
         {
-            $documentoSemaforizado = MDocumentoSemaforizado::where('DOSE_DOCUMENTO',$seguimientoAnterior -> SEGU_DOCUMENTO)
+            $documentoSemaforizado = MDocumentoSemaforizado::where('DOSE_DOCUMENTO',$documento -> getKey())
                     -> whereIn('DOSE_ESTADO',[1,2]) // En espera, No atendido
                     -> whereNull('DOSE_SEGUIMIENTO_B')
-                    -> first();
+                    -> get() -> first();
 
             $documentoSemaforizado -> DOSE_ESTADO              = 3; // Respondido
             $documentoSemaforizado -> DOSE_SEGUIMIENTO_B       = $seguimientoNuevo -> getKey();
@@ -357,7 +353,7 @@ class PanelController extends BaseController
             $fecha_limite = \Carbon\Carbon::now() -> addDays( config_var('Sistema.Dias.Limite.Semaforo') ) -> format('Y-m-d');
 
             $semaforo = new MDocumentoSemaforizado;
-            $semaforo -> DOSE_DOCUMENTO     = $seguimientoAnterior -> SEGU_DOCUMENTO;
+            $semaforo -> DOSE_DOCUMENTO     = $documento -> getKey();
             $semaforo -> DOSE_USUARIO       = userKey();
             $semaforo -> DOSE_ESTADO        = 1; // En espera de contestación
             $semaforo -> DOSE_SOLICITUD     = $request -> instruccion;
@@ -366,7 +362,9 @@ class PanelController extends BaseController
             $semaforo -> save();
         }
 
-        return $this -> responseSuccessJSON(sprintf('<i class="fa fa-fw fa-flash"></i> Seguimiento <b>#%s</b> creado',$seguimientoNuevo -> getCodigo(5)));
+        $message = sprintf('<i class="fa fa-fw fa-flash"></i> Seguimiento <b>#%s</b> creado',$seguimientoNuevo -> getCodigo());
+
+        return $this -> responseSuccessJSON($message);
     }
 
     public function formEditarCambioEstadoDocumento(Request $request)

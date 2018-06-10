@@ -117,7 +117,9 @@ var App = function(){
 	};
 
 	var _reloadTable = function(table, callback, resetPaging){
-		$('#'+table).dataTable().api().ajax.reload(callback, resetPaging);
+		if( $.fn.DataTable ){
+			$('#'+table).dataTable().api().ajax.reload(callback, resetPaging);
+		}
 	};
 
 	var _loadScript = function(url, callback){

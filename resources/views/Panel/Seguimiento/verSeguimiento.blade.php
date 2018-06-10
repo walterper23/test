@@ -7,7 +7,7 @@
         <a class="breadcrumb-item" href="{{ url() -> previous() }}"><i class="fa fa-server"></i> Panel de trabajo</a>
         <a class="breadcrumb-item" href="{{ url() -> previous() }}">Documentos</a>
         <a class="breadcrumb-item" href="javascript:void(0)">Documento # {{ $documento -> getCodigo() }}</a>
-        <span class="breadcrumb-item active">Seguimiento # {{ $seguimiento -> getCodigo(5) }}</span>
+        <span class="breadcrumb-item active">Seguimiento # {{ $seguimiento -> getCodigo() }}</span>
     </nav>
 @endsection
 
@@ -29,9 +29,14 @@
                 @endif
             </h3>
             <div class="block-options">
+                @can('SIS.ADMIN.ESTA.DOC')
+                <button type="button" class="btn btn-sm btn-danger" onclick="hPanel.nuevoEstado()">
+                    <i class="fa fa-fw fa-flash"></i> Nuevo
+                </button>
+                @endcan
                 @if (user() -> can('SEG.CAMBIAR.ESTADO') && ! $seguimiento -> Documento -> finalizado() && ! $seguimiento -> Documento -> rechazado())
                 <button type="button" class="btn btn-sm btn-danger" onclick="hPanel.cambiarEstado({{ $documento -> getKey() }})">
-                    <i class="fa fa-fw fa-flash"></i> Cambiar estado
+                    <i class="fa fa-fw fa-history"></i> Cambiar estado
                 </button>
                 @endif
                 <button type="button" class="btn-block-option" data-toggle="block-option" data-action="fullscreen_toggle"><i class="si si-size-fullscreen"></i></button>
@@ -114,7 +119,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <p class="font-w700">
-                                            <span class="text-danger">#{{ $seguimiento -> getCodigo(5) }}</span>
+                                            <span class="text-danger">#{{ $seguimiento -> getCodigo() }}</span>
                                             :: {{ $seguimiento -> EstadoDocumento -> getNombre() }}
                                         </p>
                                         <i class="fa fa-fw fa-comment-o"></i> <span class="font-w600">Observaciones:</span> {{ $seguimiento -> getObservacion() }}
