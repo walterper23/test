@@ -41,11 +41,14 @@
                     <div class="hero-static content content-full bg-white invisible greca" data-toggle="appear">
                         
                         <div class="row text-center px-5">
+                            <div class="col-md-3 col-sm-12">
+                                {{ Html::image('img/background/escudo-qroo.png','',['width'=>'85']) }}
+                            </div>
                             <div class="col-md-6 col-sm-12">
                                 <h2 class="h2 text-primary"><strong>{!! str_replace('\n', '<br>', config_var('Institucion.Nombre')) !!}</strong></h2>
                             </div>
-                            <div class="col-md-6 col-sm-12">
-                                {{ Html::image(config_var('Institucion.Banner.Login'),'',['width'=>'300']) }}
+                            <div class="col-md-3 col-sm-12">
+                                {{ Html::image('img/background/ppa.png','',['width'=>'245']) }}
                             </div>
                         </div>
 
