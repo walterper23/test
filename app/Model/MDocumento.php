@@ -11,22 +11,22 @@ class MDocumento extends BaseModel
 
     public function getNumero()
     {
-        return $this -> attributes['DOCU_NUMERO_DOCUMENTO'];
+        return $this -> getAttribute('DOCU_NUMERO_DOCUMENTO');
     }
 
     public function getEstadoDocumento()
     {
-        return $this -> attributes['DOCU_SYSTEM_ESTADO_DOCTO'];
+        return $this -> getAttribute('DOCU_SYSTEM_ESTADO_DOCTO');
     }
 
     public function getTipoDocumento()
     {
-        return $this -> attributes['DOCU_SYSTEM_TIPO_DOCTO'];
+        return $this -> getAttribute('DOCU_SYSTEM_TIPO_DOCTO');
     }
 
     public function getTipoRecepcion()
     {
-        return $this -> attributes['DOCU_TIPO_RECEPCION'];
+        return $this -> getAttribute('DOCU_TIPO_RECEPCION');
     }
 
     public function isLocal()
@@ -94,22 +94,22 @@ class MDocumento extends BaseModel
 
     public function recepcionado()
     {
-        return $this -> attributes['DOCU_SYSTEM_ESTADO_DOCTO'] == 2; // Documento recepcionado
+        return $this -> getEstadoDocumento() == 2; // Documento recepcionado
     }
 
     public function enSeguimiento()
     {
-        return $this -> attributes['DOCU_SYSTEM_ESTADO_DOCTO'] == 3; // Documento en seguimiento
+        return $this -> getEstadoDocumento() == 3; // Documento en seguimiento
     }
 
     public function finalizado()
     {
-        return $this -> attributes['DOCU_SYSTEM_ESTADO_DOCTO'] == 4; // Documento finalizado
+        return $this -> getEstadoDocumento() == 4; // Documento finalizado
     }
 
     public function rechazado()
     {
-        return $this -> attributes['DOCU_SYSTEM_ESTADO_DOCTO'] == 5; // Documento rechazado
+        return $this -> getEstadoDocumento() == 5; // Documento rechazado
     }
 
     /* Local Scopes */

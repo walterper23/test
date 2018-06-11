@@ -55,9 +55,9 @@ class DocumentosDenunciasDataTable extends CustomDataTable
                         <a class="btn btn-sm btn-circle btn-alt-success" href="%s" target="_blank" title="Acuse de Recepción"><i class="fa fa-fw fa-file-text"></i></a>', $documento -> getKey(), $url
                     );
 
-                    if( user() -> can('REC.ELIMINAR') && $documento -> recepcionado() )
+                    if( user() -> can('REC.ELIMINAR.LOCAL') && $documento -> recepcionado() )
                     {
-                        $buttons .= sprintf('<button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcion.delete_(%d)"><i class="fa fa-trash"></i></button>', $documento -> getKey());
+                        $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcion.delete_(%d)"><i class="fa fa-trash"></i></button>', $documento -> getKey());
                     }
 
                     return $buttons;

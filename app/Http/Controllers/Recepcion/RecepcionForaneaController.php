@@ -40,8 +40,8 @@ class RecepcionForaneaController extends BaseController
 		$this -> setLog('RecepcionForaneaController.log');
 	}
 
-	public function index(Request $request){
-
+	public function index(Request $request)
+	{
 		$tabla1 = new DenunciasForaneasDataTable();
 		$tabla2 = new DocumentosDenunciasForaneasDataTable();
 		$tabla3 = new DocumentosForaneosDataTable();
@@ -81,8 +81,8 @@ class RecepcionForaneaController extends BaseController
 		return view('Recepcion.indexRecepcionForanea') -> with($data);
 	}
 
-	public function manager(RecepcionForaneaRequest $request){
-
+	public function manager(RecepcionForaneaRequest $request)
+	{
 		switch ($request -> action) {
 			case 0: // Guardar recepción en captura
 				$response = $this -> capturarRecepcion( $request );
@@ -109,7 +109,8 @@ class RecepcionForaneaController extends BaseController
 		return $response;
 	}
 
-	public function postDataTable(Request $request){
+	public function postDataTable(Request $request)
+	{
 
 		$type = $request -> get('type','denuncias');
 
@@ -131,7 +132,8 @@ class RecepcionForaneaController extends BaseController
 		return $dataTables -> getData();
 	}
 
-	public function formNuevaRecepcion(){
+	public function formNuevaRecepcion()
+	{
 
 		$data = [];
 
@@ -286,7 +288,8 @@ class RecepcionForaneaController extends BaseController
 			}
 
 			return $this -> responseSuccessJSON(url('recepcion/documentos-foraneos/recepcionados' . $redirect));
-		}catch(Exception $error){
+		}catch(Exception $error)
+		{
 			DB::rollback();
 			dd($error->getMessage());
 		}
@@ -321,10 +324,42 @@ class RecepcionForaneaController extends BaseController
 		$archivo -> save();
 	}
 
+	public function verRecepcion( $request )
+	{
+
+	}
+
+
+	public function eliminarRecepcion( $request )
+	{
+		try {
+            $documento = MDocumentoForaneo::findOrFail( $request -> id );
+            $documento -> eliminar() -> save();
+
+            // Lista de tablas que se van a recargar automáticamente
+            switch ($documento -> getTipoDocumento()) {
+            	case 1:
+            		$tables = 'denuncias-datatable';
+            		break;
+            	case 2:
+            		$tables = 'documentos-denuncias-datatable';
+            		break;
+            	default:
+            		$tables = 'documentos-datatable';
+            		break;
+            }
+
+            $message = sprintf('<i class="fa fa-fw fa-warning"></i> Recepción foránea <b>%s</b> eliminada',$documento -> getCodigo());
+
+            return $this -> responseWarningJSON($message,'danger',$tables);
+        } catch(Exception $error) {
+            return response()->json(['status'=>false,'message'=>'Ocurrió un error al eliminar la recepción foránea. Error ' . $error->getMessage() ]);
+        }
+	}
 
 	public function enviarDocumento( $request )
 	{
-		$documento = MDocumentoForaneo::find( $request -> id );
+		$documento = MDocumentoForaneo::find( $requestOrFail -> id );
 		$documento -> DOFO_SYSTEM_TRANSITO = 1;
 		$documento -> DOFO_FECHA_ENVIADO   = Carbon::now();
 		$documento -> save();

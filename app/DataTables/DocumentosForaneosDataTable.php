@@ -87,7 +87,7 @@ class DocumentosForaneosDataTable extends CustomDataTable
                     //$buttons .= sprintf('<button type="button" class="btn btn-sm btn-circle btn-alt-primary" onclick="hRecepcion.view(%d)" title="Ver documento"><i class="fa fa-fw fa-eye"></i></button>', $documento -> getKey());
                     
                     $buttons = sprintf('
-                        <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcion.anexos(%d)" title="Anexos del documento">
+                        <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcionForanea.anexos(%d)" title="Anexos del documento">
                             <i class="fa fa-fw fa-clipboard"></i>
                         </button>
                         <a class="btn btn-sm btn-circle btn-alt-success" href="%s" target="_blank" title="Acuse de Recepción"><i class="fa fa-fw fa-file-text"></i></a>', $documento -> getKey(), $url
@@ -95,7 +95,7 @@ class DocumentosForaneosDataTable extends CustomDataTable
 
                     if( user() -> can('REC.ELIMINAR.FORANEO') && ! $documento -> recibido() )
                     {
-                        $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcion.delete_(%d)"><i class="fa fa-trash"></i></button>', $documento -> getKey());
+                        $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcionForanea.delete_(%d)"><i class="fa fa-trash"></i></button>', $documento -> getKey());
                     }
 
                     return $buttons;

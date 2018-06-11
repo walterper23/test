@@ -67,6 +67,7 @@ class PanelController extends BaseController
                                 $query -> orWhere('SYTD_NOMBRE','like',$search);
                             }
                         })
+                        -> where('DOCU_SYSTEM_ESTADO_DOCTO','!=',6) // Recepción eliminada
                         -> whereIn('SEGU_DOCUMENTO',$documentos)
                         -> whereRaw('SEGU_SEGUIMIENTO in (select max(SEGU_SEGUIMIENTO) from seguimiento group by SEGU_DOCUMENTO order by SEGU_SEGUIMIENTO desc)')
                         -> orderBy('SEGU_SEGUIMIENTO','DESC')

@@ -36,22 +36,22 @@ class MDocumentoForaneo extends BaseModel
 
     public function enviado()
     {
-        return $this -> attributes['DOFO_SYSTEM_TRANSITO'] == 1;
+        return $this -> getAttribute('DOFO_SYSTEM_TRANSITO') == 1;
     }
 
     public function recibido()
     {
-        return $this -> attributes['DOFO_SYSTEM_TRANSITO'] == 2;
+        return $this -> getAttribute('DOFO_SYSTEM_TRANSITO') == 2;
     }
 
     public function validado()
     {
-        return $this -> attributes['DOFO_VALIDADO'] == 1;
+        return $this -> getAttribute('DOFO_VALIDADO') == 1;
     }
 
     public function recepcionado()
     {
-        return $this -> attributes['DOFO_RECEPCIONADO'] == 1;
+        return $this -> getAttribute('DOFO_RECEPCIONADO') == 1;
     }
 
     /* Local Scopes */

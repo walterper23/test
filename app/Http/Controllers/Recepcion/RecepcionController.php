@@ -38,8 +38,8 @@ class RecepcionController extends BaseController
 		$this -> setLog('RecepcionController.log');
 	}
 
-	public function index(Request $request){
-
+	public function index(Request $request)
+	{
 		$tabla1 = new DenunciasDataTable();
 		$tabla2 = new DocumentosDenunciasDataTable();
 		$tabla3 = new DocumentosDataTable();
@@ -80,8 +80,8 @@ class RecepcionController extends BaseController
 		abort(404);
 	}
 
-	//public function manager(RecepcionLocalRequest $request){
-	public function manager(RecepcionLocalRequest $request){
+	public function manager(RecepcionLocalRequest $request)
+	{
 		switch ($request -> action) {
 			case 0: // Guardar recepción en captura
 				$response = $this -> capturarRecepcion( $request );
@@ -105,7 +105,8 @@ class RecepcionController extends BaseController
 		return $response;
 	}
 
-	public function postDataTable(Request $request){
+	public function postDataTable(Request $request)
+	{
 
 		$type = $request -> get('type');
 
@@ -127,7 +128,8 @@ class RecepcionController extends BaseController
 		return $dataTables -> getData();
 	}
 
-	public function formNuevaRecepcion(){
+	public function formNuevaRecepcion()
+	{
 
 		$data = [];
 
@@ -331,6 +333,7 @@ class RecepcionController extends BaseController
 	{
 		try {
             $documento = MDocumento::find( $request -> id );
+            $documento -> DOCU_SYSTEM_ESTADO_DOCTO = 6; // Estado de Documento Eliminado
             $documento -> eliminar() -> save();
 
             // Lista de tablas que se van a recargar automáticamente

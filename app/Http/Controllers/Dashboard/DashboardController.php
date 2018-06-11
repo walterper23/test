@@ -68,9 +68,9 @@ class DashboardController extends BaseController
         // Buscar todos los documentos existentes. No elimininados
         $documentos_locales = MDocumento::
                      leftJoin('system_tipos_documentos','SYTD_TIPO_DOCUMENTO','=','DOCU_SYSTEM_TIPO_DOCTO')
-                    -> leftJoin('system_estados_documentos','SYED_ESTADO_DOCUMENTO','=','DOCU_SYSTEM_ESTADO_DOCTO')
+                    //-> leftJoin('system_estados_documentos','SYED_ESTADO_DOCUMENTO','=','DOCU_SYSTEM_ESTADO_DOCTO')
                     -> leftJoin('detalles','DETA_DETALLE','=','DOCU_DETALLE')
-                    -> existente()
+                    //-> existente()
                     -> whereYear('DETA_FECHA_RECEPCION',$anio_actual)
                     -> where('DOCU_TIPO_RECEPCION',1) // Captura local
                     -> get();
@@ -78,7 +78,7 @@ class DashboardController extends BaseController
         $documentos_foraneos = MDocumentoForaneo::
                      leftJoin('system_tipos_documentos','SYTD_TIPO_DOCUMENTO','=','DOFO_SYSTEM_TIPO_DOCTO')
                     -> leftJoin('detalles','DETA_DETALLE','=','DOFO_DETALLE')
-                    -> existente()
+                    //-> existente()
                     -> whereYear('DETA_FECHA_RECEPCION',$anio_actual)
                     -> get();
 

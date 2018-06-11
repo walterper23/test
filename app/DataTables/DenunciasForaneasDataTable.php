@@ -83,6 +83,11 @@ class DenunciasForaneasDataTable extends CustomDataTable
                     $url = url( sprintf('recepcion/acuse/documento/%s',$documento -> AcuseRecepcion -> getNombre()) );
                     $buttons .= sprintf(' <a class="btn btn-sm btn-circle btn-alt-success" href="%s" target="_blank" title="Acuse de Recepción"><i class="fa fa-fw fa-file-text"></i></a>', $url);
 
+                    if( user() -> can('REC.ELIMINAR.FORANEO') && ! $documento -> recibido() )
+                    {
+                        $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcionForanea.delete_(%d)"><i class="fa fa-trash"></i></button>', $documento -> getKey());
+                    }
+
                     return $buttons;
                 }
             ]
