@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\Panel\Seguimiento;
+namespace App\Http\Controllers\Panel;
 
 use App\Http\Controllers\BaseController; 
 use Illuminate\Http\Request;

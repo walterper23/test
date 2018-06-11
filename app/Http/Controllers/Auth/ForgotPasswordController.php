@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
@@ -7,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Support\Facades\Password;
 
+/**
+ * Controlador para llevar a cabo la restauración de contraseña de los usuarios por medio de su correo electrónico
+ */
 class ForgotPasswordController extends Controller
 {
     /*
@@ -23,21 +25,26 @@ class ForgotPasswordController extends Controller
     use SendsPasswordResetEmails;
 
     /**
-     * Create a new controller instance.
-     *
-     * @return void
+     * Crear nueva instancia del controlador
      */
     public function __construct()
     {
         $this->middleware('guest');
     }
 
-    //@Override
+    /**
+     * Método para indicar la vista a usar para el restablecimiento de contraseña
+     */
     public function showLinkRequestForm()
     {
         return view('Auth.Password.email');
     }
 
+    /**
+     * Método para llevar a cabo la validación de credenciales del usuario para el restablecimiento de contraseña.
+     * En caso de éxito, se enviará un correo con el proceso a continuar para reestablecer la contraseña.
+     * En caso contrario, se mostrarán al usuario los errores encontrados durante el intento de restablecimiento de contraseña.
+     */
     public function sendResetLinkEmail(Request $request)
     {
         $this->validateUsername($request);
@@ -65,6 +72,9 @@ class ForgotPasswordController extends Controller
         }
     }
 
+    /**
+     * Método para validar las credenciales, y el formato de las mismas, del usuario.
+     */
     protected function validateUsername(Request $request)
     {
         $this->validate($request,
@@ -76,6 +86,9 @@ class ForgotPasswordController extends Controller
         );
     }
 
+    /**
+     * Método para enviar un mensaje de éxito cuando el restablecimiento de contraseña se haya logrado correctamente
+     */
     protected function sendResetLinkResponseEmail($response, $email)
     {
         $status = sprintf('<b>¡Éxito!</b> Se ha enviado un mensaje a <b>%s</b>.<br>Revise su bandeja para continuar el restablecimiento de contraseña.',$email);
@@ -83,6 +96,10 @@ class ForgotPasswordController extends Controller
         return back()->with('status', $status);
     }
 
+    /**
+     * Método para regresar a la página anterior cuando las credenciales de restablecimiento de contraseña no sean correctas.
+     * Permite regresar la variable de $errors con la lista de errores especificados
+     */
     protected function sendResetLinkFailedResponse(Request $request, $response)
     {
         return back()->withErrors(

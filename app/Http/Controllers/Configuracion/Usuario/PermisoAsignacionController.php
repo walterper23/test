@@ -20,47 +20,58 @@ use App\Model\MUsuario;
 use App\Model\MUsuarioPermiso;
 use App\Model\MUsuarioAsignacion;
 
-
+/**
+ * Controlador para gestionar los permisos y las direcciones y departamentos que tiene asignados los usuarios.
+ */
 class PermisoAsignacionController extends BaseController
 {
-	public function __construct()
-	{
-		parent::__construct();
-		$this -> setLog('PermisoAsignacionController.log');
-	}
+    /**
+     * Crear nueva instancia del controlador
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this -> setLog('PermisoAsignacionController.log');
+    }
 
-	public function index()
-	{
-		// Recuperar todos los recursos y permisos del sistema
-		$data['recursos'] = MRecurso::with('Permisos') -> get();
+    /**
+     * Método para retornar la página principal para la gestión de los permisos y las asignaciones de los usuarios.
+     */
+    public function index()
+    {
+        // Recuperar todos los recursos y permisos del sistema
+        $data['recursos'] = MRecurso::with('Permisos') -> get();
 
-		// Recuperar todos las direcciones y departamentos disponibles en el sistema
-		$data['direcciones'] = MDireccion::with('DepartamentosExistentes') -> existente() -> orderBy('DIRE_NOMBRE') -> get();
+        // Recuperar todos las direcciones y departamentos disponibles en el sistema
+        $data['direcciones'] = MDireccion::with('DepartamentosExistentes') -> existente() -> orderBy('DIRE_NOMBRE') -> get();
 
-		// Recuperar la lista de usuarios del sistema
-		$data['usuarios'] = MUsuario::existente() -> pluck('USUA_USERNAME','USUA_USUARIO') -> toArray();
+        // Recuperar la lista de usuarios del sistema
+        $data['usuarios'] = MUsuario::existente() -> pluck('USUA_USERNAME','USUA_USUARIO') -> toArray();
 
-		$userKey = request() -> get('user', userKey()); // Recuperamos el ID del usuario enviado por la URL, si no, recuperamos le ID del usuario en sesión
-		$usuario = MUsuario::where('USUA_USUARIO',$userKey) -> existente() -> first(); // Comprobamos que exista el usuario
-		$data['userKey'] = !is_null($usuario) ? $userKey : userKey(); // Almacenamos el ID del usuario si existe. Si no, almacenamos el ID del usuario en sesión
+        $userKey = request() -> get('user', userKey()); // Recuperamos el ID del usuario enviado por la URL, si no, recuperamos le ID del usuario en sesión
+        $usuario = MUsuario::where('USUA_USUARIO',$userKey) -> existente() -> first(); // Comprobamos que exista el usuario
+        $data['userKey'] = !is_null($usuario) ? $userKey : userKey(); // Almacenamos el ID del usuario si existe. Si no, almacenamos el ID del usuario en sesión
 
-		// Recuperar los permisos del usuario, para cargarlos en la interfaz
-		$data['permisosUsuario'] = !is_null($usuario) ? $usuario -> Permisos() -> pluck('SYPE_PERMISO') -> toArray() : [];
+        // Recuperar los permisos del usuario, para cargarlos en la interfaz
+        $data['permisosUsuario'] = !is_null($usuario) ? $usuario -> Permisos() -> pluck('SYPE_PERMISO') -> toArray() : [];
 
         // Recuperar las direcciones asignadas al usuario
         $data['direccionesUsuario'] = $usuario -> Direcciones() -> pluck('DIRE_DIRECCION') -> toArray();
 
         // Recuperar los departamentos asignados al usuario
         $data['departamentosUsuario'] = $usuario -> Departamentos() -> pluck('DEPA_DEPARTAMENTO') -> toArray();
-		
-		$data['url_send_form'] = url('configuracion/usuarios/permisos-asignaciones/manager');
-		$data['form_id']       = 'form-usuario-asignacion-permiso';
+        
+        $data['url_send_form'] = url('configuracion/usuarios/permisos-asignaciones/manager');
+        $data['form_id']       = 'form-usuario-asignacion-permiso';
 
-		return view('Configuracion.Usuario.indexPermisoAsignacion') -> with($data);
-	}
+        return view('Configuracion.Usuario.indexPermisoAsignacion') -> with($data);
+    }
 
-	public function manager(Request $request)
-	{
+    /**
+     * Método para administrar las peticiones que recibe el controlador
+     */
+    public function manager(Request $request)
+    {
         switch ($request -> action) {
             case 1: // Recuperar
                 $response = $this -> recuperarPermisosAsignacionesUsuario( $request );
@@ -75,10 +86,13 @@ class PermisoAsignacionController extends BaseController
         return $response;
     }
 
+    /**
+     * Método para recuperar los permisos y asignaciones de un usuario
+     */
     public function recuperarPermisosAsignacionesUsuario( $request )
     {
         // Recuperamos al usuario solicitado
-    	$usuario = MUsuario::with('Permisos','Direcciones','Departamentos') -> where('USUA_USUARIO',$request -> usuario) -> existente() -> first();
+        $usuario = MUsuario::with('Permisos','Direcciones','Departamentos') -> where('USUA_USUARIO',$request -> usuario) -> existente() -> first();
         
         // Recuperar los permisos actuales del usuario
         $data['permisos'] = $usuario -> Permisos() -> pluck('USPE_PERMISO') -> toArray();
@@ -93,6 +107,9 @@ class PermisoAsignacionController extends BaseController
 
     }
 
+    /**
+     * Método para guardar los cambios realizados a los permisos y asignaciones de un usuario
+     */
     public function editarPermisosAsignacionesUsuario( $request )
     {
         // Recuperar el usuario y sus permisos
@@ -110,6 +127,9 @@ class PermisoAsignacionController extends BaseController
         return $this -> responseSuccessJSON('<i class="fa fa-fw fa-lock"></i> Los cambios se han guardado correctamente');
     }
 
+    /**
+     * Método para editar los permisos de un usuario.
+     */
     public function editarPermisosUsuario( $usuario, $request )
     {
         // Recuperar los permisos actuales del usuario
@@ -138,6 +158,9 @@ class PermisoAsignacionController extends BaseController
         return true;
     }
 
+    /**
+     * Método para editar las asignaciones de un usuario
+     */
     // Método para asignarle direcciones y departmamentos a un usuario
     public function editarAsignacionesUsuario( $usuario, $request )
     {

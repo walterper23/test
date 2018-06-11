@@ -12,11 +12,27 @@ use App\DataTables\DireccionesDataTable;
 /* Models */
 use App\Model\Catalogo\MDireccion;
 
+/**
+ * Controlador del catálogo de direcciones
+ */
 class DireccionController extends BaseController {
 	
 	private $form_id = 'form-direccion';
-	
-	public function index(DireccionesDataTable $dataTables){
+
+	/**
+     * Crear nueva instancia del controlador
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this -> setLog('DireccionController.log');
+    }
+
+	/**
+     * Método para mostrar la página inicial de la gestión de las direcciones
+     */
+	public function index(DireccionesDataTable $dataTables)
+	{
 		$data['table']    = $dataTables;
 		$data['form_id']  = $this -> form_id;
 		$data['form_url'] = url('configuracion/catalogos/direcciones/nuevo');
@@ -24,7 +40,11 @@ class DireccionController extends BaseController {
 		return view('Configuracion.Catalogo.Direccion.indexDireccion')->with($data);
 	}
 
-	public function manager(DireccionRequest $request){
+	/**
+     * Método para administrar las peticiones que recibe el controlador
+     */
+	public function manager(DireccionRequest $request)
+	{
 
 		switch ($request -> action) {
 			case 1: // Nuevo
@@ -49,12 +69,20 @@ class DireccionController extends BaseController {
 		return $response;
 	}
 
-	public function postDataTable(DireccionesDataTable $dataTables){
+	/**
+     * Método para devolver los registros que llenarán la tabla de la página principal
+     */
+	public function postDataTable(DireccionesDataTable $dataTables)
+	{
 		return $dataTables->getData();
 	}
 
-	public function formNuevaDireccion(){
-		try{
+	/**
+	 * Método para retornar el formulario para la creación de una dirección
+	 */
+	public function formNuevaDireccion()
+	{
+		try {
 	 		$data = [
 	 			'title'         =>'Nueva dirección',
 	 			'form_id'       => $this -> form_id,
@@ -71,11 +99,14 @@ class DireccionController extends BaseController {
 		}
 	}
 
-	public function nuevaDireccion( $request ){
+	/**
+	 * Método para guardar una nueva dirección
+	 */
+	public function nuevaDireccion( $request )
+	{
 		try {
-
 			$direccion = new MDireccion;
-			$direccion -> DIRE_NOMBRE     = $request -> nombre;
+			$direccion -> DIRE_NOMBRE  = $request -> nombre;
 			$direccion -> save();
 
 			// Lista de tablas que se van a recargar automáticamente
@@ -90,9 +121,12 @@ class DireccionController extends BaseController {
 		}
 	}
 
-	public function formEditarDireccion(){
+	/**
+	 * Método para retornar el formulario para editar la dirección especificada
+	 */
+	public function formEditarDireccion()
+	{
 		try {
-
 			$data = [
 	 			'title'         =>'Editar dirección',
 	 			'form_id'       => $this -> form_id,
@@ -103,16 +137,18 @@ class DireccionController extends BaseController {
 		 	];
 			
 			return view('configuracion.Catalogo.Direccion.formDireccion')-> with ($data);
-
 		} catch(Exception $error) {
 
 		}
 	}
 
-	public function editarDireccion( $request ){
-		try{
-
-			$direccion = MDireccion::find( $request -> id );
+	/**
+	 * Método para guardar los cambios realizados a una dirección
+	 */
+	public function editarDireccion( $request )
+	{
+		try {
+			$direccion = MDireccion::findOrFail( $request -> id );
 			$direccion -> DIRE_NOMBRE = $request -> nombre;
 			$direccion -> save();
 
@@ -126,10 +162,13 @@ class DireccionController extends BaseController {
 		}
 	}
 
+	/**
+	 * Método para consultar la información de una dirección
+	 */
 	public function verDireccion( $request )
     {
         try {
-            $direccion         = MDireccion::find( $request -> id );
+            $direccion         = MDireccion::findOrFail( $request -> id );
             $data['title']     = sprintf('Dirección #%s', $direccion -> getCodigo() );
             
             $data['detalles'] = [
@@ -146,9 +185,12 @@ class DireccionController extends BaseController {
 
     }
 
-	public function activarDireccion( $request ){
+    /**
+     * Método para activar o desactivar una dirección
+     */
+	public function activarDireccion( $request )
+	{
 		try{
-
 			$direccion = MDireccion::findOrFail( $request -> id );
             $direccion -> cambiarDisponibilidad() -> save();
             
@@ -168,9 +210,13 @@ class DireccionController extends BaseController {
 		}
 	}
 
-	public function eliminarDireccion( $request ){
+	/**
+	 * Método para realizar la eliminación de una dirección especificada
+	 */
+	public function eliminarDireccion( $request )
+	{
 		try{
-			$direccion = MDireccion::find( $request -> id );
+			$direccion = MDireccion::findOrFail( $request -> id );
 			
 			$direccion -> eliminar() -> save();
 

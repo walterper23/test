@@ -12,16 +12,25 @@ use App\DataTables\AnexosDataTable;
 /* Models */
 use App\Model\Catalogo\MAnexo;
 
+/**
+ * Controlador del catálogo de anexos para usar cuando se recepcionan documentos
+ */
 class AnexoController extends BaseController
 {
     private $form_id = 'form-anexo';
 
+    /**
+     * Crear nueva instancia del controlador
+     */
     public function __construct()
     {
         parent::__construct();
         $this -> setLog('AnexoController.log');
     }
 
+    /**
+     * Método para mostrar la página inicial de la gestión de los anexos
+     */
     public function index(AnexosDataTable $dataTables)
     {
         $data['table']    = $dataTables;
@@ -31,6 +40,9 @@ class AnexoController extends BaseController
         return view('Configuracion.Catalogo.Anexo.indexAnexo')->with($data);
     }
 
+    /**
+     * Método para administrar las peticiones que recibe el controlador
+     */
     public function manager(AnexoRequest $request)
     {
         switch ($request -> action) {
@@ -57,16 +69,20 @@ class AnexoController extends BaseController
         return $response;
     }
 
+    /**
+     * Método para devolver los registros que llenarán la tabla de la página principal
+     */
     public function postDataTable(AnexosDataTable $dataTables)
     {
         return $dataTables->getData();
     }
 
+    /**
+     * Método para retornar el formulario para la creación de un nuevo anexo
+     */
     public function formNuevoAnexo(Request $request){
         try {
-
             $data = [];
-
             $data['title']         = 'Nuevo anexo';
             $data['url_send_form'] = url('configuracion/catalogos/anexos/manager');
             $data['form_id']       = $this -> form_id;
@@ -82,6 +98,9 @@ class AnexoController extends BaseController
         }
     }
 
+    /**
+     * Método para guardar un nuevo anexo
+     */
     public function nuevoAnexo( $request )
     {
         try {
@@ -112,15 +131,18 @@ class AnexoController extends BaseController
         }
     }
 
+    /**
+     * Método para retornar el formulario para editar el anexo especificado
+     */
     public function formEditarAnexo(Request $request){
         try {
             $data['title']         = 'Editar anexo';
             $data['url_send_form'] = url('configuracion/catalogos/anexos/manager');
             $data['form_id']       = $this -> form_id;
-            $data['modelo']        = MAnexo::find( Input::get('id') );
+            $data['modelo']        = MAnexo::find( $request -> id );
             $data['action']        = 2;
             $data['recepcion']     = $request -> get('recepcion',false);
-            $data['id']            = Input::get('id');
+            $data['id']            = $request -> id;
 
             return view('Configuracion.Catalogo.Anexo.formAnexo')->with($data);
 
@@ -129,6 +151,9 @@ class AnexoController extends BaseController
         }
     }
 
+    /**
+     * Método para guardar los cambios realizados a un anexo
+     */
     public function editarAnexo( $request )
     {
         try {
@@ -147,6 +172,9 @@ class AnexoController extends BaseController
         }
     }
 
+    /**
+     * Método para consultar la información de un anexo especificado
+     */
     public function verAnexo( $request )
     {
         try {
@@ -166,6 +194,9 @@ class AnexoController extends BaseController
 
     }
 
+    /**
+     * Método para activar o desactivar un anexo
+     */
     public function activarAnexo( $request )
     {
         try {
@@ -188,6 +219,9 @@ class AnexoController extends BaseController
         }
     }
 
+    /**
+     * Método para realizar la eliminación de un anexo especificado
+     */
     public function eliminarAnexo( $request )
     {
         try {

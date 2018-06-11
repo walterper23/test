@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
+/**
+ * Controlador para llevar a cabo el proceso de autenticación de los usuarios
+ */
 class LoginController extends Controller
 {
     /*
@@ -29,20 +32,24 @@ class LoginController extends Controller
     protected $redirectTo = '/';
 
     /**
-     * Create a new controller instance.
-     *
-     * @return void
+     * Crear nueva instancia del controlador.
      */
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
     }
 
+    /**
+     * Método para indicar la vista con el formulario para que los usuarios puedan iniciar sesión.
+     */
     public function showLoginForm()
     {
         return view('Auth.login');
     }
 
+    /**
+     * Método para validar las credenciales, y el formato de las mismas, del usuario. 
+     */
     protected function validateLogin(Request $request)
     {
         $this->validate($request, [
@@ -51,13 +58,18 @@ class LoginController extends Controller
         ]);
     }
 
+    /**
+     * Método para indicar el atributo "name" del campo del formulario que es utilizado por el usuario para proporcionar su nombre de usuario.
+     */
     protected function username(){
         return 'username';
     }
 
+    /**
+     * Método para retornar el valor de las credenciales del usuario.
+     */
     protected function credentials(Request $request)
     {
-
         $credentials = [
             'USUA_USERNAME' => $request -> username,
             'USUA_PASSWORD' => $request -> password,
@@ -73,6 +85,9 @@ class LoginController extends Controller
         return $credentials;
     }
 
+    /**
+     * Método para indicar las siguientes instrucciones a realizar cuando el usuario inicie sesión exitosamente.
+     */
     protected function authenticated(Request $request, $user)
     {
         $user -> USUA_LAST_LOGIN   = is_null($user -> getRecentLogin()) ? \Carbon\Carbon::now() : $user -> getRecentLogin();

@@ -12,8 +12,14 @@ use App\Model\Catalogo\MEstadoDocumento;
 use App\Model\Catalogo\MPuesto;
 use App\Model\MUsuario;
 
+/**
+ * Controlador para crear un acceso a los catálogos del sistema
+ */
 class CatalogoManagerController extends BaseController
-{
+{	
+	/**
+	 * Método para retornar la vista principal con el acceso a los catálogos del sistema
+	 */
 	public function index(){
 
 		$data = [
@@ -26,8 +32,6 @@ class CatalogoManagerController extends BaseController
 		];
 
 		return view('Configuracion.Catalogo.index')->with($data);
-
 	}
-
 
 }

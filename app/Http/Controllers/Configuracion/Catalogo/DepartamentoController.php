@@ -15,10 +15,25 @@ use App\DataTables\DepartamentosDataTable;
 use App\Model\Catalogo\MDireccion;
 use App\Model\Catalogo\MDepartamento;
 
+/**
+ * Controlador del catálogo de departamentos
+ */
 class DepartamentoController extends BaseController
 {
 	private $form_id = 'form-departamento';
 
+	/**
+     * Crear nueva instancia del controlador
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this -> setLog('DepartamentoController.log');
+    }
+
+	/**
+     * Método para mostrar la página inicial de la gestión de los departamentos
+     */
 	public function index(DepartamentosDataTable $dataTables)
 	{
 		
@@ -29,6 +44,9 @@ class DepartamentoController extends BaseController
     	return view('Configuracion.Catalogo.Departamento.indexDepartamento') -> with($data);
 	}
 
+	/**
+     * Método para administrar las peticiones que recibe el controlador
+     */
 	public function manager(DepartamentoRequest $request)
 	{
 
@@ -55,14 +73,20 @@ class DepartamentoController extends BaseController
 		return $response;
 	}
 
+	/**
+     * Método para devolver los registros que llenarán la tabla de la página principal
+     */
 	public function postDataTable(DepartamentosDataTable $dataTables)
 	{
 		return $dataTables->getData();
 	}
 
-	public function formNuevoDepartamento(){
+	/**
+	 * Método para retornar el formulario para crear un nuevo departamento.
+	 */
+	public function formNuevoDepartamento()
+	{
 		try {
-
 			$data                  = [];
 			$data['title']         = 'Nuevo Departamento';
 			$data['url_send_form'] = url('configuracion/catalogos/departamentos/manager');
@@ -71,7 +95,11 @@ class DepartamentoController extends BaseController
 			$data['action']        = 1;
 			$data['id']            = Input::get('id');
 
-			$data['direcciones'] = MDireccion::select('DIRE_DIRECCION','DIRE_NOMBRE')->pluck('DIRE_NOMBRE','DIRE_DIRECCION')->toArray();
+			$data['direcciones'] = MDireccion::select('DIRE_DIRECCION','DIRE_NOMBRE')
+									-> existenteDisponible()
+									-> orderBy('DIRE_NOMBRE')
+									-> pluck('DIRE_NOMBRE','DIRE_DIRECCION')
+									-> toArray();
 
 			return view('Configuracion.Catalogo.Departamento.formDepartamento')->with($data);
 
@@ -80,7 +108,11 @@ class DepartamentoController extends BaseController
 		}
 	}
 
-	public function nuevoDepartamento( $request ){
+	/**
+	 * Método para guardar un nuevo departamento.
+	 */
+	public function nuevoDepartamento( $request )
+	{
 		try {
 			$departamento = new MDepartamento;
 			$departamento -> DEPA_NOMBRE    = $request -> nombre;
@@ -98,21 +130,27 @@ class DepartamentoController extends BaseController
 		}
 	}
 
-	public function formEditarDepartamento(){
+	/**
+	 * Método para retornar el formulario para editar el departamento especificado
+	 */
+	public function formEditarDepartamento(Request $request)
+	{
 		try {
-
+			$departamento = MDepartamento::findOrFail( $request -> id );
 			$data = [];
 			$data['title']         = 'Editar departamento';
 			$data['url_send_form'] = url('configuracion/catalogos/departamentos/manager');
 			$data['form_id']       = $this -> form_id;
-			$data['modelo']        = MDepartamento::find( Input::get('id') );
+			$data['modelo']        = $departamento;
 			$data['action']        = 2;
-			$data['id']            = Input::get('id');
+			$data['id']            = $request -> id;
 
 			$data['direcciones'] = MDireccion::select('DIRE_DIRECCION','DIRE_NOMBRE')
-											->orderBy('DIRE_NOMBRE')
-											->pluck('DIRE_NOMBRE','DIRE_DIRECCION')
-											->toArray();
+									-> existenteDisponible()
+									-> orWhere('DIRE_DIRECCION',$departamento -> getKey())
+									-> orderBy('DIRE_NOMBRE')
+									-> pluck('DIRE_NOMBRE','DIRE_DIRECCION')
+									-> toArray();
 
 			return view('Configuracion.Catalogo.Departamento.formDepartamento')->with($data);
 
@@ -121,7 +159,11 @@ class DepartamentoController extends BaseController
 		}
 	}
 
-	public function editarDepartamento( $request ){
+	/**
+	 * Método para guardar los cambios realizados a un departamento
+	 */
+	public function editarDepartamento( $request )
+	{
 		try {
 			$departamento = MDepartamento::find( $request -> id );
 			$departamento -> DEPA_NOMBRE    = $request -> nombre;
@@ -138,6 +180,9 @@ class DepartamentoController extends BaseController
 		}
 	}
 
+	/**
+	 * Método para consultar la información de un departamento especificado
+	 */
 	public function verDepartamento( $request )
     {
         try {
@@ -158,7 +203,11 @@ class DepartamentoController extends BaseController
 
     }
 
-	public function activarDepartamento( $request ){
+    /**
+     * Método para activar o desactivar un departamento
+     */
+	public function activarDepartamento( $request )
+	{
 		try {
 			$departamento = MDepartamento::findOrFail( $request -> id );
             $departamento -> cambiarDisponibilidad() -> save();
@@ -179,10 +228,13 @@ class DepartamentoController extends BaseController
 		}
 	}
 
-
-	public function eliminarDepartamento( $request ){
+	/**
+	 * Método para realizar la eliminación de un departamento especificado
+	 */
+	public function eliminarDepartamento( $request )
+	{
 		try {
-			$departamento = MDepartamento::find( $request -> id );
+			$departamento = MDepartamento::findOrFail( $request -> id );
 			
 			$departamento -> eliminar() -> save();
 

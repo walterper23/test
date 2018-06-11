@@ -137,7 +137,6 @@ class NotificacionController extends BaseController
         else
             Mail::to($correos) -> queue( new \App\Mail\NuevoDocumentoForaneoRecibido($documento) );
 
-
     }
 
 }

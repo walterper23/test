@@ -14,14 +14,25 @@ use App\Model\Catalogo\MDepartamento;
 use App\Model\Catalogo\MDireccion;
 use App\Model\Catalogo\MPuesto;
 
+/**
+ * Controlador del catálogo de puestos
+ */
 class PuestoController extends BaseController
 {
-	private $form_id;
+	private $form_id = 'form-puesto';
 
-	public function __construct(){
-		$this -> form_id = 'form-puesto';
-	}
+	/**
+     * Crear nueva instancia del controlador
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this -> setLog('PuestoController.log');
+    }
 
+	/**
+     * Método para mostrar la página inicial de la gestión de los puestos
+     */
 	public function index(PuestosDataTable $dataTables){
 
 		$data = [
@@ -33,6 +44,9 @@ class PuestoController extends BaseController
 		return view('Configuracion.Catalogo.Puesto.indexPuesto')->with($data);
 	}
 
+	/**
+     * Método para administrar las peticiones que recibe el controlador
+     */
 	public function manager(PuestoRequest $request){
 
 		$action = Input::get('action');
@@ -60,10 +74,16 @@ class PuestoController extends BaseController
 		return $response;
 	}
 
+	/**
+     * Método para devolver los registros que llenarán la tabla de la página principal
+     */
 	public function postDataTable(PuestosDataTable $dataTables){
 		return $dataTables->getData();
 	}
 
+	/**
+	 * Método para retornar el formulario para crear un nuevo puesto
+	 */
 	public function formNuevoPuesto(){
 		try {
 
@@ -106,6 +126,9 @@ class PuestoController extends BaseController
 		}
 	}
 
+	/**
+	 * Método para guardar un nuevo puesto
+	 */
 	public function nuevoPuesto( $request ){
 		try {
 			
@@ -130,16 +153,19 @@ class PuestoController extends BaseController
 		}
 	}
 
-	public function formEditarPuesto(){
+	/**
+	 * Método para retornar el formulario para editar el puesto indicado
+	 */
+	public function formEditarPuesto(Request $request){
 		try {
 
 			$data = [
 				'title'         => 'Editar puesto',
 				'url_send_form' => url('configuracion/catalogos/puestos/manager'),
 				'form_id'       => $this -> form_id,
-				'modelo'        => MPuesto::find( Input::get('id') ),
+				'modelo'        => MPuesto::findOrFail( $request -> id ),
 				'action'        => 2,
-				'id'            => Input::get('id')
+				'id'            => $request -> id
 			];
 
 			$direcciones = MDireccion::with('departamentos')
@@ -171,14 +197,17 @@ class PuestoController extends BaseController
 		}
 	}
 
+	/**
+	 * Método para guardar los cambios realizados a un puesto
+	 */
 	public function editarPuesto( $request ){
 		try {
-			$departamento = $request -> departamento;
+			$departamento = $request -> get('departamento');
 
 			if( $departamento == 0 )
 				$departamento = null;
 
-			$puesto = MPuesto::find( $request -> id );
+			$puesto = MPuesto::findOrFail( $request -> id );
 			$puesto -> PUES_NOMBRE       = $request -> nombre;
 			$puesto -> PUES_DIRECCION    = $request -> direccion;
 			$puesto -> PUES_DEPARTAMENTO = $departamento;
@@ -194,10 +223,13 @@ class PuestoController extends BaseController
 		}
 	}
 
+	/**
+	 * Método para consultar la información de un puesto indicado
+	 */
 	public function verPuesto( $request )
     {
         try {
-            $puesto = MPuesto::find( $request -> id );
+            $puesto = MPuesto::findOrFail( $request -> id );
             $data['title'] = sprintf('Puesto #%s', $puesto -> getCodigo() );
 
             $data['detalles'] = [
@@ -212,12 +244,14 @@ class PuestoController extends BaseController
         } catch(Exception $error) {
 
         }
-
     }
 
+	/**
+	 * Método para activar o desactivar un puesto
+	 */
 	public function activarPuesto( $request ){
 		try {
-			$puesto = MPuesto::find( $request -> id );
+			$puesto = MPuesto::findOrFail( $request -> id );
 
 			$puesto -> cambiarDisponibilidad() -> save();
 
@@ -237,9 +271,12 @@ class PuestoController extends BaseController
 		}
 	}
 
+	/**
+	 * Método para realizar la eliminación de un puesto
+	 */
 	public function eliminarPuesto( $request ){
 		try {
-			$puesto = MPuesto::find( $request -> id );
+			$puesto = MPuesto::findOrFail( $request -> id );
 			
 			$puesto -> eliminar() -> save();
 
