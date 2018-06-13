@@ -172,7 +172,7 @@
                                         <button type="button" class="btn btn-sm btn-alt-secondary dropdown-toggle" id="btnGroupDrop2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Opciones</button>
                                         <div class="dropdown-menu" aria-labelledby="btnGroupDrop2" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 94px, 0px); top: 0px; left: 40px; will-change: transform;">
                                             @if (! $documento -> finalizado() && ! $documento -> rechazado() && user() -> can('SEG.CAMBIAR.ESTADO') )
-                                            <a class="dropdown-item" href="#" onclick="hPanel.cambiarEstado({{ $seguimiento -> getKey() }})">
+                                            <a class="dropdown-item" href="#" onclick="hPanel.cambiarEstado({{ $documento -> getKey() }})">
                                                 <i class="fa fa-fw fa-flash text-danger"></i> Cambiar estado
                                             </a>
                                             @endif

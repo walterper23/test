@@ -9,13 +9,8 @@
 	
 	@isset($contestar)
 	<div class="form-group row">
-        <div class="col-md-3">
-        	<label class="css-control css-control-primary css-checkbox">
-                <input class="css-control-input" name="contestar" id="contestar" value="1" type="checkbox">
-                <span class="css-control-indicator"></span> <span class="font-w600">Contestar la solicitud realizada por el origen</span>
-            </label>
-        </div>
-        <div class="col-md-9">
+        <div class="col-md-12">
+        </span> <span class="font-w600">Conteste a la solicitud realizada por el origen <span class="text-primary font-w700">{{ $origen_solicitud }}</span>.</span>
         	<textarea placeholder="Respuesta a la solicitud realizada por el origen" noresize="" id="contestacion" class="form-control" name="contestacion" cols="20" rows="2"></textarea>
         </div>
     </div>
@@ -46,17 +41,14 @@
     <div class="form-group row">
     	<label class="col-md-3 col-form-label" for="semaforizar">Semaforizar</label>
         <div class="col-md-9">
-        	@isset($contestar)
-        	<label class="css-control css-control-primary css-checkbox disabled">
+        	<label class="css-control css-control-primary css-checkbox disabled {{ isset($contestar) ? '' : 'd-none' }}" id="label-no-semaforizar">
                 <input class="css-control-input" type="checkbox" disabled="">
-                <span class="css-control-indicator"></span> <i class="fa fa-fw fa-warning"></i> No se puede semaforizar. En espera de respuesta a la última solicitud realizada. 
+                <span class="css-control-indicator"></span> <i class="fa fa-fw fa-warning"></i> No se puede semaforizar. Primero debe contestar a la solicitud realizada por el origen <b>{{ $origen_solicitud }}</b>.
             </label>
-            @else
-			<label class="css-control css-control-primary css-checkbox">
+			<label class="css-control css-control-primary css-checkbox {{ isset($contestar) ? 'd-none' : '' }}" id="label-semaforizar">
                 <input class="css-control-input" name="semaforizar" id="semaforizar" value="1" type="checkbox">
-                <span class="css-control-indicator"></span> <i class="fa fa-fw fa-flag"></i> Solicitar al destino, contestar a este Cambio de Estado
+                <span class="css-control-indicator"></span> <i class="fa fa-fw fa-flag"></i> Solicitar al destino que conteste a este Cambio de Estado.
             </label>
-            @endisset
         </div>
     </div>
     @endcan
@@ -103,6 +95,15 @@
 				}
 			});
 
+			$('#contestacion').on('keyup',function(){
+				$('#label-no-semaforizar').add('#label-semaforizar').addClass('d-none');
+				if( this.value.trim().length ){
+					$('#label-semaforizar').removeClass('d-none');
+				}else{
+					$('#label-no-semaforizar').removeClass('d-none');
+				}
+			});
+
 		};
 
 		this.successSubmitHandler = function( result ){
@@ -126,11 +127,7 @@
 		this.rules = function(){
 			return {
 				contestacion : {
-					required : {
-						depends : function(element){
-							return $('#contestar').is(':checked');
-						}
-					},
+					required : true,
 					minlength : 1
 				},
 				estado_documento : { required : true },
