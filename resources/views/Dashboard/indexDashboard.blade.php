@@ -5,6 +5,7 @@
 @section('content')
 <div class="row gutters-tiny justify-content-center">
     <!-- Row #2 -->
+    @can('REC.DOCUMENTO.LOCAL')
     <div class="{{ sizeof($recepcion_local) ? 'col-md-6' : 'col-md-3' }}">
         <div class="block block-themed">
             <div class="block-header bg-corporate">
@@ -30,6 +31,9 @@
             </div>
         </div>
     </div>
+    @endcan
+
+    @can('REC.DOCUMENTO.FORANEO')
     <div class="{{ sizeof($recepcion_foranea) ? 'col-md-6' : 'col-md-3' }}">
         <div class="block block-themed">
             <div class="block-header bg-flat-dark">
@@ -59,6 +63,9 @@
             </div>
         </div>
     </div>
+    @endcan
+    
+    @can('SEG.PANEL.TRABAJO')
     <div class="{{ sizeof($panel_trabajo) ? 'col-md-6' : 'col-md-3' }}">
         <div class="block block-themed">
             <div class="block-header bg-primary">
@@ -88,6 +95,9 @@
             </div>
         </div>
     </div>
+    @endcan
+
+    @can('SEG.ADMIN.SEMAFORO')
     <div class="{{ sizeof($semaforizacion) ? 'col-md-6' : 'col-md-3' }}">
         <div class="block block-themed">
             <div class="block-header bg-earth">
@@ -115,8 +125,12 @@
             </div>
         </div>
     </div>
+    @endcan
     <!-- END Row #2 -->
-    
+</div>
+
+<div class="row gutters-tiny justify-content-center">
+    @can('REPO.VER.GRA.DIA.SEM')
     <div class="col-md-6 col-sm-12 invisible" data-toggle="appear">
         <!-- Bars Chart -->
         <div class="block">
@@ -135,6 +149,9 @@
         </div>
         <!-- END Bars Chart -->
     </div>
+    @endcan
+    
+    @can('REPO.VER.GRA.DIA.SEM')
     <div class="col-md-6 col-sm-12 invisible" data-toggle="appear">
         <!-- Bars Chart -->
         <div class="block">
@@ -153,6 +170,9 @@
         </div>
         <!-- END Bars Chart -->
     </div>
+    @endcan
+
+    @can('REPO.VER.GRA.MEN.ANUAL')
     <div class="col-md-4 col-sm-12 invisible" data-toggle="appear">
         <!-- Pie Chart -->
         <div class="block">
@@ -171,6 +191,9 @@
         </div>
         <!-- END Pie Chart -->
     </div>
+    @endcan
+
+    @can('REPO.VER.GRA.MEN.ANUAL')
     <div class="col-md-4 col-sm-12 invisible" data-toggle="appear">
         <!-- Pie Chart -->
         <div class="block">
@@ -189,6 +212,7 @@
         </div>
         <!-- END Pie Chart -->
     </div>
+    @endcan
 </div>
 @endsection
 

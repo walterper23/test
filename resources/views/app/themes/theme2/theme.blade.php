@@ -112,14 +112,6 @@
             <!-- Main Container -->
             <main id="main-container">
 
-                <!-- Breadcrumb -->
-                <!--div class="bg-body-light border-b">
-                    <div class="content py-5 text-center">
-                        @yield('breadcrumb-disabled')
-                    </div>
-                </div-->
-                <!-- END Breadcrumb -->
-
                 <!-- Page Content -->
                 
                 <!-- User Info -->
@@ -140,7 +132,7 @@
             <footer id="page-footer" class="opacity-0" style="opacity: 1;">
                 <div class="content py-20 font-size-xs clearfix">
                     <div class="float-left">
-                        <span class="font-w600 text-primary">SIGESD 1.0</span> &copy; <span class="js-year-copy">{{ date('Y') }}</span>
+                        <span class="font-w600 text-primary">{{ config_var('Sistema.Siglas') }} {{ config_var('Sistema.Version') }}</span> &copy; <span class="js-year-copy">2017</span>
                     </div>
                     <div class="float-right">
                         Powered by <span class="font-w600 text-danger">ITCh</span>

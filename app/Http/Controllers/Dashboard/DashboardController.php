@@ -17,7 +17,9 @@ class DashboardController extends BaseController
 {
     protected $documentosRepository;
 
-    public function __construct(){
+    public function __construct()
+    {
+        parent::__construct();
         $this -> setLog('DashboardController.log');
     }
 

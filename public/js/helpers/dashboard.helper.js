@@ -9,11 +9,6 @@ App.loadScript('/js/helpers/helper.js', function(){
 				return '/manager'
 			},
 
-			delete_ : function(id){
-				this.delete({
-					id, title : 'Eliminar anexo'
-				})
-			}
 		}
 	}())
 })

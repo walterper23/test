@@ -113,7 +113,7 @@ class PermisoAsignacionController extends BaseController
     public function editarPermisosAsignacionesUsuario( $request )
     {
         // Recuperar el usuario y sus permisos
-        $usuario = MUsuario::with('Permisos','Direcciones','Departamentos') -> where('USUA_USUARIO',$request -> usuario) -> existente() -> first();
+        $usuario = MUsuario::where('USUA_USUARIO',$request -> usuario) -> existente() -> get() -> first();
         
         // Editamos los permisos del usuario
         $this -> editarPermisosUsuario( $usuario, $request );
@@ -121,7 +121,7 @@ class PermisoAsignacionController extends BaseController
         // Editamos las asignaciones del usuario
         $this -> editarAsignacionesUsuario( $usuario, $request );
 
-        // Eliminamos el caché de los permisos del usuario, para cargar de nuevo los permisos
+        // Eliminamos el caché de los permisos del usuario, para cargarle de nuevo los permisos que debe tener asignados
         Cache::forget(sprintf('Permisos.Usuario.Actual.%d', $usuario -> getKey()));
 
         return $this -> responseSuccessJSON('<i class="fa fa-fw fa-lock"></i> Los cambios se han guardado correctamente');
@@ -132,28 +132,10 @@ class PermisoAsignacionController extends BaseController
      */
     public function editarPermisosUsuario( $usuario, $request )
     {
-        // Recuperar los permisos actuales del usuario
-        $permisosUsuario = $usuario -> Permisos() -> pluck('USPE_PERMISO','USPE_USUARIO_PERMISO') -> toArray();
-
         // Recuperamos los permisos nuevos para el usuario. Se hace una búsqueda en la base de datos para evitar recibir y agregar permisos que no existan
-        $permisosNuevos =  MPermiso::find($request -> permisos) -> pluck('SYPE_PERMISO') -> toArray();
+        $permisosNuevos =  MPermiso::find($request -> get('permisos',[])) -> pluck('SYPE_PERMISO') -> toArray();
 
-        // Recorrer los permisos del usuario para eliminarle los permisos indicados
-        foreach ($permisosUsuario as $usuarioPermiso => $permisoActual) {
-            if (! in_array($permisoActual, $permisosNuevos) ) // Si el permiso del usuario no está en los permisos nuevos, se lo eliminamos al usuario
-                MUsuarioPermiso::find( $usuarioPermiso ) -> delete();
-        }
-
-        // Recorrer los permisos nuevos para agregarle al usuario los permisos que no tenga
-        foreach ($permisosNuevos as $permisoActual) {
-            if (! in_array($permisoActual, $permisosUsuario) ) // Si el permiso nuevo no está en los permisos del usuario, se lo añadimos al usuario
-            {
-                $nuevoPermiso = new MUsuarioPermiso;
-                $nuevoPermiso -> USPE_USUARIO = $request -> usuario;
-                $nuevoPermiso -> USPE_PERMISO = $permisoActual;
-                $nuevoPermiso -> save();
-            }
-        }
+        $usuario -> Permisos() -> sync($permisosNuevos);
 
         return true;
     }
@@ -161,7 +143,6 @@ class PermisoAsignacionController extends BaseController
     /**
      * Método para editar las asignaciones de un usuario
      */
-    // Método para asignarle direcciones y departmamentos a un usuario
     public function editarAsignacionesUsuario( $usuario, $request )
     {
         // Recuperar las direcciones actualmente asignadas al usuario
@@ -174,43 +155,11 @@ class PermisoAsignacionController extends BaseController
         $direccionesNuevas =  MDireccion::find($request -> get('direcciones',[]) ) -> pluck('DIRE_DIRECCION') -> toArray();
 
         // Recuperamos los departamentos nuevos para el usuario. Se hace una búsqueda en la base de datos para evitar recibir y agregar departamentos que no existen
-        $departamentosNuevos =  MDepartamento::find($request -> get('departamentos',[]) ) -> pluck('DEPA_DIRECCION','DEPA_DEPARTAMENTO') -> toArray();
+        $departamentosNuevos =  MDepartamento::find($request -> get('departamentos',[]) ) -> pluck('DEPA_DEPARTAMENTO') -> toArray();
 
-        // Recorrer las direcciones del usuario para eliminarle las direcciones indicadas
-        foreach ($direccionesUsuario as $asignacion => $direccionActual) {
-            if (! in_array($direccionActual, $direccionesNuevas) ) // Si la dirección del usuario no está en las direcciones nuevas, se la eliminamos al usuario
-                MUsuarioAsignacion::find( $asignacion ) -> delete();
-        }
+        $usuario -> Direcciones() -> sync($direccionesNuevas);
 
-        // Recorrer las direcciones nuevas para agregarle al usuario las direcciones que no tenga asignadas
-        foreach ($direccionesNuevas as $direccionActual) {
-            if (! in_array($direccionActual, $direccionesUsuario) ) // Si la dirección nueva no está en las direcciones del usuario, se la añadimos al usuario
-            {
-                $nuevaDireccion = new MUsuarioAsignacion;
-                $nuevaDireccion -> USAS_USUARIO      = $request -> usuario;
-                $nuevaDireccion -> USAS_DIRECCION    = $direccionActual;
-                $nuevaDireccion -> USAS_DEPARTAMENTO = null;
-                $nuevaDireccion -> save();
-            }
-        }
-
-        // Recorrer los departamentos del usuario para eliminarle los departamentos indicados
-        foreach ($departamentosUsuario as $asignacion => $departamentoActual) {
-            if (! array_key_exists($departamentoActual, $departamentosNuevos) ) // Si el departamento del usuario no está en los departamentos nuevos, se lo eliminamos al usuario
-                MUsuarioAsignacion::find( $asignacion ) -> delete();
-        }
-
-        // Recorrer los departamentos nuevas para agregarle al usuario los departamentos que no tenga asignados
-        foreach ($departamentosNuevos as $departamentoActual => $direccion) {
-            if (! in_array($departamentoActual, $departamentosUsuario) ) // Si el departamento nuevo no está en los departamentos del usuario, se lo añadimos al usuario
-            {
-                $nuevoDepartamento = new MUsuarioAsignacion;
-                $nuevoDepartamento -> USAS_USUARIO      = $request -> usuario;
-                $nuevoDepartamento -> USAS_DIRECCION    = $direccion;
-                $nuevoDepartamento -> USAS_DEPARTAMENTO = $departamentoActual;
-                $nuevoDepartamento -> save();
-            }
-        }
+        $usuario -> Departamentos() -> sync($departamentosNuevos);
 
         return true;
     }

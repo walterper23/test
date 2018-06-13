@@ -41,7 +41,7 @@ class MUsuario extends Authenticatable
     
     public function getAuthUsername()
     {
-        return $this -> attributes['USUA_USERNAME'];
+        return $this -> getAttribute('USUA_USERNAME');
     }
 
     public function setUsuaPasswordAttribute( $password ){
@@ -50,41 +50,41 @@ class MUsuario extends Authenticatable
 
     public function getAuthPassword()
     {
-        return $this -> attributes['USUA_PASSWORD'];
+        return $this -> getAttribute('USUA_PASSWORD');
     }
 
     public function getDescripcion()
     {
-        return $this -> attributes['USUA_DESCRIPCION'];
+        return $this -> getAttribute('USUA_DESCRIPCION');
     }
 
     public function getAvatarSmall()
     {
-        return $this -> attributes['USUA_AVATAR_SMALL'];
+        return $this -> getAttribute('USUA_AVATAR_SMALL');
     }
 
     public function getAvatarFull()
     {
-        return $this -> attributes['USUA_AVATAR_FULL'];
+        return $this -> getAttribute('USUA_AVATAR_FULL');
     }
     
     public function getRecentLogin()
     {
-        return $this -> attributes['USUA_RECENT_LOGIN'];
+        return $this -> getAttribute('USUA_RECENT_LOGIN');
     }
 
     public function getLastLogin()
     {
-        return $this -> attributes['USUA_LAST_LOGIN'];
+        return $this -> getAttribute('USUA_LAST_LOGIN');
     }
 
     public function getRememberTokenName()
     {
-        return $this -> attributes['USUA_REMEMBER_TOKEN'];
+        return $this -> setAttribute('USUA_REMEMBER_TOKEN');
     }
 
     public function setRememberToken($value){
-        $this -> attributes['USUA_REMEMBER_TOKEN'] = $value;
+        $this -> setAttribute('USUA_REMEMBER_TOKEN', $value);
     }
 
     public function canAtLeast()

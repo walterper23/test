@@ -7,6 +7,8 @@ DB::listen(function($query){
 
 Route::middleware('preventBackHistory') -> group(function(){
 
+    Route::get('documentacion', 'DocumentacionController@index');
+
     Route::get('login',  'Auth\LoginController@showLoginForm') -> name('login');
     Route::post('login', 'Auth\LoginController@login');
     Route::get('logout', 'Auth\LoginController@logout') -> name('logout');
@@ -113,7 +115,7 @@ Route::middleware('preventBackHistory') -> group(function(){
                 Route::post('manager',                'PanelController@manager');
                 
                 // Seguimiento de los documentos
-                Route::prefix('seguimiento') -> namespace('Seguimiento') -> group(function(){
+                Route::prefix('seguimiento') -> group(function(){
                     Route::get('/',      'SeguimientoController@index');
                 });
 

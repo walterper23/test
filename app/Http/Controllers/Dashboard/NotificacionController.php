@@ -16,32 +16,33 @@ class NotificacionController extends BaseController
         $this->setLog('NotificacionController.log');
     }
 
-    public function index(){
-
-        return view('Dashboard.indexDashboard');
-    }
-
     // Método para creación de una nueva notificación
-    public static function nuevaNotificacion( $type, $data )
+    public static function nuevaNotificacion( $codigo_notificacion, $data )
     {
-        switch ($type) {
+        switch ($codigo_notificacion) {
             case 'PT.NDR': // Panel de trabajo :: Nuevo documento recibido
                 $data['permiso'] = 18;
+                $type = 3; // Panel de trabajo
                 break;
             case 'PT.DSR': // Panel de trabajo :: Documento con semáforo recibido
                 $data['permiso'] = 18;
+                $type = 3; // Panel de trabajo
                 break;
             case 'RL.NTD': // Recepción local :: Nuevo tipo de documento
                 $data['permiso'] = 1;
+                $type = 1; // Recepción local
                 break;
             case 'RL.TDD': // Recepción local :: Tipo de documento desactivado
                 $data['permiso'] = 1;
+                $type = 1; // Recepción local
                 break;
             case 'RL.TDE': // Recepción local :: Tipo de documento eliminado
                 $data['permiso'] = 1;
+                $type = 1; // Recepción local
                 break;
             case 'RL.DFT': // Recepción local :: Documento foráneo en tránsito
                 $data['permiso'] = 1;
+                $type = 1; // Recepción local
                 break;
             case 'RF.NTD': // Recepción foránea :: Nuevo tipo de documento
                 $data['permiso'] = 19;
@@ -56,15 +57,10 @@ class NotificacionController extends BaseController
                 $data['permiso'] = 19;
                 break;
             case 'DS.DSR': // Documento semaforizado :: Documento semaforizado respondido
-                $data['permiso'] = 21;
-                break;
             case 'DS.DSF': // Documento semaforizado :: Documento semaforizado próximo a finalizar
-                $data['permiso'] = 21;
-                break;
             case 'DS.DSL': // Documento semaforizado :: Documento semáforizado no respondido a tiempo límite
-                $data['permiso'] = 21;
-                break;
             case 'DS.TLM': // Documento semaforizado :: Tiempo límite modificado para contestación de solicitudes
+                $type = 4; // Semaforización de documentos
                 $data['permiso'] = 21;
                 break;
             case 'VF.NRF': // Ver recepciones foráneas :: Nueva recepción foránea capturada

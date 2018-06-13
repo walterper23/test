@@ -34,9 +34,11 @@ if (! function_exists('permisoUsuario'))
         $permisos = Cache::rememberForever($permisosUsuario,function(){
             return user() -> Permisos;
         });
+        
 
         $permisos = $permisos -> pluck('SYPE_CODIGO') -> toArray();
 
+        //dd('a ber',$permisos,in_array($permiso, $permisos),$permiso);
         return in_array($permiso, $permisos);
     }
 }

@@ -125,10 +125,12 @@ If your sidebar menu includes icons and you would like to hide them, you can add
         </ul>
     </li>
     @endcan
-    @if( user() -> canAtLeast('SIS.ADMIN.ANEXOS','SIS.ADMIN.DIRECC','SIS.ADMIN.DEPTOS','SIS.ADMIN.PUESTOS','SIS.ADMIN.ESTA.DOC') )
+    @if( user() -> canAtLeast('SIS.ADMIN.ANEXOS','SIS.ADMIN.DIRECC','SIS.ADMIN.DEPTOS','SIS.ADMIN.PUESTOS',
+                    'SIS.ADMIN.ESTA.DOC','USU.ADMIN.USUARIOS','USU.ADMIN.PERMISOS.ASIG','SIS.ADMIN.CONFIG') )
     <li>
         <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)"><i class="fa fa-fw fa-cogs"></i>Configuración</a>
         <ul>
+            @can('SIS.ADMIN.CATALOGOS','SIS.ADMIN.ANEXOS','SIS.ADMIN.DIRECC','SIS.ADMIN.DEPTOS','SIS.ADMIN.PUESTOS','SIS.ADMIN.ESTA.DOC')
             <li>
                 <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)">Catálogos</a>
                 <ul>
@@ -159,6 +161,8 @@ If your sidebar menu includes icons and you would like to hide them, you can add
                     @endcan
                 </ul>
             </li>
+            @endcan
+
             @if( user() -> canAtLeast('USU.ADMIN.USUARIOS','USU.ADMIN.PERMISOS.ASIG') )
             <li>
                 <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)">Usuarios</a>
@@ -188,11 +192,11 @@ If your sidebar menu includes icons and you would like to hide them, you can add
                     </li>
                     <!--li>
                         <a href="{{ url('configuracion/sistema/documentos-archivados') }}">Documentos archivados</a>
-                    </li>
+                    </li-->
                     <li>
                         <a href="{{ url('configuracion/sistema/variables') }}">Variables</a>
                     </li>
-                    <li>
+                    <!--li>
                         <a href="{{ url('configuracion/sistema/bitacora') }}">Bitácora</a>
                     </li-->
                 </ul>

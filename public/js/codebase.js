@@ -779,7 +779,7 @@ var Codebase = function() {
             if (parseInt(baseYear) >= curYear) {
                 yearCopy.html(curYear);
             } else {
-                yearCopy.html(baseYear + '-' + curYear.toString().substr(2, 2));
+                yearCopy.html(baseYear + '-' + curYear.toString());
             }
         }
     };
