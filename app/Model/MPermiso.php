@@ -11,12 +11,12 @@ class MPermiso extends Model
 
     public function getCodigo()
     {
-    	return $this -> attributes['SYPE_CODIGO'];
+    	return $this -> getAttribute('SYPE_CODIGO');
     }
 
     public function getDescripcion()
     {
-    	return $this -> attributes['SYPE_DESCRIPCION'];
+    	return $this -> getAttribute('SYPE_DESCRIPCION');
     }
 
     /* Relationships */

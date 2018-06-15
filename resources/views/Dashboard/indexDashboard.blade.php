@@ -3,7 +3,7 @@
 @section('title', title('Inicio') )
 
 @section('content')
-<div class="row gutters-tiny justify-content-center">
+<div class="row gutters-tiny">
     <!-- Row #2 -->
     @can('REC.DOCUMENTO.LOCAL')
     <div class="{{ sizeof($recepcion_local) ? 'col-md-6' : 'col-md-3' }}">
@@ -18,22 +18,14 @@
             </div>
             <div class="block-content notificacion">
                 @foreach( $recepcion_local as $notificacion )
-                <div class="alert alert-{{ $notificacion -> getColor() }} alert-dismissable" role="alert">
-                    <button type="button" class="close cerrar-notificacion" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                    <p class="mb-0">
-                        <span class="font-size-xs text-muted""><i>{{ $notificacion -> getFechaCreacion() }}</i></span>
-                        <i class="fa fa-fw fa-angle-double-right"></i> {{ $notificacion -> getContenido() }}
-                    </p>
-                </div>
+                    @include( $notificacion -> NOTI_URL ? 'Dashboard.notificacion_url' : 'Dashboard.notificacion' )
                 @endforeach
             </div>
         </div>
     </div>
     @endcan
 
-    @can('REC.DOCUMENTO.FORANEO')
+    @if( user() -> canAtLeast('REC.DOCUMENTO.FORANEO','REC.VER.FORANEO') )
     <div class="{{ sizeof($recepcion_foranea) ? 'col-md-6' : 'col-md-3' }}">
         <div class="block block-themed">
             <div class="block-header bg-flat-dark">
@@ -46,19 +38,7 @@
             </div>
             <div class="block-content notificacion">
                 @foreach( $recepcion_foranea as $notificacion )
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="alert alert-{{ $notificacion -> getColor() }} alert-dismissable" role="alert">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                            </button>
-                            <p class="mb-0">
-                                <span class="font-size-xs text-muted""><i>{{ $notificacion -> getFechaCreacion() }}</i></span>
-                                <i class="fa fa-fw fa-angle-double-right"></i> {{ $notificacion -> getContenido() }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                    @include( $notificacion -> NOTI_URL ? 'Dashboard.notificacion_url' : 'Dashboard.notificacion' )
                 @endforeach
             </div>
         </div>
@@ -78,19 +58,7 @@
             </div>
             <div class="block-content notificacion">
                 @foreach( $panel_trabajo as $notificacion )
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="alert alert-{{ $notificacion -> getColor() }} alert-dismissable" role="alert">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                            </button>
-                            <p class="mb-0">
-                                <span class="font-size-xs text-muted""><i>{{ $notificacion -> getFechaCreacion() }}</i></span>
-                                <i class="fa fa-fw fa-angle-double-right"></i> {{ $notificacion -> getContenido() }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                    @include( $notificacion -> NOTI_URL ? 'Dashboard.notificacion_url' : 'Dashboard.notificacion' )
                 @endforeach
             </div>
         </div>
@@ -110,17 +78,7 @@
             </div>
             <div class="block-content notificacion">
                 @foreach( $semaforizacion as $notificacion )
-                <div class="row">
-                        <div class="alert alert-{{ $notificacion -> getColor() }} alert-dismissable" role="alert">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                            </button>
-                            <p class="mb-0">
-                                <span class="font-size-xs text-muted""><i>{{ $notificacion -> getFechaCreacion() }}</i></span>
-                                <i class="fa fa-fw fa-angle-double-right"></i> {{ $notificacion -> getContenido() }}
-                            </p>
-                        </div>
-                </div>
+                    @include( $notificacion -> NOTI_URL ? 'Dashboard.notificacion_url' : 'Dashboard.notificacion' )
                 @endforeach
             </div>
         </div>
@@ -237,7 +195,7 @@
         areas_notificaciones.each(function(index,element){
             if (! $(element).html().trim().length )
             {
-                $(element).html('<p class="text-muted text-md mb-10">No hay notificaciones</p>');
+                $(element).html('<p class="text-center text-muted font-size-xs mb-10">- No hay notificaciones -</p>');
             }
         });
     }

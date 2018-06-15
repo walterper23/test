@@ -7,7 +7,6 @@ class MNotificacion extends BaseModel
 	protected $primaryKey   = 'NOTI_NOTIFICACION';
 	protected $prefix       = 'NOTI';
 	
-
 	/* Methods */
 
 	public function getColor()
@@ -20,22 +19,36 @@ class MNotificacion extends BaseModel
 		return $this -> getAttribute('NOTI_CONTENIDO');
 	}
 
-	public function getUrl()
-	{
-		return $this -> getAttribute('NOTI_URL');
-	}
-
 	public function getFechaCreacion()
 	{
 		return $this -> getAttribute('NOTI_CREATED_AT');
 	}
 
+	public function getPermiso()
+	{
+		return $this -> getAttribute('NOTI_SYSTEM_PERMISO');
+	}
+
+	public function getTipo()
+	{
+		return $this -> getAttribute('NOTI_SYSTEM_TIPO');
+	}
+	
+	public function getUrl()
+	{
+		return $this -> getAttribute('NOTI_URL');
+	}
 
 	/* Relationships */
 
 	public function Permiso()
 	{
-		return $this -> belongsTo('App\Model\MPermiso','NOTI_PERMISO','SYPE_PERMISO');
+		return $this -> belongsTo('App\Model\MPermiso','NOTI_SYSTEM_PERMISO','SYPE_PERMISO');
+	}
+
+	public function TipoNotificacion()
+	{
+		return $this -> belongsTo('App\Model\MSystemTipoNotificacion','NOTI_SYSTEM_TIPO','SYTN_TIPO');
 	}
 
 }

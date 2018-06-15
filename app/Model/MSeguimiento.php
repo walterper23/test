@@ -16,6 +16,11 @@ class MSeguimiento extends BaseModel
         return parent::getCodigo($size);
     }
 
+    public function getDireccionDestino()
+    {
+        return $this -> getAttribute('SEGU_DIRECCION_DESTINO');
+    }
+
     public function getInstruccion()
     {
         return $this -> getAttribute('SEGU_INSTRUCCION');

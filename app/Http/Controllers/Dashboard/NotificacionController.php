@@ -1,137 +1,117 @@
 <?php
 namespace App\Http\Controllers\Dashboard;
 
-use App\Http\Controllers\BaseController; 
 use Illuminate\Http\Request;
 use \Illuminate\Support\Facades\Mail;
 
+/* Controllers */
+use App\Http\Controllers\BaseController;
+
 /* Models */
 use App\Model\MNotificacion;
+use App\Model\MNotificacionArea;
+use App\Model\MSystemNotificacion;
 
+/**
+ * Controlador para la creación de notificaciones a usuarios en el sistema.
+ * Envío de correos a usuarios según la notificacion creada.
+ */
 class NotificacionController extends BaseController
 {
+    /**
+     * Crear nueva instancia del controlador
+     */
     public function __construct()
     {
         parent::__construct();
         $this->setLog('NotificacionController.log');
     }
 
-    // Método para creación de una nueva notificación
-    public static function nuevaNotificacion( $codigo_notificacion, $data )
+    /**
+      * Método para creación de una nueva notificación
+      */
+    public static function nuevaNotificacion( $codigo_notificacion, Array $data )
     {
-        switch ($codigo_notificacion) {
-            case 'PT.NDR': // Panel de trabajo :: Nuevo documento recibido
-                $data['permiso'] = 18;
-                $type = 3; // Panel de trabajo
-                break;
-            case 'PT.DSR': // Panel de trabajo :: Documento con semáforo recibido
-                $data['permiso'] = 18;
-                $type = 3; // Panel de trabajo
-                break;
-            case 'RL.NTD': // Recepción local :: Nuevo tipo de documento
-                $data['permiso'] = 1;
-                $type = 1; // Recepción local
-                break;
-            case 'RL.TDD': // Recepción local :: Tipo de documento desactivado
-                $data['permiso'] = 1;
-                $type = 1; // Recepción local
-                break;
-            case 'RL.TDE': // Recepción local :: Tipo de documento eliminado
-                $data['permiso'] = 1;
-                $type = 1; // Recepción local
-                break;
-            case 'RL.DFT': // Recepción local :: Documento foráneo en tránsito
-                $data['permiso'] = 1;
-                $type = 1; // Recepción local
-                break;
-            case 'RF.NTD': // Recepción foránea :: Nuevo tipo de documento
-                $data['permiso'] = 19;
-                break;
-            case 'RF.TDD': // Recepción foránea :: Tipo de documento desactivado
-                $data['permiso'] = 19;
-                break;
-            case 'RF.TDE': // Recepción foránea :: Tipo de documento eliminado
-                $data['permiso'] = 19;
-                break;
-            case 'RF.DRL': // Recepción foránea :: Documento validado/recepcionado localmente
-                $data['permiso'] = 19;
-                break;
-            case 'DS.DSR': // Documento semaforizado :: Documento semaforizado respondido
-            case 'DS.DSF': // Documento semaforizado :: Documento semaforizado próximo a finalizar
-            case 'DS.DSL': // Documento semaforizado :: Documento semáforizado no respondido a tiempo límite
-            case 'DS.TLM': // Documento semaforizado :: Tiempo límite modificado para contestación de solicitudes
-                $type = 4; // Semaforización de documentos
-                $data['permiso'] = 21;
-                break;
-            case 'VF.NRF': // Ver recepciones foráneas :: Nueva recepción foránea capturada
-                $data['permiso'] = 22;
-            default:
-                # code...
-                break;
-        }
+        $system_notificacion = MSystemNotificacion::where('SYNO_CODIGO',$codigo_notificacion) -> limit(1) -> first();
 
-        return $this -> crearNotificacion( $type, $data );
-    }
-
-    public function crearNotificacion( $type, $data )
-    {
         $notificacion = new MNotificacion;
-        $notificacion -> NOTI_CODIGO    = $type;
-        $notificacion -> NOTI_CONTENIDO = $data['contenido'];
-        $notificacion -> NOTI_URL       = isset($data['url']) ? $data['url'] : null;
-        $notificacion -> NOTI_PERMISO   = $data['permiso'];
+        $notificacion -> NOTI_SYSTEM_NOTIFICACION = $system_notificacion -> getKey();
+        $notificacion -> NOTI_SYSTEM_TIPO         = $system_notificacion -> getTipo();
+        $notificacion -> NOTI_SYSTEM_PERMISO      = $system_notificacion -> getPermiso();
+        $notificacion -> NOTI_COLOR               = !array_key_exists('color',$data) ? $system_notificacion -> getColor() : $data['color'] ;
+        $notificacion -> NOTI_CONTENIDO           = isset($data['contenido']) ? $data['contenido'] : null;
+        $notificacion -> NOTI_URL                 = isset($data['url']) ? $data['url'] : null;
         $notificacion -> save();
+
+        // En este paso se verifica si la notificación se registrará para alguna dirección o departamento.
+        // El tipo de notificación deberá ser tipo 3 => Panel de trabajo.
+        if( $notificacion -> getTipo() == 3 ) // Panel de trabajo
+        {
+            $notificacion_area = new MNotificacionArea;
+            $notificacion_area -> NOAR_NOTIFICACION = $notificacion -> getKey();
+            $notificacion_area -> NOAR_DIRECCION    = $data['direccion'];
+            $notificacion_area -> NOAR_DEPARTAMENTO = isset($data['departamento']) ? $data['departamento'] : null;
+            $notificacion_area -> save();
+        }
 
         return true;
     }
 
-    public function mandarNotificacionCorreo($documento)
+    public static function mandarNotificacionCorreo($documento)
     {
-        if ($documento -> getTipoRecepcion() == 1){ // Recepción local
+        $correos = [];
+        
+        if( config('app.debug') === false && boolval(config_var('Configuracion.Envio.Correo.Prod')) === true )
+        {
+            if ($documento -> getTipoRecepcion() == 1){ // Recepción local
 
-            if( $documento -> getTipoDocumento() == 1 ) // Denuncia
-            {
-                $preferencia = \App\Model\MPreferencia::find(1);
+                if( $documento -> getTipoDocumento() == 1 ) // Denuncia
+                {
+                    $preferencia = \App\Model\MPreferencia::find(1);
+                }
+                else if( $documento -> getTipoDocumento() == 2 ) // Documento para denuncia
+                {
+                    $preferencia = \App\Model\MPreferencia::find(2);
+                }
+                else // Otro tipo de documento
+                {
+                    $preferencia = \App\Model\MPreferencia::find(3);
+                }
             }
-            else if( $documento -> getTipoDocumento() == 2 ) // Documento para denuncia
+            else
             {
-                $preferencia = \App\Model\MPreferencia::find(2);
+                if( $documento -> getTipoDocumento() == 1 ) // Denuncia
+                {
+                    $preferencia = \App\Model\MPreferencia::find(4);
+                }
+                else if( $documento -> getTipoDocumento() == 2 ) // Documento para denuncia
+                {
+                    $preferencia = \App\Model\MPreferencia::find(5);
+                }
+                else // Otro tipo de documento
+                {
+                    $preferencia = \App\Model\MPreferencia::find(6);
+                }   
             }
-            else // Otro tipo de documento
-            {
-                $preferencia = \App\Model\MPreferencia::find(3);
-            }
+
+            $usuarios = $preferencia -> Usuarios() -> with('UsuarioDetalle') -> get();
+
+            $correos = $usuarios -> map(function($usuario){
+                return $usuario -> UsuarioDetalle -> getEmail();
+            }) -> toArray();
         }
         else
         {
-            if( $documento -> getTipoDocumento() == 1 ) // Denuncia
-            {
-                $preferencia = \App\Model\MPreferencia::find(4);
-            }
-            else if( $documento -> getTipoDocumento() == 2 ) // Documento para denuncia
-            {
-                $preferencia = \App\Model\MPreferencia::find(5);
-            }
-            else // Otro tipo de documento
-            {
-                $preferencia = \App\Model\MPreferencia::find(6);
-            }   
+            $correos = ['rcl6395@gmail.com','notificaciones.sigesd@qroo.gob.mx'];
         }
 
-        $usuarios = $preferencia -> Usuarios() -> with('UsuarioDetalle') -> get();
-
-        $correos = $usuarios -> map(function($usuario){
-            return $usuario -> UsuarioDetalle -> getEmail();
-        });
-
-        $correos = $correos -> toArray();
-
-        $correos = ['rcl6395@gmail.com','notificaciones.sigesd@qroo.gob.mx'];
-
-        if ($documento -> getTipoRecepcion() == 1) // Recepción local
-            Mail::to($correos) -> queue( new \App\Mail\NuevoDocumentoRecibido($documento) );
-        else
-            Mail::to($correos) -> queue( new \App\Mail\NuevoDocumentoForaneoRecibido($documento) );
+        if( sizeof($correos) > 0 )
+        {
+            if ($documento -> getTipoRecepcion() == 1) // Recepción local
+                Mail::to($correos) -> queue( new \App\Mail\NuevoDocumentoRecibido($documento) ); // Mandar notificación sobre documento local
+            else
+                Mail::to($correos) -> queue( new \App\Mail\NuevoDocumentoForaneoRecibido($documento) ); // Mandar notificación sobre documento foráneo
+        }
 
     }
 

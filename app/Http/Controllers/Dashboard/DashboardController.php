@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use DB;
 
 /* Controllers */
 use App\Http\Controllers\BaseController;
@@ -23,7 +24,8 @@ class DashboardController extends BaseController
         $this -> setLog('DashboardController.log');
     }
 
-    public function index(Request $request){
+    public function index(Request $request)
+    {
 
         $data_notificaciones['recepcion_local']   = [];
         $data_notificaciones['recepcion_foranea'] = [];
@@ -32,18 +34,39 @@ class DashboardController extends BaseController
 
         $permisos_usuario = user() -> Permisos -> pluck('SYPE_PERMISO') -> toArray();
 
-        $notificaciones = MNotificacion::existente() -> where(function($query){
-            $query -> whereNull('NOTI_VISTO_ELIMINADO');
-            // faltan agregar mas validaciones
-        })
-        -> whereIn('NOTI_PERMISO',$permisos_usuario)
-        -> get();
+        $sql_notificaciones = 'SELECT * FROM notificaciones
+                            LEFT JOIN notificaciones_areas ON NOTI_NOTIFICACION = NOAR_NOTIFICACION
+                            LEFT JOIN usuarios ON !JSON_CONTAINS(NOTI_USUARIOS_VISTO, CAST(USUA_USUARIO AS JSON),"$")
+                            AND NOAR_ENABLED = 1
+                            ORDER BY NOTI_SYSTEM_TIPO ASC, NOTI_CREATED_AT DESC
+                            ';
 
-        $notificaciones -> map(function($notificacion) use (&$data_notificaciones){
+        $notificaciones = DB::select($sql_notificaciones);
 
-            $data_notificaciones['recepcion_local'][] = $notificacion;
+        $grupos_notificaciones = [];
+        foreach ($notificaciones as $notificacion) {
+            $grupos_notificaciones[ $notificacion -> NOTI_SYSTEM_TIPO ][] = $notificacion;
+        }
 
-        });
+        if( array_key_exists(1, $grupos_notificaciones) )
+        {
+            $data_notificaciones['recepcion_local'] = $grupos_notificaciones[1];
+        }
+
+        if( array_key_exists(2, $grupos_notificaciones) )
+        {
+            $data_notificaciones['recepcion_foranea'] = $grupos_notificaciones[2];
+        }
+
+        if( array_key_exists(3, $grupos_notificaciones) )
+        {
+            $data_notificaciones['panel_trabajo'] = $grupos_notificaciones[3];
+        }
+
+        if( array_key_exists(4, $grupos_notificaciones) )
+        {
+            $data_notificaciones['semaforizacion'] = $grupos_notificaciones[4];
+        }
 
         return view('Dashboard.indexDashboard') -> with($data_notificaciones);
     }

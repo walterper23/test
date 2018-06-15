@@ -323,7 +323,7 @@ class PanelController extends BaseController
                     $documento -> save();
                     break;
                 default:
-                    if ($documento -> Seguimientos -> count() == 1) // Si el documento solo tenía un seguimiento o cambio de estado ...
+                    if ($documento -> Seguimientos -> count() == 1) // Si el documento solo tenía un seguimiento o cambio de estado (recepcionado) ...
                     {
                         $documento -> DOCU_SYSTEM_ESTADO_DOCTO = 3; // ... lo cambiamos a Documento en seguimiento
                         $documento -> save();
