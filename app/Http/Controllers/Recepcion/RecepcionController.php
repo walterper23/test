@@ -294,7 +294,7 @@ class RecepcionController extends BaseController
             
             NotificacionController::nuevaNotificacion('PAN.TRA.NUE.DOC.REC',$data);
             // Mandamos el correo de notificación a los usuarios que tengan la preferencia asignada
-            NotificacionController::mandarNotificacionCorreo($documento);
+            //NotificacionController::mandarNotificacionCorreo($documento);
 
             return $this -> responseSuccessJSON(url('recepcion/documentos/recepcionados' . $redirect));
         } catch(Exception $error) {
