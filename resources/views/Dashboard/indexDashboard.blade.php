@@ -6,7 +6,7 @@
 <div class="row gutters-tiny">
     <!-- Row #2 -->
     @can('REC.DOCUMENTO.LOCAL')
-    <div class="{{ sizeof($recepcion_local) ? 'col-md-6' : 'col-md-3' }}">
+    <div class="{{ sizeof($recepcion_local) ? 'col-md-4' : 'col-md-4' }}">
         <div class="block block-themed">
             <div class="block-header bg-corporate">
                 <h3 class="block-title">
@@ -26,7 +26,7 @@
     @endcan
 
     @if( user() -> canAtLeast('REC.DOCUMENTO.FORANEO','REC.VER.FORANEO') )
-    <div class="{{ sizeof($recepcion_foranea) ? 'col-md-6' : 'col-md-3' }}">
+    <div class="{{ sizeof($recepcion_foranea) ? 'col-md-4' : 'col-md-4' }}">
         <div class="block block-themed">
             <div class="block-header bg-flat-dark">
                 <h3 class="block-title">
@@ -46,7 +46,7 @@
     @endcan
     
     @can('SEG.PANEL.TRABAJO')
-    <div class="{{ sizeof($panel_trabajo) ? 'col-md-6' : 'col-md-3' }}">
+    <div class="{{ sizeof($panel_trabajo) ? 'col-md-4' : 'col-md-4' }}">
         <div class="block block-themed">
             <div class="block-header bg-primary">
                 <h3 class="block-title">
@@ -66,7 +66,7 @@
     @endcan
 
     @can('SEG.ADMIN.SEMAFORO')
-    <div class="{{ sizeof($semaforizacion) ? 'col-md-6' : 'col-md-3' }}">
+    <div class="{{ sizeof($semaforizacion) ? 'col-md-4' : 'col-md-4' }}">
         <div class="block block-themed">
             <div class="block-header bg-earth">
                 <h3 class="block-title">
@@ -185,8 +185,23 @@
     var areas_notificaciones = $('div.notificacion');
     var notificaciones = $('button.cerrar-notificacion');
 
-    notificaciones.on('click', function(){
-        setTimeout(consultarNotificaciones,150);
+    notificaciones.on('click', function(e){
+
+        e.preventDefault();
+
+        var el = $(this);
+
+        App.ajaxRequest({
+            url  : '{{ url('manager') }}',
+            data : { action : 'eliminar-notificacion', id : el.data('notificacion') },
+            success : function( result ){
+                // location.reload();
+            },
+            complete : function(){
+                setTimeout(consultarNotificaciones,150);
+            }
+        });
+
     })
 
     consultarNotificaciones();

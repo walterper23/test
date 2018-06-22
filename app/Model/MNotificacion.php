@@ -6,6 +6,10 @@ class MNotificacion extends BaseModel
 	protected $table        = 'notificaciones';
 	protected $primaryKey   = 'NOTI_NOTIFICACION';
 	protected $prefix       = 'NOTI';
+
+	protected $casts = [
+    	'NOTI_USUARIOS_VISTO' => 'array',
+	];
 	
 	/* Methods */
 
@@ -37,6 +41,11 @@ class MNotificacion extends BaseModel
 	public function getUrl()
 	{
 		return $this -> getAttribute('NOTI_URL');
+	}
+
+	public function getUsuariosVisto()
+	{
+		return $this -> getAttribute('NOTI_USUARIOS_VISTO');
 	}
 
 	/* Relationships */

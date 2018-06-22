@@ -24,7 +24,6 @@ class MUsuario extends Authenticatable
         static::creating(function($model){
             $model -> creatingRegister();
         });
-
     }
 
     /* Methods */
@@ -45,7 +44,7 @@ class MUsuario extends Authenticatable
     }
 
     public function setUsuaPasswordAttribute( $password ){
-        $this -> attributes['USUA_PASSWORD'] = bcrypt($password);
+        $this -> setAttribute('USUA_PASSWORD',bcrypt($password));
     }
 
     public function getAuthPassword()
@@ -80,7 +79,7 @@ class MUsuario extends Authenticatable
 
     public function getRememberTokenName()
     {
-        return $this -> setAttribute('USUA_REMEMBER_TOKEN');
+        return $this -> getAttribute('USUA_REMEMBER_TOKEN');
     }
 
     public function setRememberToken($value){

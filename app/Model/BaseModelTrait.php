@@ -42,27 +42,6 @@ trait BaseModelTrait
             $this -> attributes[ $fielCreatedBy ] = json_encode(['k' => userKey(),'u' => user() -> getAuthUsername()]); // Información del usuario
     }
 
-    // Método para guardar la información del usuario que esta haciendo cambios en el registro
-    private function updatingRegister(){
-        $fieldUpdated = $this -> getField('UPDATED');
-
-        if ($this -> existsAttribute($fieldUpdated))
-        {
-            $updated = $this -> attributes[ $fieldUpdated ];
-
-            if (empty($updated) || is_null($updated))
-                $updated = json_encode([]);
-
-            $updated = json_decode($updated, true);
-
-            $info = ['k' => userKey(),'u' => user() -> getAuthUsername()]; // ID y nombre de usuario
-
-            array_push($updated,$info);
-
-            $this -> attributes[ $fieldUpdated ] = json_encode( $updated );
-        }
-    }
-
     // Método para devolver el ID del registro como un código de longitud indicada
     public function getCodigo( $size = 3, $str = '0', $direction = STR_PAD_LEFT )
     {

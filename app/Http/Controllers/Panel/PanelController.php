@@ -3,10 +3,12 @@ namespace App\Http\Controllers\Panel;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\ManagerUsuarioRequest;
+use Carbon\Carbon;
 use DB;
 
 /* Controllers */
 use App\Http\Controllers\BaseController;
+use App\Http\Controllers\Dashboard\NotificacionController;
 
 /* Models */
 use App\Model\MUsuario;
@@ -312,7 +314,21 @@ class PanelController extends BaseController
 
             if ($documento -> rechazado())
                 return $this -> responseDangerJSON('<i class="fa fa-fw fa-warning"></i> El documento fue rechazado. No se permiten más cambios de estado.');
-                    
+
+            $documentoSemaforizado = MDocumentoSemaforizado::where('DOSE_DOCUMENTO',$documento -> getKey())
+                    -> whereIn('DOSE_ESTADO',[1,2]) // En espera, No atendido
+                    -> whereNull('DOSE_SEGUIMIENTO_B')
+                    -> limit(1) -> first();
+
+            if ( $documentoSemaforizado && ! $request -> has('contestacion') )
+                return $this -> responseDangerJSON('<i class="fa fa-fw fa-warning"></i> Debe contestar a la solicitud realizada por el origen anterior.');
+
+            if($request -> estado_documento == 1 && $request -> get('semaforizar') == 1 && !user() -> can('SEG.ADMIN.SEMAFORO') ) // Permitir semaforizar el documento, si aun estará en seguimiento y si el usuario tiene el permiso
+            {
+                abort(403);
+            }
+            
+
             switch ($request -> estado_documento) {
                 case 2:
                     $documento -> DOCU_SYSTEM_ESTADO_DOCTO = 5; // Documento rechazado
@@ -337,7 +353,7 @@ class PanelController extends BaseController
 
             $seguimientoNuevo = new MSeguimiento;
             $seguimientoNuevo -> SEGU_USUARIO              = userKey();
-            $seguimientoNuevo -> SEGU_DOCUMENTO            = $ultimoSeguimiento -> SEGU_DOCUMENTO;
+            $seguimientoNuevo -> SEGU_DOCUMENTO            = $ultimoSeguimiento -> getDocumento();
             $seguimientoNuevo -> SEGU_DIRECCION_ORIGEN     = $ultimoSeguimiento -> SEGU_DIRECCION_DESTINO;
             $seguimientoNuevo -> SEGU_DEPARTAMENTO_ORIGEN  = $ultimoSeguimiento -> SEGU_DEPARTAMENTO_DESTINO;
             $seguimientoNuevo -> SEGU_DIRECCION_DESTINO    = $request -> direccion_destino;
@@ -347,28 +363,27 @@ class PanelController extends BaseController
             $seguimientoNuevo -> SEGU_INSTRUCCION          = $request -> instruccion;
             $seguimientoNuevo -> save();
 
-            $documentoSemaforizado = MDocumentoSemaforizado::where('DOSE_DOCUMENTO',$documento -> getKey())
-                    -> whereIn('DOSE_ESTADO',[1,2]) // En espera, No atendido
-                    -> whereNull('DOSE_SEGUIMIENTO_B')
-                    -> get() -> first();
-
             if ( $documentoSemaforizado && $request -> has('contestacion') )
             {
                 $documentoSemaforizado -> DOSE_ESTADO              = 3; // Respondido
                 $documentoSemaforizado -> DOSE_SEGUIMIENTO_B       = $seguimientoNuevo -> getKey();
                 $documentoSemaforizado -> DOSE_RESPUESTA           = $request -> contestacion;
-                $documentoSemaforizado -> DOSE_RESPUESTA_FECHA     = \Carbon\Carbon::now();
+                $documentoSemaforizado -> DOSE_RESPUESTA_FECHA     = Carbon::now();
                 $documentoSemaforizado -> save();
-            }
-            else
-            {
-                return $this -> responseDangerJSON('Debe contestar a la solicitud realizada por el origen anterior.');
+
+                // Crear la notificación para usuarios del sistema
+                $data = [
+                    'contenido'  => sprintf('Ha recibido respuesta al documento semaforizado #%s', $documentoSemaforizado -> getCodigo()),
+                    'url'        => sprintf('panel/documentos/semaforizados/?view=%s&open=2',$documentoSemaforizado -> getKey()),
+                ];
+                
+                NotificacionController::nuevaNotificacion('DOC.SEM.RES',$data);
             }
                 
-            if($request -> estado_documento == 1 && $request -> get('semaforizar') == 1) // Permitir semaforizar el documento, si aun estará en seguimiento
+            if($request -> estado_documento == 1 && $request -> get('semaforizar') == 1 && user() -> can('SEG.ADMIN.SEMAFORO') ) // Permitir semaforizar el documento, si aun estará en seguimiento y si el usuario tiene el permiso
             {
                 // Calculamos la fecha límite para responder a la solicitud de contestación
-                $fecha_limite = \Carbon\Carbon::now() -> addDays( config_var('Sistema.Dias.Limite.Semaforo') ) -> format('Y-m-d');
+                $fecha_limite = Carbon::now() -> addDays( config_var('Sistema.Dias.Limite.Semaforo') ) -> format('Y-m-d');
 
                 $semaforo = new MDocumentoSemaforizado;
                 $semaforo -> DOSE_DOCUMENTO     = $documento -> getKey();

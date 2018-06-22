@@ -14,47 +14,47 @@ class MDetalle extends BaseModel
 
     public function getAnexos()
     {
-        return $this -> attributes['DETA_ANEXOS'];
+        return $this -> getAttribute('DETA_ANEXOS');
     }
     
     public function getDescripcion()
     {
-        return $this -> attributes['DETA_DESCRIPCION'];
+        return $this -> getAttribute('DETA_DESCRIPCION');
     }
     
     public function getFechaRecepcion()
     {
-        return $this -> attributes['DETA_FECHA_RECEPCION'];
+        return $this -> getAttribute('DETA_FECHA_RECEPCION');
     }
 
     public function getObservaciones()
     {
-        return $this -> attributes['DETA_OBSERVACIONES'];
+        return $this -> getAttribute('DETA_OBSERVACIONES');
     }
 
     public function getResponsable()
     {
-        return $this -> attributes['DETA_RESPONSABLE'];
+        return $this -> getAttribute('DETA_RESPONSABLE');
     }
 
     public function getEntregoNombre()
     {
-        return $this -> attributes['DETA_ENTREGO_NOMBRE'];
+        return $this -> getAttribute('DETA_ENTREGO_NOMBRE');
     }
 
     public function getEntregoEmail()
     {
-        return $this -> attributes['DETA_ENTREGO_EMAIL'];
+        return $this -> getAttribute('DETA_ENTREGO_EMAIL');
     }
 
     public function getEntregoTelefono()
     {
-        return $this -> attributes['DETA_ENTREGO_TELEFONO'];
+        return $this -> getAttribute('DETA_ENTREGO_TELEFONO');
     }
 
     public function getEntregoIdentificacion()
     {
-        return $this -> attributes['DETA_ENTREGO_IDENTIFICACION'];
+        return $this -> getAttribute('DETA_ENTREGO_IDENTIFICACION');
     }
 
     /* Relationships */

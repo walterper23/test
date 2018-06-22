@@ -21,6 +21,11 @@ class MSeguimiento extends BaseModel
         return $this -> getAttribute('SEGU_DIRECCION_DESTINO');
     }
 
+    public function getDocumento()
+    {
+        return $this -> getAttribute('SEGU_DOCUMENTO');
+    }    
+
     public function getInstruccion()
     {
         return $this -> getAttribute('SEGU_INSTRUCCION');

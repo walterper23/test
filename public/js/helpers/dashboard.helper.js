@@ -7,8 +7,7 @@ App.loadScript('/js/helpers/helper.js', function(){
 		return {
 			manager : function(){
 				return '/manager'
-			},
-
+			}
 		}
-	}())
-})
+	}());
+});

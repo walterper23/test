@@ -4,7 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 
-class ModelNotFoundException extends Exception
+class MethodNotAllowedHttpException extends Exception
 {
     /**
      * Report the exception.
@@ -24,15 +24,6 @@ class ModelNotFoundException extends Exception
      */
     public static function render($request)
     {
-
-        if ( $request -> ajax() )
-        {
-            return response() -> json(['status'=>false,'message'=>'Recurso no disponible']);
-        }
-        else
-        {
-            return view('errors.exceptions.ModelNotFoundException');
-        }
-
+        abort(404);
     }
 }

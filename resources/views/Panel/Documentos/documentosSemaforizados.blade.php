@@ -45,4 +45,11 @@
 
 @push('js-custom')
 	{!! $table->javascript() !!}
+    @if( request() -> has('open') && request() -> has('view') )
+    <script type="text/javascript">
+        setTimeout(function(){
+            hSemaforo.verSeguimiento({{ request('open') }},{{ request('view') }});
+        },1000);
+    </script>
+    @endif
 @endpush

@@ -31,7 +31,7 @@
             <div class="block-options">
                 @can('SIS.ADMIN.ESTA.DOC')
                 <button type="button" class="btn btn-sm btn-danger" onclick="hPanel.nuevoEstado()">
-                    <i class="fa fa-fw fa-flash"></i> Nuevo
+                    <i class="fa fa-fw fa-flash"></i> Nuevo estado
                 </button>
                 @endcan
                 @if (user() -> can('SEG.CAMBIAR.ESTADO') && ! $seguimiento -> Documento -> finalizado() && ! $seguimiento -> Documento -> rechazado())
@@ -69,7 +69,7 @@
                             @if (! empty($detalle -> getObservaciones()))
                             <td>{{ $detalle -> getObservaciones()  }}</td>
                             @else
-                            <td class="font-size-sm text-muted">Sin observaciones</td>
+                            <td class="font-size-sm text-muted">- Sin observaciones -</td>
                             @endif
                             <td class="bg-primary text-white font-w700">Opciones</td>
                             <td>
@@ -85,7 +85,7 @@
                                     </button>
                                     @endif
                                 @else
-                                    <div class="font-size-sm text-muted">El documento no contiene anexos ni escaneos</div>
+                                    <div class="font-size-sm text-muted">- El documento no contiene anexos ni escaneos -</div>
                                 @endif
                             </td>
                         </tr>

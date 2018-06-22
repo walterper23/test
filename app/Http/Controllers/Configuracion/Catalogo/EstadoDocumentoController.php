@@ -93,6 +93,9 @@ class EstadoDocumentoController extends BaseController
             $data['action']        = 1;
             $data['id']            = null;
 
+
+            /*
+
             $direcciones = MDireccion::with(['DepartamentosExistentesDisponibles'=>function($query){
                 
                 // Si el usuario no puede administrar todos los departamentos, buscamos solos los departamentos que tenga asignados     
@@ -114,8 +117,29 @@ class EstadoDocumentoController extends BaseController
 
             $direcciones = $direcciones -> orderBy('DIRE_NOMBRE') -> get();
 
+            */
+
+            /* Consultar las direcciones asignadas directa o indirectamente al usuario */
+            $direcciones_asignadas = user() -> Direcciones -> pluck('DIRE_DIRECCION') -> toArray();
+
+            $departamentos_asignados = user() -> Departamentos;
+
             $data['departamentos'] = [];
 
+            foreach ($departamentos_asignados as $departamento) {
+                if(! in_array($direccion = $departamento -> getDireccion(), $direcciones_asignadas) )
+                    $direcciones_asignadas[] = $direccion;
+
+                $data['departamentos'][] = [
+                    $departamento -> getDireccion(),
+                    $departamento -> getKey(),
+                    $departamento -> getNombre()
+                ];
+            }
+
+            $direcciones = MDireccion::whereIn('DIRE_DIRECCION',$direcciones_asignadas) -> get();
+
+            /*
             foreach ($direcciones as $direccion)
             {
                 $departamentos = $direccion -> DepartamentosExistentesDisponibles;
@@ -127,7 +151,7 @@ class EstadoDocumentoController extends BaseController
                         $departamento -> getNombre()
                     ];
                 }
-            }
+            }*/
             
             $data['direcciones'] = $direcciones -> pluck('DIRE_NOMBRE','DIRE_DIRECCION') -> toArray();
 

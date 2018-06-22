@@ -87,7 +87,7 @@
                     <div class="block-options">
                         @can('SIS.ADMIN.ESTA.DOC')
                         <button type="button" class="btn btn-danger" onclick="hPanel.nuevoEstado()">
-                            <i class="fa fa-fw fa-flash"></i> Nuevo
+                            <i class="fa fa-fw fa-flash"></i> Nuevo estado
                         </button>
                         @endcan
                         <!--strong>1 - {{ sizeof($documentos) }}</strong> de <strong>{{ sizeof($documentos) }}</strong>
@@ -150,7 +150,9 @@
                                 <span class="text-danger"><i class="fa fa-fw fa-flash"></i> #{{ $seguimiento -> getCodigo() }}</span> :: {{ $seguimiento -> EstadoDocumento -> getNombre() }}
                             </a>
                             <p><span class="font-w600"><i class="fa fa-fw fa-comment-o"></i> Observaciones:</span> {{ $seguimiento -> getObservacion() }}</p>
+                            @if($documento -> enSeguimiento())
                             <p><span class="font-w600"><i class="fa fa-fw fa-street-view"></i> Instrucción al destino:</span> {{ $seguimiento -> getInstruccion() }}</p>
+                            @endif
                         </div>
                         <div class="col-md-2 text-right section-options">
                             <div class="font-size-sm text-muted text-right" title="Documento #{{ $documento -> getCodigo() }}">

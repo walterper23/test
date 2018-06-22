@@ -17,7 +17,6 @@ class SeguimientoController extends BaseController
 
 	public function index(Request $request)
 	{
-
 		$search = $request -> get('search');
 		$read   = $request -> get('read',0);
 
@@ -26,7 +25,7 @@ class SeguimientoController extends BaseController
 		if (is_null($seguimiento))
 			return view('Panel.Seguimiento.seguimientoNoEncontrado');
 
-		if ($read == 1 && !($seguimiento -> leido()) ) // Si la petición pide que marquemos el seguimiento como leído y el seguimiento no ha sido leido ...
+		if ($read == 1 && !$seguimiento -> leido() ) // Si la petición pide que marquemos el seguimiento como leído y el seguimiento no ha sido leido ...
 			$seguimiento -> marcarComoLeido() -> save(); // ... marcamos el seguimiento como leído
 
 		$data['seguimiento']  = $seguimiento;

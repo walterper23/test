@@ -11,12 +11,12 @@ class MEscaneo extends BaseModel
 
     public function getNombre()
     {
-        return $this -> attributes['ESCA_NOMBRE'];
+        return $this -> getAttribute('ESCA_NOMBRE');
     }
 
     public function getDescripcion()
     {
-        return $this -> attributes['ESCA_DESCRIPCION'];
+        return $this -> getAttribute('ESCA_DESCRIPCION');
     }
     
 

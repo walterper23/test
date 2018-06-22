@@ -2,7 +2,7 @@
 
 DB::listen(function($query){
     \Illuminate\Support\Facades\Log::info($query -> sql);
-    //echo "<pre style=\"z-index:5000\">{$query->sql}</pre>";
+    \Illuminate\Support\Facades\Log::info($query -> bindings);
 });
 
 Route::middleware('preventBackHistory') -> group(function(){
@@ -27,6 +27,11 @@ Route::middleware('preventBackHistory') -> group(function(){
             // Dashboard del usuario. Para las notificaciones principalmente.
             Route::get('/',        'DashboardController@index');
             Route::post('manager', 'DashboardController@manager');
+
+            // Peticiones extras
+            Route::prefix('extra-request') -> group(function(){
+                
+            });
 
             Route::prefix('usuario') -> group(function(){
                 Route::prefix('perfil') -> group(function(){

@@ -18,11 +18,6 @@ class BaseModel extends Model
         	$model -> creatingRegister();
         });
 
-        /*
-        static::updating(function($model){
-        	$model -> updatingRegister();
-        });
-        */
     }
 
 }

@@ -34,15 +34,6 @@ class DocumentoSemaforizadoController extends BaseController
 	public function manager(Request $request){
 
 		switch ($request -> action) {
-			case 1: // Marcar documentación foránea como recibida
-				$response = $this -> recibirDocumento( $request );
-				break;
-			case 2: // Marcar documentación foránea como validada
-				$response = $this -> validarDocumento( $request );
-				break;
-			case 3: // Recepcionar documentación foránea
-				$response = $this -> recepcionarDocumento( $request );
-				break;
 			default:
 				return response() -> json(['message'=>'Petición no válida'],404);
 				break;
@@ -53,7 +44,7 @@ class DocumentoSemaforizadoController extends BaseController
 	public function verSeguimiento(Request $request)
 	{
 		// Recuperamos la solicitud o semáforo
-		$semaforo = MDocumentoSemaforizado::find( $request -> id );
+		$semaforo = MDocumentoSemaforizado::findOrFail( $request -> id );
 
 		if ($request -> type == 1) // Si el seguimiento solicitado, es el de la solicitud
 		{

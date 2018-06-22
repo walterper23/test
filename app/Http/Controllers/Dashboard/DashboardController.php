@@ -14,6 +14,9 @@ use App\Model\MDocumentoForaneo;
 use App\Model\MNotificacion;
 use App\Model\System\MSystemTipoDocumento;
 
+/**
+ * Controlador para la página principal del usuario
+ */
 class DashboardController extends BaseController
 {
     protected $documentosRepository;
@@ -26,7 +29,6 @@ class DashboardController extends BaseController
 
     public function index(Request $request)
     {
-
         $data_notificaciones['recepcion_local']   = [];
         $data_notificaciones['recepcion_foranea'] = [];
         $data_notificaciones['panel_trabajo']     = [];
@@ -34,38 +36,71 @@ class DashboardController extends BaseController
 
         $permisos_usuario = user() -> Permisos -> pluck('SYPE_PERMISO') -> toArray();
 
-        $sql_notificaciones = 'SELECT * FROM notificaciones
-                            LEFT JOIN notificaciones_areas ON NOTI_NOTIFICACION = NOAR_NOTIFICACION
-                            LEFT JOIN usuarios ON !JSON_CONTAINS(NOTI_USUARIOS_VISTO, CAST(USUA_USUARIO AS JSON),"$")
-                            AND NOAR_ENABLED = 1
-                            ORDER BY NOTI_SYSTEM_TIPO ASC, NOTI_CREATED_AT DESC
-                            ';
+        $ids_direcciones_usuario = user() -> Direcciones -> pluck('DIRE_DIRECCION') -> toArray();
+        $ids_departamentos_usuario = user() -> Departamentos -> pluck('DEPA_DEPARTAMENTO') -> toArray();
 
-        $notificaciones = DB::select($sql_notificaciones);
+        $sql_notificaciones_recepcion =
+        'SELECT * FROM usuarios
+            JOIN notificaciones ON !JSON_CONTAINS(NOTI_USUARIOS_VISTO, CAST(USUA_USUARIO AS JSON),"$")
+            WHERE NOTI_SYSTEM_TIPO IN (1,2,4)
+            AND NOTI_DELETED = 0
+            AND USUA_DELETED = 0
+            AND USUA_USUARIO = ?
+            ORDER BY NOTI_SYSTEM_TIPO ASC, NOTI_CREATED_AT DESC
+        ';
 
-        $grupos_notificaciones = [];
-        foreach ($notificaciones as $notificacion) {
-            $grupos_notificaciones[ $notificacion -> NOTI_SYSTEM_TIPO ][] = $notificacion;
+        $notificaciones_recepcion = DB::select($sql_notificaciones_recepcion,[userKey()]);
+
+        $notificaciones_areas = [];
+        if ( sizeof($ids_direcciones_usuario) > 0 )
+        {
+            $ids_direcciones_usuario = implode(',', $ids_direcciones_usuario);
+            $ids_departamentos_usuario[] = 0;
+            $ids_departamentos_usuario = implode(',', $ids_departamentos_usuario);
+            $sql_notificaciones_areas =
+            'SELECT * FROM usuarios
+                JOIN notificaciones ON !JSON_CONTAINS(NOTI_USUARIOS_VISTO, CAST(USUA_USUARIO AS JSON),"$")
+                JOIN notificaciones_areas ON NOTI_NOTIFICACION = NOAR_NOTIFICACION
+                WHERE NOTI_SYSTEM_TIPO = 3
+                AND NOTI_DELETED = 0
+                AND NOAR_ENABLED = 1
+                AND (NOAR_DIRECCION IN (?) OR NOAR_DEPARTAMENTO IN (?) )
+                AND USUA_DELETED = 0
+                AND USUA_USUARIO = ?
+                ORDER BY NOTI_SYSTEM_TIPO ASC, NOTI_CREATED_AT DESC
+                    ';
+
+            $notificaciones_areas = DB::select($sql_notificaciones_areas,[$ids_direcciones_usuario, $ids_departamentos_usuario,userKey()]);
         }
 
-        if( array_key_exists(1, $grupos_notificaciones) )
-        {
-            $data_notificaciones['recepcion_local'] = $grupos_notificaciones[1];
+        $grupos_notificaciones_recepcion = [];
+        foreach ($notificaciones_recepcion as $notificacion) {
+            $grupos_notificaciones_recepcion[ $notificacion -> NOTI_SYSTEM_TIPO ][] = $notificacion;
         }
 
-        if( array_key_exists(2, $grupos_notificaciones) )
-        {
-            $data_notificaciones['recepcion_foranea'] = $grupos_notificaciones[2];
+        $grupos_notificaciones_areas = [];
+        foreach ($notificaciones_areas as $notificacion) {
+            $grupos_notificaciones_areas[ $notificacion -> NOTI_SYSTEM_TIPO ][] = $notificacion;
         }
 
-        if( array_key_exists(3, $grupos_notificaciones) )
+        if( array_key_exists(1, $grupos_notificaciones_recepcion) )
         {
-            $data_notificaciones['panel_trabajo'] = $grupos_notificaciones[3];
+            $data_notificaciones['recepcion_local'] = $grupos_notificaciones_recepcion[1];
         }
 
-        if( array_key_exists(4, $grupos_notificaciones) )
+        if( array_key_exists(2, $grupos_notificaciones_recepcion) )
         {
-            $data_notificaciones['semaforizacion'] = $grupos_notificaciones[4];
+            $data_notificaciones['recepcion_foranea'] = $grupos_notificaciones_recepcion[2];
+        }
+
+        if( array_key_exists(3, $grupos_notificaciones_areas) )
+        {
+            $data_notificaciones['panel_trabajo'] = $grupos_notificaciones_areas[3];
+        }
+
+        if( array_key_exists(4, $grupos_notificaciones_recepcion) )
+        {
+            $data_notificaciones['semaforizacion'] = $grupos_notificaciones_recepcion[4];
         }
 
         return view('Dashboard.indexDashboard') -> with($data_notificaciones);
@@ -78,6 +113,9 @@ class DashboardController extends BaseController
             case 'reporte-documentos' :
                 $response = $this -> reporteDocumentos( $request );
                 break;
+            case 'eliminar-notificacion' : 
+                $response = $this -> eliminarNotificacion( $request );
+                break;
             default:
                 abort(404);
                 break;
@@ -86,7 +124,7 @@ class DashboardController extends BaseController
         return $response;
     }
 
-    public function reporteDocumentos($request)
+    public function reporteDocumentos( $request )
     {
         $anio_actual = Carbon::now() -> year;
 
@@ -157,7 +195,6 @@ class DashboardController extends BaseController
 
     public function documentosSemana( $documentos_locales, $documentos_foraneos )
     {
-
         $inicio_semana = Carbon::now() -> startOfWeek();
         $fin_semana    = Carbon::now() -> endOfWeek() -> format('Y-m-d');
 
@@ -278,6 +315,11 @@ class DashboardController extends BaseController
         $data = array_values($data);
 
         return $data;
+    }
+
+    public function eliminarNotificacion( $request )
+    {
+        return NotificacionController::eliminarNotificacion( $request -> id );
     }
 
 }

@@ -11,7 +11,7 @@ class MDocumentoSemaforizado extends BaseModel
 
     public function getEstado()
     {
-        return $this -> attributes['DOSE_ESTADO'];
+        return $this -> getAttribute('DOSE_ESTADO');
     }
 
     public function enEspera(){
@@ -28,22 +28,22 @@ class MDocumentoSemaforizado extends BaseModel
 
     public function getFechaLimite()
     {
-        return $this -> attributes['DOSE_FECHA_LIMITE'];
+        return $this -> getAttribute('DOSE_FECHA_LIMITE');
     }
 
     public function getSolicitud()
     {
-        return $this -> attributes['DOSE_SOLICITUD'];
+        return $this -> getAttribute('DOSE_SOLICITUD');
     }
 
     public function getRespuesta()
     {
-        return $this -> attributes['DOSE_RESPUESTA'];
+        return $this -> getAttribute('DOSE_RESPUESTA');
     }
 
     public function getRespuestaFecha()
     {
-        return $this -> attributes['DOSE_RESPUESTA_FECHA'];
+        return $this -> getAttribute('DOSE_RESPUESTA_FECHA');
     }
 
 

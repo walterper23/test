@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Storage;
 
 /* Controllers */
 use App\Http\Controllers\Recepcion\AcuseRecepcionController;
@@ -49,10 +50,28 @@ class NuevoDocumentoRecibido extends Mailable implements ShouldQueue
             'documento' => $this -> documento
         ];
 
-        return $this -> view('email.nuevoDocumentoRecibido') -> with($data)
+        $mail = $this -> view('email.nuevoDocumentoRecibido')
+                        -> with($data)
                         -> subject($subject)
                         -> attachData($pdf -> Output(), $acuseRecepcion -> getNombre(), [
                                 'mime' => 'application/pdf',
                             ]);
+
+        /*
+        if( ($escaneos = $this -> documento -> Escaneos) -> count() > 0 )
+        {
+            if($escaneo = $escaneos -> values() -> get(0))
+            {
+                //$mail -> attachData($pdf -> Output(), $acuseRecepcion -> getNombre(), ['mime' => 'application/pdf']);
+            }
+
+            if($escaneo = $escaneos -> values() -> get(9))
+            {
+                //$mail -> attachData($pdf -> Output(), $acuseRecepcion -> getNombre(), ['mime' => 'application/pdf']);
+            }
+        }
+        */
+
+        return $mail;
     }
 }

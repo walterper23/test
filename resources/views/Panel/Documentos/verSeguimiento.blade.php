@@ -18,7 +18,9 @@
             <span class="text-danger"><i class="fa fa-fw fa-flash"></i> #{{ $seguimiento -> getCodigo() }}</span> :: {{ $seguimiento -> EstadoDocumento -> getNombre() }}
         </span>
         <p><span class="font-w600"><i class="fa fa-fw fa-comment-o"></i> Observaciones:</span> {{ $seguimiento -> getObservacion() }}</p>
+        @if( $seguimiento -> Documento -> enSeguimiento() )
         <p><span class="font-w600"><i class="fa fa-fw fa-street-view"></i> Instrucción al destino:</span> {{ $seguimiento -> getInstruccion() }}</p>
+        @endif
     </div>
     <div class="col-12">
         <div class="row">

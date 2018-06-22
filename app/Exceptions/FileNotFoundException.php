@@ -22,7 +22,7 @@ class FileNotFoundException extends Exception
      * @param  \Illuminate\Http\Request
      * @return \Illuminate\Http\Response
      */
-    public static function render($request)
+    public static function render($request, $exception)
     {
         return view('errors.exceptions.FileNotFoundException');
     }

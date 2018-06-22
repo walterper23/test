@@ -12,6 +12,8 @@ use App\Model\MNotificacion;
 use App\Model\MNotificacionArea;
 use App\Model\MSystemNotificacion;
 
+use Exception;
+
 /**
  * Controlador para la creación de notificaciones a usuarios en el sistema.
  * Envío de correos a usuarios según la notificacion creada.
@@ -38,9 +40,10 @@ class NotificacionController extends BaseController
         $notificacion -> NOTI_SYSTEM_NOTIFICACION = $system_notificacion -> getKey();
         $notificacion -> NOTI_SYSTEM_TIPO         = $system_notificacion -> getTipo();
         $notificacion -> NOTI_SYSTEM_PERMISO      = $system_notificacion -> getPermiso();
-        $notificacion -> NOTI_COLOR               = !array_key_exists('color',$data) ? $system_notificacion -> getColor() : $data['color'] ;
+        $notificacion -> NOTI_COLOR               = $system_notificacion -> getColor();
         $notificacion -> NOTI_CONTENIDO           = isset($data['contenido']) ? $data['contenido'] : null;
         $notificacion -> NOTI_URL                 = isset($data['url']) ? $data['url'] : null;
+        $notificacion -> NOTI_USUARIOS_VISTO      = [];
         $notificacion -> save();
 
         // En este paso se verifica si la notificación se registrará para alguna dirección o departamento.
@@ -55,6 +58,31 @@ class NotificacionController extends BaseController
         }
 
         return true;
+    }
+
+    /**
+     * Método para agregar a un usuario a la lista de usuarios que han visto la notificación ya que han indicado eliminarla
+     */
+    public static function eliminarNotificacion( $id_notificacion )
+    {
+        try {
+
+            $notificacion = MNotificacion::findOrFail( $id_notificacion );
+            
+            $usuarios = $notificacion -> getUsuariosVisto() ?? [];
+
+            if (! in_array(userKey(), $usuarios) )
+            {
+                array_push($usuarios, userKey());
+            }
+
+            $notificacion -> NOTI_USUARIOS_VISTO = $usuarios;
+            $notificacion -> save();
+
+            return (new self) -> responseSuccessJSON();
+        } catch(Exception $error) {
+
+        }
     }
 
     public static function mandarNotificacionCorreo($documento)
@@ -102,7 +130,8 @@ class NotificacionController extends BaseController
         }
         else
         {
-            $correos = ['rcl6395@gmail.com','notificaciones.sigesd@qroo.gob.mx'];
+            $correos[0] = 'rcl6395@gmail.com';
+            $correos[1] = 'notificaciones.sigesd@qroo.gob.mx';
         }
 
         if( sizeof($correos) > 0 )

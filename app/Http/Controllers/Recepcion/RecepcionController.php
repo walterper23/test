@@ -215,6 +215,7 @@ class RecepcionController extends BaseController
             $seguimiento -> SEGU_DIRECCION_DESTINO    = config_var('Sistema.Direcc.Destino'); // Dirección del procurador, por default
             $seguimiento -> SEGU_DEPARTAMENTO_DESTINO = config_var('Sistema.Depto.Destino');  // Departamento del procurador, por default
             $seguimiento -> SEGU_ESTADO_DOCUMENTO     = config_var('Sistema.Estado.Recepcion.Seguimiento'); // "Documento recepcionado". Estado de documento inicial para seguimiento por default
+            $seguimiento -> SEGU_OBSERVACION          = $detalle -> getObservaciones();
             $seguimiento -> save();
 
             $nombre_acuse = sprintf('ARD/%s/%s/%s/',date('Y'),date('m'),$documento -> getCodigo());
@@ -265,7 +266,9 @@ class RecepcionController extends BaseController
 
             // Guardamos los archivos o escaneos que se hayan agregado al archivo
             foreach ($request -> escaneo ?? [] as $key => $escaneo) {
+
                 $nombre = $escaneo -> getClientOriginalName();
+                
                 if( isset($escaneo_nombres[$key]) && !empty(trim($escaneo_nombres[$key])) )
                 {
                     $nombre = trim($escaneo_nombres[$key]);
@@ -274,24 +277,24 @@ class RecepcionController extends BaseController
                 $this -> nuevoEscaneo($documento, $escaneo,['escaneo_nombre'=>$nombre]);
             }
 
-            // Crear la notificación para usuarios del sistema
-            $data = [
-                'contenido'  => sprintf('Se ha recepcionado un nuevo documento #%s de tipo %s', $documento -> getCodigo(),$documento -> TipoDocumento -> getNombre()),
-                'direccion'  => $seguimiento -> getDireccionDestino(),
-                'url'        => '',
-            ];
-            NotificacionController::nuevaNotificacion('PAN.TRA.NUE.DOC.REC',$data);
-            
             DB::commit();
-
-            // Mandamos el correo de notificación a los usuarios que tengan la preferencia asignada
-            NotificacionController::mandarNotificacionCorreo($documento);
 
             if ($request -> has('acuse') && $request -> acuse == 1) // Si el usuario ha indicado que quiere abrir inmediatamente el acuse de recepción
             {
                 $url = url( sprintf('recepcion/acuse/documento/%s?d=0',$acuse -> getNombre()) );
                 $request -> session() -> flash('urlAcuseAutomatico', $url);
             }
+            
+            // Crear la notificación para usuarios del sistema
+            $data = [
+                'contenido'  => sprintf('Se ha recepcionado un nuevo documento #%s de tipo <b>%s</b>', $documento -> getCodigo(),$documento -> TipoDocumento -> getNombre()),
+                'direccion'  => $seguimiento -> getDireccionDestino(),
+                'url'        => sprintf('panel/documentos/seguimiento?search=%d&read=1',$seguimiento -> getKey()),
+            ];
+            
+            NotificacionController::nuevaNotificacion('PAN.TRA.NUE.DOC.REC',$data);
+            // Mandamos el correo de notificación a los usuarios que tengan la preferencia asignada
+            NotificacionController::mandarNotificacionCorreo($documento);
 
             return $this -> responseSuccessJSON(url('recepcion/documentos/recepcionados' . $redirect));
         } catch(Exception $error) {

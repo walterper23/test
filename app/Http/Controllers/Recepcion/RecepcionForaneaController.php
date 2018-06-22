@@ -267,6 +267,7 @@ class RecepcionForaneaController extends BaseController
 			foreach ($request -> escaneo ?? [] as $key => $escaneo) {
 
 				$nombre = $escaneo -> getClientOriginalName();
+				
 				if( isset($escaneo_nombres[$key]) && !empty(trim($escaneo_nombres[$key])) )
 				{
 					$nombre = trim($escaneo_nombres[$key]);
@@ -277,15 +278,20 @@ class RecepcionForaneaController extends BaseController
 
 			DB::commit();
 
-			// Mandamos el correo de notificación a los usuarios que tengan la preferencia asignada
-			$notificacion = new NotificacionController;
-			$notificacion -> mandarNotificacionCorreo($documento);
-			
 			if ($request -> acuse) // Si el usuario ha indicado que quiere abrir inmediatamente el acuse de recepción
 			{
 				$url = url( sprintf('recepcion/acuse/documento/%s?d=0',$acuse -> getNombre()) );
 				$request -> session() -> flash('urlAcuseAutomatico', $url);
 			}
+			
+			// Crear la notificación para usuarios del sistema
+            $data = [
+                'contenido'  => sprintf('Se ha recepcionado un nuevo documento foráneo #%s de tipo %s', $documento -> getCodigo(),$documento -> TipoDocumento -> getNombre()),
+                'url'        => 'recepcion/documentos-foraneos/recepcionados' . $redirect,
+            ];
+            NotificacionController::nuevaNotificacion('VER.REC.FOR.NUE.REC.FOR',$data);
+			// Mandamos el correo de notificación a los usuarios que tengan la preferencia asignada
+			NotificacionController::mandarNotificacionCorreo($documento);
 
 			return $this -> responseSuccessJSON(url('recepcion/documentos-foraneos/recepcionados' . $redirect));
 		}catch(Exception $error)
@@ -359,7 +365,7 @@ class RecepcionForaneaController extends BaseController
 
 	public function enviarDocumento( $request )
 	{
-		$documento = MDocumentoForaneo::find( $requestOrFail -> id );
+		$documento = MDocumentoForaneo::findOrFail( $request -> id );
 		$documento -> DOFO_SYSTEM_TRANSITO = 1;
 		$documento -> DOFO_FECHA_ENVIADO   = Carbon::now();
 		$documento -> save();
@@ -369,15 +375,26 @@ class RecepcionForaneaController extends BaseController
 		if ($documento -> getTipoDocumento() == 1)
 		{
 			$tables = ['denuncias-datatable',null,true];
+			$redirect = '?view=denuncias';
 		}
 		else if ($documento -> getTipoDocumento() == 2)
 		{
 			$tables = ['documentos-denuncias-datatable',null,true];
+			$redirect = '?view=documentos-denuncias';
 		}
 		else
 		{
 			$tables = ['documentos-datatable',null,true];
+			$redirect = '?view=documentos';
 		}
+
+		// Crear la notificación para usuarios del sistema
+        $data = [
+            'contenido'  => sprintf('Documento foráneo #%s <b>%s</b> en tránsito', $documento -> getCodigo(), $documento -> TipoDocumento -> getNombre()),
+            'url'        => 'recepcion/documentos/foraneos' . $redirect,
+        ];
+        
+        NotificacionController::nuevaNotificacion('REC.LOC.DOC.FOR.TRA',$data);
 
 		return $this -> responseSuccessJSON($message,$tables);
 	}

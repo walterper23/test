@@ -8,10 +8,11 @@ use Exception;
 
 /* Controllers */
 use App\Http\Controllers\BaseController;
-use App\DataTables\SystemTiposDocumentosDataTable;
+use App\Http\Controllers\Dashboard\NotificacionController;
 
 /* Models */
 use App\Model\System\MSystemTipoDocumento;
+use App\DataTables\SystemTiposDocumentosDataTable;
 
 /**
  * Controlador para gestionar los tipos de documentos del sistema
@@ -109,10 +110,18 @@ class SystemTipoDocumentoController extends BaseController
             $tipoDocumento -> SYTD_RIBBON_COLOR    = 'default';
             $tipoDocumento -> save();
 
+            // Crear la notificación para usuarios del sistema
+            $data = [
+                'contenido'  => sprintf('Nuevo tipo de documento #%s <b>%s</b> creado ', $tipoDocumento -> getCodigo(), $tipoDocumento -> getNombre()),
+            ];
+            
+            NotificacionController::nuevaNotificacion('REC.LOC.NUE.TIP.DOC',$data);
+            NotificacionController::nuevaNotificacion('REC.FOR.NUE.TIP.DOC',$data);
+
             // Lista de tablas que se van a recargar automáticamente
             $tables = 'dataTableBuilder';
 
-            $message = sprintf('<i class="fa fa-fw fa-file-o"></i> Tipo de documento <b>%s</b> creado',$tipoDocumento -> getCodigo());
+            $message = sprintf('<i class="fa fa-fw fa-files-o"></i> Tipo de documento <b>%s</b> creado',$tipoDocumento -> getCodigo());
             return $this -> responseSuccessJSON($message,$tables);
 
         } catch(Exception $error) {
@@ -194,6 +203,15 @@ class SystemTipoDocumentoController extends BaseController
                 $message = sprintf('<i class="fa fa-fw fa-check"></i> Tipo de documento <b>%s</b> activado',$tipoDocumento -> getCodigo());
                 return $this -> responseInfoJSON($message);
             }else{
+
+                // Crear la notificación para usuarios del sistema
+                $data = [
+                    'contenido'  => sprintf('Tipo de documento #%s <b>%s</b> ha sido desactivado', $tipoDocumento -> getCodigo(), $tipoDocumento -> getNombre()),
+                ];
+                
+                NotificacionController::nuevaNotificacion('REC.LOC.NUE.TIP.DOC',$data);
+                NotificacionController::nuevaNotificacion('REC.FOR.NUE.TIP.DOC',$data);
+
                 $message = sprintf('<i class="fa fa-fw fa-warning"></i> Tipo de documento <b>%s</b> desactivado',$tipoDocumento -> getCodigo());
                 return $this -> responseWarningJSON($message);
             }
@@ -216,6 +234,14 @@ class SystemTipoDocumentoController extends BaseController
 
             $tipoDocumento = MSystemTipoDocumento::findOrFail( $request -> id );
             $tipoDocumento -> eliminar() -> save();
+
+            // Crear la notificación para usuarios del sistema
+            $data = [
+                'contenido'  => sprintf('Tipo de documento #%s <b>%s</b> ha sido eliminado', $tipoDocumento -> getCodigo(), $tipoDocumento -> getNombre()),
+            ];
+            
+            NotificacionController::nuevaNotificacion('REC.LOC.NUE.TIP.DOC',$data);
+            NotificacionController::nuevaNotificacion('REC.FOR.NUE.TIP.DOC',$data);
 
             $tables = 'dataTableBuilder';
 
