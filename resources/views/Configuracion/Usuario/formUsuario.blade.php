@@ -88,8 +88,6 @@
 		this.context_ = '#modal-{{ $form_id }}';
 		this.form_    = '#{{ $form_id }}';
 
-        this.initFormSubmit = function(){ };
-
         this.start = function(){
 
             var self = this;

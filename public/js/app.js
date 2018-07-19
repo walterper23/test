@@ -10,8 +10,8 @@ var App = function(){
         contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
         beforeSend  : function(){},
         success     : function(){},
-        complete    : function(){},
-        fail        : function(){},
+        complete    : function( result ){},
+        error       : function(result){},
         statusCode  : {
             422 : function( result ){
                 console.log(result.responseJSON)
@@ -55,7 +55,6 @@ var App = function(){
             success     : options.success,
             complete    : options.complete,
             error       : options.error,
-            fail        : options.fail,
             statusCode : {
                 403 : options.code403,
                 422 : options.code422
@@ -107,9 +106,7 @@ var App = function(){
                 })
             },
             success : function(result){
-                console.log(result)
                 if(! result.status && result.status == false ){
-                    console.log('entra')
                     modal.modal('hide');
                     AppAlert.notify({
                         type : 'danger',

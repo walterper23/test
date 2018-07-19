@@ -50,7 +50,7 @@ var AppForm = function(){
 			rules : this.rules(),
 			messages : this.messages(),
 			submitHandler : this.submitHandler
-		})
+		});
 	};
 
 	this.submit = function( form ){
@@ -84,14 +84,14 @@ var AppForm = function(){
 	};
 
 	this.beforeSubmitHandler = function(){
-		Codebase.blocks( self.context.find('div.modal-content>div.block'), 'state_loading');
+		Codebase.blocks( self.context.find('div.modal-content > div.block'), 'state_loading');
 	};
 
 	this.successSubmitHandler = function( result ){
 		if( result.status ){
 			self.closeContext().reloadTables(result).displayMessage(result);
 		}else{
-
+			
 		}
 	};
 
@@ -103,7 +103,7 @@ var AppForm = function(){
 	};
 
 	this.displayMessage = function( result ){
-		if(result.message != undefined){
+		if( result.message != undefined ){
 			AppAlert.notify({
 				icon : result.icon,
 				type : result.type,
@@ -114,6 +114,9 @@ var AppForm = function(){
 	}
 
 	this.displayErrors = function( result ){
+
+		Codebase.blocks( self.context.find('div.modal-content > div.block'), 'state_normal');
+		
 		if( result.responseJSON.errors != undefined ){
 			$.each(result.responseJSON.errors, self.displayError);
 		}

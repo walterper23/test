@@ -93,7 +93,7 @@
         <!-- Bars Chart -->
         <div class="block">
             <div class="block-header block-header-default">
-                <h3 class="block-title">Documentos recibidos hoy</h3>
+                <h3 class="block-title">Documentos recibidos hoy <b>[ {{ $fecha_documentos_recibidos_hoy }} ]</b></h3>
                 <div class="block-options">
                     <button type="button" class="btn-block-option" data-toggle="block-option" data-action="state_toggle" data-action-mode="demo">
                         <i class="si si-refresh"></i>
@@ -114,7 +114,7 @@
         <!-- Bars Chart -->
         <div class="block">
             <div class="block-header block-header-default">
-                <h3 class="block-title">Documentos recibidos en la semana</h3>
+                <h3 class="block-title">Documentos recibidos en la semana <b>[ {{ $fecha_documentos_semana }} ]</b></h3>
                 <div class="block-options">
                     <button type="button" class="btn-block-option" data-toggle="block-option" data-action="state_toggle" data-action-mode="demo">
                         <i class="si si-refresh"></i>

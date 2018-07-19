@@ -103,7 +103,13 @@ class DashboardController extends BaseController
             $data_notificaciones['semaforizacion'] = $grupos_notificaciones_recepcion[4];
         }
 
-        return view('Dashboard.indexDashboard') -> with($data_notificaciones);
+        $fecha_documentos_recibidos_hoy = Carbon::now() -> format('Y-m-d');
+
+        $inicio_semana           = Carbon::now() -> startOfWeek();
+        $fin_semana              = Carbon::now() -> endOfWeek();
+        $fecha_documentos_semana = sprintf('Lun %s - Dom %s', $inicio_semana -> format('d'), $fin_semana -> format('d') );
+
+        return view('Dashboard.indexDashboard', compact('fecha_documentos_recibidos_hoy','fecha_documentos_semana')) -> with($data_notificaciones);
     }
 
 
@@ -146,10 +152,10 @@ class DashboardController extends BaseController
                     -> get();
 
         $data = [
-            'hoy' => $this -> documentosHoy( $documentos_locales, $documentos_foraneos ),
+            'hoy'    => $this -> documentosHoy( $documentos_locales, $documentos_foraneos ),
             'semana' => $this -> documentosSemana( $documentos_locales, $documentos_foraneos ),
-            'mes' => $this -> documentosMes( $documentos_locales, $documentos_foraneos ),
-            'anual' => $this -> documentosAnual( $documentos_locales, $documentos_foraneos )
+            'mes'    => $this -> documentosMes( $documentos_locales, $documentos_foraneos ),
+            'anual'  => $this -> documentosAnual( $documentos_locales, $documentos_foraneos )
         ];
 
         return response() -> json($data);
@@ -217,16 +223,16 @@ class DashboardController extends BaseController
         $data['labels'][] = 'Dom ' . $dias[6];
 
         foreach ($dias as $dia) {
-            $conteos['denuncias'][ $dia ] = 0;
+            $conteos['denuncias'][ $dia ]        = 0;
             $conteos['doctos_denuncias'][ $dia ] = 0;
-            $conteos['documentos'][ $dia ] = 0;
+            $conteos['documentos'][ $dia ]       = 0;
         }
 
         $inicio_semana = Carbon::now() -> startOfWeek() -> format('Y-m-d');
 
         $documentos_locales = $documentos_locales -> filter(function($docto) use($inicio_semana, $fin_semana){
             return ($docto -> DETA_FECHA_RECEPCION >= $inicio_semana && $docto -> DETA_FECHA_RECEPCION <= $fin_semana);
-        }); // Sólo los documentos del mes actual
+        }); // Sólo los documentos de la semana actual
         
         foreach ($documentos_locales as $docto) {
             $dia_documento = substr($docto -> DETA_FECHA_RECEPCION,-2); // capturamos el día de recepción
@@ -241,7 +247,7 @@ class DashboardController extends BaseController
 
         $documentos_foraneos = $documentos_foraneos -> filter(function($docto) use($inicio_semana, $fin_semana){
             return ($docto -> DETA_FECHA_RECEPCION >= $inicio_semana && $docto -> DETA_FECHA_RECEPCION <= $fin_semana);
-        }); // Sólo los documentos del mes actual
+        }); // Sólo los documentos de la semana actual
 
         foreach ($documentos_foraneos as $docto) {
             $dia_documento = substr($docto -> DETA_FECHA_RECEPCION,-2); // capturamos el día de recepción
@@ -278,11 +284,11 @@ class DashboardController extends BaseController
         }); // Sólo los documentos foraneos del mes actual
         
         $data = [
-            2 => 0,
-            3 => 0,
-            4 => 0,
-            5 => 0,
-            6 => 0
+            2 => 0, // En recepción
+            3 => 0, // En seguimiento
+            4 => 0, // Resueltos
+            5 => 0, // Rechazados
+            6 => 0, // Eliminados
         ];
 
         foreach ($documentos_locales as $doc) {
@@ -299,11 +305,11 @@ class DashboardController extends BaseController
     public function documentosAnual( $documentos_locales, $documentos_foraneos )
     {
         $data = [
-            2 => 0,
-            3 => 0,
-            4 => 0,
-            5 => 0,
-            6 => 0
+            2 => 0, // En recepción
+            3 => 0, // En seguimiento
+            4 => 0, // Resueltos
+            5 => 0, // Rechazados
+            6 => 0, // Eliminados
         ];
 
         foreach ($documentos_locales as $doc) {
