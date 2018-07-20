@@ -74,7 +74,7 @@
                         <div class="form-group alert alert-success">
                             <label class="col-12"><p class="bg-success font-w700 text-white pl-5 pr-5">{{ $recurso -> getNombre() }}</p></label>
                             <div class="col-12">
-                                @foreach( $recurso -> Permisos() -> orderBy('SYPE_DESCRIPCION') -> get() as $permiso )
+                                @foreach( $recurso -> Permisos as $permiso )
 
                                 @php $checked = in_array($permiso -> getKey(), $permisosUsuario) ? 'checked' : '' @endphp
 
@@ -110,7 +110,7 @@
                                     <input class="custom-control-input" type="checkbox" name="direcciones[]" id="direccion-{{ $direccion -> getKey() }}" value="{{ $direccion -> getKey() }}" {{ $checked_dir }}>
                                     <label class="custom-control-label bg-primary font-w700 text-white pl-5 pr-5" for="direccion-{{ $direccion -> getKey() }}" style="width: 100%;">{{ $direccion -> getNombre() }}</label>
                                 </div>
-                                @forelse( $direccion -> DepartamentosExistentes() -> orderBy('DEPA_NOMBRE') -> get() as $departamento )
+                                @forelse( $direccion -> DepartamentosExistentes as $departamento )
                                 
                                 @php $checked_dep = in_array($departamento -> getKey(), $departamentosUsuario) ? 'checked' : '' @endphp
 

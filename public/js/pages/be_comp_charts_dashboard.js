@@ -31,7 +31,7 @@ var BeCompCharts = function() {
             datasets: [
                 {
                     label: 'Recepción local',
-                    fill: true,
+                    fill: false,
                     backgroundColor: 'rgba(66,165,245,.75)',
                     borderColor: 'rgba(66,165,245,1)',
                     pointBackgroundColor: 'rgba(66,165,245,1)',
@@ -148,7 +148,7 @@ var BeCompCharts = function() {
             }]
         };
 
-        chartBars1  = new Chart(chartBarsCon1, { type: 'bar', data: documentosHoy });
+        chartBars1  = new Chart(chartBarsCon1, { type: 'horizontalBar', data: documentosHoy, });
         chartBars2  = new Chart(chartBarsCon2, { type: 'bar', data: documentosSemana });
 
         chartPie1   = new Chart(chartPieCon1, { type: 'pie', data: documentosMes });

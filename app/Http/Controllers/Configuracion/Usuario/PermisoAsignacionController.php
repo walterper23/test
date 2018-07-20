@@ -40,10 +40,14 @@ class PermisoAsignacionController extends BaseController
     public function index()
     {
         // Recuperar todos los recursos y permisos del sistema
-        $data['recursos'] = MRecurso::with('Permisos') -> get();
+        $data['recursos'] = MRecurso::with(['Permisos'=>function($permisos){
+            $permisos -> orderBy('SYPE_DESCRIPCION');
+        }]) -> get();
 
         // Recuperar todos las direcciones y departamentos disponibles en el sistema
-        $data['direcciones'] = MDireccion::with('DepartamentosExistentes') -> existente() -> orderBy('DIRE_NOMBRE') -> get();
+        $data['direcciones'] = MDireccion::with(['DepartamentosExistentes'=>function($departamentosExistentes){
+            $departamentosExistentes -> orderBy('DEPA_NOMBRE');
+        }]) -> existente() -> orderBy('DIRE_NOMBRE') -> get();
 
         // Recuperar la lista de usuarios del sistema
         $data['usuarios'] = MUsuario::existente() -> pluck('USUA_USERNAME','USUA_USUARIO') -> toArray();
@@ -56,10 +60,10 @@ class PermisoAsignacionController extends BaseController
         $data['permisosUsuario'] = !is_null($usuario) ? $usuario -> Permisos() -> pluck('SYPE_PERMISO') -> toArray() : [];
 
         // Recuperar las direcciones asignadas al usuario
-        $data['direccionesUsuario'] = $usuario -> Direcciones() -> pluck('DIRE_DIRECCION') -> toArray();
+        $data['direccionesUsuario'] = $usuario -> Direcciones() -> existente() -> pluck('DIRE_DIRECCION') -> toArray();
 
         // Recuperar los departamentos asignados al usuario
-        $data['departamentosUsuario'] = $usuario -> Departamentos() -> pluck('DEPA_DEPARTAMENTO') -> toArray();
+        $data['departamentosUsuario'] = $usuario -> Departamentos() -> existente() -> pluck('DEPA_DEPARTAMENTO') -> toArray();
         
         $data['url_send_form'] = url('configuracion/usuarios/permisos-asignaciones/manager');
         $data['form_id']       = 'form-usuario-asignacion-permiso';
@@ -104,7 +108,6 @@ class PermisoAsignacionController extends BaseController
         $data['departamentos'] = $usuario -> Departamentos() -> pluck('DEPA_DEPARTAMENTO') -> toArray();
 
         return response() -> json($data);
-
     }
 
     /**
@@ -158,7 +161,7 @@ class PermisoAsignacionController extends BaseController
         $departamentosNuevos =  MDepartamento::find($request -> get('departamentos',[]) ) -> pluck('DEPA_DEPARTAMENTO') -> toArray();
 
         $usuario -> Direcciones() -> sync($direccionesNuevas);
-
+ 
         $usuario -> Departamentos() -> sync($departamentosNuevos);
 
         return true;

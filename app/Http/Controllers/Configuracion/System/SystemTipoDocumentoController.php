@@ -209,8 +209,8 @@ class SystemTipoDocumentoController extends BaseController
                     'contenido'  => sprintf('Tipo de documento #%s <b>%s</b> ha sido desactivado', $tipoDocumento -> getCodigo(), $tipoDocumento -> getNombre()),
                 ];
                 
-                NotificacionController::nuevaNotificacion('REC.LOC.NUE.TIP.DOC',$data);
-                NotificacionController::nuevaNotificacion('REC.FOR.NUE.TIP.DOC',$data);
+                NotificacionController::nuevaNotificacion('REC.LOC.TIP.DOC.DES',$data);
+                NotificacionController::nuevaNotificacion('REC.FOR.TIP.DOC.DES',$data);
 
                 $message = sprintf('<i class="fa fa-fw fa-warning"></i> Tipo de documento <b>%s</b> desactivado',$tipoDocumento -> getCodigo());
                 return $this -> responseWarningJSON($message);
@@ -240,8 +240,8 @@ class SystemTipoDocumentoController extends BaseController
                 'contenido'  => sprintf('Tipo de documento #%s <b>%s</b> ha sido eliminado', $tipoDocumento -> getCodigo(), $tipoDocumento -> getNombre()),
             ];
             
-            NotificacionController::nuevaNotificacion('REC.LOC.NUE.TIP.DOC',$data);
-            NotificacionController::nuevaNotificacion('REC.FOR.NUE.TIP.DOC',$data);
+            NotificacionController::nuevaNotificacion('REC.LOC.TIP.DOC.ELI',$data);
+            NotificacionController::nuevaNotificacion('REC.FOR.TIP.DOC.ELI',$data);
 
             $tables = 'dataTableBuilder';
 

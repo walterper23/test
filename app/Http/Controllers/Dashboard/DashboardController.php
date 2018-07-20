@@ -46,10 +46,11 @@ class DashboardController extends BaseController
             AND NOTI_DELETED = 0
             AND USUA_DELETED = 0
             AND USUA_USUARIO = ?
+            AND NOTI_SYSTEM_PERMISO IN (?)
             ORDER BY NOTI_SYSTEM_TIPO ASC, NOTI_CREATED_AT DESC
         ';
 
-        $notificaciones_recepcion = DB::select($sql_notificaciones_recepcion,[userKey()]);
+        $notificaciones_recepcion = DB::select($sql_notificaciones_recepcion,[userKey(),implode(',',$permisos_usuario)]);
 
         $notificaciones_areas = [];
         if ( sizeof($ids_direcciones_usuario) > 0 )

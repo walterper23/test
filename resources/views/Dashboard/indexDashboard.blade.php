@@ -6,7 +6,7 @@
 <div class="row gutters-tiny">
     <!-- Row #2 -->
     @can('REC.DOCUMENTO.LOCAL')
-    <div class="{{ sizeof($recepcion_local) ? 'col-md-4' : 'col-md-4' }}">
+    <div class="{{ sizeof($recepcion_local) ? 'col-md-4' : 'col-md-3' }} seccion-notificacion">
         <div class="block block-themed">
             <div class="block-header bg-corporate">
                 <h3 class="block-title">
@@ -16,7 +16,7 @@
                     <button type="button" class="btn-block-option" data-toggle="block-option" data-action="content_toggle"></button>
                 </div>
             </div>
-            <div class="block-content notificacion">
+            <div class="block-content notificacion" @if(sizeof($recepcion_local)) data-toggle="slimscroll" data-height="180px" data-rail-visible="true" data-color="#999" data-rail-color="#eee" data-opacity="1" data-always-visible="true" @endif>
                 @foreach( $recepcion_local as $notificacion )
                     @include( $notificacion -> NOTI_URL ? 'Dashboard.notificacion_url' : 'Dashboard.notificacion' )
                 @endforeach
@@ -26,7 +26,7 @@
     @endcan
 
     @if( user() -> canAtLeast('REC.DOCUMENTO.FORANEO','REC.VER.FORANEO') )
-    <div class="{{ sizeof($recepcion_foranea) ? 'col-md-4' : 'col-md-4' }}">
+    <div class="{{ sizeof($recepcion_foranea) ? 'col-md-4' : 'col-md-3' }} seccion-notificacion">
         <div class="block block-themed">
             <div class="block-header bg-flat-dark">
                 <h3 class="block-title">
@@ -36,7 +36,7 @@
                     <button type="button" class="btn-block-option" data-toggle="block-option" data-action="content_toggle"></button>
                 </div>
             </div>
-            <div class="block-content notificacion">
+            <div class="block-content notificacion" @if(sizeof($recepcion_foranea)) data-toggle="slimscroll" data-height="180px" data-rail-visible="true" data-color="#999" data-rail-color="#eee" data-opacity="1" data-always-visible="true" @endif>
                 @foreach( $recepcion_foranea as $notificacion )
                     @include( $notificacion -> NOTI_URL ? 'Dashboard.notificacion_url' : 'Dashboard.notificacion' )
                 @endforeach
@@ -46,7 +46,7 @@
     @endcan
     
     @can('SEG.PANEL.TRABAJO')
-    <div class="{{ sizeof($panel_trabajo) ? 'col-md-4' : 'col-md-4' }}">
+    <div class="{{ sizeof($panel_trabajo) ? 'col-md-4' : 'col-md-3' }} seccion-notificacion">
         <div class="block block-themed">
             <div class="block-header bg-primary">
                 <h3 class="block-title">
@@ -56,7 +56,7 @@
                     <button type="button" class="btn-block-option" data-toggle="block-option" data-action="content_toggle"></button>
                 </div>
             </div>
-            <div class="block-content notificacion">
+            <div class="block-content notificacion" @if(sizeof($panel_trabajo)) data-toggle="slimscroll" data-height="180px" data-rail-visible="true" data-color="#999" data-rail-color="#eee" data-opacity="1" data-always-visible="true" @endif>
                 @foreach( $panel_trabajo as $notificacion )
                     @include( $notificacion -> NOTI_URL ? 'Dashboard.notificacion_url' : 'Dashboard.notificacion' )
                 @endforeach
@@ -66,7 +66,7 @@
     @endcan
 
     @can('SEG.ADMIN.SEMAFORO')
-    <div class="{{ sizeof($semaforizacion) ? 'col-md-4' : 'col-md-4' }}">
+    <div class="{{ sizeof($semaforizacion) ? 'col-md-4' : 'col-md-3' }} seccion-notificacion">
         <div class="block block-themed">
             <div class="block-header bg-earth">
                 <h3 class="block-title">
@@ -76,7 +76,7 @@
                     <button type="button" class="btn-block-option" data-toggle="block-option" data-action="content_toggle"></button>
                 </div>
             </div>
-            <div class="block-content notificacion">
+            <div class="block-content notificacion" @if(sizeof($semaforizacion)) data-toggle="slimscroll" data-height="180px" data-rail-visible="true" data-color="#999" data-rail-color="#eee" data-opacity="1" data-always-visible="true" @endif>
                 @foreach( $semaforizacion as $notificacion )
                     @include( $notificacion -> NOTI_URL ? 'Dashboard.notificacion_url' : 'Dashboard.notificacion' )
                 @endforeach
@@ -204,13 +204,15 @@
 
     })
 
-    consultarNotificaciones();
+    setTimeout(consultarNotificaciones,150);
+    // consultarNotificaciones();
 
     function consultarNotificaciones(){
         areas_notificaciones.each(function(index,element){
             if (! $(element).html().trim().length )
             {
                 $(element).html('<p class="text-center text-muted font-size-xs mb-10">- No hay notificaciones -</p>');
+                $(element).css('height','').parent().css('height','').closest('.seccion-notificacion').removeClass('col-md-4').addClass('col-md-3');
             }
         });
     }
