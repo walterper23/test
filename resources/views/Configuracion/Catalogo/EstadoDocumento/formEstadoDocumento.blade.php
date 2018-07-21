@@ -1,6 +1,6 @@
 @extends('vendor.modal.template')
 
-@section('title')<i class="fa fa-flash"></i> {!! $title !!}@endsection
+@section('title')<i class="fa fa-fw fa-flash"></i> {!! $title !!}@endsection
 
 @section('content')
 {!! Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) !!}

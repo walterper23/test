@@ -21,12 +21,15 @@
 		.text-center {
 			text-align: center;
 		}
+
 		.text-left {
 			text-align: left;
 		}
+
 		.text-right {
 			text-align: right;
 		}
+
 		.bold {
 			font-weight: bold;
 		}
@@ -59,10 +62,12 @@
 	<htmlpageheader name="page-header">
 		<table>
 			<tr>
-				<td width="10%" class="text-left">{{ Html::image('img/favicon/logo.png','',['width'=>'50']) }}</td>
-				<td width="23%" class="text-left bold" style="font-size: 9pt">{{ title(config_var('Sistema.Nombre')) }}</td>
-				<td width="34%" class="text-center bold">{!! strtoupper(str_replace(['\n','á','é','í','ó','ú'],['<br>','a','e','i','o','u'], config_var('Institucion.Nombre'))) !!}</td>
-				<td width="33%" class="text-right">{{ Html::image(config_var('Institucion.Banner.Login'),'',['width'=>'150']) }}</td>
+				<td width="8%" class="text-left">{{ Html::image('img/favicon/logo.png','',['width'=>'50']) }}</td>
+				<td width="18%" class="text-left bold" style="font-size: 9pt">{{ title(config_var('Sistema.Nombre')) }}</td>
+				<td width="48%" class="text-center bold" style="color: #0088CC">
+					{!! strtoupper(str_replace(['\n','á','é','í','ó','ú'],['<br>','a','e','i','o','u'], config_var('Institucion.Nombre'))) !!}
+				</td>
+				<td width="26%" class="text-right">{{ Html::image(config_var('Institucion.Banner.Login'),'',['width'=>'150']) }}</td>
 			</tr>
 		</table>
 	</htmlpageheader>
@@ -81,13 +86,13 @@
 		@else
 		se
 		@endif
-		ha hecho entrega del documento clasificado como <b>{{ $documento -> TipoDocumento -> getNombre() }}</b> con los siguientes puntos informativos:
+		ha hecho entrega del documento clasificado como <b>{{ $documento -> TipoDocumento -> getNombre() }}</b> y que ha sido recepcionado con los siguientes puntos informativos:
 	</p>
 
 	<table class="border">
 		<tr class="odd">
-			<td width="30%" class="bold">Tipo de documento</td>
-			<td width="70%">
+			<td width="25%" class="bold">Tipo de documento</td>
+			<td width="75%">
 				{{ $documento -> TipoDocumento -> getNombre() }}
 				@if ( $documento -> getTipoDocumento() == 2 )
 				&nbsp;&nbsp;&nbsp;&nbsp;<b>Expediente</b>
@@ -167,7 +172,8 @@
 			@endif
 			<td class="text-center" style="vertical-align: top;">
 				<b>Recibido por</b><br>
-				{{ $usuario -> UsuarioDetalle -> presenter() -> nombreCompleto() }}
+				{{ $usuario -> UsuarioDetalle -> presenter() -> nombreCompleto() }}<br>
+				{{ $usuario -> UsuarioDetalle -> Puesto -> getNombre() }}
 			</td>
 		</tr>
 	</table>

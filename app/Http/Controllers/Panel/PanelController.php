@@ -225,10 +225,12 @@ class PanelController extends BaseController
         $seguimiento = $documento -> Seguimientos() -> with('DireccionOrigen','DepartamentoOrigen','DireccionDestino','DepartamentoDestino') -> get() -> last();
 
         $data['direccion_origen']    = $seguimiento -> DireccionDestino -> getNombre();
-        $data['departamento_origen'] = '';
 
+        $data['departamento_origen'] = '';
         if( $seguimiento -> DepartamentoDestino )
+        {
             $data['departamento_origen'] = $seguimiento -> DepartamentoDestino -> getNombre();
+        }
 
         // Obtener todas las direcciones de destino existentes y disponibles con sus departamentos existentes y disponibles
         $direcciones = MDireccion::with('DepartamentosExistentesDisponibles')
@@ -236,6 +238,8 @@ class PanelController extends BaseController
                         -> existenteDisponible()
                         -> orderBy('DIRE_NOMBRE')
                         -> get();
+
+        $data['direcciones'] = $direcciones;
 
         $data['direcciones_destino'] = $direcciones -> pluck('DIRE_NOMBRE','DIRE_DIRECCION') -> toArray();
         

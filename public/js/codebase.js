@@ -348,6 +348,15 @@ var Codebase = function() {
                         el.blur();
                     }
                 });
+
+                // Prepend Page Overlay div if enabled (used when Side Overlay opens)
+                if (lPage.hasClass('enable-page-overlay')) {
+                    lPage.prepend('<div id="page-overlay"></div>');
+
+                    jQuery('#page-overlay').on('click.pixelcave.overlay', function(e) {
+                        uiApiLayout('side_overlay_close');
+                    });
+                }
                 break;
             case 'sidebar_pos_toggle':
                 lPage.toggleClass('sidebar-r');
@@ -784,7 +793,7 @@ var Codebase = function() {
         }
     };
 
-    // Bootstrap tooltip, for more examples you can check out https://getbootstrap.com/docs/4.0/components/tooltips/
+    // Bootstrap tooltip, for more examples you can check out https://getbootstrap.com/docs/4.1/components/tooltips/
     var uiHelperCoreTooltip = function() {
         jQuery('[data-toggle="tooltip"]:not(.js-tooltip-enabled)').add('.js-tooltip:not(.js-tooltip-enabled)').each(function(){
             var el = jQuery(this);
@@ -800,7 +809,7 @@ var Codebase = function() {
         });
     };
 
-    // Bootstrap popover, for more examples you can check out https://getbootstrap.com/docs/4.0/components/popovers/
+    // Bootstrap popover, for more examples you can check out https://getbootstrap.com/docs/4.1/components/popovers/
     var uiHelperCorePopover = function() {
         jQuery('[data-toggle="popover"]:not(.js-popover-enabled)').add('.js-popover:not(.js-popover-enabled)').each(function(){
             var el = jQuery(this);
@@ -1326,7 +1335,8 @@ var Codebase = function() {
                 slidesToScroll: el.data('slides-to-scroll') || 1,
                 centerMode: el.data('center-mode') || false,
                 autoplay: el.data('autoplay') || false,
-                autoplaySpeed: el.data('autoplay-speed') || 3000
+                autoplaySpeed: el.data('autoplay-speed') || 3000,
+                infinite: typeof el.data('infinite') === 'undefined' ? true : el.data('infinite')
             });
         });
     };

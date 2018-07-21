@@ -41,8 +41,14 @@ class MUsuarioDetalle extends BaseModel
     
     /* Relationships */
 
-    public function Usuario(){
+    public function Usuario()
+    {
         return $this -> belongsTo('App\Model\MUsuario','USUA_USUARIO','USDE_USUARIO');
+    }
+
+    public function Puesto()
+    {
+        return $this -> hasOne('App\Model\Catalogo\MPuesto','PUES_PUESTO','USDE_PUESTO');
     }
 
 

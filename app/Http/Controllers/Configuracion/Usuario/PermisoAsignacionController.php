@@ -160,8 +160,14 @@ class PermisoAsignacionController extends BaseController
         // Recuperamos los departamentos nuevos para el usuario. Se hace una búsqueda en la base de datos para evitar recibir y agregar departamentos que no existen
         $departamentosNuevos =  MDepartamento::find($request -> get('departamentos',[]) ) -> pluck('DEPA_DEPARTAMENTO') -> toArray();
 
-        $usuario -> Direcciones() -> sync($direccionesNuevas);
+        // Recuperamos las direcciones a eliminar al usuario
+        $direccionesExistentes = MDireccion::existenteDisponible() -> pluck('DIRE_DIRECCION') -> toArray();
+        $direccionesEliminar   = array_diff($direccionesExistentes, $direccionesNuevas);
+        $usuario -> UsuarioAsignaciones() -> whereIn('USAS_DIRECCION',$direccionesEliminar) -> whereNull('USAS_DEPARTAMENTO') -> delete();
+
+        $direccionesAgregar = array_diff($direccionesNuevas,$direccionesUsuario);
  
+        $usuario -> Direcciones() -> attach($direccionesNuevas);
         $usuario -> Departamentos() -> sync($departamentosNuevos);
 
         return true;

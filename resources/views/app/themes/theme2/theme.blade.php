@@ -148,7 +148,7 @@
         {{ Html::script('js/core/jquery.min.js') }}
         {{ Html::script('js/core/bootstrap.bundle.min.js') }}
         {{ Html::script('js/core/jquery.slimscroll.min.js') }}
-        {{ Html::script('js/core/jquery.scrollLock.min.js') }}
+        {{ Html::script('js/core/jquery-scrollLock.min.js') }}
         {{ Html::script('js/core/jquery.appear.min.js') }}
         {{ Html::script('js/core/js.cookie.min.js') }}
         {{ Html::script('js/codebase.js') }}

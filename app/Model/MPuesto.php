@@ -16,22 +16,25 @@ class MPuesto extends BaseModel
     /* Methods */
     public function getNombre()
     {
-        return $this -> attributes['PUES_NOMBRE'];
+        return $this -> getAttribute('PUES_NOMBRE');
     }
 
     /** Relationships **/
 
-    public function Direccion(){
+    public function Direccion()
+    {
         return $this -> belongsTo('App\Model\Catalogo\MDireccion','PUES_DIRECCION','DIRE_DIRECCION');
     }
 
-    public function Departamento(){
+    public function Departamento()
+    {
         return $this -> belongsTo('App\Model\Catalogo\MDepartamento','PUES_DEPARTAMENTO','DEPA_DEPARTAMENTO');
     }
 
     /* Presenter */
 
-    public function presenter(){
+    public function presenter()
+    {
     	return new MPuestoPresenter($this);
     }
 }

@@ -70,7 +70,7 @@ class FieldBuilder {
         {
             if( isset($this -> attributes['placeholder']) && $this -> attributes['placeholder'] !== true ){
                 if( $this -> attributes['placeholder'] === false )
-                    $this -> prepareControlSelect(false); // Preparamos el select para que no agregue Seleccione una opción por default
+                    $this -> prepareControlSelect(false); // Preparamos el select para que no agregue "Seleccione una opción" por default
                 else
                     $this -> prepareControlSelect(true, $this -> attributes['placeholder']); // Preparamos el select para que no agregue Seleccione una opción por default
                 

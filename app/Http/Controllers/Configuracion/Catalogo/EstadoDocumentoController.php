@@ -93,32 +93,6 @@ class EstadoDocumentoController extends BaseController
             $data['action']        = 1;
             $data['id']            = null;
 
-
-            /*
-
-            $direcciones = MDireccion::with(['DepartamentosExistentesDisponibles'=>function($query){
-                
-                // Si el usuario no puede administrar todos los departamentos, buscamos solos los departamentos que tenga asignados     
-                if (! (user() -> can('SIS.ADMIN.DEPTOS')) )
-                {
-                    $ids_departamentos = user() -> Departamentos -> pluck('DEPA_DEPARTAMENTO') -> toArray();
-                    $query -> whereIn('DEPA_DEPARTAMENTO',$ids_departamentos);
-                }
-                return $query;
-
-            }]) -> select('DIRE_DIRECCION','DIRE_NOMBRE') -> existenteDisponible();
-
-            // Si el usuario no puede administrar todas las direcciones, agregamos la condición de buscar solos las direcciones que tenga asignadas     
-            if (! (user() -> can('SIS.ADMIN.DIRECC')) )
-            {
-                $ids_direcciones = user() -> Direcciones -> pluck('DIRE_DIRECCION') -> toArray();
-                $direcciones -> whereIn('DIRE_DIRECCION',$ids_direcciones);
-            }
-
-            $direcciones = $direcciones -> orderBy('DIRE_NOMBRE') -> get();
-
-            */
-
             /* Consultar las direcciones asignadas directa o indirectamente al usuario */
             $direcciones_asignadas = user() -> Direcciones -> pluck('DIRE_DIRECCION') -> toArray();
 
@@ -139,20 +113,6 @@ class EstadoDocumentoController extends BaseController
 
             $direcciones = MDireccion::whereIn('DIRE_DIRECCION',$direcciones_asignadas) -> get();
 
-            /*
-            foreach ($direcciones as $direccion)
-            {
-                $departamentos = $direccion -> DepartamentosExistentesDisponibles;
-                foreach ($departamentos as $departamento)
-                {
-                    $data['departamentos'][] = [
-                        $direccion -> getKey(),
-                        $departamento -> getKey(),
-                        $departamento -> getNombre()
-                    ];
-                }
-            }*/
-            
             $data['direcciones'] = $direcciones -> pluck('DIRE_NOMBRE','DIRE_DIRECCION') -> toArray();
 
             return view('Configuracion.Catalogo.EstadoDocumento.formEstadoDocumento')->with($data);
