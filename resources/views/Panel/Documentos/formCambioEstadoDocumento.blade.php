@@ -17,8 +17,8 @@
     <hr>
     @endisset
 
-    {!! Field::select('dispersion',1,['label'=>'Dispersión','placeholder'=>false,'required'],[1=>'Normal',2=>'Múltiple']) !!}
-    {!! Field::select('estado_documento',1,['label'=>'Seguimiento','required'],$system_estados_documentos) !!}
+    {!! Field::select('estado_documento',1,['label'=>'Seguimiento','placeholder'=>false,'required'],$system_estados_documentos) !!}
+    {!! Field::select('dispersion',1,['label'=>'Dispersión','placeholder'=>false,'required'],$dispersiones) !!}
     {!! Field::text('direccion_origen',$direccion_origen,['label'=>'Dirección origen','disabled']) !!}
     {!! Field::text('departamento_origen',$departamento_origen,['label'=>'Departamento origen','disabled']) !!}
     {!! Field::select('direccion_destino',null,['label'=>'Dirección destino','autofocus','required'],$direcciones_destino) !!}
@@ -40,7 +40,10 @@
             <button type="button" id="areas_dispersion" class="btn btn-primary" data-toggle="modal" data-target="#modal-popout">
                 <i class="fa fa-fw fa-sitemap"></i> Elegir direcciones y departamentos
             </button>
-            <div class="modal fade" id="modal-popout" tabindex="-1" role="dialog" aria-labelledby="modal-popout" aria-hidden="true">
+            <!--button type="button" id="areas_dispersion" class="btn btn-primary" onclick="hPanel.nuevoEstado()">
+                <i class="fa fa-fw fa-sitemap"></i> Elegir direcciones y departamentos
+            </button-->
+            <div class="modal fade" id="modal-popout" tabindex="-1" role="dialog" aria-labelledby="modal-popout" aria-hidden="true" style="z-index: 999999">
                 <div class="modal-dialog modal-dialog-popout" role="document">
                     <div class="modal-content">
                         <div class="block block-themed block-transparent mb-0">
@@ -61,7 +64,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+</div>
         </div>
     </div>
     {!! Field::select('estado','',['label'=>'Estado de Documento','required'],$estados) !!}
@@ -82,6 +85,7 @@
             </label>
         </div>
     </div>
+</div>
     @endcan
 {{ Form::close() }}
 @endsection
@@ -111,21 +115,30 @@
             var checkSemaforizar = $('#semaforizar');
             var optionsDeptoDestino = selectDepartamentoDestino.find('option[data-direccion]').hide();
 
+            selectSeguimiento.on('change',function(e){
+                selectDireccionDestino.add(selectDepartamentoDestino).add(textAreaInstruccion).add(checkSemaforizar).closest('div.form-group.row').show()
+                selectDispersion.find('option[value=2]').hide();
+                if ( this.value != 1 ){
+                    selectDireccionDestino.add(selectDepartamentoDestino).add(textAreaInstruccion).add(checkSemaforizar).closest('div.form-group.row').hide();
+                }
+
+                if ( this.value == 3 ){
+                    selectDispersion.find('option[value=2]').show();
+                }else{
+                    selectDispersion.val(1);
+                }
+                selectDispersion.change();
+            });
+            
             selectDispersion.on('change',function(e){
                 formGroupDispersion.hide();
                 var direccion    = selectDireccionDestino.closest('.form-group').hide();
                 var departamento = selectDepartamentoDestino.closest('.form-group').hide();
-                if( this.value == 1 ){ // Dispersión normal
+                if( this.value == 1 && selectSeguimiento.val() == 1){ // Dispersión normal y documento en seguimiento
                     direccion.add(departamento).fadeIn(750)
-                }else{ // Dispersión múltiple
+                }else if( this.value == 2 ){ // Dispersión múltiple
+                    selectSeguimiento.val(3);
                     formGroupDispersion.fadeIn(750);
-                }
-            });
-
-            selectSeguimiento.on('change',function(e){
-                selectDireccionDestino.add(selectDepartamentoDestino).add(textAreaInstruccion).add(checkSemaforizar).closest('div.form-group.row').show()
-                if ( selectSeguimiento.val() != 1 ){
-                    selectDireccionDestino.add(selectDepartamentoDestino).add(textAreaInstruccion).add(checkSemaforizar).closest('div.form-group.row').hide()
                 }
             });
 
@@ -151,6 +164,14 @@
                     $('#label-no-semaforizar').removeClass('d-none');
                 }
             });
+
+            $('#modal-popout').on('shown.bs.modal', function() {
+               //To relate the z-index make sure backdrop and modal are siblings
+               // $(this).before($('.modal-backdrop'));
+               //Now set z-index of modal greater than backdrop
+               // $(this).css("z-index", parseInt($('.modal-backdrop').css('z-index')) + 1);
+               $(this).css("z-index", parseInt(1051));
+            }); 
 
         };
 

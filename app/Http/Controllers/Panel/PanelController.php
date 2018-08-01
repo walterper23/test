@@ -259,12 +259,18 @@ class PanelController extends BaseController
         }
 
         $data['system_estados_documentos'][1] = 'En seguimiento';
+        $data['dispersiones'][1]              = 'Normal (un destino)';
 
         if ( user() -> can('DOC.RECHAZAR') )
+        {
             $data['system_estados_documentos'][2] = 'Rechazar documento';
+        }
 
         if ( user() -> can('DOC.FINALIZAR') )
+        {
             $data['system_estados_documentos'][3] = 'Finalizar documento (resolver)';
+            $data['dispersiones'][2]              = 'Múltiple (varios destinos)';
+        }
 
         // Obtener los estados de documentos de sus direcciones y departamentos
         $estados = MEstadoDocumento::select('ESDO_NOMBRE','ESDO_ESTADO_DOCUMENTO') -> existenteDisponible()

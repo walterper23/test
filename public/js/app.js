@@ -102,7 +102,8 @@ var App = function(){
                 modal.modal({
                     backdrop : 'static',
                     keyboard : false,
-                    show : true
+                    show : true,
+                    focus : true,
                 })
             },
             success : function(result){
