@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 
 /* Models */
 use App\Model\MSeguimiento;
+use App\Model\Catalogo\MDireccion;
+
 
 class SeguimientoController extends BaseController
 {
@@ -31,12 +33,24 @@ class SeguimientoController extends BaseController
 		$data['seguimiento']  = $seguimiento;
 		$data['documento']    = $seguimiento -> Documento;
 		$data['detalle']      = $seguimiento -> Documento -> Detalle;
-		$data['seguimientos'] = $seguimiento -> Documento -> Seguimientos() -> with('DireccionOrigen','DireccionDestino','DepartamentoOrigen','DepartamentoDestino','EstadoDocumento')
+		$data['seguimientos'] = $seguimiento -> Documento -> Seguimientos()
+			-> with(['DireccionOrigen','DireccionDestino','DepartamentoOrigen','DepartamentoDestino','EstadoDocumento','Dispersiones'=>function($dispersion){
+				$dispersion -> with('Direccion','Departamento');
+			}])
 			-> leftJoin('usuarios','USUA_USUARIO','=','SEGU_USUARIO')
 			-> leftJoin('usuarios_detalles','USDE_USUARIO_DETALLE','=','USUA_DETALLE')
 			-> existente()
 			-> orderBy('SEGU_SEGUIMIENTO','DESC')
 			-> get();
+
+		// Obtener todas las direcciones de destino existentes y disponibles con sus departamentos existentes y disponibles
+        $direcciones = MDireccion::with('DepartamentosExistentesDisponibles')
+                        -> select('DIRE_DIRECCION','DIRE_NOMBRE')
+                        -> existenteDisponible()
+                        -> orderBy('DIRE_NOMBRE')
+                        -> get();
+
+        $data['direcciones'] = $direcciones;
 
 		return view('Panel.Seguimiento.verSeguimiento') -> with($data);
 	}

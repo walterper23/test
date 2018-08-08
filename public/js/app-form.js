@@ -75,13 +75,21 @@ var AppForm = function(){
 		if(!$(form).valid()) return false;
 
 		App.ajaxRequest({
-			url        : $(form).attr('action'),
-			data       : $(form).serialize(),
+			url        : self.getUrlForm(form),
+			data       : self.getDataForm(form),
 			beforeSend : self.beforeSubmitHandler,
 			success    : self.successSubmitHandler,
 			code422    : self.displayErrors
 		});
 	};
+
+	this.getUrlForm = function( form ){
+		return $(form).attr('action');
+	};
+
+	this.getDataForm = function( form ){
+		return $(form).serialize();
+	};	
 
 	this.beforeSubmitHandler = function(){
 		Codebase.blocks( self.context.find('div.modal-content > div.block'), 'state_loading');

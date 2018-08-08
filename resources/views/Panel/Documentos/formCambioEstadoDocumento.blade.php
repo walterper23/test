@@ -10,7 +10,7 @@
     @isset($contestar)
     <div class="form-group row">
         <div class="col-md-12">
-        </span> <span class="font-w600">Conteste a la solicitud realizada por el origen <span class="text-primary font-w700">{{ $origen_solicitud }}</span>.</span>
+            <span class="font-w600">Conteste a la solicitud realizada por el origen <span class="text-primary font-w700">{{ $origen_solicitud }}</span>.</span>
             <textarea placeholder="Respuesta a la solicitud realizada por el origen" noresize="" id="contestacion" class="form-control" name="contestacion" cols="20" rows="2"></textarea>
         </div>
     </div>
@@ -40,31 +40,6 @@
             <button type="button" id="areas_dispersion" class="btn btn-primary" data-toggle="modal" data-target="#modal-popout">
                 <i class="fa fa-fw fa-sitemap"></i> Elegir direcciones y departamentos
             </button>
-            <!--button type="button" id="areas_dispersion" class="btn btn-primary" onclick="hPanel.nuevoEstado()">
-                <i class="fa fa-fw fa-sitemap"></i> Elegir direcciones y departamentos
-            </button-->
-            <div class="modal fade" id="modal-popout" tabindex="-1" role="dialog" aria-labelledby="modal-popout" aria-hidden="true" style="z-index: 999999">
-                <div class="modal-dialog modal-dialog-popout" role="document">
-                    <div class="modal-content">
-                        <div class="block block-themed block-transparent mb-0">
-                            <div class="block-header bg-primary">
-                                <h3 class="block-title"><i class="fa fa-fw fa-sitemap"></i> Direcciones y Departamentos</h3>
-                                <div class="block-options">
-                                    <button type="button" class="btn-block-option" data-dismiss="modal-popout" aria-label="Close">
-                                        <i class="si si-close"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="block-content">
-                                @include('Panel.Seguimiento.direccionesDepartamentos',[$direcciones])
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Cerrar</button>
-                        </div>
-                    </div>
-                </div>
-</div>
         </div>
     </div>
     {!! Field::select('estado','',['label'=>'Estado de Documento','required'],$estados) !!}
@@ -85,7 +60,6 @@
             </label>
         </div>
     </div>
-</div>
     @endcan
 {{ Form::close() }}
 @endsection
@@ -135,9 +109,10 @@
                 var direccion    = selectDireccionDestino.closest('.form-group').hide();
                 var departamento = selectDepartamentoDestino.closest('.form-group').hide();
                 if( this.value == 1 && selectSeguimiento.val() == 1){ // Dispersión normal y documento en seguimiento
-                    direccion.add(departamento).fadeIn(750)
+                    direccion.add(departamento).fadeIn(750) // Solicitar direccion y departamento destino
                 }else if( this.value == 2 ){ // Dispersión múltiple
                     selectSeguimiento.val(3);
+                    selectDireccionDestino.add(selectDepartamentoDestino).add(textAreaInstruccion).add(checkSemaforizar).closest('div.form-group.row').hide();
                     formGroupDispersion.fadeIn(750);
                 }
             });
@@ -166,15 +141,23 @@
             });
 
             $('#modal-popout').on('shown.bs.modal', function() {
-               //To relate the z-index make sure backdrop and modal are siblings
-               // $(this).before($('.modal-backdrop'));
-               //Now set z-index of modal greater than backdrop
-               // $(this).css("z-index", parseInt($('.modal-backdrop').css('z-index')) + 1);
-               $(this).css("z-index", parseInt(1051));
-            }); 
+                $('.modal-backdrop.fade.show').last().css('z-index',1050);
+                $(this).css("z-index", 1051);
+
+                console.log($('#form-cambio-estado-documento').add('#tree-direcciones-departamentos').serialize());
+
+            });
+
+            $('[data-dismiss="modal-popout"]').on('click',function(){
+                $('#modal-popout').modal('hide');
+            });
 
         };
 
+        this.getDataForm = function( form ){
+            return $(form).serialize() + '&' + $('#tree-direcciones-departamentos').serialize();
+        };
+        
         this.successSubmitHandler = function( result ){
             var config = {
                 type: result.type,

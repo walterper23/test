@@ -108,11 +108,9 @@
                                 @else
                                     <i class="list-timeline-icon fa fa-flash bg-danger" title="Documento en seguimiento"></i>
                                 @endif
-                            @endif
-                            @if ($loop -> last)
+                            @elseif ($loop -> last)
                                 <i class="list-timeline-icon fa fa-folder-open bg-primary" title="Documento recepcionado"></i>
-                            @endif
-                            @if(!$loop -> first && !$loop -> last) 
+                            @else 
                                 <i class="list-timeline-icon fa fa-flash bg-danger" title="Documento en seguimiento"></i>
                             @endif
                             <div class="list-timeline-content">
@@ -126,22 +124,37 @@
                                     </div>
                                     <div class="col-md-6">
                                         <p>
+                                            @if (is_null($seguimiento -> DepartamentoOrigen))
                                             <a href="javascript:void(0)">
-                                                <i class="fa fa-fw fa-sitemap"></i> {{ $seguimiento -> DireccionOrigen -> getNombre() }}
-                                            </a>
-                                        </p>
-                                        <p>
-                                            @if (! is_null($seguimiento -> DepartamentoOrigen))
-                                            <a href="javascript:void(0)">
-                                                <i class="fa fa-fw fa-sitemap"></i> {{ $seguimiento -> DepartamentoOrigen -> getNombre() }}
+                                                <span class="badge badge-secondary"><i class="fa fa-fw fa-legal"></i> {{ $seguimiento -> DireccionOrigen -> getNombre() }}</span>
                                             </a>
                                             @else
-                                                <div class="text-muted"><i class="fa fa-fw fa-sitemap"></i></div>
+                                            <a href="javascript:void(0)">
+                                                <span class="badge badge-warning"><i class="fa fa-fw fa-sitemap"></i> {{ $seguimiento -> DepartamentoOrigen -> getNombre() }}</span>
+                                            </a>
                                             @endif
+                                            <a href="javascript:void(0)">
+                                                <span class="badge badge-primary"><i class="fa fa-fw fa-user"></i>
+                                                    {{ trim(sprintf('%s :: %s %s',$seguimiento -> USDE_NO_TRABAJADOR, $seguimiento -> USDE_NOMBRES,$seguimiento -> USDE_APELLIDOS)) }}
+                                                </span>
+                                            </a>
                                         </p>
-                                        <div class="font-size-sm text-muted"><i class="fa fa-fw fa-user"></i>
-                                            {{ trim(sprintf('%s :: %s %s',$seguimiento -> USDE_NO_TRABAJADOR, $seguimiento -> USDE_NOMBRES,$seguimiento -> USDE_APELLIDOS)) }}
-                                        </div>
+                                    </div>
+                                    <div class="col-md-12"> 
+                                        @if( $seguimiento -> Dispersiones -> count() > 0 )
+                                            <p class="font-size-xs">El cambio de estado fue disperso a las siguientes direcciones y departamentos: </p>
+                                            @foreach($seguimiento -> Dispersiones as $dispersion)
+                                                @if (is_null($dispersion -> Departamento))
+                                                <a href="javascript:void(0)">
+                                                    <span class="badge badge-secondary"><i class="fa fa-fw fa-legal"></i> {{ $dispersion -> Direccion -> getNombre() }}</span>
+                                                </a>
+                                                @else
+                                                <a href="javascript:void(0)">
+                                                    <span class="badge badge-warning"><i class="fa fa-fw fa-sitemap"></i> {{ $dispersion -> Departamento -> getNombre() }}</span>
+                                                </a>
+                                                @endif
+                                            @endforeach
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -153,6 +166,29 @@
         </div>
     </div>
     <!-- END Timeline Activity -->
+
+    <div class="modal fade" id="modal-popout" tabindex="-1" role="dialog" aria-labelledby="modal-popout" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-popout" role="document">
+            <div class="modal-content">
+                <div class="block block-themed block-transparent mb-0">
+                    <div class="block-header bg-primary">
+                        <h3 class="block-title"><i class="fa fa-fw fa-sitemap"></i> Direcciones y Departamentos</h3>
+                        <div class="block-options">
+                            <button type="button" class="btn-block-option" data-dismiss="modal-popout" aria-label="Close">
+                                <i class="si si-close"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="block-content">
+                        @include('Panel.Seguimiento.direccionesDepartamentos',[$direcciones])
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-alt-secondary" data-dismiss="modal-popout">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('js-script')

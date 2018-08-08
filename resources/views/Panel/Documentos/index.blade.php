@@ -210,16 +210,26 @@
                             <div class="row">
                                 <div class="col-md-5">
                                     <hr>
-                                    <div class="font-size-sm text-muted"><i class="fa fa-fw fa-sitemap"></i> {{ $seguimiento -> DireccionOrigen -> getNombre() }}</div>
-                                    <div class="font-size-sm text-muted"><i class="fa fa-fw fa-sitemap"></i> {{ optional($seguimiento -> DepartamentoOrigen) -> getNombre() }}</div>
+                                    @if (is_null($seguimiento -> DepartamentoOrigen))
+                                    <a href="javascript:void(0)">
+                                        <span class="badge badge-secondary"><i class="fa fa-fw fa-legal"></i> {{ $seguimiento -> DireccionOrigen -> getNombre() }}</span>
+                                    </a>
+                                    @else
+                                    <a href="javascript:void(0)">
+                                        <span class="badge badge-warning"><i class="fa fa-fw fa-sitemap"></i> {{ $seguimiento -> DepartamentoOrigen -> getNombre() }}</span>
+                                    </a>
+                                    @endif
                                 </div>
                                 <div class="col-md-7">
                                     <hr>
-                                    @php
-                                        $usuario = trim(sprintf('%s :: %s %s',$seguimiento -> USDE_NO_TRABAJADOR, $seguimiento -> USDE_NOMBRES,$seguimiento -> USDE_APELLIDOS));
-                                    @endphp
-                                    <div class="font-size-sm text-muted"><i class="fa fa-fw fa-user"></i> {{ $usuario }}</div>
-                                    <div class="font-size-sm text-muted"><i class="fa fa-fw fa-calendar"></i> {{ $seguimiento -> presenter() -> getFechaSeguimiento() }}</div>
+                                    <a href="javascript:void(0)">
+                                        <span class="badge badge-success"><i class="fa fa-fw fa-calendar"></i> {{ $seguimiento -> presenter() -> getFechaSeguimiento() }}</span>
+                                    </a>
+                                    <a href="javascript:void(0)">
+                                        <span class="badge badge-primary"><i class="fa fa-fw fa-user"></i>
+                                            {{ trim(sprintf('%s :: %s %s',$seguimiento -> USDE_NO_TRABAJADOR, $seguimiento -> USDE_NOMBRES,$seguimiento -> USDE_APELLIDOS)) }}
+                                        </span>
+                                    </a>
                                 </div>
                             </div>
                         </div>

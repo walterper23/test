@@ -16,9 +16,24 @@ class MSeguimiento extends BaseModel
         return parent::getCodigo($size);
     }
 
+    public function getDireccionOrigen()
+    {
+        return $this -> getAttribute('SEGU_DIRECCION_ORIGEN');
+    }
+
+    public function getDepartamentoOrigen()
+    {
+        return $this -> getAttribute('SEGU_DEPARTAMENTO_ORIGEN');
+    }
+
     public function getDireccionDestino()
     {
         return $this -> getAttribute('SEGU_DIRECCION_DESTINO');
+    }
+
+    public function getDepartamentoDestino()
+    {
+        return $this -> getAttribute('SEGU_DEPARTAMENTO_DESTINO');
     }
 
     public function getDocumento()
@@ -110,6 +125,11 @@ class MSeguimiento extends BaseModel
     public function Seguimientos()
     {
         return $this -> hasMany('App\Model\MSeguimiento','SEGU_DOCUMENTO','SEGU_DOCUMENTO');
+    }
+
+    public function Dispersiones()
+    {
+        return $this -> hasMany('App\Model\MSeguimientoDispersion','SEDI_SEGUIMIENTO',$this -> getKeyName());
     }
     
     public function Usuario()

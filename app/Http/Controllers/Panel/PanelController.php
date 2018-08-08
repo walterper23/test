@@ -16,7 +16,9 @@ use App\Model\MDenuncia;
 use App\Model\MDocumento;
 use App\Model\MDocumentoSemaforizado;
 use App\Model\MSeguimiento;
+use App\Model\MSeguimientoDispersion;
 use App\Model\Catalogo\MDireccion;
+use App\Model\Catalogo\MDepartamento;
 use App\Model\Catalogo\MEstadoDocumento;
 
 class PanelController extends BaseController
@@ -259,7 +261,7 @@ class PanelController extends BaseController
         }
 
         $data['system_estados_documentos'][1] = 'En seguimiento';
-        $data['dispersiones'][1]              = 'Normal (un destino)';
+        $data['dispersiones'][1]              = 'Normal';
 
         if ( user() -> can('DOC.RECHAZAR') )
         {
@@ -317,13 +319,15 @@ class PanelController extends BaseController
 
             $documento = MDocumento::find( $request -> documento );
 
-            $ultimoSeguimiento = $documento -> Seguimientos -> last();
-
             if ($documento -> finalizado())
+            {
                 return $this -> responseDangerJSON('<i class="fa fa-fw fa-warning"></i> El documento ya fue finalizado. No se permiten más cambios de estado.');
+            }
 
             if ($documento -> rechazado())
+            {
                 return $this -> responseDangerJSON('<i class="fa fa-fw fa-warning"></i> El documento fue rechazado. No se permiten más cambios de estado.');
+            }
 
             $documentoSemaforizado = MDocumentoSemaforizado::where('DOSE_DOCUMENTO',$documento -> getKey())
                     -> whereIn('DOSE_ESTADO',[1,2]) // En espera, No atendido
@@ -331,13 +335,14 @@ class PanelController extends BaseController
                     -> limit(1) -> first();
 
             if ( $documentoSemaforizado && ! $request -> has('contestacion') )
+            {
                 return $this -> responseDangerJSON('<i class="fa fa-fw fa-warning"></i> Debe contestar a la solicitud realizada por el origen anterior.');
+            }
 
             if($request -> estado_documento == 1 && $request -> get('semaforizar') == 1 && !user() -> can('SEG.ADMIN.SEMAFORO') ) // Permitir semaforizar el documento, si aun estará en seguimiento y si el usuario tiene el permiso
             {
                 abort(403);
             }
-            
 
             switch ($request -> estado_documento) {
                 case 2:
@@ -345,7 +350,7 @@ class PanelController extends BaseController
                     $documento -> save();
                     break;
                 case 3:
-                    $documento -> DOCU_SYSTEM_ESTADO_DOCTO = 4; // Documento resuelto
+                    $documento -> DOCU_SYSTEM_ESTADO_DOCTO = 4; // Documento resuelto/finalizado
                     $documento -> save();
                     break;
                 default:
@@ -357,16 +362,26 @@ class PanelController extends BaseController
                     break;
             }
 
+            $direccion_destino = $request -> get('direccion_destino',0);
+            if ($direccion_destino == 0)
+            {
+                $direccion_destino = null;
+            }
+
             $departamento_destino = $request -> get('departamento_destino',0);
             if ($departamento_destino == 0)
+            {
                 $departamento_destino = null;
+            }
+
+            $ultimoSeguimiento = $documento -> Seguimientos -> last();
 
             $seguimientoNuevo = new MSeguimiento;
             $seguimientoNuevo -> SEGU_USUARIO              = userKey();
             $seguimientoNuevo -> SEGU_DOCUMENTO            = $ultimoSeguimiento -> getDocumento();
-            $seguimientoNuevo -> SEGU_DIRECCION_ORIGEN     = $ultimoSeguimiento -> SEGU_DIRECCION_DESTINO;
-            $seguimientoNuevo -> SEGU_DEPARTAMENTO_ORIGEN  = $ultimoSeguimiento -> SEGU_DEPARTAMENTO_DESTINO;
-            $seguimientoNuevo -> SEGU_DIRECCION_DESTINO    = $request -> direccion_destino;
+            $seguimientoNuevo -> SEGU_DIRECCION_ORIGEN     = $ultimoSeguimiento -> getDireccionDestino();
+            $seguimientoNuevo -> SEGU_DEPARTAMENTO_ORIGEN  = $ultimoSeguimiento -> getDepartamentoDestino();
+            $seguimientoNuevo -> SEGU_DIRECCION_DESTINO    = $direccion_destino;
             $seguimientoNuevo -> SEGU_DEPARTAMENTO_DESTINO = $departamento_destino;
             $seguimientoNuevo -> SEGU_ESTADO_DOCUMENTO     = $request -> estado;
             $seguimientoNuevo -> SEGU_OBSERVACION          = $request -> observacion;
@@ -389,27 +404,56 @@ class PanelController extends BaseController
                 
                 NotificacionController::nuevaNotificacion('DOC.SEM.RES',$data);
             }
-                
-            if($request -> estado_documento == 1 && $request -> get('semaforizar') == 1 && user() -> can('SEG.ADMIN.SEMAFORO') ) // Permitir semaforizar el documento, si aun estará en seguimiento y si el usuario tiene el permiso
-            {
-                // Calculamos la fecha límite para responder a la solicitud de contestación
-                $fecha_limite = Carbon::now() -> addDays( config_var('Sistema.Dias.Limite.Semaforo') ) -> format('Y-m-d');
 
-                $semaforo = new MDocumentoSemaforizado;
-                $semaforo -> DOSE_DOCUMENTO     = $documento -> getKey();
-                $semaforo -> DOSE_USUARIO       = userKey();
-                $semaforo -> DOSE_ESTADO        = 1; // En espera de contestación
-                $semaforo -> DOSE_SOLICITUD     = $request -> instruccion;
-                $semaforo -> DOSE_FECHA_LIMITE  = $fecha_limite;
-                $semaforo -> DOSE_SEGUIMIENTO_A = $seguimientoNuevo -> getKey();
-                $semaforo -> save();
+            if ($request -> dispersion == 1 && $documento -> enSeguimiento()) // Si la dispersión es normal y el documento aun estará en seguimiento
+            {
+                if( $request -> get('semaforizar') == 1 && user() -> can('SEG.ADMIN.SEMAFORO') ) // Si el usuario tiene permiso de semaforizar documentos
+                {
+                    // Calculamos la fecha límite para responder a la solicitud de contestación
+                    $fecha_limite = Carbon::now() -> addDays( config_var('Sistema.Dias.Limite.Semaforo') ) -> format('Y-m-d');
+
+                    $semaforo = new MDocumentoSemaforizado;
+                    $semaforo -> DOSE_DOCUMENTO     = $documento -> getKey();
+                    $semaforo -> DOSE_USUARIO       = userKey();
+                    $semaforo -> DOSE_ESTADO        = 1; // En espera de contestación
+                    $semaforo -> DOSE_SOLICITUD     = $request -> instruccion;
+                    $semaforo -> DOSE_FECHA_LIMITE  = $fecha_limite;
+                    $semaforo -> DOSE_SEGUIMIENTO_A = $seguimientoNuevo -> getKey();
+                    $semaforo -> save();
+                }
             }
+            elseif ($request -> dispersion == 2 && $documento -> finalizado()) // Si la dispersión es múltiple y el documento ya se finalizará
+            {
+                foreach ($request -> get('direcciones',[]) as $direccion) {
+                    $seguimientoDispersion = new MSeguimientoDispersion;
+                    $seguimientoDispersion -> SEDI_SEGUIMIENTO       = $seguimientoNuevo -> getKey();
+                    $seguimientoDispersion -> SEDI_DOCUMENTO         = $documento -> getKey();
+                    $seguimientoDispersion -> SEDI_SYSTEM_TIPO_DOCTO = $documento -> getTipoDocumento();
+                    $seguimientoDispersion -> SEDI_DIRECCION         = $direccion;
+                    $seguimientoDispersion -> save();
+                }
+
+                foreach ($request -> get('departamentos',[]) as $departamento) {
+
+                    $departamento = MDepartamento::find($departamento);
+
+                    $seguimientoDispersion = new MSeguimientoDispersion;
+                    $seguimientoDispersion -> SEDI_SEGUIMIENTO       = $seguimientoNuevo -> getKey();
+                    $seguimientoDispersion -> SEDI_DOCUMENTO         = $documento -> getKey();
+                    $seguimientoDispersion -> SEDI_SYSTEM_TIPO_DOCTO = $documento -> getTipoDocumento();
+                    $seguimientoDispersion -> SEDI_DIRECCION         = $departamento -> getDireccion();
+                    $seguimientoDispersion -> SEDI_DEPARTAMENTO      = $departamento -> getKey();
+                    $seguimientoDispersion -> save();
+                }
+            }
+                
 
             DB::commit();
 
             $message = sprintf('<i class="fa fa-fw fa-flash"></i> Seguimiento <b>#%s</b> creado',$seguimientoNuevo -> getCodigo());
 
             return $this -> responseSuccessJSON($message);
+            
         } catch(Exception $error) {
             DB::rollback();
             return $this -> responseDangerJSON($error -> getMessage());
