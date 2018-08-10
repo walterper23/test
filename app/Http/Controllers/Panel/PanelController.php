@@ -46,10 +46,13 @@ class PanelController extends BaseController
         *  Los seguimientos nos darán los documentos en los cuáles ha participado el usuario
         */
         $documentos = MSeguimiento::selectRaw('distinct(SEGU_DOCUMENTO) as id_documento')
+                        -> leftJoin('seguimiento_dispersion','SEGU_SEGUIMIENTO','=','SEDI_SEGUIMIENTO')
                         -> whereIn('SEGU_DIRECCION_ORIGEN',$ids_direcciones)
                         -> orWhereIn('SEGU_DIRECCION_DESTINO',$ids_direcciones)
                         -> orWhereIn('SEGU_DEPARTAMENTO_ORIGEN',$ids_departamentos)
                         -> orWhereIn('SEGU_DEPARTAMENTO_DESTINO',$ids_departamentos)
+                        -> orWhereIn('SEDI_DIRECCION',$ids_direcciones)
+                        -> orWhereIn('SEDI_DEPARTAMENTO',$ids_departamentos)
                         -> pluck('id_documento')
                         -> toArray();
 
@@ -62,6 +65,9 @@ class PanelController extends BaseController
                         -> leftJoin('usuarios_detalles','USDE_USUARIO_DETALLE','=','USUA_DETALLE')
                         -> leftJoin('system_estados_documentos','SYED_ESTADO_DOCUMENTO','=','DOCU_SYSTEM_ESTADO_DOCTO')
                         -> leftJoin('denuncias','DENU_DOCUMENTO','=','DOCU_DOCUMENTO')
+                        -> whereRaw('SEGU_SEGUIMIENTO in (select max(SEGU_SEGUIMIENTO) from seguimiento group by SEGU_DOCUMENTO order by SEGU_SEGUIMIENTO desc)')
+                        -> where('DOCU_SYSTEM_ESTADO_DOCTO','!=',6) // Recepción eliminada
+                        -> whereIn('SEGU_DOCUMENTO',$documentos)
                         -> where(function($query) use ($search) {
                             if (! is_null($search) && ! empty($search))
                             {
@@ -72,9 +78,6 @@ class PanelController extends BaseController
                                 $query -> orWhere('SYTD_NOMBRE','like',$search);
                             }
                         })
-                        -> where('DOCU_SYSTEM_ESTADO_DOCTO','!=',6) // Recepción eliminada
-                        -> whereIn('SEGU_DOCUMENTO',$documentos)
-                        -> whereRaw('SEGU_SEGUIMIENTO in (select max(SEGU_SEGUIMIENTO) from seguimiento group by SEGU_DOCUMENTO order by SEGU_SEGUIMIENTO desc)')
                         -> orderBy('SEGU_SEGUIMIENTO','DESC')
                         -> get();
 

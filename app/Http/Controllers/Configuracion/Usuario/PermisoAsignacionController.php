@@ -50,10 +50,22 @@ class PermisoAsignacionController extends BaseController
         }]) -> existente() -> orderBy('DIRE_NOMBRE') -> get();
 
         // Recuperar la lista de usuarios del sistema
-        $data['usuarios'] = MUsuario::existente() -> pluck('USUA_USERNAME','USUA_USUARIO') -> toArray();
+        $usuarios = MUsuario::existente();
 
         $userKey = request() -> get('user', userKey()); // Recuperamos el ID del usuario enviado por la URL, si no, recuperamos le ID del usuario en sesión
-        $usuario = MUsuario::where('USUA_USUARIO',$userKey) -> existente() -> first(); // Comprobamos que exista el usuario
+        
+        $usuario = user();
+        if (! user() -> isSuperAdmin())
+        {
+            $usuario = MUsuario::where('USUA_USUARIO',$userKey) -> existente() -> first(); // Comprobamos que exista el usuario
+        }
+        else
+        {
+            $usuarios -> orWhere('USUA_USUARIO',1);
+        }
+
+        $data['usuarios'] = $usuarios -> pluck('USUA_USERNAME','USUA_USUARIO') -> toArray();
+        
         $data['userKey'] = !is_null($usuario) ? $userKey : userKey(); // Almacenamos el ID del usuario si existe. Si no, almacenamos el ID del usuario en sesión
 
         // Recuperar los permisos del usuario, para cargarlos en la interfaz
@@ -116,7 +128,14 @@ class PermisoAsignacionController extends BaseController
     public function editarPermisosAsignacionesUsuario( $request )
     {
         // Recuperar el usuario y sus permisos
-        $usuario = MUsuario::where('USUA_USUARIO',$request -> usuario) -> existente() -> get() -> first();
+        if (user() -> isSuperAdmin() && userKey() == $request -> usuario)
+        {
+            $usuario = user();
+        }
+        else
+        {
+            $usuario = MUsuario::where('USUA_USUARIO',$request -> usuario) -> existente() -> limit(1) -> first();
+        }
         
         // Editamos los permisos del usuario
         $this -> editarPermisosUsuario( $usuario, $request );

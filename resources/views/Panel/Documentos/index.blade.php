@@ -109,29 +109,30 @@
                 $documento = $seguimiento -> Documento;
             @endphp
             <div class="block {{ (! $seguimiento -> leido()) ? 'bg-info-light' : '' }}">
-                <div class="block-content block-content-full ribbon ribbon-bottom ribbon-bookmark ribbon-{{ $seguimiento -> SYTD_RIBBON_COLOR }}">
-                    <div class="ribbon-box">
-                        {{ $seguimiento -> SYTD_NOMBRE }}
-                        @if ( $documento -> getTipoDocumento() == 1)
-                            <span @can('DOC.CREAR.NO.EXPE') style="cursor: pointer;" onclick="hPanel.expediente({{ $documento -> getKey() }})" @endcan>
-                            <i class="fa fa-fw fa-legal"></i>
-                            @if (! empty($seguimiento -> DENU_NO_EXPEDIENTE) )
-                                {{ $seguimiento -> DENU_NO_EXPEDIENTE }}
-                            @else
-                                _ _ _ _
-                            @endif
-                            </span>
-                        @endif
-                    </div>
+                <div class="block-content block-content-full">
                     <div class="row">
                         <div class="col-md-5">
                             <div class="row">
                                 <div class="col-12">
-                                    <p class="font-w700">{{ $documento -> getNumero() }}</p>
-                                    <p>{{ $seguimiento -> DETA_DESCRIPCION }}</p>
-                                </div>
-                                <div class="col-12">
-                                    <span><i class="fa fa-fw fa-calendar"></i> <b>Recepción:</b> {{ $seguimiento -> DETA_FECHA_RECEPCION }} </span>
+                                    <p>
+                                        <span class="badge badge-{{ $seguimiento -> SYTD_RIBBON_COLOR }}">
+                                            #{{ $documento -> getCodigo() }}
+                                            {{ $seguimiento -> SYTD_NOMBRE }}
+                                            @if ( $documento -> getTipoDocumento() == 1)
+                                                <span @can('DOC.CREAR.NO.EXPE') style="cursor: pointer;" onclick="hPanel.expediente({{ $documento -> getKey() }})" @endcan>
+                                                <i class="fa fa-fw fa-legal"></i>
+                                                @if (! empty($seguimiento -> DENU_NO_EXPEDIENTE) )
+                                                    {{ $seguimiento -> DENU_NO_EXPEDIENTE }}
+                                                @else
+                                                    _ _ _ _
+                                                @endif
+                                            </span>
+                                        @endif
+                                        </span>
+                                        <span class="badge badge-secondary">{{ $documento -> getNumero() }}</span>
+                                    </p>
+                                    <p><i class="fa fa-fw fa-calendar"></i> <b>Fecha de Recepción:</b> {{ $seguimiento -> DETA_FECHA_RECEPCION }}</p>
+                                    <p><i class="fa fa-fw fa-files-o"></i> <b>Asunto:</b> {{ $seguimiento -> DETA_DESCRIPCION }}</p>
                                     @if (! empty($seguimiento -> DETA_ANEXOS) )
                                     <button type="button" class="btn btn-sm btn-rounded btn-alt-primary" onclick="hPanel.verAnexos({{ $documento -> getKey()  }})">
                                         <i class="fa fa-fw fa-clipboard"></i> Anexos
@@ -146,9 +147,33 @@
                             </div>
                         </div>
                         <div class="col-md-5">
-                            <a class="font-w700 text-primary-darker" title="Seguimiento #{{ $seguimiento -> getCodigo() }}" href="{{ url_ver_seguimiento( $seguimiento ) }}">
-                                <span class="text-danger"><i class="fa fa-fw fa-flash"></i> #{{ $seguimiento -> getCodigo() }}</span> :: {{ $seguimiento -> EstadoDocumento -> getNombre() }}
-                            </a>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <a class="text-dark" href="{{ url_ver_seguimiento( $seguimiento ) }}" title="Seguimiento #{{ $seguimiento -> getCodigo() }}">
+                                        <span class="badge badge-danger"><i class="fa fa-fw fa-flash"></i> #{{ $seguimiento -> getCodigo() }}</span>
+                                        <b>{{ $seguimiento -> EstadoDocumento -> getNombre() }}</b>
+                                    </a>
+                                </div>
+                                <div class="col-md-12">
+                                    <a href="javascript:void(0)">
+                                        <span class="badge badge-success"><i class="fa fa-fw fa-calendar"></i> {{ $seguimiento -> presenter() -> getFechaSeguimiento() }}</span>
+                                    </a>
+                                    @if (is_null($seguimiento -> DepartamentoOrigen))
+                                    <a href="javascript:void(0)">
+                                        <span class="badge badge-secondary"><i class="fa fa-fw fa-legal"></i> {{ $seguimiento -> DireccionOrigen -> getNombre() }}</span>
+                                    </a>
+                                    @else
+                                    <a href="javascript:void(0)">
+                                        <span class="badge badge-warning"><i class="fa fa-fw fa-sitemap"></i> {{ $seguimiento -> DepartamentoOrigen -> getNombre() }}</span>
+                                    </a>
+                                    @endif
+                                    <a href="javascript:void(0)">
+                                        <span class="badge badge-primary"><i class="fa fa-fw fa-user"></i>
+                                            {{ trim(sprintf('%s :: %s %s',$seguimiento -> USDE_NO_TRABAJADOR, $seguimiento -> USDE_NOMBRES,$seguimiento -> USDE_APELLIDOS)) }}
+                                        </span>
+                                    </a>
+                                </div>
+                            </div>
                             <p><span class="font-w600"><i class="fa fa-fw fa-comment-o"></i> Observaciones:</span> {{ $seguimiento -> getObservacion() }}</p>
                             @if($documento -> enSeguimiento())
                             <p><span class="font-w600"><i class="fa fa-fw fa-street-view"></i> Instrucción al destino:</span> {{ $seguimiento -> getInstruccion() }}</p>
@@ -163,12 +188,6 @@
                                         <i class="fa fa-fw fa-star-o star" title="Marcar como importante"></i>
                                     @endif
                                 </a>
-                                #{{ $documento -> getCodigo() }}
-                                @if (! $seguimiento -> leido())
-                                    <i class="fa fa-fw fa-folder"></i>
-                                @else
-                                    <i class="fa fa-fw fa-folder-open-o"></i>
-                                @endif
                                 <div class="btn-group" role="group" aria-label="Opciones">
                                     <div class="btn-group show" role="group">
                                         <button type="button" class="btn btn-sm btn-alt-secondary dropdown-toggle" id="btnGroupDrop2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Opciones</button>
@@ -204,33 +223,6 @@
                                     </div>
                                 </div>
                                 <br>{{ $seguimiento -> SYED_NOMBRE }}
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="row">
-                                <div class="col-md-5">
-                                    <hr>
-                                    @if (is_null($seguimiento -> DepartamentoOrigen))
-                                    <a href="javascript:void(0)">
-                                        <span class="badge badge-secondary"><i class="fa fa-fw fa-legal"></i> {{ $seguimiento -> DireccionOrigen -> getNombre() }}</span>
-                                    </a>
-                                    @else
-                                    <a href="javascript:void(0)">
-                                        <span class="badge badge-warning"><i class="fa fa-fw fa-sitemap"></i> {{ $seguimiento -> DepartamentoOrigen -> getNombre() }}</span>
-                                    </a>
-                                    @endif
-                                </div>
-                                <div class="col-md-7">
-                                    <hr>
-                                    <a href="javascript:void(0)">
-                                        <span class="badge badge-success"><i class="fa fa-fw fa-calendar"></i> {{ $seguimiento -> presenter() -> getFechaSeguimiento() }}</span>
-                                    </a>
-                                    <a href="javascript:void(0)">
-                                        <span class="badge badge-primary"><i class="fa fa-fw fa-user"></i>
-                                            {{ trim(sprintf('%s :: %s %s',$seguimiento -> USDE_NO_TRABAJADOR, $seguimiento -> USDE_NOMBRES,$seguimiento -> USDE_APELLIDOS)) }}
-                                        </span>
-                                    </a>
-                                </div>
                             </div>
                         </div>
                     </div>
