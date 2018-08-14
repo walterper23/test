@@ -16,10 +16,11 @@ App.loadScript('/js/helpers/helper.js', function(){
 			},
 
 			edit_ : function(id){
-				this.edit({
-					modal : 'form-usuario',
-					url   : '/configuracion/usuarios/editar',
-					id
+				App.openModal({
+					id     : 'form-editar-usuario',
+					url    : '/configuracion/usuarios/editar',
+					data   : { id },
+					footer : false,
 				})
 			},
 

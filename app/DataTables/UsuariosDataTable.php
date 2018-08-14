@@ -62,7 +62,7 @@ class UsuariosDataTable extends CustomDataTable {
 
                     /*$buttons = sprintf('<button type="button" class="btn btn-sm btn-circle btn-alt-primary" onclick="hUsuario.view(%d)" title="Ver usuario"><i class="fa fa-fw fa-eye"></i></button>',$usuario -> getKey());*/
 
-                    /*$buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-success" onclick="hUsuario.edit_(%d)" title="Modificar usuario"><i class="fa fa-fw fa-pencil"></i></button>',$usuario -> getKey());*/
+                    $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-success" onclick="hUsuario.edit_(%d)" title="Modificar usuario"><i class="fa fa-fw fa-pencil"></i></button>',$usuario -> getKey());
 
                     $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-warning" onclick="hUsuario.password(%d)" title="Cambiar contraseña"><i class="fa fa-key"></i></button>',$usuario -> getKey());
 
@@ -73,7 +73,9 @@ class UsuariosDataTable extends CustomDataTable {
                     }
 
                     if ( $usuario -> getKey() != userKey() )
+                    {
                         $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hUsuario.delete_(%d)" title="Eliminar"><i class="fa fa-trash"></i></button>',$usuario -> getKey());
+                    }
                     
                     return $buttons;
                 }

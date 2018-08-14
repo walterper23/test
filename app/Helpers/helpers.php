@@ -60,3 +60,12 @@ if (! function_exists('userKey'))
         return \Auth::id();
     }
 }
+
+if (! function_exists('userIsSuperAdmin'))
+{
+    // Helper para recuperar el ID del usuario en sesión
+    function userIsSuperAdmin()
+    {
+        return user() -> isSuperAdmin();
+    }
+}

@@ -10,13 +10,33 @@ var App = function(){
         contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
         beforeSend  : function(){},
         success     : function(){},
-        complete    : function( result ){},
-        error       : function(result){},
-        statusCode  : {
+        /*error       : function(result){    
+            AppAlert.notify({
+                icon    : 'fa fa-warning',
+                type    : 'danger',
+                title   : result.statusText,
+                message : result.responseJSON.message,
+                z_index : 1060,
+            });
+            $('.modal').modal('hide');
+        },*/
+        statusCode : {
+            403 : function( result ){
+                AppAlert.error({
+                    title : '¡ Acceso no autorizado !',
+                    text : 'Lo sentimos, no tiene permisos de acceso',
+                    then : function(){
+                        location.href = '/';
+                    }
+                });
+            },
             422 : function( result ){
                 console.log(result.responseJSON)
             }
-        }
+        },
+        complete : function( result ){
+
+        },
     };
 
     var _init = function(){
@@ -27,18 +47,6 @@ var App = function(){
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            error : function(x, status, error){
-                console.log(x.status, status, error)
-                if(x.status == 403){
-                    AppAlert.error({
-                        title : '¡ Acceso no autorizado !',
-                        text : 'Lo sentimos, no tienes permisos',
-                        then : function(){
-                            location.href = '/';
-                        }
-                    });
-                }
             }
         });
     };
@@ -102,26 +110,17 @@ var App = function(){
                 modal.modal({
                     backdrop : 'static',
                     keyboard : false,
-                    show : true,
-                    focus : true,
+                    show     : true,
+                    focus    : true,
                 })
             },
             success : function(result){
-                if(! result.status && result.status == false ){
-                    modal.modal('hide');
-                    AppAlert.notify({
-                        type : 'danger',
-                        message : result.message,
-                    });
-                }else{
-                    modal.find('div.block').html( result );
-                }
+                modal.find('div.block').html( result );
             },
             complete : function(){
                 Codebase.blocks( modal.find('div.block'), 'state_normal');
             }
         });
-
     };
 
     var _reloadTable = function(table, callback, resetPaging){
@@ -134,7 +133,7 @@ var App = function(){
         $.getScript({
             url   : url,
             cache : true
-        }, callback)
+        }, callback);
     };
 
     return {

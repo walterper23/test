@@ -53,7 +53,7 @@ class ManagerUsuarioRequest extends FormRequest
             'usuario.min'             => 'Mínimo :min caracter',
             'usuario.max'             => 'Máximo :max caracteres',
             'password.required_if'    => 'Introduzca una contraseña',
-            'password.min'            => 'Mínimo :min caracter',
+            'password.min'            => 'Mínimo :min caracteres',
             'password.max'            => 'Máximo :max caracteres',
             'password.confirmed'      => 'Las contraseñas no coinciden',
             'no_trabajador.max'       => 'Máximo :max caracteres',

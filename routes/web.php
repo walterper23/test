@@ -1,10 +1,5 @@
 <?php
 
-DB::listen(function($query){
-    \Illuminate\Support\Facades\Log::info($query -> sql);
-    \Illuminate\Support\Facades\Log::info($query -> bindings);
-});
-
 Route::middleware('preventBackHistory') -> group(function(){
 
     Route::get('documentacion', 'DocumentacionController@index');
@@ -193,8 +188,8 @@ Route::middleware('preventBackHistory') -> group(function(){
             Route::prefix('usuarios') -> middleware('can:USU.ADMIN.USUARIOS') -> namespace('Usuario') -> group(function(){
                 Route::get('/',           'UsuarioController@index');
                 Route::post('post-data',  'UsuarioController@postDataTable');
-                Route::post('nuevo',      'UsuarioController@formUsuario');
-                Route::post('editar',     'UsuarioController@editarUsuario');
+                Route::post('nuevo',      'UsuarioController@formNuevoUsuario');
+                Route::post('editar',     'UsuarioController@formEditarUsuario');
                 Route::post('password',   'UsuarioController@formPassword');
                 Route::post('manager',    'UsuarioController@manager');
             });

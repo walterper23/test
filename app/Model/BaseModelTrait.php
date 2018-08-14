@@ -48,6 +48,12 @@ trait BaseModelTrait
         return str_pad($this -> getKey(), $size, $str, $direction);
     }
 
+    // Método para devolver el símbolo "#"" y ID del registro como un código de longitud indicada
+    public function getCodigoHash( $size = 3, $str = '0', $direction = STR_PAD_LEFT )
+    {
+        return '#' . str_pad($this -> getKey(), $size, $str, $direction);
+    }
+
     // Método para marcar como activo o disponible el registro
     public function activar()
     {

@@ -120,6 +120,8 @@ App.loadScript('/js/plugins/sweetalert2/sweetalert2.min.js', function(){
                 var _defaultsNotify = {
                     icon    : '',
                     type    : 'success',
+                    title   : '',
+                    message : '',
                     url     : '',
                     element : 'body',
                     dismiss         : true,
@@ -130,8 +132,8 @@ App.loadScript('/js/plugins/sweetalert2/sweetalert2.min.js', function(){
                     offset  : 20,
                     spacing : 10,
                     z_index : 1033,
-                    delay   : 3000,
-                    timer   : 300,
+                    delay   : 60000,
+                    timer   : 30000,
                     onClose : function(){ }
 
                 }
@@ -139,6 +141,7 @@ App.loadScript('/js/plugins/sweetalert2/sweetalert2.min.js', function(){
                 var _notify = function( options ){
                     $.notify({
                         icon    : options.icon,
+                        title   : options.title,
                         message : options.message,
                         url     : options.url
                     },

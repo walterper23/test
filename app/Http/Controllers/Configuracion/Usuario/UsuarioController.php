@@ -85,13 +85,14 @@ class UsuarioController extends BaseController
     /**
      * Método para retornar el formulario para la creación de un nuevo usuario
      */
-    public function formUsuario()
+    public function formNuevoUsuario()
     {
         $data['title']         = 'Nuevo usuario';
         $data['form_id']       = $this -> form_id;
         $data['url_send_form'] = url('configuracion/usuarios/manager');
+        $data['action']        = 1;
         
-        return view('Configuracion.Usuario.formUsuario') -> with($data);
+        return view('Configuracion.Usuario.formNuevoUsuario') -> with($data);
     }
 
     /**
@@ -111,13 +112,13 @@ class UsuarioController extends BaseController
             if( $request -> genero == 'HOMBRE')
             {
                 $usuario -> USUA_AVATAR_SMALL = 'no-profile-male.png';
-                $usuario -> USUA_AVATAR_FULL  = 'no-profile-male.png';
             }
             else
             {
-                $usuario -> USUA_AVATAR_SMALL = 'no-profile-female.png';
                 $usuario -> USUA_AVATAR_FULL  = 'no-profile-female.png';
             }
+
+            $usuario -> USUA_AVATAR_FULL  = $usuario -> getAvatarSmall();
             
             $detalle = new MUsuarioDetalle;
             $detalle -> USDE_NO_TRABAJADOR = $request -> no_trabajador;
@@ -138,12 +139,75 @@ class UsuarioController extends BaseController
             $message = sprintf('<i class="fa fa-fw fa-user"></i> Usuario <b>%s : %s</b> creado',$usuario -> getCodigo(), $usuario -> getAuthUsername());
 
             return $this -> responseSuccessJSON($message, $tables);
-
-        }catch(Exception $error)
-        {
+        } catch(Exception $error) {
             DB::rollback();
+            return $this -> responseDangerJSON('Ocurrió un error al guardar los cambios. Error ' . $error -> getMessage() );
         }
 
+    }
+
+    /**
+     * Método para retornar el formulario para editar el usuario especificado
+     */
+    public function formEditarUsuario(Request $request)
+    {
+        if ( $request -> id == 1 )
+        {
+            abort(403);
+        }
+        
+        try {
+            $modelo                = MUsuario::find( $request -> id );
+            $data['title']         = 'Editar usuario ' . $modelo -> getCodigoHash();
+            $data['form_id']       = 'form-editar-usuario';
+            $data['url_send_form'] = url('configuracion/usuarios/manager');
+            $data['modelo']        = $modelo;
+            $data['action']        = 2;
+            $data['id']            = $request -> id;
+
+            return view('Configuracion.Usuario.formEditarUsuario')->with($data);
+        } catch(Exception $error) {
+            return $this -> responseDangerJSON('Ocurrió un error: ' . $error -> getMessage() );
+        }
+    }
+
+    /**
+     * Método para guardar los cambios realizados a un usuario
+     */
+    public function editarUsuario( $request )
+    {
+        try {
+
+            $usuario = MUsuario::find( $request -> id );
+            $usuario -> USUA_DESCRIPCION = $request -> descripcion;
+            
+            if ($request -> password)
+            {
+                $usuario -> USUA_PASSWORD    = $request -> password;
+            }
+
+            $detalle = $usuario -> UsuarioDetalle;
+            $detalle -> USDE_NO_TRABAJADOR = $request -> no_trabajador;
+            $detalle -> USDE_NOMBRES       = $request -> nombres;
+            $detalle -> USDE_APELLIDOS     = $request -> apellidos;
+            $detalle -> USDE_GENERO        = $request -> genero;
+            $detalle -> USDE_EMAIL         = $request -> email;
+            $detalle -> USDE_TELEFONO      = $request -> telefono;
+            $detalle -> save();
+
+            $usuario -> save();
+
+            DB::commit();
+
+            $message = sprintf('<i class="fa fa-fw fa-check"></i> Usuario <b>%s</b> modificado',$usuario -> getCodigo());
+
+            $tables = 'dataTableBuilder';
+
+            return $this -> responseSuccessJSON($message,$tables);
+        } catch(Exception $error) {
+            DB::rollback();
+            return $this -> responseDangerJSON('Ocurrió un error al guardar los cambios. Error ' . $error -> getMessage() );
+        }
     }
 
     /**
@@ -174,7 +238,7 @@ class UsuarioController extends BaseController
             return $this -> responseWarningJSON('<i class="fa fa-key"></i> Contraseña modificada correctamente');
 
         } catch(Exception $error) {
-            return response() -> json(['status'=>false,'message'=>'Ocurrió un error al guardar los cambios. Error ' . $error->getCode() ]);
+            return $this -> responseDangerJSON('Ocurrió un error al guardar los cambios. Error ' . $error -> getMessage() );
         }
     }
 

@@ -1,10 +1,10 @@
 @extends('vendor.modal.template',['headerColor'=>'bg-earth'])
 
-@section('title')<i class="fa fa-fw fa-user-plus"></i> {!! $title !!}@endsection
+@section('title')<i class="fa fa-fw fa-edit"></i> {!! $title !!}@endsection
 
 @section('content')
     <!-- Validation Wizard Classic -->
-    <div id="js-wizard-validation-form" style="margin: -18px">
+    <div id="js-wizard-validation-form-edit" style="margin: -18px">
         <!-- Step Tabs -->
         <ul class="nav nav-tabs nav-tabs-block nav-fill" role="tablist">
             <li class="nav-item">
@@ -26,26 +26,27 @@
 
         <!-- Form -->
         {{ Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) }}
-        {{ Form::hidden('action',1) }}
+            {{ Form::hidden('action',$action) }}
+            {{ Form::hidden('id',$id) }}
             <!-- Steps Content -->
             <div class="block-content block-content-full tab-content" style="min-height: 265px;">
                 <!-- Step 1 -->
                 <div class="tab-pane active" id="wizard-validation-classic-step1" role="tabpanel">
-                    {!! Field::email('usuario','',['label'=>'Usuario','addClass'=>'text-lowercase','autofocus','required']) !!}
-                    {!! Field::password('password','',['label'=>'Contraseña','required']) !!}
-                    {!! Field::password('password_confirmation','',['label'=>'Confirmar contraseña','required']) !!}
+                    {!! Field::email('usuario',$modelo->getAuthUsername(),['label'=>'Usuario','addClass'=>'text-lowercase','disabled']) !!}
+                    {!! Field::password('password','',['label'=>'Contraseña']) !!}
+                    {!! Field::password('password_confirmation','',['label'=>'Confirmar contraseña']) !!}
                 </div>
                 <!-- END Step 1 -->
 
                 <!-- Step 2 -->
                 <div class="tab-pane" id="wizard-validation-classic-step2" role="tabpanel">
-                    {!! Field::text('no_trabajador','',['label'=>'Nó. trabajador','placeholder'=>'Opcional']) !!}
-                    {!! Field::text('descripcion','',['label'=>'Descripción','placeholder'=>'Ej. Director de Operaciones','required']) !!}
-                    {!! Field::text('nombres','',['label'=>'Nombre(s)','required']) !!}
-                    {!! Field::text('apellidos','',['label'=>'Apellido(s)','required']) !!}
-                    {!! Field::select('genero','',['label'=>'Género','required'],['HOMBRE'=>'HOMBRE','MUJER'=>'MUJER']) !!}
-                    {!! Field::email('email','',['label'=>'E-mail','required']) !!}
-                    {!! Field::text('teléfono','',['label'=>'Teléfono','placeholder'=>'Opcional']) !!}
+                    {!! Field::text('no_trabajador',$modelo->UsuarioDetalle->getNoTrabajador(),['label'=>'Nó. trabajador','placeholder'=>'Opcional']) !!}
+                    {!! Field::text('descripcion',$modelo->getDescripcion(),['label'=>'Descripción','placeholder'=>'Ej. Director de Operaciones','required']) !!}
+                    {!! Field::text('nombres',$modelo->UsuarioDetalle->getNombres(),['label'=>'Nombre(s)','required']) !!}
+                    {!! Field::text('apellidos',$modelo->UsuarioDetalle->getApellidos(),['label'=>'Apellido(s)','required']) !!}
+                    {!! Field::select('genero',$modelo->UsuarioDetalle->getGenero(),['label'=>'Género','required'],['HOMBRE'=>'HOMBRE','MUJER'=>'MUJER']) !!}
+                    {!! Field::email('email',$modelo->UsuarioDetalle->getEmail(),['label'=>'E-mail','required']) !!}
+                    {!! Field::text('teléfono',$modelo->UsuarioDetalle->getTelefono(),['label'=>'Teléfono','placeholder'=>'Opcional']) !!}
                 </div>
                 <!-- END Step 2 -->
             </div>
@@ -56,13 +57,13 @@
                 <div class="row">
                     <div class="col-12">
                         <button type="button" class="btn btn-alt-secondary" data-close="modal"><i class="fa fa-fw fa-times text-danger"></i> Cancelar</button>
-                        <button type="submit" class="btn btn-alt-primary d-none pull-right" data-wizard="finish">
+                        <button type="submit" class="btn btn-alt-primary d-none pull-right" data-wizard="finish2">
                             <i class="fa fa-check mr-5"></i> Finalizar
                         </button>
-                        <button type="button" class="btn btn-alt-secondary pull-right" data-wizard="next">
+                        <button type="button" class="btn btn-alt-secondary pull-right" data-wizard="next2">
                             Siguiente <i class="fa fa-angle-right ml-5"></i>
                         </button>
-                        <button type="button" class="btn btn-alt-secondary disabled pull-right mr-5" data-wizard="prev">
+                        <button type="button" class="btn btn-alt-secondary disabled pull-right mr-5" data-wizard="prev2">
                             <i class="fa fa-angle-left mr-5"></i> Anterior
                         </button>
                     </div>
@@ -82,8 +83,8 @@
 @push('js-custom')
 <script type="text/javascript">
 	'use strict';
-    var formUser = new AppForm;
-	$.extend(formUser, new function(){
+    var formEditUser = new AppForm;
+	$.extend(formEditUser, new function(){
 
 		this.context_ = '#modal-{{ $form_id }}';
 		this.form_    = '#{{ $form_id }}';
@@ -91,11 +92,6 @@
         this.start = function(){
 
             var self = this;
-
-            $.fn.bootstrapWizard.defaults.tabClass         = 'nav nav-tabs';
-            $.fn.bootstrapWizard.defaults.nextSelector     = '[data-wizard="next"]';
-            $.fn.bootstrapWizard.defaults.previousSelector = '[data-wizard="prev"]';
-            $.fn.bootstrapWizard.defaults.finishSelector   = '[data-wizard="finish"]';
 
             // Prevent forms from submitting on enter key press
             self.form.on('keyup keypress', function (e) {
@@ -111,8 +107,11 @@
             var validator = self.form.validate();
 
             // Init classic wizard with validation
-            jQuery('#js-wizard-validation-form').bootstrapWizard({
-                tabClass: '',
+            jQuery('#js-wizard-validation-form-edit').bootstrapWizard({
+                tabClass: 'nav nav-tabs nav-tabs-block nav-fill',
+                nextSelector : '[data-wizard="next2"]',
+                previousSelector : '[data-wizard="prev2"]',
+                finishSelector : '[data-wizard="finish2"]',
                 onTabShow: function(tab, navigation, index) {
                     var percent = ((index + 1) / navigation.find('li').length) * 100;
 
@@ -140,9 +139,8 @@
 	
 		this.rules = function(){
 			return {
-                usuario : { required : true, email : true, maxlength : 255 },
-				password : { required : true, minlength: 6, maxlength : 20 },
-                password_confirmation : { required : true, minlength: 6, maxlength : 20, equalTo : '#password' },
+				password : { minlength: 6, maxlength : 20 },
+                password_confirmation : { minlength: 6, maxlength : 20, equalTo : '#password' },
                 no_trabajador : { maxlength : 10 },
                 descripcion : { required : true, minlength : 3, maxlength : 255 },
                 nombres : { required : true, minlength : 1, maxlength : 255 },
@@ -155,18 +153,11 @@
 
 		this.messages = function(){
 			return {
-				usuario : {
-                    required  : 'Introduzca un nombre usuario',
-                    email     : 'Introduzca un correo electrónico válido',
-                    maxlength : 'Máximo {0} caracteres'
-                },
                 password : {
-                    required  : 'Introduzca una contraseña',
                     minlength : 'Mínimo {0} caracteres',
                     maxlength : 'Máximo {0} caracteres'
                 },
                 password_confirmation : {
-                    required  : 'Confirme la contraseña',
                     minlength : 'Mínimo {0} caracteres',
                     maxlength : 'Máximo {0} caracteres',
                     equalTo   : 'Las contraseñas no coinciden',

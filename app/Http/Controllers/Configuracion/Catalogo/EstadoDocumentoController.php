@@ -11,6 +11,7 @@ use App\DataTables\EstadosDocumentosDataTable;
 
 /* Models */
 use App\Model\Catalogo\MDireccion;
+use App\Model\Catalogo\MDepartamento;
 use App\Model\Catalogo\MEstadoDocumento;
 
 /**
@@ -94,9 +95,18 @@ class EstadoDocumentoController extends BaseController
             $data['id']            = null;
 
             /* Consultar las direcciones asignadas directa o indirectamente al usuario */
-            $direcciones_asignadas = user() -> Direcciones -> pluck('DIRE_DIRECCION') -> toArray();
+            if( !userIsSuperAdmin() )
+            {
+                $direcciones_asignadas   = user() -> Direcciones;
+                $departamentos_asignados = user() -> Departamentos;
+            }
+            else
+            {
+                $direcciones_asignadas   = MDireccion::existenteDisponible() -> get();
+                $departamentos_asignados = MDepartamento::existenteDisponible() -> get();
+            }
 
-            $departamentos_asignados = user() -> Departamentos;
+            $direcciones_asignadas   = $direcciones_asignadas -> pluck('DIRE_DIRECCION') -> toArray();
 
             $data['departamentos'] = [];
 

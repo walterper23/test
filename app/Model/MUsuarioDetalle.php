@@ -11,32 +11,32 @@ class MUsuarioDetalle extends BaseModel
 
     public function getNoTrabajador()
     {
-        return $this -> attributes['USDE_NO_TRABAJADOR'];
+        return $this -> getAttribute('USDE_NO_TRABAJADOR');
     }
 
     public function getNombres()
     {
-        return $this -> attributes['USDE_NOMBRES'];
+        return $this -> getAttribute('USDE_NOMBRES');
     }
     
     public function getApellidos()
     {
-        return $this -> attributes['USDE_APELLIDOS'];
+        return $this -> getAttribute('USDE_APELLIDOS');
     }
 
     public function getGenero()
     {
-        return $this -> attributes['USDE_GENERO'];
+        return $this -> getAttribute('USDE_GENERO');
     }
 
     public function getEmail()
     {
-        return $this -> attributes['USDE_EMAIL'];
+        return $this -> getAttribute('USDE_EMAIL');
     }
 
     public function getTelefono()
     {
-        return $this -> attributes['USDE_TELEFONO'];
+        return $this -> getAttribute('USDE_TELEFONO');
     }
     
     /* Relationships */

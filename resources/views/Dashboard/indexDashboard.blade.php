@@ -16,7 +16,7 @@
                     <button type="button" class="btn-block-option" data-toggle="block-option" data-action="content_toggle"></button>
                 </div>
             </div>
-            <div c style="padding:5px;"lass="block-content notificacion" @if(sizeof($recepcion_local)) data-toggle="slimscroll" data-height="180px" data-rail-visible="true" data-color="#999" data-rail-color="#eee" data-opacity="1" data-always-visible="true" @endif>
+            <div class="block-content notificacion" style="padding:5px;" @if(sizeof($recepcion_local)) data-toggle="slimscroll" data-height="180px" data-rail-visible="true" data-color="#999" data-rail-color="#eee" data-opacity="1" data-always-visible="true" @endif>
                 @foreach( $recepcion_local as $notificacion )
                     @include( $notificacion -> NOTI_URL ? 'Dashboard.notificacion_url' : 'Dashboard.notificacion' )
                 @endforeach

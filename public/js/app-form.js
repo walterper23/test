@@ -153,7 +153,7 @@ var AppForm = function(){
 	};
 
 	this.closeContext = function(){
-		self.context.modal('hide');
+		self.context.modal('hide').data( 'bs.modal', null );
 		return this;
 	};
 }
