@@ -131,12 +131,11 @@
         {{ Form::close() }}
         <div class="block-content block-content-full block-content-sm bg-body-light">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-12 text-right">
                     <button class="btn btn-default" id="btn-cancel"><i class="fa fa-fw fa-times text-danger"></i> Cancelar</button>
-                    <button class="btn btn-primary pull-right" id="btn-ok"><i class="fa fa-fw fa-floppy-o"></i> Guardar cambios</button>
+                    <button class="btn btn-primary" id="btn-ok"><i class="fa fa-fw fa-floppy-o"></i> Guardar cambios</button>
                 </div>
             </div>
-
         </div>
     </div>
 @endsection

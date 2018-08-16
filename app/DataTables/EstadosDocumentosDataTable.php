@@ -8,7 +8,7 @@ class EstadosDocumentosDataTable extends CustomDataTable{
     protected function setSourceData(){
         $this -> sourceData = MEstadoDocumento::with('Direccion','Departamento')
                         -> select('ESDO_ESTADO_DOCUMENTO','ESDO_DIRECCION','ESDO_DEPARTAMENTO','ESDO_NOMBRE','ESDO_CREATED_AT','ESDO_ENABLED')
-                        -> disponible() -> orderBy('ESDO_CREATED_AT','DESC') -> get();
+                        -> existenteDisponible() -> orderBy('ESDO_CREATED_AT','DESC') -> get();
     }
 
     protected function columnsTable(){
@@ -56,11 +56,15 @@ class EstadosDocumentosDataTable extends CustomDataTable{
                 'render' => function($estado){
                     $buttons = sprintf('
                         <button type="button" class="btn btn-sm btn-circle btn-alt-primary" onclick="hEstadoDocumento.view(%d)"><i class="fa fa-eye"></i></button>
-                        <button type="button" class="btn btn-sm btn-circle btn-alt-success" onclick="hEstadoDocumento.edit_(%d)"><i class="fa fa-pencil"></i></button>
-                        <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hEstadoDocumento.delete_(%d)"><i class="fa fa-trash"></i></button>',
-                        $estado -> getKey(), $estado -> getKey(), $estado -> getKey()
+                        <button type="button" class="btn btn-sm btn-circle btn-alt-success" onclick="hEstadoDocumento.edit_(%d)"><i class="fa fa-pencil"></i></button>',
+                        $estado -> getKey(), $estado -> getKey()
                     );
-                    
+
+                    if (config_var('Sistema.Estado.Recepcion.Seguimiento') != $estado -> getKey())
+                    {    
+                        $buttons .= sprintf('<button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hEstadoDocumento.delete_(%d)"><i class="fa fa-trash"></i></button>', $estado -> getKey());
+                    }
+
                     return $buttons;
                 }
             ]

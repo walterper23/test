@@ -30,6 +30,9 @@ class SystemVariableController extends BaseController
      */
 	public function index(){
 
+        $data['url_send_form'] = '';
+        $data['form_id'] = '';
+
 		return view('Configuracion.Sistema.Variables.indexVariables') -> with($data);
 	}
 

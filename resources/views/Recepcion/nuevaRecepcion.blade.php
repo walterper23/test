@@ -41,7 +41,7 @@
                 <div class="block-content block-content-full block-content-sm bg-body-light text-right">
                     <button class="btn btn-default" id="btn-cancel" onclick="hRecepcion.cancelar()"><i class="fa fa-fw fa-times text-danger"></i> Cancelar</button>
                     <!--button class="btn btn-alt-primary" tabindex="-1"><i class="fa fa-save"></i> Guardar captura</button-->
-                    <button class="btn btn-primary" id="btn-ok">Recepcionar <i class="fa fa-fw fa-edit"></i></button>
+                    <button class="btn btn-primary" id="btn-ok"><i class="fa fa-fw fa-edit"></i> Recepcionar</button>
                 </div>
             </div>
             <!-- END Normal Form -->

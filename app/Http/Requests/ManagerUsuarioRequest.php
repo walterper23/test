@@ -34,13 +34,13 @@ class ManagerUsuarioRequest extends FormRequest
                 'min:1,max:255',
             ],
             'password'      => 'required_if:action,1,5|min:6,max:20|confirmed',
-            'no_trabajador' => 'max:10',
+            'notrabajador'  => 'nullable|max:10',
             'descripcion'   => 'required_if:action,1,2|min:3,max:255',
             'nombres'       => 'required_if:action,1,2|min:1,max:255',
             'apellidos'     => 'required_if:action,1,2|min:1,max:255',
             'genero'        => 'required_if:action,1,2|in:HOMBRE,MUJER',
             'email'         => 'required_if:action,1,2|min:5,max:255|email',
-            'telefono'      => 'min:1,max:25',
+            'telefono'      => 'nullable|min:1,max:25',
         ];
     }
 
@@ -56,7 +56,7 @@ class ManagerUsuarioRequest extends FormRequest
             'password.min'            => 'Mínimo :min caracteres',
             'password.max'            => 'Máximo :max caracteres',
             'password.confirmed'      => 'Las contraseñas no coinciden',
-            'no_trabajador.max'       => 'Máximo :max caracteres',
+            'notrabajador.max'        => 'Máximo :max caracteres',
             'descripcion.required_if' => 'Introduzca una descripción',
             'descripcion.min'         => 'Mínimo :min caracteres',
             'descripcion.max'         => 'Máximo :max caracteres',

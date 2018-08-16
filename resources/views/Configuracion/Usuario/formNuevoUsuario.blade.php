@@ -39,13 +39,13 @@
 
                 <!-- Step 2 -->
                 <div class="tab-pane" id="wizard-validation-classic-step2" role="tabpanel">
-                    {!! Field::text('no_trabajador','',['label'=>'Nó. trabajador','placeholder'=>'Opcional']) !!}
-                    {!! Field::text('descripcion','',['label'=>'Descripción','placeholder'=>'Ej. Director de Operaciones','required']) !!}
-                    {!! Field::text('nombres','',['label'=>'Nombre(s)','required']) !!}
-                    {!! Field::text('apellidos','',['label'=>'Apellido(s)','required']) !!}
+                    {!! Field::text('notrabajador','',['label'=>'Nó. trabajador','placeholder'=>'Opcional','maxlength'=>10]) !!}
+                    {!! Field::text('descripcion','',['label'=>'Descripción','placeholder'=>'Ej. Director de Operaciones','required','maxlength'=>255]) !!}
+                    {!! Field::text('nombres','',['label'=>'Nombre(s)','required','maxlength'=>255]) !!}
+                    {!! Field::text('apellidos','',['label'=>'Apellido(s)','required','maxlength'=>255]) !!}
                     {!! Field::select('genero','',['label'=>'Género','required'],['HOMBRE'=>'HOMBRE','MUJER'=>'MUJER']) !!}
-                    {!! Field::email('email','',['label'=>'E-mail','required']) !!}
-                    {!! Field::text('teléfono','',['label'=>'Teléfono','placeholder'=>'Opcional']) !!}
+                    {!! Field::email('email','',['label'=>'E-mail','required','maxlength'=>255]) !!}
+                    {!! Field::text('teléfono','',['label'=>'Teléfono','placeholder'=>'Opcional','maxlength'=>25]) !!}
                 </div>
                 <!-- END Step 2 -->
             </div>
@@ -141,13 +141,13 @@
                 usuario : { required : true, email : true, maxlength : 255 },
 				password : { required : true, minlength: 6, maxlength : 20 },
                 password_confirmation : { required : true, minlength: 6, maxlength : 20, equalTo : '#password' },
-                no_trabajador : { maxlength : 10 },
+                notrabajador : { maxlength : 10 },
                 descripcion : { required : true, minlength : 3, maxlength : 255 },
                 nombres : { required : true, minlength : 1, maxlength : 255 },
                 apellidos : { required : true, minlength : 1, maxlength : 255 },
                 genero : { required : true },
                 email : { required : true, email : true, minlength : 5, maxlength : 255 },
-                telefono : { minlength : 1, maxlength : 25 }
+                telefono : { maxlength : 25 }
 			}
 		}
 
@@ -169,7 +169,7 @@
                     maxlength : 'Máximo {0} caracteres',
                     equalTo   : 'Las contraseñas no coinciden',
                 },
-                no_trabajador : {
+                notrabajador : {
                     maxlength : 'Máximo {0} caracteres'
                 },
                 descripcion : {
@@ -197,7 +197,6 @@
                     maxlength : 'Máximo {0} caracteres'
                 },
                 telefono : {
-                    minlength : 'Mínimo {0} caracteres',
                     maxlength : 'Máximo {0} caracteres'
                 }
 			}
