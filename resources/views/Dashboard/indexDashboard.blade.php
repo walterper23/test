@@ -3,8 +3,8 @@
 @section('title', title('Inicio') )
 
 @section('content')
-<div class="row gutters-tiny">
     <!-- Row #2 -->
+    {{--
     @can('REC.DOCUMENTO.LOCAL')
     <div class="{{ sizeof($recepcion_local) ? 'col-md-4' : 'col-md-3' }} seccion-notificacion">
         <div class="block block-themed">
@@ -26,66 +26,15 @@
     @endcan
 
     @if( user() -> canAtLeast('REC.DOCUMENTO.FORANEO','REC.VER.FORANEO') )
-    <div class="{{ sizeof($recepcion_foranea) ? 'col-md-4' : 'col-md-3' }} seccion-notificacion">
-        <div class="block block-themed">
-            <div class="block-header bg-flat-dark">
-                <h3 class="block-title">
-                    Recepción foránea <small></small>
-                </h3>
-                <div class="block-options">
-                    <button type="button" class="btn-block-option" data-toggle="block-option" data-action="content_toggle"></button>
-                </div>
-            </div>
-            <div class="block-content notificacion" style="padding:5px;" @if(sizeof($recepcion_foranea)) data-toggle="slimscroll" data-height="180px" data-rail-visible="true" data-color="#999" data-rail-color="#eee" data-opacity="1" data-always-visible="true" @endif>
-                @foreach( $recepcion_foranea as $notificacion )
-                    @include( $notificacion -> NOTI_URL ? 'Dashboard.notificacion_url' : 'Dashboard.notificacion' )
-                @endforeach
-            </div>
-        </div>
-    </div>
     @endcan
     
     @can('SEG.PANEL.TRABAJO')
-    <div class="{{ sizeof($panel_trabajo) ? 'col-md-4' : 'col-md-3' }} seccion-notificacion">
-        <div class="block block-themed">
-            <div class="block-header bg-primary">
-                <h3 class="block-title">
-                    Panel de Trabajo <small></small>
-                </h3>
-                <div class="block-options">
-                    <button type="button" class="btn-block-option" data-toggle="block-option" data-action="content_toggle"></button>
-                </div>
-            </div>
-            <div class="block-content notificacion" style="padding:5px;" @if(sizeof($panel_trabajo)) data-toggle="slimscroll" data-height="180px" data-rail-visible="true" data-color="#999" data-rail-color="#eee" data-opacity="1" data-always-visible="true" @endif>
-                @foreach( $panel_trabajo as $notificacion )
-                    @include( $notificacion -> NOTI_URL ? 'Dashboard.notificacion_url' : 'Dashboard.notificacion' )
-                @endforeach
-            </div>
-        </div>
-    </div>
     @endcan
 
     @can('SEG.ADMIN.SEMAFORO')
-    <div class="{{ sizeof($semaforizacion) ? 'col-md-4' : 'col-md-3' }} seccion-notificacion">
-        <div class="block block-themed">
-            <div class="block-header bg-earth">
-                <h3 class="block-title">
-                    Semaforización de documentos <small></small>
-                </h3>
-                <div class="block-options">
-                    <button type="button" class="btn-block-option" data-toggle="block-option" data-action="content_toggle"></button>
-                </div>
-            </div>
-            <div class="block-content notificacion" style="padding:5px;" @if(sizeof($semaforizacion)) data-toggle="slimscroll" data-height="180px" data-rail-visible="true" data-color="#999" data-rail-color="#eee" data-opacity="1" data-always-visible="true" @endif>
-                @foreach( $semaforizacion as $notificacion )
-                    @include( $notificacion -> NOTI_URL ? 'Dashboard.notificacion_url' : 'Dashboard.notificacion' )
-                @endforeach
-            </div>
-        </div>
-    </div>
     @endcan
+    --}}
     <!-- END Row #2 -->
-</div>
 
 <div class="row gutters-tiny justify-content-center">
     @can('REPO.VER.GRA.DIA.SEM')

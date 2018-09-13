@@ -193,21 +193,18 @@ If your sidebar menu includes icons and you would like to hide them, you can add
                     <li>
                         <a href="{{ url('configuracion/sistema/estados-documentos') }}">Estados de documentos</a>
                     </li>
-                    <!--li>
-                        <a href="{{ url('configuracion/sistema/documentos-archivados') }}">Documentos archivados</a>
-                    </li-->
                     <li>
                         <a href="{{ url('configuracion/sistema/variables') }}">Variables</a>
                     </li>
-                    <!--li>
+                    {{--<li>
                         <a href="{{ url('configuracion/sistema/bitacora') }}">Bitácora</a>
-                    </li-->
+                    </li>--}}
                 </ul>
             </li>
             @endcan
         </ul>
     </li>
     @endif
-    <li>
+    {{--<li>
         <a href="{{ url() -> previous() }}"><i class="si si-action-undo"></i>Regresar</a>
-    </li>
+    </li>--}}
