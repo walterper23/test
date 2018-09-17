@@ -119,7 +119,7 @@
                 <!-- END User Info -->
                 
                 <!-- Main Content -->
-                <div class="content">
+                <div class="content p-10">
                     @yield('content')
                 </div>
                 <!-- END Main Content -->
@@ -130,7 +130,7 @@
 
             <!-- Footer -->
             <footer id="page-footer" class="opacity-0" style="opacity: 1;">
-                <div class="content py-20 font-size-xs clearfix">
+                <div class="content p-10 font-size-xs clearfix">
                     <div class="float-left">
                         <span class="font-w600 text-primary">{{ config_var('Sistema.Siglas') }} {{ config_var('Sistema.Version') }}</span> &copy; <span class="js-year-copy">2017</span>
                     </div>
@@ -155,6 +155,7 @@
         {{ Html::script('js/app.js') }}
 
         {{ Html::script('js/plugins/jquery-validation/jquery.validate.min.js') }}
+        {{ Html::script('js/app-notifications.js') }}
         {{ Html::script('js/app-alert.js') }}
 
         @stack('js-script')

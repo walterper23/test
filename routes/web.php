@@ -1,5 +1,10 @@
 <?php
 
+DB::listen(function($query){
+    \Illuminate\Support\Facades\Log::info($query -> sql);
+    \Illuminate\Support\Facades\Log::info($query -> bindings);
+});
+
 Route::middleware('preventBackHistory') -> group(function(){
 
     Route::get('documentacion', 'DocumentacionController@index');

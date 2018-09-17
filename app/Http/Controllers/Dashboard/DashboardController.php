@@ -27,6 +27,7 @@ class DashboardController extends BaseController
         $this -> setLog('DashboardController.log');
     }
 
+
     public function index(Request $request)
     {
         $data_notificaciones['recepcion_local']   = [];

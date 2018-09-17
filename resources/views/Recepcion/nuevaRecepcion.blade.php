@@ -177,7 +177,13 @@
         this.rules = function(){
             return {
                 tipo_documento : { required : true },
-                numero  : { required : true },
+                numero  : {
+                    required : {
+                        depends : function(){
+                            return $('#tipo_documento').val() != 1;
+                        }
+                    }
+                },
                 recepcion : { required : true, date : true },
                 municipio : { required : true },
                 denuncia : {

@@ -41,7 +41,7 @@
                         {{ Form::select('anexo',$anexos,null,['id'=>'anexo','class'=>'form-control js-select2','placeholder'=>'Seleccione una opción']) }}
                         <div class="input-group-prepend">
                             <button type="button" class="btn btn-alt-danger" id="addAnexo">
-                                <i class="fa fa-fw fa-arrow-down"></i>
+                                <i class="fa fa-fw fa-download"></i>
                             </button>
                             @can('SIS.ADMIN.ANEXOS')
                             <button type="button" class="btn btn-alt-primary" tabindex="-1" onclick="hRecepcionForanea.nuevoAnexo('form-anexo','{{ url('configuracion/catalogos/anexos/nuevo') }}')">
@@ -69,7 +69,7 @@
     </div>
 
     <div class="modal fade" id="modal-escaneos" tabindex="-1" role="dialog" aria-labelledby="modal-escaneos" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-slideright" role="document">
+        <div class="modal-dialog modal-dialog-popout" role="document">
             <div class="modal-content">
                 <div class="block block-themed block-transparent mb-0">
                     <div class="block-header bg-pulse">
@@ -121,7 +121,7 @@
     </div>
 
     <div class="modal fade" id="modal-entrega" tabindex="-1" role="dialog" aria-labelledby="modal-entrega" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-slideright" role="document">
+        <div class="modal-dialog modal-dialog-popout" role="document">
             <div class="modal-content">
                 <div class="block block-themed block-transparent mb-0">
                     <div class="block-header bg-success">

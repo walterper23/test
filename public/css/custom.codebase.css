@@ -30,6 +30,14 @@ a {
 	background-color: #4a6a82;
 }
 
+#page-header > .content-header {
+	height: 50px;
+}
+
+#page-container.page-header-fixed #main-container {
+	padding-top: 50px;
+}
+
 .block-header {
 	padding: 8px 10px;
 }
@@ -143,4 +151,9 @@ span.select2-container--default .select2-selection--single {
 
 .list-timeline .list-timeline-time {
 	color: #000;
+}
+
+#list-notifications {
+	overflow-y: auto;
+	max-height: 60vh;
 }
