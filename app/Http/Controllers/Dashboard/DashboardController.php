@@ -12,6 +12,7 @@ use App\Http\Controllers\BaseController;
 use App\Model\MDocumento;
 use App\Model\MDocumentoForaneo;
 use App\Model\MNotificacion;
+use App\Model\MUsuario;
 use App\Model\System\MSystemTipoDocumento;
 
 /**
@@ -30,88 +31,17 @@ class DashboardController extends BaseController
 
     public function index(Request $request)
     {
-        $data_notificaciones['recepcion_local']   = [];
-        $data_notificaciones['recepcion_foranea'] = [];
-        $data_notificaciones['panel_trabajo']     = [];
-        $data_notificaciones['semaforizacion']    = [];
+        $fecha_documentos_recibidos_hoy = Carbon::now() -> format('d \d\e xm \d\e Y');
+        $fecha_documentos_recibidos_hoy = nombreFecha($fecha_documentos_recibidos_hoy);
 
-        $permisos_usuario = user() -> Permisos -> pluck('SYPE_PERMISO') -> toArray();
-
-        $ids_direcciones_usuario = user() -> Direcciones -> pluck('DIRE_DIRECCION') -> toArray();
-        $ids_departamentos_usuario = user() -> Departamentos -> pluck('DEPA_DEPARTAMENTO') -> toArray();
-
-        $sql_notificaciones_recepcion =
-        'SELECT * FROM usuarios
-            JOIN notificaciones ON !JSON_CONTAINS(NOTI_USUARIOS_VISTO, CAST(USUA_USUARIO AS JSON),"$")
-            WHERE NOTI_SYSTEM_TIPO IN (1,2,4)
-            AND NOTI_DELETED = 0
-            AND USUA_DELETED = 0
-            AND USUA_USUARIO = ?
-            AND NOTI_SYSTEM_PERMISO IN (?)
-            ORDER BY NOTI_SYSTEM_TIPO ASC, NOTI_CREATED_AT DESC
-        ';
-
-        $notificaciones_recepcion = DB::select($sql_notificaciones_recepcion,[userKey(),implode(',',$permisos_usuario)]);
-
-        $notificaciones_areas = [];
-        if ( sizeof($ids_direcciones_usuario) > 0 )
-        {
-            $ids_direcciones_usuario = implode(',', $ids_direcciones_usuario);
-            $ids_departamentos_usuario[] = 0;
-            $ids_departamentos_usuario = implode(',', $ids_departamentos_usuario);
-            $sql_notificaciones_areas =
-            'SELECT * FROM usuarios
-                JOIN notificaciones ON !JSON_CONTAINS(NOTI_USUARIOS_VISTO, CAST(USUA_USUARIO AS JSON),"$")
-                JOIN notificaciones_areas ON NOTI_NOTIFICACION = NOAR_NOTIFICACION
-                WHERE NOTI_SYSTEM_TIPO = 3
-                AND NOTI_DELETED = 0
-                AND NOAR_ENABLED = 1
-                AND (NOAR_DIRECCION IN (?) OR NOAR_DEPARTAMENTO IN (?) )
-                AND USUA_DELETED = 0
-                AND USUA_USUARIO = ?
-                ORDER BY NOTI_SYSTEM_TIPO ASC, NOTI_CREATED_AT DESC
-                    ';
-
-            $notificaciones_areas = DB::select($sql_notificaciones_areas,[$ids_direcciones_usuario, $ids_departamentos_usuario,userKey()]);
-        }
-
-        $grupos_notificaciones_recepcion = [];
-        foreach ($notificaciones_recepcion as $notificacion) {
-            $grupos_notificaciones_recepcion[ $notificacion -> NOTI_SYSTEM_TIPO ][] = $notificacion;
-        }
-
-        $grupos_notificaciones_areas = [];
-        foreach ($notificaciones_areas as $notificacion) {
-            $grupos_notificaciones_areas[ $notificacion -> NOTI_SYSTEM_TIPO ][] = $notificacion;
-        }
-
-        if( array_key_exists(1, $grupos_notificaciones_recepcion) )
-        {
-            $data_notificaciones['recepcion_local'] = $grupos_notificaciones_recepcion[1];
-        }
-
-        if( array_key_exists(2, $grupos_notificaciones_recepcion) )
-        {
-            $data_notificaciones['recepcion_foranea'] = $grupos_notificaciones_recepcion[2];
-        }
-
-        if( array_key_exists(3, $grupos_notificaciones_areas) )
-        {
-            $data_notificaciones['panel_trabajo'] = $grupos_notificaciones_areas[3];
-        }
-
-        if( array_key_exists(4, $grupos_notificaciones_recepcion) )
-        {
-            $data_notificaciones['semaforizacion'] = $grupos_notificaciones_recepcion[4];
-        }
-
-        $fecha_documentos_recibidos_hoy = Carbon::now() -> format('Y-m-d');
+        $mes_actual = nombreFecha( Carbon::now() -> format('xm') );
 
         $inicio_semana           = Carbon::now() -> startOfWeek();
         $fin_semana              = Carbon::now() -> endOfWeek();
-        $fecha_documentos_semana = sprintf('Lun %s - Dom %s', $inicio_semana -> format('d'), $fin_semana -> format('d') );
+        $fecha_documentos_semana = sprintf('Lunes %s a Domingo %s', $inicio_semana -> format('d'), $fin_semana -> format('d \d\e xm') );
+        $fecha_documentos_semana = nombreFecha($fecha_documentos_semana);
 
-        return view('Dashboard.indexDashboard', compact('fecha_documentos_recibidos_hoy','fecha_documentos_semana')) -> with($data_notificaciones);
+        return view('Dashboard.indexDashboard', compact('fecha_documentos_recibidos_hoy','fecha_documentos_semana','mes_actual'));
     }
 
 
@@ -121,8 +51,8 @@ class DashboardController extends BaseController
             case 'reporte-documentos' :
                 $response = $this -> reporteDocumentos( $request );
                 break;
-            case 'eliminar-notificacion' : 
-                $response = $this -> eliminarNotificacion( $request );
+            case 'get-notificaciones' : 
+                $response = $this -> getNotificaciones( $request );
                 break;
             default:
                 abort(404);
@@ -136,7 +66,7 @@ class DashboardController extends BaseController
     {
         $anio_actual = Carbon::now() -> year;
 
-        // Buscar todos los documentos existentes. No elimininados
+        // Buscar todos los documentos existentes. No eliminados
         $documentos_locales = MDocumento::
                      leftJoin('system_tipos_documentos','SYTD_TIPO_DOCUMENTO','=','DOCU_SYSTEM_TIPO_DOCTO')
                     //-> leftJoin('system_estados_documentos','SYED_ESTADO_DOCUMENTO','=','DOCU_SYSTEM_ESTADO_DOCTO')
@@ -323,6 +253,105 @@ class DashboardController extends BaseController
         $data = array_values($data);
 
         return $data;
+    }
+
+    public function getNotificaciones( $request )
+    {
+        $permisos_usuario = user() -> Permisos -> pluck('SYPE_PERMISO') -> toArray();
+
+        $notificaciones_recepcion = MUsuario::select('NOTI_NOTIFICACION','NOTI_SYSTEM_TIPO','NOTI_COLOR','NOTI_CREATED_AT','NOTI_CONTENIDO','NOTI_URL')
+        ->join('notificaciones',function($query){
+            $query->whereRaw('!JSON_CONTAINS(NOTI_USUARIOS_VISTO, CAST(USUA_USUARIO AS JSON),"$")');
+        })
+        ->whereIn('NOTI_SYSTEM_TIPO',[1,2,4])
+        ->where('NOTI_DELETED',0)
+        ->where('USUA_DELETED',0)
+        ->where('USUA_USUARIO',userKey())
+        ->whereIn('NOTI_SYSTEM_PERMISO', $permisos_usuario)
+        ->orderBy('NOTI_SYSTEM_TIPO','ASC')
+        // ->orderBy('NOTI_CREATED_AT','DESC')
+        ->get();
+
+        foreach ($notificaciones_recepcion as $notificacion) {
+            $data_notificaciones[ $notificacion -> NOTI_SYSTEM_TIPO ][] = $notificacion; // NOTI_SYSTEM_TIPO => 1,2,4
+        }
+
+        /*****************************************************************/
+        $ids_direcciones_usuario = user() -> Direcciones -> pluck('DIRE_DIRECCION') -> toArray();
+        
+        $notificaciones_areas = [];
+        if ( sizeof($ids_direcciones_usuario) > 0 )
+        {
+            $ids_departamentos_usuario = user() -> Departamentos -> pluck('DEPA_DEPARTAMENTO') -> toArray();
+
+            $notificaciones_areas = MUsuario::select('NOTI_NOTIFICACION','NOTI_SYSTEM_TIPO','NOTI_COLOR','NOTI_CREATED_AT','NOTI_CONTENIDO','NOTI_URL')
+            ->join('notificaciones',function($query){
+                $query->whereRaw('!JSON_CONTAINS(NOTI_USUARIOS_VISTO, CAST(USUA_USUARIO AS JSON),"$")');
+            })
+            ->join('notificaciones_areas','NOTI_NOTIFICACION','=','NOAR_NOTIFICACION')
+            ->where('NOTI_SYSTEM_TIPO',3)
+            ->where('NOTI_DELETED',0)
+            ->where('NOAR_ENABLED',1)
+            ->where('USUA_DELETED',0)
+            ->where('USUA_USUARIO',userKey())
+            ->where(function($query) use($ids_direcciones_usuario,$ids_departamentos_usuario){
+                $query->whereIn('NOAR_DIRECCION',$ids_direcciones_usuario);
+                $query->orWhereIn('NOAR_DEPARTAMENTO',$ids_departamentos_usuario);
+            })
+            ->orderBy('NOTI_SYSTEM_TIPO','ASC')
+            // ->orderBy('NOTI_CREATED_AT','DESC')
+            ->get();
+        }
+
+        foreach ($notificaciones_areas as $notificacion) {
+            $data_notificaciones[ $notificacion -> NOTI_SYSTEM_TIPO ][] = $notificacion; // NOTI_SYSTEM_TIPO => 3
+        }
+        /******************************************************************/
+
+        
+        // A continuación, mezclaremos las notificaciones
+        $data_notificaciones_mixed = [];
+        // dd('<pre>',$data_notificaciones);
+        foreach ($data_notificaciones as $tipo_notificacion => $notificaciones) {
+
+            foreach ($notificaciones as $notificacion) {
+                $nueva_notificacion = [
+                    'id'        => $notificacion -> NOTI_NOTIFICACION,
+                    'tipo'      => $tipo_notificacion,
+                    'fecha'     => $notificacion -> NOTI_CREATED_AT,
+                    'url'       => $notificacion -> NOTI_URL ? url($notificacion -> NOTI_URL) : '#',
+                    'contenido' => $notificacion -> NOTI_CONTENIDO,
+                ];
+                
+                switch ($tipo_notificacion) {
+                    case 1: // Recepción local
+                        $badge = '<span class="badge badge-%s" title="Recepción local">RL</span>';
+                        break;
+                    case 2: // Recepción foránea
+                        $badge = '<span class="badge badge-%s" title="Recepción foránea">RF</span>';
+                        break;
+                    case 3: // Panel de trabajo
+                        $badge = '<span class="badge badge-%s" title="Panel de trabajo">PT</span>';
+                        break;
+                    case 4: // Semaforización
+                        $badge = '<span class="badge badge-%s" title="Semaforización">SF</span>';
+                        break;
+                }
+
+                $nueva_notificacion['badge'] = sprintf($badge,$notificacion -> NOTI_COLOR);
+
+                $data_notificaciones_mixed[ $notificacion -> NOTI_NOTIFICACION ] = $nueva_notificacion;
+            }
+            
+        }
+
+
+        // Ordenamos de notificación reciente a notificación antigua
+        arsort($data_notificaciones_mixed);
+
+        $data_notificaciones_mixed = array_values($data_notificaciones_mixed);
+
+        return response() -> json($data_notificaciones_mixed);
     }
 
     public function eliminarNotificacion( $request )

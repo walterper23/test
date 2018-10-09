@@ -42,12 +42,7 @@
         <!-- Bars Chart -->
         <div class="block">
             <div class="block-header block-header-default">
-                <h3 class="block-title">Documentos recibidos hoy <b>[ {{ $fecha_documentos_recibidos_hoy }} ]</b></h3>
-                <div class="block-options">
-                    <button type="button" class="btn-block-option" data-toggle="block-option" data-action="state_toggle" data-action-mode="demo">
-                        <i class="si si-refresh"></i>
-                    </button>
-                </div>
+                <h3 class="block-title">Documentos recibidos hoy, {{ $fecha_documentos_recibidos_hoy }}</h3>
             </div>
             <div class="block-content block-content-full text-center">
                 <!-- Bars Chart Container -->
@@ -63,12 +58,7 @@
         <!-- Bars Chart -->
         <div class="block">
             <div class="block-header block-header-default">
-                <h3 class="block-title">Documentos recibidos en la semana <b>[ {{ $fecha_documentos_semana }} ]</b></h3>
-                <div class="block-options">
-                    <button type="button" class="btn-block-option" data-toggle="block-option" data-action="state_toggle" data-action-mode="demo">
-                        <i class="si si-refresh"></i>
-                    </button>
-                </div>
+                <h3 class="block-title">Documentos recibidos en la semana, {{ $fecha_documentos_semana }}</h3>
             </div>
             <div class="block-content block-content-full text-center">
                 <!-- Bars Chart Container -->
@@ -84,12 +74,7 @@
         <!-- Pie Chart -->
         <div class="block">
             <div class="block-header block-header-default">
-                <h3 class="block-title">Total documentos mes actual</h3>
-                <div class="block-options">
-                    <button type="button" class="btn-block-option" data-toggle="block-option" data-action="state_toggle" data-action-mode="demo">
-                        <i class="si si-refresh"></i>
-                    </button>
-                </div>
+                <h3 class="block-title">Total documentos del mes de {{ $mes_actual . date(' Y') }}</h3>
             </div>
             <div class="block-content block-content-full text-center">
                 <!-- Pie Chart Container -->
@@ -106,11 +91,6 @@
         <div class="block">
             <div class="block-header block-header-default">
                 <h3 class="block-title">Total documentos {{ date('Y') }}</h3>
-                <div class="block-options">
-                    <button type="button" class="btn-block-option" data-toggle="block-option" data-action="state_toggle" data-action-mode="demo">
-                        <i class="si si-refresh"></i>
-                    </button>
-                </div>
             </div>
             <div class="block-content block-content-full text-center">
                 <!-- Pie Chart Container -->
@@ -127,43 +107,4 @@
 {{ Html::script('js/plugins/chartjs/Chart.bundle.min.js') }}
 {{ Html::script('js/pages/be_comp_charts_dashboard.js') }}
 {{ Html::script('js/helpers/dashboard.helper.js') }}
-@endpush
-
-@push('js-custom')
-<script>
-    var areas_notificaciones = $('div.notificacion');
-    var notificaciones = $('button.cerrar-notificacion');
-
-    notificaciones.on('click', function(e){
-
-        e.preventDefault();
-
-        var el = $(this);
-
-        App.ajaxRequest({
-            url  : '{{ url('manager') }}',
-            data : { action : 'eliminar-notificacion', id : el.data('notificacion') },
-            success : function( result ){
-                // location.reload();
-            },
-            complete : function(){
-                setTimeout(consultarNotificaciones,150);
-            }
-        });
-
-    })
-
-    setTimeout(consultarNotificaciones,150);
-    // consultarNotificaciones();
-
-    function consultarNotificaciones(){
-        areas_notificaciones.each(function(index,element){
-            if (! $(element).html().trim().length )
-            {
-                $(element).html('<p class="text-center text-muted font-size-xs mb-10">- No hay notificaciones -</p>');
-                $(element).css('height','').parent().css('height','').closest('.seccion-notificacion').removeClass('col-md-4').addClass('col-md-3');
-            }
-        });
-    }
-</script>
 @endpush

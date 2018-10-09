@@ -69,3 +69,31 @@ if (! function_exists('userIsSuperAdmin'))
         return user() -> isSuperAdmin();
     }
 }
+
+if (! function_exists('nombreFecha'))
+{
+    // Helper para obtener el nombre del mes
+    function nombreFecha(String $fecha)
+    {
+        $meses = [
+            'x01' => 'Enero',
+            'x02' => 'Febrero',
+            'x03' => 'Marzo',
+            'x04' => 'Abril',
+            'x05' => 'Mayo',
+            'x06' => 'Junio',
+            'x07' => 'Julio',
+            'x08' => 'Agosto',
+            'x09' => 'Septiembre',
+            'x10' => 'Octubre',
+            'x11' => 'Noviembre',
+            'x12' => 'Diciembre',
+        ];
+
+        foreach ($meses as $key => $value) {
+            $fecha = str_replace($key, $value, $fecha);
+        }
+
+        return $fecha;
+    }
+}

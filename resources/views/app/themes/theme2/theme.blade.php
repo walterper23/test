@@ -151,6 +151,8 @@
         {{ Html::script('js/core/jquery-scrollLock.min.js') }}
         {{ Html::script('js/core/jquery.appear.min.js') }}
         {{ Html::script('js/core/js.cookie.min.js') }}
+        {{ Html::script('js/plugins/vue/vue.js') }}
+        {{ Html::script('js/plugins/vue/axios.min.js') }}
         {{ Html::script('js/codebase.js') }}
         {{ Html::script('js/app.js') }}
 

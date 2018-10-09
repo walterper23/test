@@ -17,6 +17,8 @@ class MUsuario extends Authenticatable
     protected $prefix       = 'USUA';
     public    $timestamps   = false;
 
+    protected $hidden = ['USUA_PASSWORD'];
+
     protected static function boot()
     {
         parent::boot();

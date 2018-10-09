@@ -1,13 +1,16 @@
 <?php
 
-DB::listen(function($query){
-    \Illuminate\Support\Facades\Log::info($query -> sql);
-    \Illuminate\Support\Facades\Log::info($query -> bindings);
-});
+if( config('app.debug') ){
+    DB::listen(function($query){
+        \Illuminate\Support\Facades\Log::info($query -> sql);
+        \Illuminate\Support\Facades\Log::info($query -> bindings);
+        \Illuminate\Support\Facades\Log::info('');
+    });
+}
 
 Route::middleware('preventBackHistory') -> group(function(){
 
-    Route::get('documentacion', 'DocumentacionController@index');
+    // Route::get('documentacion', 'DocumentacionController@index');
 
     Route::get('login',  'Auth\LoginController@showLoginForm') -> name('login');
     Route::post('login', 'Auth\LoginController@login');
