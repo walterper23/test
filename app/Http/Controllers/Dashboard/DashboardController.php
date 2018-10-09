@@ -257,6 +257,9 @@ class DashboardController extends BaseController
 
     public function getNotificaciones( $request )
     {
+
+        $data_notificaciones = [];
+
         $permisos_usuario = user() -> Permisos -> pluck('SYPE_PERMISO') -> toArray();
 
         $notificaciones_recepcion = MUsuario::select('NOTI_NOTIFICACION','NOTI_SYSTEM_TIPO','NOTI_COLOR','NOTI_CREATED_AT','NOTI_CONTENIDO','NOTI_URL')
