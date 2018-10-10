@@ -76,7 +76,18 @@
     @if (request() -> session() -> has('urlAcuseAutomatico'))
     <script type="text/javascript">
         setTimeout(function(){
-            window.open('{{ request() -> session() -> get('urlAcuseAutomatico') }}', '_blank');
+            var newWin = window.open('{{ request() -> session() -> get('urlAcuseAutomatico') }}', '_blank');
+
+            if(!newWin || newWin.closed || typeof newWin.closed=='undefined') 
+            { 
+                AppAlert.notify({
+                    type : 'danger',
+                    icon : 'fa fa-warning',
+                    title : '<b>Ventana emergente bloqueda</b>',
+                    message : '<br>Su navegador tiene bloqueado las ventanas emergentes.<br>Verifique la parte superior para desbloquear',
+                    timer : 0
+                });
+            }
         },1000);
     </script>
     @endif

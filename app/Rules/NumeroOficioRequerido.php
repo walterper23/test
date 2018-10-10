@@ -28,20 +28,22 @@ class NumeroOficioRequerido implements Rule
     {
         $action         = request('action');
         $tipo_documento = request('tipo_documento');
+        $numero         = request('numero');
         
-        if (! (in_array($action, [1,2]) && $tipo_documento == 1) )
+        // Si la acción es Nueva o Editar y el tipo de documento es Denuncia
+        if ( in_array($action, [1,2]) && $tipo_documento != 1 && strlen(trim($numero)) == 0 )
         {
             $this->message = 'Introduzca el número del documento';
             return false;
         }
 
-        if ( strlen($tipo_documento) == 0 )
+        if ( strlen($numero) == 0 )
         {
             $this->message = 'Mínimo 1 caracter';
             return false;
         }
 
-        if ( strlen($tipo_documento) > 255 )
+        if ( strlen($numero) > 255 )
         {
             $this->message = 'Máximo 255 caracteres';
             return false;

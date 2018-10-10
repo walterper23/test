@@ -133,7 +133,7 @@ App.loadScript('/js/plugins/sweetalert2/sweetalert2.min.js', function(){
                     spacing : 10,
                     z_index : 1033,
                     delay   : 60000,
-                    timer   : 30000,
+                    timer   : 1000,
                     onClose : function(){ }
 
                 }
@@ -149,6 +149,7 @@ App.loadScript('/js/plugins/sweetalert2/sweetalert2.min.js', function(){
                         element       : options.element,
                         type          : options.type,
                         allow_dismiss : options.dismiss,
+                        timer         : options.timer,
                         placement : {
                             from  : options.from,
                             align : options.align

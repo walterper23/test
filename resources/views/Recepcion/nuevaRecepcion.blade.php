@@ -150,6 +150,9 @@
                             contentType : false,
                             success : function(result){
                                 resolve(result)
+                            },
+                            error : function(result){
+                                resolve(result)
                             }
                         });
 

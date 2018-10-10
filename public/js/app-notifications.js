@@ -4,11 +4,18 @@ var AppNotificacion = new Vue({
     el : '#header-notifications',
     data : {
         notificaciones : [],
+        document_title : document.title,
+        icon_bell : '',
     },
     mounted : function(){
-        $('#icon-bell-notification').addClass('d-none');
-
+        this.icon_bell = $('#icon-bell-notification').addClass('d-none');
+        
         this._getNotificaciones();
+    },
+    watch : {
+        notificaciones : function(new_value, old_value){
+            this._setNumberIcon( new_value.length );
+        }
     },
     methods : {
         _getNotificaciones : function(){
@@ -21,21 +28,29 @@ var AppNotificacion = new Vue({
         },
         _drawNotificaciones : function( notificaciones ){
             this.notificaciones = notificaciones;
-            this._setNumberIcon( notificaciones.length );
         },
         _setNumberIcon : function( number ){
+            this.icon_bell.text(number);
+
             if( number > 0 ){
-
-                $('#icon-bell-notification').text(number).removeClass('d-none');
-
-                this._setTitlePage( number );    
+                this.icon_bell.removeClass('d-none');
+            }else{
+                this.icon_bell.addClass('d-none');
             }
+
+            this._setTitlePage( number );    
         },
         _setTitlePage : function( number ){
             if ( number > 0 ){
-                var title = '(' + number + ') ' + document.title;
-                document.title = title;
+                document.title = '(' + number + ') ' + this.document_title;
+            }else{
+                document.title = this.document_title;
             }
+        },
+        _eliminarNotificacion : function( notificacion ){
+            this.notificaciones = this.notificaciones.filter( item => {
+                return item != notificacion;
+            });
         }
         
     }

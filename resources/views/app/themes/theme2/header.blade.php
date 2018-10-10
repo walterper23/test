@@ -35,10 +35,20 @@
             <div class="dropdown-menu dropdown-menu-right min-width-300 pr-5 pl-5" aria-labelledby="page-header-notifications">
                 <h5 class="h6 text-center mb-5 pb-5 border-b text-uppercase">Notificaciones</h5>
                 <ul id="list-notifications" class="list-unstyled my-5">
-                    <li v-for="notificacion in notificaciones">
-                        <div class="text-body-color-dark media mb-15" >
-                            <div class="ml-5 mr-15" v-html="notificacion.badge">
-                                @{{ notificacion.badge }}
+                    <li v-if="!notificaciones.length">
+                        <div class="text-body-color-dark media mb-0" >
+                            <div class="media-body pr-10">
+                                <div class="text-muted font-size-sm text-center">
+                                    - No hay notificaciones -
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li v-else v-for="notificacion in notificaciones">
+                        <div class="text-body-color-dark media mb-10" >
+                            <div class="ml-5 mr-5 text-center">
+                                <span v-html="notificacion.badge">@{{ notificacion.badge }}</span>
+                                <br><a href="javascript:void(0)" @click.prevent="_eliminarNotificacion(notificacion)" title="Eliminar notificación"><i class="fa fa-times text-danger"></i></a>
                             </div>
                             <div class="media-body pr-10">
                                 <p class="mb-0" v-html="notificacion.contenido">@{{ notificacion.contenido }}</p>
@@ -55,9 +65,8 @@
 
         <!-- User Dropdown -->
         <div class="btn-group" role="group">
-            <button type="button" class="btn btn-rounded btn-dual-primary" id="page-header-user-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                {{ user() -> getDescripcion() }}<i class="fa fa-angle-down ml-5"></i>
-            </button>
+            <button type="button" class="btn btn-rounded btn-dual-primary d-none d-md-inline" id="page-header-user-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ user() -> getDescripcion() }}<i class="fa fa-angle-down ml-5"></i> </button>
+            <button type="button" class="btn btn-rounded btn-dual-primary d-xs-inline d-sm-inline d-md-none" id="page-header-user-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-user"></i><i class="fa fa-angle-down ml-5"></i></button>
             <div class="dropdown-menu dropdown-menu-right min-width-150" aria-labelledby="page-header-user-dropdown">
                 <a class="dropdown-item" href="{{ url('usuario/perfil') }}">
                     <i class="si si-user mr-5"></i> Perfil
