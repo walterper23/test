@@ -54,6 +54,9 @@ class DashboardController extends BaseController
             case 'get-notificaciones' : 
                 $response = $this -> getNotificaciones( $request );
                 break;
+            case 'eliminar-notificacion' : 
+                $response = $this -> eliminarNotificacion( $request );
+                break;
             default:
                 abort(404);
                 break;

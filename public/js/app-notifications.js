@@ -48,10 +48,19 @@ var AppNotificacion = new Vue({
             }
         },
         _eliminarNotificacion : function( notificacion ){
-            this.notificaciones = this.notificaciones.filter( item => {
-                return item != notificacion;
+            axios.post('manager',{
+                action : 'eliminar-notificacion',
+                id : notificacion.id
+            }).then( response => {
+                this.notificaciones = this.notificaciones.filter( item => {
+                    return item != notificacion;
+                });
+            }).catch( error => {
+                AppAlert.notify({
+                    type : 'danger',
+                    message : error.data.message
+                });
             });
         }
-        
     }
 });
