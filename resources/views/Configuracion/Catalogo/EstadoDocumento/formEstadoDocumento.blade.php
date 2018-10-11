@@ -8,8 +8,8 @@
     {!! Form::hidden('id',$id) !!}
     {!! Field::select('direccion',(optional($modelo) -> ESDO_DIRECCION),['label'=>'Dirección','required'],$direcciones) !!}
     <div class="form-group row">
-        <label class="col-sm-3 col-form-label" for="departamento" required>Departamento</label>
-        <div class="col-sm-9">
+        <label class="col-md-3 col-form-label" for="departamento" required>Departamento</label>
+        <div class="col-md-9">
         	<select name="departamento" id="departamento" class="form-control">
 				@if(sizeof($direcciones) > 0)
 					<option value="">Seleccione una opción</option>

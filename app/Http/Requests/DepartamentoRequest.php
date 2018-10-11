@@ -35,7 +35,7 @@ class DepartamentoRequest extends FormRequest
         return [
             'action.required'       => 'Petición no especificada',
             'action.in'             => 'Petición no válida',
-            'id.required_if'        => 'Especifique el identificador',
+            'id.required_if'        => 'Especifique el identificador del recurso',
             'nombre.required_if'    => 'Introduzca un nombre',
             'nombre.min'            => 'Mínimo :min caracter',
             'nombre.max'            => 'Máximo :max caracteres',

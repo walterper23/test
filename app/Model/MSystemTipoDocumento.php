@@ -13,6 +13,7 @@ class MSystemTipoDocumento extends BaseModel
     protected $primaryKey  = 'SYTD_TIPO_DOCUMENTO';
     protected $prefix      = 'SYTD';
 
+    /* Methods */
     public function getNombre()
     {
     	return $this -> getAttribute('SYTD_NOMBRE');
@@ -26,6 +27,19 @@ class MSystemTipoDocumento extends BaseModel
     public function getRibbonColor()
     {
         return $this -> getAttribute('SYTD_RIBBON_COLOR');
+    }
+
+    public static function getListaRibbonColor()
+    {
+        return [
+            'primary'   => 'Azul',
+            'info'      => 'Azul celeste',
+            'success'   => 'Verde',
+            'danger'    => 'Rojo',
+            'warning'   => 'Amarillo',
+            'secondary' => 'Gris',
+            'dark'      => 'Negro',
+        ];
     }
 
 

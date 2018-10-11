@@ -70,13 +70,17 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-6 col-sm-8">
                                     {{ Form::open(['method'=>'GET']) }}
                                         {{ Form::hidden('view',request() -> get('view','all')) }}
-                                        <div class="input-group">
-                                            <input type="search" class="form-control" id="search" name="search" placeholder="Nó. documento, Tipo documento, Nó. expediente, Asunto..." value="{{ request() -> get('search') }}" {{ $field_search }}>
-                                            <div class="input-group-append">
-                                                <button type="submit" class="btn btn-secondary" {{ $field_search }}><i class="fa fa-search"></i></button>
+                                        <div class="form-group row">
+                                            <div class="col-md-12">
+                                                <div class="input-group">
+                                                    <input type="search" class="form-control" id="search" name="search" placeholder="Tipo documento, Nó. documento, Nó. expediente, Asunto..." value="{{ request() -> get('search') }}" {{ $field_search }}>
+                                                    <div class="input-group-append">
+                                                        <button type="submit" class="btn btn-secondary" {{ $field_search }}><i class="fa fa-search"></i> Buscar</button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     {{ Form::close() }}

@@ -48,6 +48,7 @@ class ManagerUsuarioRequest extends FormRequest
         return [
             'action.required'         => 'Petición no especificada',
             'action.in'               => 'Petición no válida',
+            'id.required_if'          => 'Especifique el identificador del recurso',
             'usuario.unique'          => 'Ya existe el usuario <b>:input</b>',
             'usuario.required_if'     => 'Introduzca el nombre de usuario',
             'usuario.min'             => 'Mínimo :min caracter',

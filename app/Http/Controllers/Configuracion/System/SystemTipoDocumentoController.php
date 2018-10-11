@@ -27,7 +27,7 @@ class SystemTipoDocumentoController extends BaseController
     public function __construct()
     {
         parent::__construct();
-        $this -> setLog('SystemTipoDocumentoController.log');
+        $this->setLog('SystemTipoDocumentoController.log');
     }
 
     /**
@@ -36,10 +36,10 @@ class SystemTipoDocumentoController extends BaseController
     public function index(SystemTiposDocumentosDataTable $dataTables)
     {
         $data['table']    = $dataTables;
-        $data['form_id']  = $this -> form_id;
+        $data['form_id']  = $this->form_id;
         $data['form_url'] = url('configuracion/sistema/tipos-documentos/nuevo');
 
-        return view('Configuracion.Sistema.TipoDocumento.indexTipoDocumento') -> with($data);
+        return view('Configuracion.Sistema.TipoDocumento.indexTipoDocumento')->with($data);
     }
 
     /**
@@ -47,21 +47,21 @@ class SystemTipoDocumentoController extends BaseController
      */
     public function manager(SystemTipoDocumentoRequest $request)
     {
-        switch ($request -> action) {
+        switch ($request->action) {
             case 1: // Nuevo
-                $response = $this -> nuevoTipoDocumento( $request );
+                $response = $this->nuevoTipoDocumento( $request );
                 break;
             case 2: // Editar
-                $response = $this -> editarTipoDocumento( $request );
+                $response = $this->editarTipoDocumento( $request );
                 break;
             case 3: // Visualizar tipo de documento
-                $response = $this -> verTipoDocumento( $request );
+                $response = $this->verTipoDocumento( $request );
                 break;
             case 4: // Activar / Desactivar
-                $response = $this -> activarTipoDocumento( $request );
+                $response = $this->activarTipoDocumento( $request );
                 break;
             case 5: // Eliminar tipo de documento
-                $response = $this -> eliminarTipoDocumento( $request );
+                $response = $this->eliminarTipoDocumento( $request );
                 break;
             default:
                 return response()->json(['message'=>'Petición no válida'],404);
@@ -86,13 +86,14 @@ class SystemTipoDocumentoController extends BaseController
     {
         try {
             $data['title']         = 'Nuevo tipo de documento';
-            $data['form_id']       = $this -> form_id;
+            $data['form_id']       = $this->form_id;
             $data['url_send_form'] = url('configuracion/sistema/tipos-documentos/manager');
             $data['action']        = 1;
             $data['model']         = null;
+            $data['colores']       = MSystemTipoDocumento::getListaRibbonColor();
             $data['id']            = null;
 
-            return view('Configuracion.Sistema.TipoDocumento.formTipoDocumento') -> with($data);
+            return view('Configuracion.Sistema.TipoDocumento.formTipoDocumento')->with($data);
         } catch(Exception $error) {
 
         }
@@ -105,14 +106,14 @@ class SystemTipoDocumentoController extends BaseController
     {
         try {
             $tipoDocumento = new MSystemTipoDocumento;
-            $tipoDocumento -> SYTD_NOMBRE          = $request -> nombre;
-            $tipoDocumento -> SYTD_ETIQUETA_NUMERO = 'Nó. Oficio';
-            $tipoDocumento -> SYTD_RIBBON_COLOR    = 'default';
-            $tipoDocumento -> save();
+            $tipoDocumento->SYTD_NOMBRE          = $request->nombre;
+            $tipoDocumento->SYTD_ETIQUETA_NUMERO = $request->etiqueta;
+            $tipoDocumento->SYTD_RIBBON_COLOR    = $request->color;
+            $tipoDocumento->save();
 
             // Crear la notificación para usuarios del sistema
             $data = [
-                'contenido'  => sprintf('Nuevo tipo de documento #%s <b>%s</b> creado ', $tipoDocumento -> getCodigo(), $tipoDocumento -> getNombre()),
+                'contenido'  => sprintf('Nuevo tipo de documento #%s <b>%s</b> creado ', $tipoDocumento->getCodigo(), $tipoDocumento->getNombre()),
             ];
             
             NotificacionController::nuevaNotificacion('REC.LOC.NUE.TIP.DOC',$data);
@@ -121,8 +122,8 @@ class SystemTipoDocumentoController extends BaseController
             // Lista de tablas que se van a recargar automáticamente
             $tables = 'dataTableBuilder';
 
-            $message = sprintf('<i class="fa fa-fw fa-files-o"></i> Tipo de documento <b>%s</b> creado',$tipoDocumento -> getCodigo());
-            return $this -> responseSuccessJSON($message,$tables);
+            $message = sprintf('<i class="fa fa-fw fa-files-o"></i> Tipo de documento <b>%s</b> creado',$tipoDocumento->getCodigo());
+            return $this->responseSuccessJSON($message,$tables);
 
         } catch(Exception $error) {
             return response()->json(['status'=>false,'message'=>'Ocurrió un error al crear el tipo de documento. Error ' . $error->getMessage() ]); 
@@ -136,13 +137,14 @@ class SystemTipoDocumentoController extends BaseController
     {
         try {
             $data['title']         = 'Editar tipo de documento';
-            $data['form_id']       = $this -> form_id;
+            $data['form_id']       = $this->form_id;
             $data['url_send_form'] = url('configuracion/sistema/tipos-documentos/manager');
             $data['action']        = 2;
-            $data['model']         = MSystemTipoDocumento::findOrFail( $request -> id );
-            $data['id']            = $request -> id;
+            $data['model']         = MSystemTipoDocumento::findOrFail( $request->id );
+            $data['colores']       = MSystemTipoDocumento::getListaRibbonColor();
+            $data['id']            = $request->id;
 
-            return view('Configuracion.Sistema.TipoDocumento.formTipoDocumento') -> with($data);
+            return view('Configuracion.Sistema.TipoDocumento.formTipoDocumento')->with($data);
         } catch(Exception $error) {
 
         }
@@ -154,16 +156,18 @@ class SystemTipoDocumentoController extends BaseController
     public function editarTipoDocumento( $request )
     {
         try {
-            $tipoDocumento = MSystemTipoDocumento::findOrFail( $request -> id );
-            $tipoDocumento -> SYTD_NOMBRE = $request -> nombre;
-            $tipoDocumento -> save();
+            $tipoDocumento = MSystemTipoDocumento::findOrFail( $request->id );
+            $tipoDocumento->SYTD_NOMBRE          = $request->nombre;
+            $tipoDocumento->SYTD_ETIQUETA_NUMERO = $request->etiqueta;
+            $tipoDocumento->SYTD_RIBBON_COLOR    = $request->color;
+            $tipoDocumento->save();
 
             // Lista de tablas que se van a recargar automáticamente
             $tables = 'dataTableBuilder';
 
-            $message = sprintf('<i class="fa fa-fw fa-files-o"></i> Tipo de documento <b>%s</b> modificado',$tipoDocumento -> getCodigo());
+            $message = sprintf('<i class="fa fa-fw fa-files-o"></i> Tipo de documento <b>%s</b> modificado',$tipoDocumento->getCodigo());
             
-            return $this -> responseSuccessJSON($message,$tables);
+            return $this->responseSuccessJSON($message,$tables);
         } catch(Exception $error) {
             return response()->json(['status'=>false,'message'=>'Ocurrió un error al editar el tipo de documento. Error ' . $error->getMessage() ]);
         }
@@ -175,16 +179,17 @@ class SystemTipoDocumentoController extends BaseController
     public function verTipoDocumento( $request )
     {
         try {
-            $tipoDocumento = MSystemTipoDocumento::findOrFail( $request -> id );
-            $data['title'] = sprintf('Tipo de Documento #%s', $tipoDocumento -> getCodigo() );
+            $tipoDocumento = MSystemTipoDocumento::findOrFail( $request->id );
+            $data['title'] = sprintf('Tipo de Documento #%s', $tipoDocumento->getCodigo() );
 
             $data['detalles'] = [
-                ['Código', $tipoDocumento -> getCodigo()],
-                ['Nombre', $tipoDocumento -> getNombre()],
-                ['Fecha',  $tipoDocumento -> presenter() -> getFechaCreacion()]
+                ['Código',   $tipoDocumento->getCodigo()],
+                ['Nombre',   $tipoDocumento->getNombre()],
+                ['Color',    $tipoDocumento->presenter()->getBadge()],
+                ['Fecha',    $tipoDocumento->presenter()->getFechaCreacion()]
             ];
 
-            return view('Configuracion.Sistema.TipoDocumento.verTipoDocumento') -> with($data);
+            return view('Configuracion.Sistema.TipoDocumento.verTipoDocumento')->with($data);
         } catch(Exception $error) {
 
         }
@@ -196,24 +201,24 @@ class SystemTipoDocumentoController extends BaseController
     public function activarTipoDocumento( $request )
     {
         try {
-            $tipoDocumento = MSystemTipoDocumento::findOrFail( $request -> id );
-            $tipoDocumento -> cambiarDisponibilidad() -> save();
+            $tipoDocumento = MSystemTipoDocumento::findOrFail( $request->id );
+            $tipoDocumento->cambiarDisponibilidad()->save();
             
-            if( $tipoDocumento -> disponible() ){
-                $message = sprintf('<i class="fa fa-fw fa-check"></i> Tipo de documento <b>%s</b> activado',$tipoDocumento -> getCodigo());
-                return $this -> responseInfoJSON($message);
+            if( $tipoDocumento->disponible() ){
+                $message = sprintf('<i class="fa fa-fw fa-check"></i> Tipo de documento <b>%s</b> activado',$tipoDocumento->getCodigo());
+                return $this->responseInfoJSON($message);
             }else{
 
                 // Crear la notificación para usuarios del sistema
                 $data = [
-                    'contenido'  => sprintf('Tipo de documento #%s <b>%s</b> ha sido desactivado', $tipoDocumento -> getCodigo(), $tipoDocumento -> getNombre()),
+                    'contenido'  => sprintf('Tipo de documento #%s <b>%s</b> ha sido desactivado', $tipoDocumento->getCodigo(), $tipoDocumento->getNombre()),
                 ];
                 
                 NotificacionController::nuevaNotificacion('REC.LOC.TIP.DOC.DES',$data);
                 NotificacionController::nuevaNotificacion('REC.FOR.TIP.DOC.DES',$data);
 
-                $message = sprintf('<i class="fa fa-fw fa-warning"></i> Tipo de documento <b>%s</b> desactivado',$tipoDocumento -> getCodigo());
-                return $this -> responseWarningJSON($message);
+                $message = sprintf('<i class="fa fa-fw fa-warning"></i> Tipo de documento <b>%s</b> desactivado',$tipoDocumento->getCodigo());
+                return $this->responseWarningJSON($message);
             }
 
         } catch(Exception $error) {
@@ -227,17 +232,17 @@ class SystemTipoDocumentoController extends BaseController
     public function eliminarTipoDocumento( $request )
     {
         try {
-            if( $request -> id == 1 || $request -> id == 2 ) // No permitir la eliminación del tipo de documento "Denuncia" ni "Documento de denuncia"
+            if( $request->id == 1 || $request->id == 2 ) // No permitir la eliminación del tipo de documento "Denuncia" ni "Documento de denuncia"
             {
-                return $this -> responseDangerJSON('<i class="fa fa-fw fa-warning"></i> No es posible eliminar el tipo de documento.');
+                return $this->responseDangerJSON('<i class="fa fa-fw fa-warning"></i> No es posible eliminar el tipo de documento.');
             }
 
-            $tipoDocumento = MSystemTipoDocumento::findOrFail( $request -> id );
-            $tipoDocumento -> eliminar() -> save();
+            $tipoDocumento = MSystemTipoDocumento::findOrFail( $request->id );
+            $tipoDocumento->eliminar()->save();
 
             // Crear la notificación para usuarios del sistema
             $data = [
-                'contenido'  => sprintf('Tipo de documento #%s <b>%s</b> ha sido eliminado', $tipoDocumento -> getCodigo(), $tipoDocumento -> getNombre()),
+                'contenido'  => sprintf('Tipo de documento #%s <b>%s</b> ha sido eliminado', $tipoDocumento->getCodigo(), $tipoDocumento->getNombre()),
             ];
             
             NotificacionController::nuevaNotificacion('REC.LOC.TIP.DOC.ELI',$data);
@@ -246,9 +251,9 @@ class SystemTipoDocumentoController extends BaseController
             $tables = 'dataTableBuilder';
 
             // Lista de tablas que se van a recargar automáticamente
-            $message = sprintf('<i class="fa fa-fw fa-warning"></i> Tipo de documento <b>%s</b> eliminado',$tipoDocumento -> getCodigo());
+            $message = sprintf('<i class="fa fa-fw fa-warning"></i> Tipo de documento <b>%s</b> eliminado',$tipoDocumento->getCodigo());
 
-            return $this -> responseWarningJSON($message,'danger',$tables);
+            return $this->responseWarningJSON($message,'danger',$tables);
         } catch(Exception $error) {
             return response()->json(['status'=>false,'message'=>'Ocurrió un error al eliminar el Tipo de documento. Error ' . $error->getMessage() ]);
         }

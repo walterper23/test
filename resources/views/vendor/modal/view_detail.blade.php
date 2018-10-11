@@ -3,6 +3,6 @@
      	<p>{{ $detalle[0] }}</p>
     </div>
     <div class="col-md-8">
-    	<p>{{ $detalle[1] }}</p>
+    	<p>{!! $detalle[1] !!}</p>
     </div>
 </div>
