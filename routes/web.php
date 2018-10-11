@@ -250,3 +250,12 @@ Route::middleware('preventBackHistory') -> group(function(){
     });
 
 });
+
+Route::get('correo', 'AppMovil\AppMovilController@correo');
+Route::get('grafica/{tipo}/{fecha1}/{fecha2}', 'AppMovil\AppMovilController@Grafica');
+Route::get('token', 'AppMovil\AppMovilController@token');
+Route::get('loginApp/{usuario}/{pass}','AppMovil\AppMovilController@login');
+Route::get('appCreateId/{id}', 'AppMovil\AppMovilController@IdAPP');
+Route::get('alerta', 'AppMovil\AppMovilController@notificacion');
+Route::get('id/{usuario}', 'AppMovil\AppMovilController@idUser');
+Route::get('update_doc/{id_doc}/{id_user}', 'AppMovil\AppMovilController@updateLeidos');
