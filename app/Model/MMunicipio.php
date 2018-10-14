@@ -5,25 +5,25 @@ use Illuminate\Database\Eloquent\Model;
 
 class MMunicipio extends Model
 {
-    protected $table          = 'municipios';
-    protected $primaryKey     = 'MUNI_MUNICIPIO';
-    public    $timestamps     = false;
+    protected $table      = 'municipios';
+    protected $primaryKey = 'MUNI_MUNICIPIO';
+    public    $timestamps = false;
 
     /* Methods */
 
     public function getClave()
     {
-    	return $this -> attributes['MUNI_CLAVE']; 
+    	return $this->getAttribute('MUNI_CLAVE'); 
     }
 
     public function getNombre()
     {
-    	return $this -> attributes['MUNI_NOMBRE']; 
+    	return $this->getAttribute('MUNI_NOMBRE'); 
     }
 
     public function scopeDisponible($query)
     {
-    	return $query -> where('MUNI_ENABLED',1);
+    	return $query->where('MUNI_ENABLED',1);
     }
 
 }

@@ -51,7 +51,9 @@ class AcuseRecepcionController extends BaseController
         else                                      // Acuse de documento foráneo 
             $data['documento'] = $acuseRecepcion -> DocumentoForaneo;
         
-        $pdf = PDF::loadView('Recepcion.Acuses.acuseRecepcion', $data);
+        $pdf = PDF::loadView('Recepcion.Acuses.acuseRecepcion', $data, [], [
+            'margin_top' => 28, 'margin_bottom' => 20
+        ]);
 
         return $pdf;
     }

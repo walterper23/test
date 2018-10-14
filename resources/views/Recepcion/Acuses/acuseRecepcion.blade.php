@@ -65,20 +65,21 @@
             <tr>
                 <td width="20%" class="text-center">{{ Html::image('img/background/escudo-qroo.png','',['width'=>'50']) }}</td>
                 <td width="60%" class="text-center bold" style="color: #0088CC">
-                    <h3>{!! strtoupper(str_replace(['\n','á','é','í','ó','ú'],['<br>','a','e','i','o','u'], config_var('Institucion.Nombre'))) !!}</h3>
+                    <h3>{{ config_var('Institucion.Nombre') }}</h3>
                 </td>
                 <td width="20%" class="text-center">{{ Html::image('img/background/ppa.png','',['width'=>'150']) }}</td>
             </tr>
         </table>
     </htmlpageheader>
-    
-    <br>
 
     <h3 class="text-center">ACUSE DE RECEPCIÓN DE DOCUMENTO</h3>
 
-    <p class="text-right"><b>ACUSE DE RECEPCIÓN:</b><br>
-    {{ $acuse -> getNumero() }}<br>
-    <b>Fecha y hora:</b> {{ $detalle -> presenter() -> getFechaHora() }}</p>
+    <p class="text-right">
+        <b>ACUSE DE RECEPCIÓN:</b><br>
+        {{ $acuse -> getNumero() }}<br>
+        <b>Fecha de recepción:</b> {{ $detalle -> getFechaRecepcion() }}<br>
+        <b>Fecha de captura:</b> {{ $detalle -> presenter() -> getFechaHora() }}
+    </p>
 
     <p align="justify">
         El presente acuse de recepción hace constar que
@@ -123,8 +124,8 @@
 
     <table class="border">
         <tr class="odd">
-            <td width="30%" class="bold">Nombre completo</td>
-            <td width="70%">{{ $detalle -> getEntregoNombre() }}</td>
+            <td width="25%" class="bold">Nombre completo</td>
+            <td width="75%">{{ $detalle -> getEntregoNombre() }}</td>
         </tr>
         <tr class="even">
             <td class="bold">Teléfono</td>
@@ -144,8 +145,8 @@
 
     <table class="border">
         <tr class="odd">
-            <td width="30%" class="bold">Anexos</td>
-            <td width="70%">{!! $detalle -> presenter() -> getAnexos() !!}</td>
+            <td width="25%" class="bold">Anexos</td>
+            <td width="75%">{!! $detalle -> presenter() -> getAnexos() !!}</td>
         </tr>
         <tr class="even">
             <td class="bold">Observaciones</td>
@@ -153,7 +154,7 @@
         </tr>
     </table>
 
-    <br><br><br><br>
+    <br><br><br><br><br>
 
     <table width="80%">
         <tr>
@@ -178,14 +179,20 @@
             </td>
         </tr>
     </table>
-    
+
     <htmlpagefooter name="page-footer">
         <table style="font-size: 6pt">
             <tr>
-                <td width="50%" class="text-left">
+                <td width="30%"></td>
+                <td width="70%" class="text-right">
+                    {{ sprintf('%s. %s. %s.',config_var('Institucion.Nombre'),config_var('Institucion.Direccion'),config_var('Institucion.Telefonos')) }}<br>   
+                </td>
+            </tr>
+            <tr>
+                <td class="text-left">
                     {{ title(config_var('Sistema.Nombre')) }}<br>   
                     <b>Acuse generado:</b> {{ date('Y-m-d h:i:s a') }}</td>
-                <td width="50%" class="text-right">Página <b>{PAGENO}</b> de <b>{nb}</b></td>
+                <td class="text-right">Página <b>{PAGENO}</b> de <b>{nb}</b></td>
             </tr>
         </table>
     </htmlpagefooter>

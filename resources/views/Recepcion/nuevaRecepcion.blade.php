@@ -83,9 +83,16 @@
             selectDenuncia.closest('div.form-group.row').hide();
 
             var selectTipoDocumento = this.form.find('#tipo_documento').on('change',function(e){
-                labelNumero.text( $(this).find('option:selected').data('label') );
+                
+                let label = $(this).find('option:selected').data('label');
 
-                selectDenuncia.closest('div.form-group.row').hide();
+                if( label != '' ){
+                    labelNumero.text( label );
+                    labelNumero.closest('div.form-group.row').show();
+                }else{
+                    labelNumero.closest('div.form-group.row').hide();
+                }
+
                 if( this.value == 2 ){
                     selectDenuncia.closest('div.form-group.row').show();
                 }

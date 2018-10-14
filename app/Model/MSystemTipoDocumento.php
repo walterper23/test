@@ -24,6 +24,11 @@ class MSystemTipoDocumento extends BaseModel
         return $this -> getAttribute('SYTD_ETIQUETA_NUMERO');
     }
 
+    public function getCodigoAcuse()
+    {
+        return $this -> getAttribute('SYTD_CODIGO_ACUSE');
+    }
+
     public function getRibbonColor()
     {
         return $this -> getAttribute('SYTD_RIBBON_COLOR');

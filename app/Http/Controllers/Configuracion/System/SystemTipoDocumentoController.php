@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Configuracion\System;
 use Illuminate\Http\Request;
 use App\Http\Requests\SystemTipoDocumentoRequest;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Cache;
 use Exception;
 
 /* Controllers */
@@ -111,6 +112,8 @@ class SystemTipoDocumentoController extends BaseController
             $tipoDocumento->SYTD_RIBBON_COLOR    = $request->color;
             $tipoDocumento->save();
 
+            Cache::forget('tiposDocumentosExistentesDisponibles');
+
             // Crear la notificación para usuarios del sistema
             $data = [
                 'contenido'  => sprintf('Nuevo tipo de documento #%s <b>%s</b> creado ', $tipoDocumento->getCodigo(), $tipoDocumento->getNombre()),
@@ -162,6 +165,8 @@ class SystemTipoDocumentoController extends BaseController
             $tipoDocumento->SYTD_RIBBON_COLOR    = $request->color;
             $tipoDocumento->save();
 
+            Cache::forget('tiposDocumentosExistentesDisponibles');
+
             // Lista de tablas que se van a recargar automáticamente
             $tables = 'dataTableBuilder';
 
@@ -203,7 +208,9 @@ class SystemTipoDocumentoController extends BaseController
         try {
             $tipoDocumento = MSystemTipoDocumento::findOrFail( $request->id );
             $tipoDocumento->cambiarDisponibilidad()->save();
-            
+
+            Cache::forget('tiposDocumentosExistentesDisponibles');
+
             if( $tipoDocumento->disponible() ){
                 $message = sprintf('<i class="fa fa-fw fa-check"></i> Tipo de documento <b>%s</b> activado',$tipoDocumento->getCodigo());
                 return $this->responseInfoJSON($message);
@@ -239,6 +246,8 @@ class SystemTipoDocumentoController extends BaseController
 
             $tipoDocumento = MSystemTipoDocumento::findOrFail( $request->id );
             $tipoDocumento->eliminar()->save();
+
+            Cache::forget('tiposDocumentosExistentesDisponibles');
 
             // Crear la notificación para usuarios del sistema
             $data = [

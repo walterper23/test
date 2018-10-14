@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use App\Http\Requests\RecepcionLocalRequest;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Cache;
 use Exception;
 use DB;
 
@@ -35,7 +36,7 @@ class RecepcionController extends BaseController
     public function __construct()
     {
         parent::__construct();
-        $this -> setLog('RecepcionController.log');
+        $this->setLog('RecepcionController.log');
     }
 
     public function index(Request $request)
@@ -48,8 +49,8 @@ class RecepcionController extends BaseController
         $data['table2'] = $tabla2;
         $data['table3'] = $tabla3;
 
-        $view  = $request -> get('view','denuncias');
-        $acuse = $request -> get('acuse');
+        $view  = $request->get('view','denuncias');
+        $acuse = $request->get('acuse');
 
         $data['tab_1'] = '';
         $data['tab_2'] = '';
@@ -72,7 +73,7 @@ class RecepcionController extends BaseController
 
         $data['acuse'] = $acuse;
 
-        return view('Recepcion.indexRecepcion') -> with($data);
+        return view('Recepcion.indexRecepcion')->with($data);
     }
 
     public function documentosEnCaptura()
@@ -82,21 +83,21 @@ class RecepcionController extends BaseController
 
     public function manager(RecepcionLocalRequest $request)
     {
-        switch ($request -> action) {
+        switch ($request->action) {
             case 0: // Guardar recepción en captura
-                $response = $this -> capturarRecepcion( $request );
+                $response = $this->capturarRecepcion( $request );
                 break;
             case 1: // Nueva recepción
-                $response = $this -> nuevaRecepcion( $request );
+                $response = $this->nuevaRecepcion( $request );
                 break;
             case 2: // Editar
-                $response = $this -> editarRecepcion( $request );
+                $response = $this->editarRecepcion( $request );
                 break;
             case 3: // Visualizar recepción
-                $response = $this -> verRecepcion( $request );
+                $response = $this->verRecepcion( $request );
                 break;
             case 4: // Eliminar
-                $response = $this -> eliminarRecepcion( $request );
+                $response = $this->eliminarRecepcion( $request );
                 break;
             default:
                 return response()->json(['message'=>'Petición no válida'],404);
@@ -108,7 +109,7 @@ class RecepcionController extends BaseController
     public function postDataTable(Request $request)
     {
 
-        $type = $request -> get('type');
+        $type = $request->get('type');
 
         switch ($type) {
             case 'denuncias' :
@@ -125,45 +126,7 @@ class RecepcionController extends BaseController
                 break;
         }
 
-        return $dataTables -> getData();
-    }
-
-    public function formNuevaRecepcion()
-    {
-
-        $data = [];
-
-        // Recuperamos los tipos de documentsos que se pueden recepcionar
-        $data['tipos_documentos'] = MSystemTipoDocumento::existenteDisponible() -> get();
-
-        $data['denuncias'] = MDenuncia::select('DENU_DENUNCIA','DENU_NO_EXPEDIENTE')
-                            -> join('documentos','DENU_DOCUMENTO','=','DOCU_DOCUMENTO')
-                            -> whereNotNull('DENU_NO_EXPEDIENTE')
-                            -> whereIn('DOCU_SYSTEM_ESTADO_DOCTO',[2,3]) // Documento recepcionado, Documento en seguimiento
-                            -> pluck('DENU_NO_EXPEDIENTE','DENU_DENUNCIA')
-                            -> toArray();
-
-        // Recuperamos los anexos almacenados en el sistema
-        $data['anexos'] = MAnexo::existenteDisponible()
-                            -> orderBy('ANEX_NOMBRE')
-                            -> pluck('ANEX_NOMBRE','ANEX_ANEXO')
-                            -> toArray();
-
-        $data['municipios'] = MMunicipio::selectRaw('MUNI_MUNICIPIO AS id, CONCAT(MUNI_CLAVE," - ",MUNI_NOMBRE) AS nombre')
-                            -> disponible()
-                            -> pluck('nombre','id')
-                            -> toArray();
-
-        $data['context']       = 'context-form-recepcion';
-        $data['form_id']       = 'form-recepcion';
-        $data['url_send_form'] = url('recepcion/documentos/manager');
-
-        $data['form'] = view('Recepcion.formNuevaRecepcion') -> with($data);
-
-        unset($data['tipos_documentos']);
-
-        return view('Recepcion.nuevaRecepcion') -> with($data);
-
+        return $dataTables->getData();
     }
 
     // Método para guardar un documento en estado de captura pendiente, o sea, aun no recepcionado completamente
@@ -172,135 +135,202 @@ class RecepcionController extends BaseController
 
     }
 
+    public function formNuevaRecepcion()
+    {
+        $data = [];
+
+        // Recuperamos los tipos de documentsos que se pueden recepcionar
+        $tiposDocumentosExistentesDisponibles = Cache::rememberForever('tiposDocumentosExistentesDisponibles',function(){
+            return MSystemTipoDocumento::existenteDisponible()->get();
+        });
+
+        $data['tipos_documentos'] = $tiposDocumentosExistentesDisponibles;
+
+        $denunciasAlRecepcionar = Cache::rememberForever('denunciasAlRecepcionar',function(){
+            return MDenuncia::select('DENU_DENUNCIA','DENU_NO_EXPEDIENTE')
+                   ->join('documentos','DENU_DOCUMENTO','=','DOCU_DOCUMENTO')
+                   ->whereNotNull('DENU_NO_EXPEDIENTE') // Número de expediente ya asignado
+                   ->whereIn('DOCU_SYSTEM_ESTADO_DOCTO',[2,3]) // Documento recepcionado, Documento en seguimiento
+                   ->get();
+        });
+
+        $data['denuncias'] = $denunciasAlRecepcionar->pluck('DENU_NO_EXPEDIENTE','DENU_DENUNCIA')->toArray();
+
+        // Recuperamos los anexos almacenados en el sistema
+        $anexosExistentesDisponibles = Cache::rememberForever('anexosExistentesDisponibles',function(){
+            return MAnexo::existenteDisponible()->get();
+        });
+
+        $data['anexos'] = $anexosExistentesDisponibles->sortBy('ANEX_NOMBRE')->pluck('ANEX_NOMBRE','ANEX_ANEXO')->toArray();
+
+        $cacheMunicipios = Cache::rememberForever('municipiosDisponibles',function(){
+            return MMunicipio::disponible()->get();
+        });
+
+        $data['municipios'] = $cacheMunicipios->sortBy('MUNI_CLAVE')->mapWithKeys(function($item){
+            return [ $item->getKey() => sprintf('%s - %s',$item->getClave(),$item->getNombre()) ];
+        })->toArray();
+
+        $data['context']       = 'context-form-recepcion';
+        $data['form_id']       = 'form-recepcion';
+        $data['url_send_form'] = url('recepcion/documentos/manager');
+
+        $data['form'] = view('Recepcion.formNuevaRecepcion')->with($data);
+
+        unset($data['tipos_documentos']);
+
+        return view('Recepcion.nuevaRecepcion')->with($data);
+
+    }
+
+
     // Método para realizar el guardado y la recepción de un documento
     public function nuevaRecepcion( $request )
     {
         try {
             // Reemplazamos los saltos de línea, por "\n"
-            $anexos = preg_replace('/\r|\n/','\n',$request -> anexos);
+            $anexos = preg_replace('/\r|\n/','\n',$request->anexos);
             // Reemplazamos las "\n" repetidas
             $anexos = str_replace('\n\n','\n',$anexos);
 
             DB::beginTransaction();
 
+            $tipo_documento = MSystemTipoDocumento::find( $request->tipo_documento );
+
             // Guardamos los detalles del documento
             $detalle = new MDetalle;
-            $detalle -> DETA_MUNICIPIO              = $request -> municipio;
-            $detalle -> DETA_FECHA_RECEPCION        = $request -> recepcion;
-            $detalle -> DETA_DESCRIPCION            = $request -> descripcion;
-            $detalle -> DETA_RESPONSABLE            = $request -> responsable;
-            $detalle -> DETA_ANEXOS                 = $anexos;
-            $detalle -> DETA_OBSERVACIONES          = $request -> observaciones;
-            $detalle -> DETA_ENTREGO_NOMBRE         = $request -> nombre;
-            $detalle -> DETA_ENTREGO_EMAIL          = $request -> e_mail;
-            $detalle -> DETA_ENTREGO_TELEFONO       = $request -> telefono;
-            $detalle -> DETA_ENTREGO_IDENTIFICACION = $request -> identificacion;
-            $detalle -> save();
+            $detalle->DETA_MUNICIPIO              = $request->municipio;
+            $detalle->DETA_FECHA_RECEPCION        = $request->recepcion;
+            $detalle->DETA_DESCRIPCION            = $request->descripcion;
+            $detalle->DETA_RESPONSABLE            = $request->responsable;
+            $detalle->DETA_ANEXOS                 = $anexos;
+            $detalle->DETA_OBSERVACIONES          = $request->observaciones;
+            $detalle->DETA_ENTREGO_NOMBRE         = $request->nombre;
+            $detalle->DETA_ENTREGO_EMAIL          = $request->e_mail;
+            $detalle->DETA_ENTREGO_TELEFONO       = $request->telefono;
+            $detalle->DETA_ENTREGO_IDENTIFICACION = $request->identificacion;
+            $detalle->save();
 
             // Guardamos el documento
             $documento = new MDocumento;
-            $documento -> DOCU_SYSTEM_TIPO_DOCTO   = $request -> tipo_documento;
-            $documento -> DOCU_SYSTEM_ESTADO_DOCTO = 2; // Documento recepcionado
-            $documento -> DOCU_TIPO_RECEPCION      = 1; // Recepción local
-            $documento -> DOCU_DETALLE             = $detalle -> getKey();
-            $documento -> DOCU_NUMERO_DOCUMENTO    = $request -> numero;
-            $documento -> save();
+            $documento->DOCU_SYSTEM_TIPO_DOCTO   = $tipo_documento->getKey();
+            $documento->DOCU_SYSTEM_ESTADO_DOCTO = 2; // Documento recepcionado
+            $documento->DOCU_TIPO_RECEPCION      = 1; // Recepción local
+            $documento->DOCU_DETALLE             = $detalle->getKey();
+            $documento->DOCU_NUMERO_DOCUMENTO    = $request->numero;
+            $documento->save();
 
             // Guardamos el primer seguimiento del documento
             $seguimiento = new MSeguimiento;
-            $seguimiento -> SEGU_USUARIO              = userKey();
-            $seguimiento -> SEGU_DOCUMENTO            = $documento -> getKey();
-            $seguimiento -> SEGU_DIRECCION_ORIGEN     = config_var('Sistema.Direcc.Origen');  // Dirección de la recepción, por default
-            $seguimiento -> SEGU_DEPARTAMENTO_ORIGEN  = config_var('Sistema.Depto.Origen');   // Departamento de la recepción, por default
-            $seguimiento -> SEGU_DIRECCION_DESTINO    = config_var('Sistema.Direcc.Destino'); // Dirección del procurador, por default
-            $seguimiento -> SEGU_DEPARTAMENTO_DESTINO = config_var('Sistema.Depto.Destino');  // Departamento del procurador, por default
-            $seguimiento -> SEGU_ESTADO_DOCUMENTO     = config_var('Sistema.Estado.Recepcion.Seguimiento'); // "Documento recepcionado". Estado de documento inicial para seguimiento por default
-            $seguimiento -> SEGU_OBSERVACION          = $detalle -> getObservaciones();
-            $seguimiento -> save();
+            $seguimiento->SEGU_USUARIO              = userKey();
+            $seguimiento->SEGU_DOCUMENTO            = $documento->getKey();
+            $seguimiento->SEGU_DIRECCION_ORIGEN     = config_var('Sistema.Direcc.Origen');  // Dirección de la recepción, por default
+            $seguimiento->SEGU_DEPARTAMENTO_ORIGEN  = config_var('Sistema.Depto.Origen');   // Departamento de la recepción, por default
+            $seguimiento->SEGU_DIRECCION_DESTINO    = config_var('Sistema.Direcc.Destino'); // Dirección del procurador, por default
+            $seguimiento->SEGU_DEPARTAMENTO_DESTINO = config_var('Sistema.Depto.Destino');  // Departamento del procurador, por default
+            $seguimiento->SEGU_ESTADO_DOCUMENTO     = config_var('Sistema.Estado.Recepcion.Seguimiento'); // "Documento recepcionado". Estado de documento inicial para seguimiento por default
+            $seguimiento->SEGU_OBSERVACION          = $detalle->getObservaciones();
+            $seguimiento->save();
 
-            $nombre_acuse = sprintf('ARD/%s/%s/%s/',date('Y'),date('m'),$documento -> getCodigo());
+            $folio_acuse = sprintf('ARD/%s/%s/%s/%s/',date('Y'),date('m'),$documento->getCodigo(),$tipo_documento->getCodigoAcuse()); // ARD/2018/10/005/DENU/
             
-            if ($request -> tipo_documento == 1) // Si el tipo de documento es denuncia ...
+            if ($tipo_documento->getKey() == 1) // Si el tipo de documento es denuncia ...
             {
                 $denuncia = new MDenuncia; // ... crear el registro de la denuncia
-                $denuncia -> DENU_DOCUMENTO = $documento -> getKey();
-                $denuncia -> save();
+                $denuncia->DENU_DOCUMENTO = $documento->getKey();
+                $denuncia->save();
+
                 $redirect = '?view=denuncias';
-                $nombre_acuse = sprintf('%sDENU/%s',$nombre_acuse,$denuncia -> getCodigo());
+                $folio_acuse = $folio_acuse . $denuncia->getCodigo(); // ARD/2018/10/005/DENU/001
             }
-            else if ( $request -> tipo_documento == 2 ) // Si el tipo de documento es un documento para denuncia ...
+            else if ( $tipo_documento->getKey() == 2 ) // Si el tipo de documento es un documento para denuncia ...
             {
-                $denuncia = MDenuncia::with('Documento') -> find( $request -> denuncia );
+                $denuncia = MDenuncia::with('Documento')->find( $request->denuncia );
 
                 $documentoDenuncia = new MDocumentoDenuncia; // ... registramos el documento a la denuncia
-                $documentoDenuncia -> DODE_DENUNCIA          = $denuncia -> getKey();
-                $documentoDenuncia -> DODE_DOCUMENTO_ORIGEN  = $denuncia -> Documento -> getKey();
-                $documentoDenuncia -> DODE_DOCUMENTO_LOCAL   = $documento -> getKey();
-                $documentoDenuncia -> DODE_DETALLE           = $denuncia -> Documento -> Detalle -> getKey();
-                $documentoDenuncia -> DODE_SEGUIMIENTO       = $denuncia -> Documento -> Seguimientos -> last() -> getKey();
-                $documentoDenuncia -> save();
+                $documentoDenuncia->DODE_DENUNCIA          = $denuncia->getKey();
+                $documentoDenuncia->DODE_DOCUMENTO_ORIGEN  = $denuncia->Documento->getKey();
+                $documentoDenuncia->DODE_DOCUMENTO_LOCAL   = $documento->getKey();
+                $documentoDenuncia->DODE_DETALLE           = $denuncia->Documento->Detalle->getKey();
+                // Relacionamos la recepción del documento-denuncia al último seguimiento del documento original (denuncia)
+                $documentoDenuncia->DODE_SEGUIMIENTO       = $denuncia->Documento->Seguimientos->last()->getKey();
+                $documentoDenuncia->save();
 
                 $redirect = '?view=documentos-denuncias';
-                $nombre_acuse = sprintf('%sDOCTO/DENU/%s',$nombre_acuse,$documentoDenuncia -> getCodigo());
+                $folio_acuse = $folio_acuse . $documentoDenuncia->getCodigo();  // ARD/2018/10/005/DODE/002
             }
             else
             {
                 $redirect = '?view=documentos';
-                $nombre_acuse = sprintf('%sDOCTO/%s',$nombre_acuse,$documento -> getCodigo());
+                $folio_acuse = $folio_acus . $documento->getCodigo(); // ARD/2018/10/005/DENU/005
             }
+
+            // Sustituimos las diagonales por guiones bajos
+            $nombre_acuse_pdf = sprintf('%s.pdf',str_replace('/','_', $folio_acuse));
 
             // Creamos el registro del acuse de recepción del documento
             $acuse = new MAcuseRecepcion;
-            $acuse -> ACUS_NUMERO    = $nombre_acuse;
-            $acuse -> ACUS_NOMBRE    = sprintf('%s.pdf',str_replace('/','_', $nombre_acuse));
-            $acuse -> ACUS_DOCUMENTO = $documento -> getKey();
-            $acuse -> ACUS_CAPTURA   = 1; // Documento localmente
-            $acuse -> ACUS_DETALLE   = $detalle -> getKey();
-            $acuse -> ACUS_USUARIO   = userKey();
-            $acuse -> ACUS_ENTREGO   = $request -> nombre;
-            $acuse -> ACUS_RECIBIO   = user() -> UsuarioDetalle -> presenter() -> nombreCompleto();
-            $acuse -> save();
+            $acuse->ACUS_NUMERO    = $folio_acuse;
+            $acuse->ACUS_NOMBRE    = $nombre_acuse_pdf;
+            $acuse->ACUS_DOCUMENTO = $documento->getKey();
+            $acuse->ACUS_CAPTURA   = 1; // Documento localmente
+            $acuse->ACUS_DETALLE   = $detalle->getKey();
+            $acuse->ACUS_USUARIO   = userKey();
+            $acuse->ACUS_ENTREGO   = $request->nombre;
+            $acuse->ACUS_RECIBIO   = user()->UsuarioDetalle->presenter()->nombreCompleto();
+            $acuse->save();
 
             // Lista de los nombres de los escaneos
-            $escaneo_nombres = $request -> escaneo_nombre ?? [];
+            $escaneo_nombres = $request->escaneo_nombre ?? [];
 
             // Guardamos los archivos o escaneos que se hayan agregado al archivo
-            foreach ($request -> escaneo ?? [] as $key => $escaneo) {
+            foreach ($request->escaneo ?? [] as $key => $escaneo) {
 
-                $nombre = $escaneo -> getClientOriginalName();
+                $nombre = $escaneo->getClientOriginalName();
                 
                 if( isset($escaneo_nombres[$key]) && !empty(trim($escaneo_nombres[$key])) )
                 {
                     $nombre = trim($escaneo_nombres[$key]);
                 }
 
-                $this -> nuevoEscaneo($documento, $escaneo,['escaneo_nombre'=>$nombre]);
+                $this->nuevoEscaneo($documento, $escaneo,['escaneo_nombre'=>$nombre]);
             }
 
             DB::commit();
 
-            if ($request -> has('acuse') && $request -> acuse == 1) // Si el usuario ha indicado que quiere abrir inmediatamente el acuse de recepción
+            if ($request->has('acuse') && $request->acuse == 1) // Si el usuario ha indicado que quiere abrir inmediatamente el acuse de recepción
             {
-                $url = url( sprintf('recepcion/acuse/documento/%s?d=0',$acuse -> getNombre()) );
-                $request -> session() -> flash('urlAcuseAutomatico', $url);
+                $url = url( sprintf('recepcion/acuse/documento/%s?d=0',$acuse->getNombre()) );
+                $request->session()->flash('urlAcuseAutomatico', $url);
             }
             
             // Crear la notificación para usuarios del sistema
             $data = [
-                'contenido'  => sprintf('Se ha recepcionado un nuevo documento #%s de tipo <b>%s</b>', $documento -> getCodigo(),$documento -> TipoDocumento -> getNombre()),
-                'direccion'  => $seguimiento -> getDireccionDestino(),
-                'url'        => sprintf('panel/documentos/seguimiento?search=%d&read=1',$seguimiento -> getKey()),
+                'contenido'  => sprintf('Se ha recepcionado un nuevo documento #%s de tipo <b>%s</b>', $documento->getCodigo(),$documento->TipoDocumento->getNombre()),
+                'direccion'  => $seguimiento->getDireccionDestino(),
+                'url'        => sprintf('panel/documentos/seguimiento?search=%d&read=1',$seguimiento->getKey()),
             ];
             
             NotificacionController::nuevaNotificacion('PAN.TRA.NUE.DOC.REC',$data);
             // Mandamos el correo de notificación a los usuarios que tengan la preferencia asignada
             //NotificacionController::mandarNotificacionCorreo($documento);
 
-            return $this -> responseSuccessJSON(url('recepcion/documentos/recepcionados' . $redirect));
+            return $this->responseSuccessJSON(url('recepcion/documentos/recepcionados' . $redirect));
         } catch(Exception $error) {
             DB::rollback();
-            return $this -> responseDangerJSON( $error -> getMessage() );
+            return $this->responseDangerJSON( $error->getMessage() );
         }
+
+    }
+
+    public function formEditarRecepcion()
+    {
+
+    }
+
+    // Método para realizar la modificación de una recepción
+    public function editarRecepcion( $request )
+    {
 
     }
 
@@ -308,28 +338,28 @@ class RecepcionController extends BaseController
     public function nuevoEscaneo(MDocumento $documento, $file, $data)
     {
         $archivo = new MArchivo;
-        $archivo -> ARCH_FOLDER   = 'app/escaneos';
-        $archivo -> ARCH_FILENAME = '';
-        $archivo -> ARCH_PATH     = '';
-        $archivo -> ARCH_TYPE     = $file -> extension();
-        $archivo -> ARCH_MIME     = $file -> getMimeType();
-        $archivo -> ARCH_SIZE     = $file -> getClientSize();
+        $archivo->ARCH_FOLDER   = 'app/escaneos';
+        $archivo->ARCH_FILENAME = '';
+        $archivo->ARCH_PATH     = '';
+        $archivo->ARCH_TYPE     = $file->extension();
+        $archivo->ARCH_MIME     = $file->getMimeType();
+        $archivo->ARCH_SIZE     = $file->getClientSize();
 
-        $archivo -> save();
+        $archivo->save();
 
         $escaneo = new MEscaneo;
-        $escaneo -> ESCA_ARCHIVO          = $archivo -> getKey(); 
-        $escaneo -> ESCA_DOCUMENTO_LOCAL  = $documento -> getKey(); 
-        $escaneo -> ESCA_NOMBRE           = $data['escaneo_nombre']; 
-        $escaneo -> save();
+        $escaneo->ESCA_ARCHIVO          = $archivo->getKey(); 
+        $escaneo->ESCA_DOCUMENTO_LOCAL  = $documento->getKey(); 
+        $escaneo->ESCA_NOMBRE           = $data['escaneo_nombre']; 
+        $escaneo->save();
 
-        $filename = sprintf('docto_%d_scan_%d_arch_%d_%s.pdf',$documento -> getKey(), $escaneo -> getKey(), $archivo -> getKey(), time());
+        $filename = sprintf('docto_%d_scan_%d_arch_%d_%s.pdf',$documento->getKey(), $escaneo->getKey(), $archivo->getKey(), time());
         
-        $file -> storeAs('',$filename,'escaneos');
+        $file->storeAs('',$filename,'escaneos');
         
-        $archivo -> ARCH_FILENAME = $filename;
-        $archivo -> ARCH_PATH     = 'app/escaneos/' . $filename;
-        $archivo -> save();
+        $archivo->ARCH_FILENAME = $filename;
+        $archivo->ARCH_PATH     = 'app/escaneos/' . $filename;
+        $archivo->save();
     }
 
 
@@ -341,12 +371,12 @@ class RecepcionController extends BaseController
     public function eliminarRecepcion( $request )
     {
         try {
-            $documento = MDocumento::find( $request -> id );
-            $documento -> DOCU_SYSTEM_ESTADO_DOCTO = 6; // Estado de Documento Eliminado
-            $documento -> eliminar() -> save();
+            $documento = MDocumento::find( $request->id );
+            $documento->DOCU_SYSTEM_ESTADO_DOCTO = 6; // Estado de Documento Eliminado
+            $documento->eliminar()->save();
 
             // Lista de tablas que se van a recargar automáticamente
-            switch ($documento -> getTipoDocumento()) {
+            switch ($documento->getTipoDocumento()) {
                 case 1:
                     $tables = 'denuncias-datatable';
                     break;
@@ -358,9 +388,9 @@ class RecepcionController extends BaseController
                     break;
             }
 
-            $message = sprintf('<i class="fa fa-fw fa-warning"></i> Recepción <b>%s</b> eliminada',$documento -> getCodigo());
+            $message = sprintf('<i class="fa fa-fw fa-warning"></i> Recepción <b>%s</b> eliminada',$documento->getCodigo());
 
-            return $this -> responseWarningJSON($message,'danger',$tables);
+            return $this->responseWarningJSON($message,'danger',$tables);
         } catch(Exception $error) {
             return response()->json(['status'=>false,'message'=>'Ocurrió un error al eliminar la recepción. Error ' . $error->getMessage() ]);
         }

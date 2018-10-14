@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Panel;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\ManagerUsuarioRequest;
+use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 use DB;
 
@@ -449,13 +450,17 @@ class PanelController extends BaseController
                     $seguimientoDispersion -> save();
                 }
             }
-                
+
+            if (! in_array($documento -> getEstadoDocumento(),[2,3] ){ // Documento recepcionado, Documento en seguimiento
+                Cache::forget('denunciasAlRecepcionar');
+            }
 
             DB::commit();
 
             $message = sprintf('<i class="fa fa-fw fa-flash"></i> Seguimiento <b>#%s</b> creado',$seguimientoNuevo -> getCodigo());
 
             return $this -> responseSuccessJSON($message);
+            }
             
         } catch(Exception $error) {
             DB::rollback();
@@ -516,8 +521,9 @@ class PanelController extends BaseController
 
     public function formAsignarNoExpedienteDenuncia(Request $request)
     {
-        if (user() -> cant('DOC.CREAR.NO.EXPE'))
+        if (user() -> cant('DOC.CREAR.NO.EXPE')){
             abort(403);
+        }
 
         $data = [
             'title'         => 'Nó. de expediende de denuncia',
@@ -541,13 +547,16 @@ class PanelController extends BaseController
 
     public function asignarNoExpedienteDenuncia( $request )
     {
-        if (user() -> cant('DOC.CREAR.NO.EXPE'))
+        if (user() -> cant('DOC.CREAR.NO.EXPE')){
             abort(403);
+        }
 
         $documento = MDocumento::with('Denuncia') -> find( $request -> id );
 
         $documento -> Denuncia -> DENU_NO_EXPEDIENTE = $request -> expediente;
         $documento -> Denuncia -> save();
+
+        Cache::forget('denunciasAlRecepcionar');
 
         $message = sprintf('Nó. expediente <b>%s</b> asignado a Documento <b>#%s</b>',$documento -> Denuncia -> getNoExpediente(), $documento -> getCodigo());
 
