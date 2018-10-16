@@ -6,8 +6,6 @@ use Illuminate\Support\Facades\Gate as GateContract;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use App\Providers\EloquentCustomUserProvider;
 
-use Illuminate\Support\Facades\Cache;
-
 class AuthServiceProvider extends ServiceProvider
 {
     /**
@@ -40,7 +38,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         // Recuperamos todos los permisos disponibles en el sistema
-        $permisosSistema = Cache::rememberForever('Permisos.Sistema',function(){
+        $permisosSistema = cache()->rememberForever('Permisos.Sistema',function(){
             return \App\Model\MPermiso::with('Recurso') -> get();
         });
         
@@ -49,6 +47,8 @@ class AuthServiceProvider extends ServiceProvider
                 return permisoUsuario( $permiso -> getCodigo() );
             });
         }
+
+        \App\Model\System\MSystemConfig::setAllVariables();
 
     }
 }

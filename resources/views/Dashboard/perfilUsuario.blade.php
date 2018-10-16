@@ -11,16 +11,16 @@
                     <!-- Avatar -->
                     <div class="mb-15">
                         <a class="img-link" href="#">
-                            {!! $usuario -> presenter() -> imgAvatarSmall('img-avatar img-avatar96 img-avatar-thumb') !!}
+                            {!! $usuario->presenter()->imgAvatarSmall('img-avatar img-avatar96 img-avatar-thumb') !!}
                         </a>
                     </div>
                     <!-- END Avatar -->
 
                     <!-- Personal -->
-                    <h1 class="h3 text-white font-w700 mb-10">{{ $usuario -> getDescripcion() }}</h1>
+                    <h1 class="h3 text-white font-w700 mb-10">{{ $usuario->getDescripcion() }}</h1>
                     <h2 class="h5 text-white-op">
-                        {{ $detalle -> presenter() -> nombreCompleto() }}
-                        <a class="text-primary-light" href="javascript:void(0)">#{{ $detalle -> getNoTrabajador() }}</a>
+                        {{ $detalle->presenter()->getNombreCompleto() }}
+                        <a class="text-primary-light" href="javascript:void(0)">#{{ $detalle->getNoTrabajador() }}</a>
                     </h2>
                     <!-- END Personal -->
 
@@ -28,7 +28,7 @@
                     <button type="button" class="btn btn-rounded btn-hero btn-sm btn-alt-primary mb-5" id="btn-ok">
                         <i class="fa fa-fw fa-check mr-5"></i> Guardar cambios
                     </button>
-                    <a class="btn btn-rounded btn-hero btn-sm btn-alt-secondary mb-5" href="{{ url() -> previous() }}">
+                    <a class="btn btn-rounded btn-hero btn-sm btn-alt-secondary mb-5" href="{{ url()->previous() }}">
                         <i class="fa fa-times mr-5 text-danger"></i> Cancelar
                     </a>
                     <!-- END Actions -->
@@ -39,8 +39,8 @@
 					<h4 class="text-white">Cuenta de usuario</h4>
                     <div class="row">
                         <div class="col-md-7">
-                            {!! Field::text('usuario',$usuario -> getAuthUsername(),['label'=>'Nombre de usuario','disabled','readonly']) !!}
-        					{!! Field::text('descripcion',$usuario -> getDescripcion(),['label'=>'Nombre de perfil','required']) !!}
+                            {!! Field::text('usuario',$usuario->getAuthUsername(),['label'=>'Nombre de usuario','disabled','readonly']) !!}
+        					{!! Field::text('descripcion',$usuario->getDescripcion(),['label'=>'Nombre de perfil','required']) !!}
         				</div>
                         <div class="col-md-5">
                             {!! Field::password('password_actual','',['label'=>'Contraseña actual','required']) !!}
@@ -51,14 +51,14 @@
 					<h4 class="text-white mt-20">Información personal</h4>
                     <div class="row">
     					<div class="col-md-7">
-                           {!! Field::text('no_trabajador',$detalle -> getNoTrabajador(),['label'=>'Nó. trabajador','required']) !!}
-                           {!! Field::text('nombres',$detalle -> getNombres(),['label'=>'Nombre(s)','required']) !!}
-    					   {!! Field::text('apellidos',$detalle -> getApellidos(),['label'=>'Apellido(s)','required']) !!}
+                           {!! Field::text('no_trabajador',$detalle->getNoTrabajador(),['label'=>'Nó. trabajador','required']) !!}
+                           {!! Field::text('nombres',$detalle->getNombres(),['label'=>'Nombre(s)','required']) !!}
+    					   {!! Field::text('apellidos',$detalle->getApellidos(),['label'=>'Apellido(s)','required']) !!}
                         </div>
                         <div class="col-md-5">
-                           {!! Field::select('genero',$detalle -> getGenero(),['label'=>'Género','required'],['HOMBRE'=>'HOMBRE','MUJER'=>'MUJER']) !!}
-                           {!! Field::text('email',$detalle -> getEmail(),['label'=>'E-mail','required']) !!}
-                           {!! Field::text('telefono',$detalle -> getTelefono(),['label'=>'Teléfono']) !!}
+                           {!! Field::select('genero',$detalle->getGenero(),['label'=>'Género','required'],['HOMBRE'=>'HOMBRE','MUJER'=>'MUJER']) !!}
+                           {!! Field::text('email',$detalle->getEmail(),['label'=>'E-mail','required']) !!}
+                           {!! Field::text('telefono',$detalle->getTelefono(),['label'=>'Teléfono']) !!}
                         </div>
                     </div>
                     {{ Form::close() }}

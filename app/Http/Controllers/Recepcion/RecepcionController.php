@@ -277,7 +277,7 @@ class RecepcionController extends BaseController
             $acuse->ACUS_DETALLE   = $detalle->getKey();
             $acuse->ACUS_USUARIO   = userKey();
             $acuse->ACUS_ENTREGO   = $request->nombre;
-            $acuse->ACUS_RECIBIO   = user()->UsuarioDetalle->presenter()->nombreCompleto();
+            $acuse->ACUS_RECIBIO   = user()->UsuarioDetalle->presenter()->getNombreCompleto();
             $acuse->save();
 
             // Lista de los nombres de los escaneos

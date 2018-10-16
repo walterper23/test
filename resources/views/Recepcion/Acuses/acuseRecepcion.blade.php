@@ -76,47 +76,47 @@
 
     <p class="text-right">
         <b>ACUSE DE RECEPCIÓN:</b><br>
-        {{ $acuse -> getNumero() }}<br>
-        <b>Fecha de recepción:</b> {{ $detalle -> getFechaRecepcion() }}<br>
-        <b>Fecha de captura:</b> {{ $detalle -> presenter() -> getFechaHora() }}
+        {{ $acuse->getNumero() }}<br>
+        <b>Fecha de recepción:</b> {{ $detalle->getFechaRecepcion() }}<br>
+        <b>Fecha de captura:</b> {{ $detalle->presenter()->getFechaHora() }}
     </p>
 
     <p align="justify">
         El presente acuse de recepción hace constar que
-        @if (! empty($detalle -> getEntregoNombre()) )
-        el(la) <b>C. {{ $detalle -> getEntregoNombre() }}</b>
+        @if (! empty($detalle->getEntregoNombre()) )
+        el(la) <b>C. {{ $detalle->getEntregoNombre() }}</b>
         @else
         se
         @endif
-        ha hecho entrega del documento clasificado como <b>{{ $documento -> TipoDocumento -> getNombre() }}</b> y que ha sido recepcionado con los siguientes puntos informativos:
+        ha hecho entrega del documento clasificado como <b>{{ $documento->TipoDocumento->getNombre() }}</b> y que ha sido recepcionado con los siguientes puntos informativos:
     </p>
 
     <table class="border">
         <tr class="odd">
             <td width="25%" class="bold">Tipo de documento</td>
             <td width="75%">
-                {{ $documento -> TipoDocumento -> getNombre() }}
-                @if ( $documento -> getTipoDocumento() == 2 )
+                {{ $documento->TipoDocumento->getNombre() }}
+                @if ( $documento->getTipoDocumento() == 2 )
                 &nbsp;&nbsp;&nbsp;&nbsp;<b>Expediente</b>
-                &nbsp;&nbsp;&nbsp;&nbsp;{{ $documento -> DocumentoDenuncia -> Denuncia -> getNoExpediente() }}
+                &nbsp;&nbsp;&nbsp;&nbsp;{{ $documento->DocumentoDenuncia->Denuncia->getNoExpediente() }}
                 @endif
             </td>
         </tr>
         <tr class="even">
             <td class="bold">Nó. documento</td>
-            <td>{{ $documento -> getNumero() }}</td>
+            <td>{{ $documento->getNumero() }}</td>
         </tr>
         <tr class="odd">
             <td class="bold">Asunto</td>
-            <td>{{ $detalle -> getDescripcion() }}</td>
+            <td>{{ $detalle->getDescripcion() }}</td>
         </tr>
         <tr class="even">
             <td class="bold">Municipio</td>
-            <td>{{ $detalle -> Municipio -> getNombre() }}</td>
+            <td>{{ $detalle->Municipio->getNombre() }}</td>
         </tr>
         <tr class="odd">
             <td class="bold">Nombre del responsable</td>
-            <td>{{ $detalle -> getResponsable() }}</td>
+            <td>{{ $detalle->getResponsable() }}</td>
         </tr>
     </table>
 
@@ -125,19 +125,19 @@
     <table class="border">
         <tr class="odd">
             <td width="25%" class="bold">Nombre completo</td>
-            <td width="75%">{{ $detalle -> getEntregoNombre() }}</td>
+            <td width="75%">{{ $detalle->getEntregoNombre() }}</td>
         </tr>
         <tr class="even">
             <td class="bold">Teléfono</td>
-            <td>{{ $detalle -> getEntregoTelefono() }}</td>
+            <td>{{ $detalle->getEntregoTelefono() }}</td>
         </tr>
         <tr class="odd">
             <td class="bold">Correo electrónico</td>
-            <td>{{ $detalle -> getEntregoEmail() }}</td>
+            <td>{{ $detalle->getEntregoEmail() }}</td>
         </tr>
         <tr class="even">
             <td class="bold">Identificación</td>
-            <td>{{ $detalle -> getEntregoIdentificacion() }}</td>
+            <td>{{ $detalle->getEntregoIdentificacion() }}</td>
         </tr>
     </table>
     
@@ -146,11 +146,11 @@
     <table class="border">
         <tr class="odd">
             <td width="25%" class="bold">Anexos</td>
-            <td width="75%">{!! $detalle -> presenter() -> getAnexos() !!}</td>
+            <td width="75%">{!! $detalle->presenter()->getAnexos() !!}</td>
         </tr>
         <tr class="even">
             <td class="bold">Observaciones</td>
-            <td>{{ $detalle -> getObservaciones() }}</td>
+            <td>{{ $detalle->getObservaciones() }}</td>
         </tr>
     </table>
 
@@ -158,24 +158,24 @@
 
     <table width="80%">
         <tr>
-            @if (! empty($detalle -> getEntregoNombre()) )
+            @if (! empty($detalle->getEntregoNombre()) )
             <td width="45%" style="border-bottom: 1pt #000000 solid"></td>
             <td width="10%"></td>
             @endif
             <td width="45%" style="border-bottom: 1pt #000000 solid"></td>
         </tr>
         <tr>
-            @if (! empty($detalle -> getEntregoNombre()) )
+            @if (! empty($detalle->getEntregoNombre()) )
             <td class="text-center" style="vertical-align: top;">
                 <b>Entregado por</b><br>
-                {{ $detalle -> getEntregoNombre() }}
+                {{ $detalle->getEntregoNombre() }}
             </td>
             <td></td>
             @endif
             <td class="text-center" style="vertical-align: top;">
                 <b>Recibido por</b><br>
-                {{ $usuario -> UsuarioDetalle -> presenter() -> nombreCompleto() }}<br>
-                {{ $usuario -> UsuarioDetalle -> Puesto -> getNombre() }}
+                {{ $usuario->UsuarioDetalle->presenter()->getNombreCompleto() }}<br>
+                {{ $usuario->UsuarioDetalle->Puesto->getNombre() }}
             </td>
         </tr>
     </table>

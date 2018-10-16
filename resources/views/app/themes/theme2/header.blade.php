@@ -29,8 +29,7 @@
         <!-- Notifications -->
         <div class="btn-group" role="group" id="header-notifications">
             <button type="button" class="btn btn-rounded btn-dual-secondary" id="page-header-notifications" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fa fa-bell"></i>
-                <span id="icon-bell-notification" class="badge badge-primary badge-pill d-none">5</span>
+                <i class="fa fa-fw fa-bell"></i><span id="icon-bell-notification" class="badge badge-primary badge-pill d-none"></span>
             </button>
             <div class="dropdown-menu dropdown-menu-right min-width-300 pr-5 pl-5" aria-labelledby="page-header-notifications">
                 <h5 class="h6 text-center mb-5 pb-5 border-b text-uppercase">Notificaciones</h5>
@@ -65,11 +64,19 @@
 
         <!-- User Dropdown -->
         <div class="btn-group" role="group">
-            <button type="button" class="btn btn-rounded btn-dual-primary d-none d-md-inline" id="page-header-user-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ user() -> getDescripcion() }}<i class="fa fa-angle-down ml-5"></i> </button>
+            <button type="button" class="btn btn-rounded btn-dual-primary d-none d-md-inline" id="page-header-user-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{ user()->UsuarioDetalle->presenter()->getNombreCompleto() }}
+                <i class="fa fa-angle-down ml-5"></i>
+            </button>
             <button type="button" class="btn btn-rounded btn-dual-primary d-xs-inline d-sm-inline d-md-none" id="page-header-user-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-user"></i><i class="fa fa-angle-down ml-5"></i></button>
             <div class="dropdown-menu dropdown-menu-right min-width-150" aria-labelledby="page-header-user-dropdown">
+                <div class="dropdown-item text-center">
+                    {!! user()->presenter()->imgAvatarSmall() !!}<br>
+                    <b>{{ user()->UsuarioDetalle->getNoTrabajador() }} :: {{ user()->UsuarioDetalle->presenter()->getNombreCompleto() }}</b><br>
+                    {{ user()->getDescripcion() }}
+                </div>
                 <a class="dropdown-item" href="{{ url('usuario/perfil') }}">
-                    <i class="si si-user mr-5"></i> Perfil
+                    <i class="si si-user mr-5"></i> Modificar perfil
                 </a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="{{ route('logout') }}">

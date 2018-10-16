@@ -3,7 +3,6 @@ namespace App\Http\Controllers\Configuracion\Usuario;
 
 use Illuminate\Http\Request;
 use App\Http\Requests;
-use Illuminate\Support\Facades\Cache;
 
 /* Controllers */
 use App\Http\Controllers\BaseController;
@@ -144,7 +143,7 @@ class PermisoAsignacionController extends BaseController
         $this -> editarAsignacionesUsuario( $usuario, $request );
 
         // Eliminamos el caché de los permisos del usuario, para cargarle de nuevo los permisos que debe tener asignados
-        Cache::forget(sprintf('Permisos.Usuario.Actual.%d', $usuario -> getKey()));
+        cache()->forget(sprintf('Permisos.Usuario.Actual.%d', $usuario -> getKey()));
 
         return $this -> responseSuccessJSON('<i class="fa fa-fw fa-lock"></i> Los cambios se han guardado correctamente');
     }

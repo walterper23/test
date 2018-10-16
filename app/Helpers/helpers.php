@@ -4,13 +4,16 @@ use Illuminate\Support\Facades\Cache;
 if (! function_exists('config_var'))
 {
     // Helper para recuperar las variables de configuración del sistema
-    function config_var( $key_var, $default = '' )
+    function config_var( $key_var, $default = null )
     {
-        $config = Cache::rememberForever('System.Config.Variables',function(){
-            return \App\Model\System\MSystemConfig::select('SYCO_VARIABLE','SYCO_VALOR') -> pluck('SYCO_VALOR','SYCO_VARIABLE') -> toArray();
-        });
+        $config = cache('System.Config.Variables.Array');
 
-        return $config[$key_var];
+        if( isset($config[$key_var]) )
+        {
+            return $config[$key_var];
+        }
+
+        return $default;
     }
 }
 
