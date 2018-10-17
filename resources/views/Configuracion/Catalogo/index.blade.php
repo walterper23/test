@@ -18,20 +18,23 @@
 @endsection
 
 @section('content')
+
+    <h2 class="content-heading text-center" style="border-bottom: 0px;">Catálogos <small>del sistema</small></h2>
+
     <div class="row gutters-tiny justify-content-center">
-        @can('SIS.ADMIN.DIRECC')
+        @if( user()->canAtLeast('SIS.ADMIN.CATALOGOS','SIS.ADMIN.DIRECC') )
         <div class="col-6 col-md-4 col-xl-3">
             <a class="block block-rounded block-bordered block-link-pop text-center" href="{{ url('configuracion/catalogos/direcciones') }}">
                 <div class="block-content">
                     <p class="font-size-h1 text-success">
                         <strong>{{ $direcciones }}</strong>
                     </p>
-                    <p class="font-w600"><i class="fa fa-fw fa-sitemap"></i> Direcciones</p>
+                    <p class="font-w600"><i class="fa fa-fw fa-legal"></i> Direcciones</p>
                 </div>
             </a>
         </div>
-        @endcan
-        @can('SIS.ADMIN.DEPTOS')
+        @endif
+        @if( user()->canAtLeast('SIS.ADMIN.CATALOGOS','SIS.ADMIN.DEPTOS') )
         <div class="col-6 col-md-4 col-xl-3">
             <a class="block block-rounded block-bordered block-link-pop text-center" href="{{ url('configuracion/catalogos/departamentos') }}">
                 <div class="block-content">
@@ -42,8 +45,8 @@
                 </div>
             </a>
         </div>
-        @endcan
-        @can('SIS.ADMIN.PUESTOS')
+        @endif
+        @if( user()->canAtLeast('SIS.ADMIN.CATALOGOS','SIS.ADMIN.PUESTOS') )
         <div class="col-6 col-md-4 col-xl-3">
             <a class="block block-rounded block-bordered block-link-pop text-center" href="{{ url('configuracion/catalogos/puestos') }}">
                 <div class="block-content">
@@ -54,10 +57,10 @@
                 </div>
             </a>
         </div>
-        @endcan
+        @endif
     </div>
     <div class="row gutters-tiny justify-content-center">
-        @can('SIS.ADMIN.ANEXOS')
+        @if( user()->canAtLeast('SIS.ADMIN.CATALOGOS','SIS.ADMIN.ANEXOS') )
         <div class="col-6 col-md-4 col-xl-3">
             <a class="block block-rounded block-bordered block-link-pop text-center" href="{{ url('configuracion/catalogos/anexos') }}">
                 <div class="block-content">
@@ -68,8 +71,8 @@
                 </div>
             </a>
         </div>
-        @endcan
-        @can('SIS.ADMIN.ESTA.DOC')
+        @endif
+        @if( user()->canAtLeast('SIS.ADMIN.CATALOGOS','SIS.ADMIN.ESTA.DOC') )
         <div class="col-6 col-md-4 col-xl-3">
             <a class="block block-rounded block-bordered block-link-pop text-center" href="{{ url('configuracion/catalogos/estados-documentos') }}">
                 <div class="block-content">
@@ -80,8 +83,8 @@
                 </div>
             </a>
         </div>
-        @endcan
-        @can('USU.ADMIN.USUARIOS')
+        @endif
+        @if( user()->canAtLeast('USU.ADMIN.USUARIOS') )
         <div class="col-6 col-md-4 col-xl-3">
             <a class="block block-rounded block-bordered block-link-pop text-center" href="{{ url('configuracion/usuarios') }}">
                 <div class="block-content">
@@ -92,6 +95,43 @@
                 </div>
             </a>
         </div>
-        @endcan
+        @endif
+    </div>
+
+    <h2 class="content-heading text-center mt-10" style="border-bottom: 0px;">Configuraciones <small>del sistema</small></h2>
+
+    <div class="row gutters-tiny justify-content-center">
+        @if( user()->canAtLeast('SIS.ADMIN.CONFIG') )
+        <div class="col-6 col-md-4 col-xl-3">
+            <a class="block block-rounded block-bordered block-link-pop text-center" href="{{ url('configuracion/sistema/tipos-documentos') }}">
+                <div class="block-content">
+                    <p class="font-size-h1 text-primary">
+                        <strong>{{ $systemTiposDocumentos }}</strong>
+                    </p>
+                    <p class="font-w600"><i class="fa fa-fw fa-files-o"></i> Tipos de documentos</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-md-4 col-xl-3">
+            <a class="block block-rounded block-bordered block-link-pop text-center" href="{{ url('configuracion/sistema/estados-documentos') }}">
+                <div class="block-content">
+                    <p class="font-size-h1 text-primary">
+                        <strong>{{ $systemEstadosDocumentos }}</strong>
+                    </p>
+                    <p class="font-w600"><i class="fa fa-fw fa-tags"></i> Estados de documentos</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-md-4 col-xl-3">
+            <a class="block block-rounded block-bordered block-link-pop text-center" href="{{ url('configuracion/sistema/variables') }}">
+                <div class="block-content">
+                    <p class="font-size-h1 text-pulse">
+                        <strong>{{ $systemConfigVariables }}</strong>
+                    </p>
+                    <p class="font-w600"><i class="fa fa-fw fa-cogs"></i> Variables</p>
+                </div>
+            </a>
+        </div>
+        @endif
     </div>
 @endsection

@@ -31,17 +31,41 @@ class DashboardController extends BaseController
 
     public function index(Request $request)
     {
-        $fecha_documentos_recibidos_hoy = Carbon::now()->format('d \d\e xm \d\e Y');
-        $fecha_documentos_recibidos_hoy = nombreFecha($fecha_documentos_recibidos_hoy);
+        if( user()->can('REC.DOCUMENTO.LOCAL') ) // Recepcionista local
+        {
+            return redirect('recepcion/documentos');
+        }
+        else if( user()->can('REC.DOCUMENTO.FORANEO') ) // Recepcionista foráneo
+        {
+            return redirect('recepcion/documentos-foraneos');
+        }
+        else if( user()->can('SEG.PANEL.TRABAJO') ) // Dirección y/o departamento
+        {
+            return redirect('panel/documentos');
+        }else if( user()->canAtLeast('REPO.VER.GRA.DIA.SEM','REPO.VER.GRA.MEN.ANUAL') ){
 
-        $mes_actual = nombreFecha( Carbon::now()->format('xm') );
+            $fecha_documentos_recibidos_hoy = Carbon::now()->format('d \d\e xm \d\e Y');
+            $fecha_documentos_recibidos_hoy = nombreFecha($fecha_documentos_recibidos_hoy);
 
-        $inicio_semana           = Carbon::now()->startOfWeek();
-        $fin_semana              = Carbon::now()->endOfWeek();
-        $fecha_documentos_semana = sprintf('Lunes %s a Domingo %s', $inicio_semana->format('d'), $fin_semana->format('d \d\e xm') );
-        $fecha_documentos_semana = nombreFecha($fecha_documentos_semana);
+            $mes_actual = nombreFecha( Carbon::now()->format('xm') );
 
-        return view('Dashboard.indexDashboard', compact('fecha_documentos_recibidos_hoy','fecha_documentos_semana','mes_actual'));
+            $inicio_semana           = Carbon::now()->startOfWeek();
+            $fin_semana              = Carbon::now()->endOfWeek();
+            $fecha_documentos_semana = sprintf('Lunes %s a Domingo %s', $inicio_semana->format('d'), $fin_semana->format('d \d\e xm') );
+            $fecha_documentos_semana = nombreFecha($fecha_documentos_semana);
+
+            return view('Dashboard.indexDashboard', compact('fecha_documentos_recibidos_hoy','fecha_documentos_semana','mes_actual'));
+
+        }
+        else if( user()->canAtLeast('SIS.ADMIN.CATALOGOS','SIS.ADMIN.CONFIG') ) // Administrador del sistema
+        {
+            return redirect('configuracion/catalogos');
+        }
+        else // Pantalla de inicio por default
+        {
+            return view('Dashboard.indexDefault');
+        }
+        
     }
 
 

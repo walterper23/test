@@ -47,6 +47,27 @@ class MSystemTipoDocumento extends BaseModel
         ];
     }
 
+    public static function getAllTiposDocumentos()
+    {
+        $tipos = cache('System.Tipos.Documentos');
+
+        if( is_null($tipos) )
+        {
+            self::setAllVariables();
+            return self::getAllTiposDocumentos();
+        }
+
+        return $tipos;
+    }
+
+    public static function setAllVariables()
+    {
+        cache()->forget('System.Tipos.Documentos');
+
+        cache()->rememberForever('System.Tipos.Documentos',function(){
+            return self::existente()->disponible()->get();
+        });
+    }
 
     /* Relationships */
 

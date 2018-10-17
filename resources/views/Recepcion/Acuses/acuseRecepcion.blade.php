@@ -13,7 +13,7 @@
         body {
             font-family: 'Calibri';
             font-size: 10pt;
-            background-image: url('img/background/background.png');
+            background-image: url('/img/background/background.png');
             background-repeat : no-repeat;
             background-position: right center;
         }
@@ -63,11 +63,11 @@
     <htmlpageheader name="page-header">
         <table>
             <tr>
-                <td width="20%" class="text-center">{{ Html::image('img/background/escudo-qroo.png','',['width'=>'50']) }}</td>
-                <td width="60%" class="text-center bold" style="color: #0088CC">
+                <td width="25%" class="text-center">{{ Html::image(config_var('Institucion.Login.Logo.Izquierdo'),'',['width'=>'50']) }}</td>
+                <td width="50%" class="text-center bold" style="color: #0088CC">
                     <h3>{{ config_var('Institucion.Nombre') }}</h3>
                 </td>
-                <td width="20%" class="text-center">{{ Html::image('img/background/ppa.png','',['width'=>'150']) }}</td>
+                <td width="25%" class="text-center">{{ Html::image(config_var('Institucion.Login.Logo.Derecho'),'',['width'=>'150']) }}</td>
             </tr>
         </table>
     </htmlpageheader>
@@ -190,7 +190,7 @@
             </tr>
             <tr>
                 <td class="text-left">
-                    {{ title(config_var('Sistema.Nombre')) }}<br>   
+                    {{ title(config_var('Sistema.Nombre') . ' v' . config_var('Sistema.Version')) }}<br>   
                     <b>Acuse generado:</b> {{ date('Y-m-d h:i:s a') }}</td>
                 <td class="text-right">Página <b>{PAGENO}</b> de <b>{nb}</b></td>
             </tr>

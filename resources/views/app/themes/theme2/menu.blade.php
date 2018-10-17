@@ -34,7 +34,7 @@ If your sidebar menu includes icons and you would like to hide them, you can add
             </li>
             @can('REC.RECIBIR.FORANEO')
             <li>
-                <a class="nav-submenu" data-toggle="nav-submenu" href="{{ url('recepcion/documentos/foraneos?view=denuncias') }}">Recepciones foráneas</a>
+                <a class="nav-submenu" data-toggle="nav-submenu" href="{{ url('recepcion/documentos/foraneos?view=denuncias') }}">Recibir recepciones foráneas</a>
                 <ul>
                     <li>
                         <a href="{{ url('recepcion/documentos/foraneos?view=denuncias') }}">Denuncias</a>
@@ -63,7 +63,7 @@ If your sidebar menu includes icons and you would like to hide them, you can add
             <!--li>
                 <a href="{{ url('recepcion/documentos-foraneos/en-captura') }}">En captura</a>
             </li-->
-            @can('REC.VER.FORANEO')
+            @if( user()->canAtLeast('REC.DOCUMENTO.FORANEO','REC.VER.FORANEO') )
             <li>
                 <a class="nav-submenu" data-toggle="nav-submenu" href="{{ url('recepcion/documentos-foraneos/recepcionados') }}">Recepcionados</a>
                 <ul>
@@ -78,7 +78,7 @@ If your sidebar menu includes icons and you would like to hide them, you can add
                     </li>
                 </ul>
             </li>
-            @endcan
+            @endif
         </ul>
     </li>
     @endcan
@@ -127,40 +127,40 @@ If your sidebar menu includes icons and you would like to hide them, you can add
     </li>
     @endcan
     --}}
-    @if( user() -> canAtLeast('SIS.ADMIN.ANEXOS','SIS.ADMIN.DIRECC','SIS.ADMIN.DEPTOS','SIS.ADMIN.PUESTOS',
-                    'SIS.ADMIN.ESTA.DOC','USU.ADMIN.USUARIOS','USU.ADMIN.PERMISOS.ASIG','SIS.ADMIN.CONFIG') )
+    @if( user() -> canAtLeast('SIS.ADMIN.CATALOGOS','SIS.ADMIN.CONFIG','SIS.ADMIN.ANEXOS','SIS.ADMIN.DIRECC','SIS.ADMIN.DEPTOS','SIS.ADMIN.PUESTOS',
+                    'SIS.ADMIN.ESTA.DOC','USU.ADMIN.USUARIOS','USU.ADMIN.PERMISOS.ASIG') )
     <li>
         <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)"><i class="fa fa-fw fa-cogs"></i>Configuración</a>
         <ul>
-            @if( user() -> canAtLeast('SIS.ADMIN.ANEXOS','SIS.ADMIN.DIRECC','SIS.ADMIN.DEPTOS','SIS.ADMIN.PUESTOS','SIS.ADMIN.ESTA.DOC') )
+            @if( user() -> canAtLeast('SIS.ADMIN.CATALOGOS','SIS.ADMIN.ANEXOS','SIS.ADMIN.DIRECC','SIS.ADMIN.DEPTOS','SIS.ADMIN.PUESTOS','SIS.ADMIN.ESTA.DOC') )
             <li>
                 <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)">Catálogos</a>
                 <ul>
-                    @can('SIS.ADMIN.ANEXOS')
+                    @if( user() -> canAtLeast('SIS.ADMIN.CATALOGOS','SIS.ADMIN.ANEXOS') )
                     <li>
                         <a href="{{ url('configuracion/catalogos/anexos') }}">Anexos</a>
                     </li>
-                    @endcan
-                    @can('SIS.ADMIN.DIRECC')
+                    @endif
+                    @if( user() -> canAtLeast('SIS.ADMIN.CATALOGOS','SIS.ADMIN.DIRECC') )
                     <li>
                         <a href="{{ url('configuracion/catalogos/direcciones') }}">Direcciones</a>
                     </li>
-                    @endcan
-                    @can('SIS.ADMIN.DEPTOS')
+                    @endif
+                    @if( user() -> canAtLeast('SIS.ADMIN.CATALOGOS','SIS.ADMIN.DEPTOS') )
                     <li>
                         <a href="{{ url('configuracion/catalogos/departamentos') }}">Departamentos</a>
                     </li>
-                    @endcan
-                    @can('SIS.ADMIN.PUESTOS')
+                    @endif
+                    @if( user() -> canAtLeast('SIS.ADMIN.CATALOGOS','SIS.ADMIN.PUESTOS') )
                     <li>
                         <a href="{{ url('configuracion/catalogos/puestos') }}">Puestos</a>
                     </li>
-                    @endcan
-                    @can('SIS.ADMIN.ESTA.DOC')
+                    @endif
+                    @if( user() -> canAtLeast('SIS.ADMIN.CATALOGOS','SIS.ADMIN.ESTA.DOC' ))
                     <li>
                         <a href="{{ url('configuracion/catalogos/estados-documentos') }}">Estados de documentos</a>
                     </li>
-                    @endcan
+                    @endif
                 </ul>
             </li>
             @endcan
@@ -205,6 +205,6 @@ If your sidebar menu includes icons and you would like to hide them, you can add
         </ul>
     </li>
     @endif
-    {{--<li>
+    <li>
         <a href="{{ url() -> previous() }}"><i class="si si-action-undo"></i>Regresar</a>
-    </li>--}}
+    </li>

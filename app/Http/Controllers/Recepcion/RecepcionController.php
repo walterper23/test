@@ -241,7 +241,7 @@ class RecepcionController extends BaseController
                 $denuncia->save();
 
                 $redirect = '?view=denuncias';
-                $folio_acuse = $folio_acuse . $denuncia->getCodigo(); // ARD/2018/10/005/DENU/001
+                $folio_acuse .= $denuncia->getCodigo(); // ARD/2018/10/005/DENU/001
             }
             else if ( $tipo_documento->getKey() == 2 ) // Si el tipo de documento es un documento para denuncia ...
             {
@@ -257,12 +257,12 @@ class RecepcionController extends BaseController
                 $documentoDenuncia->save();
 
                 $redirect = '?view=documentos-denuncias';
-                $folio_acuse = $folio_acuse . $documentoDenuncia->getCodigo();  // ARD/2018/10/005/DODE/002
+                $folio_acuse .= $documentoDenuncia->getCodigo();  // ARD/2018/10/005/DODE/002
             }
             else
             {
                 $redirect = '?view=documentos';
-                $folio_acuse = $folio_acus . $documento->getCodigo(); // ARD/2018/10/005/DENU/005
+                $folio_acuse .= $documento->getCodigo(); // ARD/2018/10/005/DENU/005
             }
 
             // Sustituimos las diagonales por guiones bajos

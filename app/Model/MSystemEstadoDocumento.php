@@ -12,8 +12,17 @@ class MSystemEstadoDocumento extends Model
     protected $primaryKey     = 'SYED_ESTADO_DOCUMENTO';
     public    $timestamps     = false;
 
+    /* Methods */
     public function getNombre(){
-    	return $this -> attributes['SYED_NOMBRE'];
+    	return $this->getAttribute('SYED_NOMBRE');
+    }
+
+    public static function getAllEstadosDocumentos()
+    {
+        return cache()->rememberForever('System.Estados.Documentos',function(){
+            return self::all();
+        });
+
     }
 
     /* Relationships */

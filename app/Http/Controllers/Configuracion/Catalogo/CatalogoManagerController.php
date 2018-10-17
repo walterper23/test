@@ -12,6 +12,10 @@ use App\Model\Catalogo\MEstadoDocumento;
 use App\Model\Catalogo\MPuesto;
 use App\Model\MUsuario;
 
+use App\Model\System\MSystemTipoDocumento;
+use App\Model\System\MSystemEstadoDocumento;
+use App\Model\System\MSystemConfig;
+
 /**
  * Controlador para crear un acceso a los catálogos del sistema
  */
@@ -23,12 +27,16 @@ class CatalogoManagerController extends BaseController
 	public function index(){
 
 		$data = [
-			'anexos'            => MAnexo::existenteDisponible() -> count(),
-			'departamentos'     => MDepartamento::existenteDisponible() -> count(),
-			'direcciones'       => MDireccion::existenteDisponible() -> count(),
-			'puestos'           => MPuesto::existenteDisponible() -> count(),
-			'estadosDocumentos' => MEstadoDocumento::existenteDisponible() -> count(),
-			'usuarios'          => MUsuario::existenteDisponible() -> count(),
+			'anexos'                  => MAnexo::existenteDisponible()->count(),
+			'departamentos'           => MDepartamento::existenteDisponible()->count(),
+			'direcciones'             => MDireccion::existenteDisponible()->count(),
+			'puestos'                 => MPuesto::existenteDisponible()->count(),
+			'estadosDocumentos'       => MEstadoDocumento::existenteDisponible()->count(),
+			'usuarios'                => MUsuario::existenteDisponible()->count(),
+			
+			'systemTiposDocumentos'   => MSystemTipoDocumento::getAllTiposDocumentos()->count(),
+			'systemEstadosDocumentos' => MSystemEstadoDocumento::getAllEstadosDocumentos()->count(),
+			'systemConfigVariables'   => MSystemConfig::getAllVariables()->count(),
 		];
 
 		return view('Configuracion.Catalogo.index')->with($data);

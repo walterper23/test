@@ -30,6 +30,11 @@ class MSystemConfig extends BaseModel
     	return $this->getAttribute('SYCO_VALOR');
     }
 
+    public static function getAllVariables()
+    {
+    	return cache('System.Config.Variables');
+    }
+
     public static function setAllVariables()
     {
     	cache()->forget('System.Config.Variables');

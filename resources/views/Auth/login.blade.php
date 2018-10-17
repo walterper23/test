@@ -42,20 +42,20 @@
                         
                         <div class="row text-center px-5">
                             <div class="col-md-3 col-sm-12">
-                                {{ Html::image('img/background/escudo-qroo.png','',['width'=>'65']) }}
+                                {{ Html::image(config_var('Institucion.Login.Logo.Izquierdo'),'',['width'=>'65']) }}
                             </div>
                             <div class="col-md-6 col-sm-12">
-                                <h2 class="h2 text-primary"><strong>{!! str_replace('\n', '<br>', config_var('Institucion.Nombre')) !!}</strong></h2>
+                                <h2 class="h2 text-primary"><strong>{{ config_var('Institucion.Nombre') }}</strong></h2>
                             </div>
                             <div class="col-md-3 col-sm-12">
-                                {{ Html::image('img/background/ppa.png','',['width'=>'245']) }}
+                                {{ Html::image(config_var('Institucion.Login.Logo.Derecho'),'',['width'=>'245']) }}
                             </div>
                         </div>
 
                         <!-- Header -->
                         <div class="py-30 px-5 text-center">
                             <h1 class="h2 font-w700 mt-30 mb-10">
-                                {{ config_var('Sistema.Nombre') }}<br>
+                                {{ config_var('Sistema.Nombre') . ' v' . config_var('Sistema.Version') }}<br>
                                 {{ Html::image('img/favicon/logo.png','',['width'=>'60']) }}
                             </h1>
                             <h2 class="h4 font-w400 text-muted mb-0">Iniciar sesi&oacute;n</h2>
@@ -85,7 +85,7 @@
                                     <div class="form-group row">
                                         <div class="col-12">
                                             <label class="css-control css-control-sm css-control-primary css-switch">
-                                                <input type="checkbox" class="css-control-input" id="remember" name="remember">
+                                                <input type="checkbox" class="css-control-input" id="remember" name="remember" checked="checked">
                                                 <span class="css-control-indicator"></span> Mantener sesi&oacute;n
                                             </label>
                                         </div>
@@ -103,11 +103,11 @@
                                                 <i class="si si-login mr-10"></i> Entrar
                                             </button>
                                         </div>
-                                        <!--div class="col-12">
-                                            <a class="btn btn-block btn-noborder btn-rounded btn-alt-secondary" href="{{ url('/password/reset') }}">
+                                        {{-- <div class="col-12">
+                                            <a class="btn btn-block btn-noborder btn-rounded btn-alt-secondary" href="{{ url('password/reset') }}">
                                                 <i class="fa fa-warning text-muted mr-5"></i> Olvid&eacute; mi contrase&ntilde;a
                                             </a>
-                                        </div-->
+                                        </div> --}}
                                     </div>
                                 {{ Form::close() }}
                             </div>
@@ -125,9 +125,8 @@
         {{ Html::script('js/core/jquery.min.js') }}
         {{ Html::script('js/core/bootstrap.bundle.min.js') }}
         {{ Html::script('js/core/jquery.slimscroll.min.js') }}
-        {{ Html::script('js/core/jquery.scrollLock.min.js') }}
+        {{ Html::script('js/core/jquery-scrollLock.min.js') }}
         {{ Html::script('js/core/jquery.appear.min.js') }}
-        {{ Html::script('js/core/jquery.countTo.min.js') }}
         {{ Html::script('js/core/js.cookie.min.js') }}
         {{ Html::script('js/codebase.js') }}
 
