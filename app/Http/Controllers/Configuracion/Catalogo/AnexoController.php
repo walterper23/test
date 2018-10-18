@@ -109,7 +109,7 @@ class AnexoController extends BaseController
             $anexo->ANEX_NOMBRE = $request->nombre;
             $anexo->save();
 
-            Cache::forget('anexosExistentesDisponibles');
+            cache()->forget('anexosExistentesDisponibles');
 
             $message = sprintf('<i class="fa fa-fw fa-clipboard"></i> Anexo <b>%s</b> creado',$anexo->getCodigo());
             
@@ -164,7 +164,7 @@ class AnexoController extends BaseController
             $anexo->ANEX_NOMBRE = $request->nombre;
             $anexo->save();
 
-            Cache::forget('anexosExistentesDisponibles');
+            cache()->forget('anexosExistentesDisponibles');
 
             $message = sprintf('<i class="fa fa-fw fa-check"></i> Anexo <b>%s</b> modificado',$anexo->getCodigo());
 
@@ -208,7 +208,7 @@ class AnexoController extends BaseController
             $anexo = MAnexo::find( $request->id );
             $anexo->cambiarDisponibilidad()->save();
 
-            Cache::forget('anexosExistentesDisponibles');
+            cache()->forget('anexosExistentesDisponibles');
 
             if ( $anexo->disponible() )
             {
@@ -235,7 +235,7 @@ class AnexoController extends BaseController
             $anexo = MAnexo::find( $request->id );
             $anexo->eliminar()->save();
 
-            Cache::forget('anexosExistentesDisponibles');
+            cache()->forget('anexosExistentesDisponibles');
             
             // Lista de tablas que se van a recargar automáticamente
             $tables = 'dataTableBuilder';

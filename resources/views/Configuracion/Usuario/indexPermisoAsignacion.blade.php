@@ -13,16 +13,12 @@
 @endsection
 
 @section('content')
-    <div class="block block-bordered block-mode-loading-refresh" id="context-{{ $form_id }}">
-        <ul class="nav nav-tabs nav-tabs-alt nav-tabs-block align-items-center" data-toggle="tabs" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link active" href="#btabswo-static-one">Permisos</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#btabswo-static-two">Asignaciones</a>
-            </li>
-            <li class="nav-item ml-auto">
-                <div class="block-options mr-15">
+    {{ Form::open(['url'=>$url_send_form,'id'=>$form_id,'method'=>'POST']) }}
+    {{ Form::hidden('action',2) }}
+    <div class="block block-themed block-mode-loading-refresh" id="context-{{ $form_id }}">
+        <div class="block-header bg-earth">
+            <h3 class="block-title"><i class="fa fa-fw fa-lock mr-5"></i> Configuración de permisos y asignaciones de usuarios</h3>
+            <div class="block-options">
                 @can('USU.ADMIN.USUARIOS')
                 <button type="button" class="btn-block-option d-none d-sm-inline" onclick="hUsuario.new_('form-usuario','{{ url('configuracion/usuarios/nuevo') }}')">
                     <i class="fa fa-user-plus"></i> Nuevo usuario
@@ -50,16 +46,21 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <ul class="nav nav-tabs nav-tabs-alt nav-tabs-block align-items-center" data-toggle="tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" href="#btabswo-static-one">Permisos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#btabswo-static-two">Asignaciones</a>
+            </li>
+            <li class="nav-item ml-auto" style="width: 40%">
+                <div class="block-options mr-15">
+                    {!! Field::selectTwo('select2-usuario',$userKey,['label'=>'Usuario'], $usuarios) !!}
+                </div>
             </li>
         </ul>
-        {{ Form::open(['url'=>$url_send_form,'id'=>$form_id,'method'=>'POST']) }}
-        {{ Form::hidden('action',2) }}
         <div class="block-content tab-content">
-            <div class="row">
-                <div class="col-md-6">
-                    {!! Field::selectTwo('usuario',$userKey,['label'=>'Usuario'], $usuarios) !!}
-                </div>
-            </div>
             <div class="tab-pane active" id="btabswo-static-one" role="tabpanel">
                 <div class="row">
                     <div class="col-md-12">
@@ -128,7 +129,6 @@
                 </div>
             </div>
         </div>
-        {{ Form::close() }}
         <div class="block-content block-content-full block-content-sm bg-body-light">
             <div class="row">
                 <div class="col-md-12 text-right">
@@ -138,6 +138,7 @@
             </div>
         </div>
     </div>
+    {{ Form::close() }}
 @endsection
 
 @push('js-script')
@@ -158,12 +159,15 @@
         var checkboxPermisos      = $('input[name="permisos[]"]');
         var checkboxDirecciones   = $('input[name="direcciones[]"]');
         var checkboxDepartamentos = $('input[name="departamentos[]"]');
+        var selectUsuario         = $('#select2-usuario');
 
         this.start = function(){
             Codebase.helper('select2');
 
             var self = this;
-            var selectUsuario = $('#usuario').on('change',function(){
+            selectUsuario.closest('.form-group').removeClass('form-group');
+
+            selectUsuario.on('change',function(){
                 if ( this.value.length ){
 
                     checkboxPermisos.prop('checked',false);
@@ -222,13 +226,13 @@
 
         this.rules = function(){
             return {
-                usuario : { required : true }
+                'select2-usuario' : { required : true }
             }
         };
 
         this.messages = function(){
             return {
-                usuario : { required : 'Especifique un usuario' }
+                'select2-usuario' : { required : 'Especifique un usuario' }
             }
         };
 

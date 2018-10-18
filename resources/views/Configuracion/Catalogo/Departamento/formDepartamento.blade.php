@@ -6,8 +6,8 @@
 {{ Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) }}
 	{!! Form::hidden('action',$action) !!}
 	{!! Form::hidden('id',$id) !!}
-    {!! Field::select('direccion',(optional($modelo) -> DEPA_DIRECCION),['label'=>'Direccion','required'],$direcciones) !!}
-	{!! Field::text('nombre',(optional($modelo) -> DEPA_NOMBRE),['label'=>'Nombre','placeholder'=>'Nombre del departamento','autofocus','required']) !!}
+    {!! Field::select('direccion',(optional($modelo) -> getDireccion()),['label'=>'Direccion','required'],$direcciones) !!}
+	{!! Field::text('nombre',(optional($modelo) -> getNombre()),['label'=>'Nombre','placeholder'=>'Nombre del departamento','autofocus','required']) !!}
 {{ Form::close() }}
 @endsection
 

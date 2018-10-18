@@ -25,9 +25,9 @@
             <li class="nav-item">
                 <a class="nav-link" href="#btabswo-static-three">Recepción</a>
             </li>
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link" href="#btabswo-static-four">Logos & imágenes</a>
-            </li>
+            </li> --}}
             <li class="nav-item">
                 <a class="nav-link" href="#btabswo-static-five">Adicional</a>
             </li>
@@ -36,7 +36,7 @@
         {{ Form::hidden('action',1) }}
         <div class="block-content tab-content">
             <div class="tab-pane active" id="btabswo-static-one" role="tabpanel">
-                <div class="col-md-8">
+                <div class="col-md-7">
                     @foreach([1,2,14] as $key)
                     @php $variable = $var[ $key ]; @endphp
                     {!! Field::text('var' . $key,$variable->getValor(),['label'=>$variable->getNombre(),'popover'=>[$variable->getNombre(),$variable->getDescripcion()]]) !!}
@@ -44,19 +44,21 @@
                 </div>
             </div>
             <div class="tab-pane" id="btabswo-static-two" role="tabpanel">
-                <div class="col-md-8">
-                    @foreach([3,4,5,6] as $key)
+                <div class="col-md-7">
+                    @foreach([3,4,6] as $key)
                     @php $variable = $var[ $key ]; @endphp
                     {!! Field::text('var' . $key,$variable->getValor(),['label'=>$variable->getNombre(),'popover'=>[$variable->getNombre(),$variable->getDescripcion()]]) !!}
                     @endforeach
+                    {!! Field::textarea('var5',$var[5]->getValor(),['label'=>$var[5]->getNombre(),'popover'=>[$var[5]->getNombre(),$var[5]->getDescripcion()],'size'=>'20x3','noresize']) !!}
                 </div>
             </div>
             <div class="tab-pane" id="btabswo-static-three" role="tabpanel">
                 <div class="col-md-8">
-                    @foreach([9,10,11,12,15] as $key)
-                    @php $variable = $var[ $key ]; @endphp
-                    {!! Field::text('var' . $key,$variable->getValor(),['label'=>$variable->getNombre(),'popover'=>[$variable->getNombre(),$variable->getDescripcion()]]) !!}
-                    @endforeach
+                    {!! Field::select('var9',$var[9]->getValor(),['label'=>$var[9]->getNombre(),'popover'=>[$var[9]->getNombre(),$var[9]->getDescripcion()],'required','labelWidth'=>'col-md-4','width'=>'col-md-8'],$direcciones) !!}
+                    {!! Field::select('var10',$var[10]->getValor(),['label'=>$var[10]->getNombre(),'popover'=>[$var[10]->getNombre(),$var[10]->getDescripcion()],'labelWidth'=>'col-md-4','width'=>'col-md-8'],$departamentos) !!}
+                    {!! Field::select('var11',$var[11]->getValor(),['label'=>$var[11]->getNombre(),'popover'=>[$var[11]->getNombre(),$var[11]->getDescripcion()],'required','labelWidth'=>'col-md-4','width'=>'col-md-8'],$direcciones) !!}
+                    {!! Field::select('var12',$var[12]->getValor(),['label'=>$var[12]->getNombre(),'popover'=>[$var[12]->getNombre(),$var[12]->getDescripcion()],'labelWidth'=>'col-md-4','width'=>'col-md-8'],$departamentos) !!}
+                    {!! Field::select('var15',$var[15]->getValor(),['label'=>$var[15]->getNombre(),'popover'=>[$var[15]->getNombre(),$var[15]->getDescripcion()],'required','labelWidth'=>'col-md-4','width'=>'col-md-8'],$direcciones) !!}
                 </div>
             </div>
             <div class="tab-pane" id="btabswo-static-four" role="tabpanel">
@@ -66,10 +68,7 @@
             </div>
             <div class="tab-pane" id="btabswo-static-five" role="tabpanel">
                 <div class="col-md-8">
-                    @foreach([13] as $key)
-                    @php $variable = $var[ $key ]; @endphp
-                    {!! Field::text('var' . $key,$variable->getValor(),['label'=>$variable->getNombre(),'popover'=>[$variable->getNombre(),$variable->getDescripcion()]]) !!}
-                    @endforeach
+                    {!! Field::number('var13',$var[13]->getValor(),['label'=>$var[13]->getNombre(),'popover'=>[$var[13]->getNombre(),$var[13]->getDescripcion()]]) !!}
                 </div>
             </div>
         </div>
@@ -123,13 +122,13 @@
 
         this.rules = function(){
             return {
-                usuario : { required : true }
+
             }
         };
 
         this.messages = function(){
             return {
-                usuario : { required : 'Especifique un usuario' }
+                
             }
         };
 

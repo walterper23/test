@@ -3,11 +3,14 @@ namespace App\Http\Controllers\Configuracion\System;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
+use DB;
 
 /* Controllers */
 use App\Http\Controllers\BaseController;
 
 /* Models */
+use App\Model\Catalogo\MDireccion;
+use App\Model\Catalogo\MDepartamento;
 use App\Model\System\MSystemConfig;
 
 /**
@@ -41,6 +44,19 @@ class SystemVariableController extends BaseController
             return [ $item->getKey() => $item ];
         });
 
+
+        $data['direcciones'] = MDireccion::select('DIRE_DIRECCION','DIRE_NOMBRE')
+                                    -> existente()
+                                    -> orderBy('DIRE_NOMBRE')
+                                    -> pluck('DIRE_NOMBRE','DIRE_DIRECCION')
+                                    -> toArray();
+
+        $data['departamentos'] = MDepartamento::select('DEPA_DEPARTAMENTO','DEPA_NOMBRE')
+                                    -> existente()
+                                    -> orderBy('DEPA_NOMBRE')
+                                    -> pluck('DEPA_NOMBRE','DEPA_DEPARTAMENTO')
+                                    -> toArray();
+
 		return view('Configuracion.Sistema.Variables.indexVariables') -> with($data);
 	}
 
@@ -65,6 +81,8 @@ class SystemVariableController extends BaseController
     {
         try {
 
+            DB::beginTransaction();
+
             $variables = MSystemConfig::all();
 
             foreach ([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15] as $key) {
@@ -74,13 +92,20 @@ class SystemVariableController extends BaseController
                 $variable->save();
             }
 
+            DB::commit();
+
             // Eliminando y reiniciando de nuevo las variables en el caché
             MSystemConfig::setAllVariables();
 
-            return $this -> responseSuccessJSON('todo bien');
+            $message = '<i class="fa fa-fw fa-cogs"></i> Cambios guardados correctamente';
 
-        } catch(Exception $error) {
+            return $this->responseSuccessJSON($message);
+        } catch(\Exception $error) {
+            DB::rollback();
 
+            $message = '<i class="fa fa-fw fa-warning"></i> No se pudieron guardar los cambios';
+
+            return $this->responseDangerJSON($message);
         }
 
 
