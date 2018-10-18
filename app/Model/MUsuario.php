@@ -24,7 +24,7 @@ class MUsuario extends Authenticatable
         parent::boot();
 
         static::creating(function($model){
-            $model -> creatingRegister();
+            $model->creatingRegister();
         });
     }
 
@@ -32,60 +32,60 @@ class MUsuario extends Authenticatable
 
     public function isSuperAdmin()
     {
-        return $this -> getKey() == 1;
+        return $this->getKey() == 1;
     }
 
     public function getEmailForPasswordReset()
     {
-        return $this -> UsuarioDetalle -> getEmail();
+        return $this->UsuarioDetalle->getEmail();
     }
     
     public function getAuthUsername()
     {
-        return $this -> getAttribute('USUA_USERNAME');
+        return $this->getAttribute('USUA_USERNAME');
     }
 
     public function setUsuaPasswordAttribute( $password ){
-        $this -> setAttribute('USUA_PASSWORD',bcrypt($password));
+        $this->setAttribute('USUA_PASSWORD',bcrypt($password));
     }
 
     public function getAuthPassword()
     {
-        return $this -> getAttribute('USUA_PASSWORD');
+        return $this->getAttribute('USUA_PASSWORD');
     }
 
     public function getDescripcion()
     {
-        return $this -> getAttribute('USUA_DESCRIPCION');
+        return $this->getAttribute('USUA_DESCRIPCION');
     }
 
     public function getAvatarSmall()
     {
-        return $this -> getAttribute('USUA_AVATAR_SMALL');
+        return $this->getAttribute('USUA_AVATAR_SMALL');
     }
 
     public function getAvatarFull()
     {
-        return $this -> getAttribute('USUA_AVATAR_FULL');
+        return $this->getAttribute('USUA_AVATAR_FULL');
     }
     
     public function getRecentLogin()
     {
-        return $this -> getAttribute('USUA_RECENT_LOGIN');
+        return $this->getAttribute('USUA_RECENT_LOGIN');
     }
 
     public function getLastLogin()
     {
-        return $this -> getAttribute('USUA_LAST_LOGIN');
+        return $this->getAttribute('USUA_LAST_LOGIN');
     }
 
     public function getRememberTokenName()
     {
-        return $this -> getAttribute('USUA_REMEMBER_TOKEN');
+        return $this->getAttribute('USUA_REMEMBER_TOKEN');
     }
 
     public function setRememberToken($value){
-        $this -> setAttribute('USUA_REMEMBER_TOKEN', $value);
+        $this->setAttribute('USUA_REMEMBER_TOKEN', $value);
     }
 
     public function canAtLeast()
@@ -93,7 +93,7 @@ class MUsuario extends Authenticatable
         $permisos = func_get_args();
         foreach ($permisos as $permiso)
         {
-            if ($this -> can($permiso))
+            if ($this->can($permiso))
                 return true;
         }
         
@@ -104,37 +104,37 @@ class MUsuario extends Authenticatable
 
     public function UsuarioAsignaciones()
     {
-        return $this -> hasMany('App\Model\MUsuarioAsignacion','USAS_USUARIO',$this -> getKeyName());
+        return $this->hasMany('App\Model\MUsuarioAsignacion','USAS_USUARIO',$this->getKeyName());
     }
 
     public function Direcciones()
     {
-        return $this -> belongsToMany('App\Model\Catalogo\MDireccion','usuarios_asignaciones','USAS_USUARIO','USAS_DIRECCION') -> whereNull('USAS_DEPARTAMENTO');
+        return $this->belongsToMany('App\Model\Catalogo\MDireccion','usuarios_asignaciones','USAS_USUARIO','USAS_DIRECCION')->whereNull('USAS_DEPARTAMENTO');
     }
 
     public function Departamentos()
     {
-        return $this -> belongsToMany('App\Model\Catalogo\MDepartamento','usuarios_asignaciones','USAS_USUARIO','USAS_DEPARTAMENTO');
+        return $this->belongsToMany('App\Model\Catalogo\MDepartamento','usuarios_asignaciones','USAS_USUARIO','USAS_DEPARTAMENTO');
     }
 
     public function Puestos()
     {
-        return $this -> belongsToMany('App\Model\Catalogo\MPuesto','usuarios_asignaciones','USAS_USUARIO','USAS_PUESTO');
+        return $this->belongsToMany('App\Model\Catalogo\MPuesto','usuarios_asignaciones','USAS_USUARIO','USAS_PUESTO');
     }
 
     public function UsuarioDetalle()
     {
-        return $this -> hasOne('App\Model\MUsuarioDetalle','USDE_USUARIO_DETALLE','USUA_DETALLE');
+        return $this->hasOne('App\Model\MUsuarioDetalle','USDE_USUARIO_DETALLE','USUA_DETALLE');
     }
 
     public function Permisos()
     {
-        return $this -> belongsToMany('App\Model\MPermiso','usuarios_permisos','USPE_USUARIO','USPE_PERMISO');
+        return $this->belongsToMany('App\Model\MPermiso','usuarios_permisos','USPE_USUARIO','USPE_PERMISO');
     }
 
     public function Preferencias()
     {
-        return $this -> belongsToMany('App\Model\MPreferencia','usuarios_preferencias','USPR_USUARIO','USPR_PREFERENCIA');
+        return $this->belongsToMany('App\Model\MPreferencia','usuarios_preferencias','USPR_USUARIO','USPR_PREFERENCIA');
     }
 
 

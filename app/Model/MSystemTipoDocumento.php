@@ -16,22 +16,22 @@ class MSystemTipoDocumento extends BaseModel
     /* Methods */
     public function getNombre()
     {
-    	return $this -> getAttribute('SYTD_NOMBRE');
+    	return $this->getAttribute('SYTD_NOMBRE');
     }
 
     public function getEtiqueta()
     {
-        return $this -> getAttribute('SYTD_ETIQUETA_NUMERO');
+        return $this->getAttribute('SYTD_ETIQUETA_NUMERO');
     }
 
     public function getCodigoAcuse()
     {
-        return $this -> getAttribute('SYTD_CODIGO_ACUSE');
+        return $this->getAttribute('SYTD_CODIGO_ACUSE');
     }
 
     public function getRibbonColor()
     {
-        return $this -> getAttribute('SYTD_RIBBON_COLOR');
+        return $this->getAttribute('SYTD_RIBBON_COLOR');
     }
 
     public static function getListaRibbonColor()
@@ -73,7 +73,7 @@ class MSystemTipoDocumento extends BaseModel
 
     public function Documentos()
     {
-        return $this -> hasMany('App\Model\MDocumento','DOCU_TIPO_DOCUMENTO',$this -> getKeyName());
+        return $this->hasMany('App\Model\MDocumento','DOCU_TIPO_DOCUMENTO',$this->getKeyName());
     }
 
 

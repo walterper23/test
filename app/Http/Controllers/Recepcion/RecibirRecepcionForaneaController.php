@@ -136,7 +136,7 @@ class RecibirRecepcionForaneaController extends BaseController
 		else
 			$tables = ['recibir-documentos-datatable',null,true];
 
-		$message = sprintf('Documento foráneo <b>#%s</b> recibido', $documento->getCodigo());
+		$message = sprintf('Documento foráneo <b>#%s</b> recibido', $documento->getFolio());
 
 		return $this->responseSuccessJSON($message,$tables);
 	}
@@ -161,7 +161,7 @@ class RecibirRecepcionForaneaController extends BaseController
 		else
 			$tables = ['recibir-documentos-datatable',null,true];
 
-		$message = sprintf('Documento foráneo <b>#%s</b> validado', $documento->getCodigo());
+		$message = sprintf('Documento foráneo <b>#%s</b> validado', $documento->getFolio());
 
 		return $this->responseSuccessJSON($message,$tables);
 		
@@ -174,17 +174,19 @@ class RecibirRecepcionForaneaController extends BaseController
 
 				$documentoForaneo = MDocumentoForaneo::with('AcuseRecepcion')->find( $request->id );
 
+				$tipo_documento = $documentoForaneo->TipoDocumento;
+
 				if ($documentoForaneo->recepcionado())
 				{
 					// El documento ya fue recepcionado
 				}
 
 				$documento = new MDocumento;
-				$documento->DOCU_SYSTEM_TIPO_DOCTO   = $documentoForaneo->DOFO_SYSTEM_TIPO_DOCTO;
+				$documento->DOCU_SYSTEM_TIPO_DOCTO   = $documentoForaneo->getTipoDocumento();
 				$documento->DOCU_SYSTEM_ESTADO_DOCTO = 2; // Documento recepcionado
 				$documento->DOCU_TIPO_RECEPCION      = 2; // Recepción foránea
-				$documento->DOCU_DETALLE             = $documentoForaneo->DOFO_DETALLE;
-				$documento->DOCU_NUMERO_DOCUMENTO    = $documentoForaneo->DOFO_NUMERO_DOCUMENTO;
+				$documento->DOCU_DETALLE             = $documentoForaneo->getDetalle();
+				$documento->DOCU_NUMERO_DOCUMENTO    = $documentoForaneo->getNumero();
 				$documento->save();
 
 				// Actualizamos el Documento Denuncia si lo generó el documento foráneo, para actualizar el nuevo ID del documento local
@@ -214,7 +216,7 @@ class RecibirRecepcionForaneaController extends BaseController
 				$seguimiento->save();
 
 				// Crear el acuse de recepción
-				$nombre_acuse = sprintf('ARD/%s/%s/%s/',date('Y'),date('m'),$documento->getCodigo());
+            	$folio_acuse = sprintf('ARD/%s/%s/%s/%s/',date('Y'),date('m'),$documento->getFolio(),$tipo_documento->getCodigoAcuse()); // ARD/2018/10/005/DENU/
 
 				if ($documentoForaneo->getTipoDocumento() == 1){
 
@@ -222,31 +224,34 @@ class RecibirRecepcionForaneaController extends BaseController
 					$denuncia->DENU_DOCUMENTO = $documento->getKey();
 					$denuncia->save();
 
-					$nombre_acuse = sprintf('%sDENU/%s',$nombre_acuse,$denuncia->getCodigo());
+                	$folio_acuse .= $denuncia->getFolio(); // ARD/2018/10/005/DENU/001
+
 					$tables = ['recibir-denuncias-datatable',null,true];
 				}
 				else if ($documentoForaneo->getTipoDocumento() == 2){
-					$nombre_acuse = sprintf('%sDOCTO/DENU/%s',$nombre_acuse,$documento->DocumentoDenuncia->getCodigo());
+                	$folio_acuse .= $documento->DocumentoDenuncia->getCodigo();  // ARD/2018/10/005/DODE/002
+
 					$tables = ['recibir-documentos-denuncias-datatable',null,true];
 				}
 				else{
-					$nombre_acuse = sprintf('%sDOCTO/%s',$nombre_acuse,$documento->getCodigo());
+                	$folio_acuse .= $documento->getFolio(); // ARD/2018/10/005/DENU/005
+
 					$tables = ['recibir-documentos-datatable',null,true];
 				}
 
 				// Creamos el registro del acuse de recepción del documento
 				$acuse = new MAcuseRecepcion;
-				$acuse->ACUS_NUMERO    = $nombre_acuse;
-				$acuse->ACUS_NOMBRE    = sprintf('%s.pdf',str_replace('/','_', $nombre_acuse));
+				$acuse->ACUS_NUMERO    = $folio_acuse;
+				$acuse->ACUS_NOMBRE    = sprintf('%s.pdf',str_replace('/','_', $folio_acuse));
 				$acuse->ACUS_DOCUMENTO = $documento->getKey();
 				$acuse->ACUS_CAPTURA   = 1; // Documento localmente
-				$acuse->ACUS_DETALLE   = $documentoForaneo->AcuseRecepcion->ACUS_DETALLE;
-				$acuse->ACUS_USUARIO   = $documentoForaneo->AcuseRecepcion->ACUS_USUARIO;
-				$acuse->ACUS_ENTREGO   = $documentoForaneo->AcuseRecepcion->ACUS_ENTREGO;
-				$acuse->ACUS_RECIBIO   = $documentoForaneo->AcuseRecepcion->ACUS_RECIBIO;
+				$acuse->ACUS_DETALLE   = $documentoForaneo->AcuseRecepcion->getDetalle();
+				$acuse->ACUS_USUARIO   = $documentoForaneo->AcuseRecepcion->getUsuario();
+				$acuse->ACUS_ENTREGO   = $documentoForaneo->AcuseRecepcion->getEntrego();
+				$acuse->ACUS_RECIBIO   = $documentoForaneo->AcuseRecepcion->getRecibio();
 				$acuse->save();
 
-				$message = sprintf('Documento foráneo <b>#%s</b> recepcionado', $documentoForaneo->getCodigo());
+				$message = sprintf('Documento foráneo <b>#%s</b> recepcionado', $documentoForaneo->getFolio());
 
 			DB::commit();
 

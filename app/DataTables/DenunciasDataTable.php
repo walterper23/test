@@ -8,21 +8,25 @@ class DenunciasDataTable extends CustomDataTable
     public function __construct()
     {
         parent::__construct();
-        $this -> builderHtml -> setTableId('denuncias-datatable');
+        $this->builderHtml->setTableId('denuncias-datatable');
     }
 
     protected function setSourceData(){
-        $this -> sourceData = MDocumento::with('Detalle','Denuncia','AcuseRecepcion')
-                            -> select('DOCU_DOCUMENTO','DOCU_NUMERO_DOCUMENTO','DOCU_DETALLE', 'DOCU_SYSTEM_ESTADO_DOCTO') -> existente() -> noGuardado()
-                            -> where('DOCU_SYSTEM_TIPO_DOCTO',1) -> get(); // Denuncia
+        $this->sourceData = MDocumento::with('Detalle','Denuncia','AcuseRecepcion')->existente()->noGuardado()->where('DOCU_SYSTEM_TIPO_DOCTO',1)->get(); // Denuncia
     }
 
     protected function columnsTable(){
         return [
             [
-                'title'  => '#',
+                'title'  => '# FOLIO',
                 'render' => function($documento){
-                    return $documento -> getCodigo();
+                    return sprintf('<p class="text-center"><b>%s</b></p>',$documento->getFolio());
+                }
+            ],
+            [
+                'title'  => '# RECEPCIÓN',
+                'render' => function($documento){
+                    return $documento->AcuseRecepcion->getNumero();
                 }
             ],
             [
@@ -32,33 +36,33 @@ class DenunciasDataTable extends CustomDataTable
             [
                 'title'  => 'ASUNTO',
                 'render' => function($documento){
-                    return $documento -> Detalle -> getDescripcion();
+                    return $documento->Detalle->getDescripcion();
                 }
             ],
             [
                 'title' => 'RECEPCIÓN',
                 'render' => function($documento){
-                    return $documento -> Detalle -> getFechaRecepcion();
+                    return $documento->Detalle->getFechaRecepcion();
                 }
             ],
             [
                 'title'  => 'Opciones',
                 'render' => function($documento){
 
-                    $url = url( sprintf('recepcion/acuse/documento/%s',$documento -> AcuseRecepcion -> getNombre()) );
+                    $url = url( sprintf('recepcion/acuse/documento/%s',$documento->AcuseRecepcion->getNombre()) );
 
-                    //$buttons .= sprintf('<button type="button" class="btn btn-sm btn-circle btn-alt-primary" onclick="hRecepcion.view(%d)" title="Ver documento"><i class="fa fa-fw fa-eye"></i></button>', $documento -> getKey());
+                    //$buttons .= sprintf('<button type="button" class="btn btn-sm btn-circle btn-alt-primary" onclick="hRecepcion.view(%d)" title="Ver documento"><i class="fa fa-fw fa-eye"></i></button>', $documento->getKey());
                     
                     $buttons = sprintf('
                         <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcion.anexos(%d)" title="Anexos del documento">
                             <i class="fa fa-fw fa-clipboard"></i>
                         </button>
-                        <a class="btn btn-sm btn-circle btn-alt-success" href="%s" target="_blank" title="Acuse de Recepción"><i class="fa fa-fw fa-file-text"></i></a>', $documento -> getKey(), $url
+                        <a class="btn btn-sm btn-circle btn-alt-success" href="%s" target="_blank" title="Acuse de Recepción"><i class="fa fa-fw fa-file-text"></i></a>', $documento->getKey(), $url
                     );
 
-                    if( user() -> can('REC.ELIMINAR.LOCAL') && $documento -> recepcionado() )
+                    if( user()->can('REC.ELIMINAR.LOCAL') && $documento->recepcionado() )
                     {
-                        $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcion.delete_(%d)"><i class="fa fa-trash"></i></button>', $documento -> getKey());
+                        $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcion.delete_(%d)"><i class="fa fa-trash"></i></button>', $documento->getKey());
                     }
 
                     return $buttons;

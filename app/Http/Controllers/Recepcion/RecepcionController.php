@@ -5,7 +5,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use App\Http\Requests\RecepcionLocalRequest;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Facades\Cache;
 use Exception;
 use DB;
 
@@ -140,13 +139,13 @@ class RecepcionController extends BaseController
         $data = [];
 
         // Recuperamos los tipos de documentsos que se pueden recepcionar
-        $tiposDocumentosExistentesDisponibles = Cache::rememberForever('tiposDocumentosExistentesDisponibles',function(){
+        $tiposDocumentosExistentesDisponibles = cache()->rememberForever('tiposDocumentosExistentesDisponibles',function(){
             return MSystemTipoDocumento::existenteDisponible()->get();
         });
 
         $data['tipos_documentos'] = $tiposDocumentosExistentesDisponibles;
 
-        $denunciasAlRecepcionar = Cache::rememberForever('denunciasAlRecepcionar',function(){
+        $denunciasAlRecepcionar = cache()->rememberForever('denunciasAlRecepcionar',function(){
             return MDenuncia::select('DENU_DENUNCIA','DENU_NO_EXPEDIENTE')
                    ->join('documentos','DENU_DOCUMENTO','=','DOCU_DOCUMENTO')
                    ->whereNotNull('DENU_NO_EXPEDIENTE') // Número de expediente ya asignado
@@ -157,13 +156,13 @@ class RecepcionController extends BaseController
         $data['denuncias'] = $denunciasAlRecepcionar->pluck('DENU_NO_EXPEDIENTE','DENU_DENUNCIA')->toArray();
 
         // Recuperamos los anexos almacenados en el sistema
-        $anexosExistentesDisponibles = Cache::rememberForever('anexosExistentesDisponibles',function(){
+        $anexosExistentesDisponibles = cache()->rememberForever('anexosExistentesDisponibles',function(){
             return MAnexo::existenteDisponible()->get();
         });
 
         $data['anexos'] = $anexosExistentesDisponibles->sortBy('ANEX_NOMBRE')->pluck('ANEX_NOMBRE','ANEX_ANEXO')->toArray();
 
-        $cacheMunicipios = Cache::rememberForever('municipiosDisponibles',function(){
+        $cacheMunicipios = cache()->rememberForever('municipiosDisponibles',function(){
             return MMunicipio::disponible()->get();
         });
 
@@ -232,7 +231,7 @@ class RecepcionController extends BaseController
             $seguimiento->SEGU_OBSERVACION          = $detalle->getObservaciones();
             $seguimiento->save();
 
-            $folio_acuse = sprintf('ARD/%s/%s/%s/%s/',date('Y'),date('m'),$documento->getCodigo(),$tipo_documento->getCodigoAcuse()); // ARD/2018/10/005/DENU/
+            $folio_acuse = sprintf('ARD/%s/%s/%s/%s/',date('Y'),date('m'),$documento->getFolio(),$tipo_documento->getCodigoAcuse()); // ARD/2018/10/005/DENU/
             
             if ($tipo_documento->getKey() == 1) // Si el tipo de documento es denuncia ...
             {
@@ -262,7 +261,7 @@ class RecepcionController extends BaseController
             else
             {
                 $redirect = '?view=documentos';
-                $folio_acuse .= $documento->getCodigo(); // ARD/2018/10/005/DENU/005
+                $folio_acuse .= $documento->getFolio(); // ARD/2018/10/005/DENU/005
             }
 
             // Sustituimos las diagonales por guiones bajos
@@ -306,7 +305,7 @@ class RecepcionController extends BaseController
             
             // Crear la notificación para usuarios del sistema
             $data = [
-                'contenido'  => sprintf('Se ha recepcionado un nuevo documento #%s de tipo <b>%s</b>', $documento->getCodigo(),$documento->TipoDocumento->getNombre()),
+                'contenido'  => sprintf('Se ha recepcionado un nuevo documento #%s de tipo <b>%s</b>', $documento->getFolio(),$documento->TipoDocumento->getNombre()),
                 'direccion'  => $seguimiento->getDireccionDestino(),
                 'url'        => sprintf('panel/documentos/seguimiento?search=%d&read=1',$seguimiento->getKey()),
             ];
@@ -388,7 +387,7 @@ class RecepcionController extends BaseController
                     break;
             }
 
-            $message = sprintf('<i class="fa fa-fw fa-warning"></i> Recepción <b>%s</b> eliminada',$documento->getCodigo());
+            $message = sprintf('<i class="fa fa-fw fa-warning"></i> Recepción <b>%s</b> eliminada',$documento->getFolio());
 
             return $this->responseWarningJSON($message,'danger',$tables);
         } catch(Exception $error) {

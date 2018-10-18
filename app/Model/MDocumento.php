@@ -11,44 +11,44 @@ class MDocumento extends BaseModel
 
     public function getNumero()
     {
-        return $this -> getAttribute('DOCU_NUMERO_DOCUMENTO');
+        return $this->getAttribute('DOCU_NUMERO_DOCUMENTO');
     }
 
     public function getEstadoDocumento()
     {
-        return $this -> getAttribute('DOCU_SYSTEM_ESTADO_DOCTO');
+        return $this->getAttribute('DOCU_SYSTEM_ESTADO_DOCTO');
     }
 
     public function getTipoDocumento()
     {
-        return $this -> getAttribute('DOCU_SYSTEM_TIPO_DOCTO');
+        return $this->getAttribute('DOCU_SYSTEM_TIPO_DOCTO');
     }
 
     public function getTipoRecepcion()
     {
-        return $this -> getAttribute('DOCU_TIPO_RECEPCION');
+        return $this->getAttribute('DOCU_TIPO_RECEPCION');
     }
 
     public function isLocal()
     {
-        return $this -> getTipoRecepcion() == 1;
+        return $this->getTipoRecepcion() == 1;
     }
 
     public function isForaneo()
     {
-        return $this -> getTipoRecepcion() == 2;
+        return $this->getTipoRecepcion() == 2;
     }
 
     public function marcarImportante()
     {
-        $lista_usuarios = $this -> attributes['DOCU_IMPORTANTE']; // Recuperamos la lista de usuarios que han marcado el documento como importante
-        $lista_usuarios = $this -> marcarDocumento($lista_usuarios); // Procesamos la lista de usuarios
-        $this -> attributes['DOCU_IMPORTANTE'] = $lista_usuarios; // Guardamos la nueva lista de usuarios
+        $lista_usuarios = $this->attributes['DOCU_IMPORTANTE']; // Recuperamos la lista de usuarios que han marcado el documento como importante
+        $lista_usuarios = $this->marcarDocumento($lista_usuarios); // Procesamos la lista de usuarios
+        $this->attributes['DOCU_IMPORTANTE'] = $lista_usuarios; // Guardamos la nueva lista de usuarios
     }
 
     public function importante()
     {
-        $usuarios = $this -> attributes['DOCU_IMPORTANTE']; // Recuperamos la lista de usuarios que han marcado como importante el documento
+        $usuarios = $this->attributes['DOCU_IMPORTANTE']; // Recuperamos la lista de usuarios que han marcado como importante el documento
         $lista = explode(',', $usuarios);
         $usuario = array_search(userKey(), $lista);
         return $usuario !== false; // Devolver si el usuario está en la lista
@@ -56,14 +56,14 @@ class MDocumento extends BaseModel
 
     public function marcarArchivado()
     {
-        $lista_usuarios = $this -> attributes['DOCU_ARCHIVADO']; // Recuperamos la lista de usuarios que han marcado el documento como archivado
-        $lista_usuarios = $this -> marcarDocumento($lista_usuarios); // Procesamos la lista de usuarios
-        $this -> attributes['DOCU_ARCHIVADO'] = $lista_usuarios; // Guardamos la nueva lista de usuarios
+        $lista_usuarios = $this->attributes['DOCU_ARCHIVADO']; // Recuperamos la lista de usuarios que han marcado el documento como archivado
+        $lista_usuarios = $this->marcarDocumento($lista_usuarios); // Procesamos la lista de usuarios
+        $this->attributes['DOCU_ARCHIVADO'] = $lista_usuarios; // Guardamos la nueva lista de usuarios
     }
 
     public function archivado()
     {
-        $usuarios = $this -> attributes['DOCU_ARCHIVADO']; // Recuperamos la lista de usuarios que han archivado el documento
+        $usuarios = $this->attributes['DOCU_ARCHIVADO']; // Recuperamos la lista de usuarios que han archivado el documento
         $lista = explode(',', $usuarios);
         $usuario = array_search(userKey(), $lista);
         return $usuario !== false; // Devolver si el usuario está en la lista
@@ -94,34 +94,34 @@ class MDocumento extends BaseModel
 
     public function recepcionado()
     {
-        return $this -> getEstadoDocumento() == 2; // Documento recepcionado
+        return $this->getEstadoDocumento() == 2; // Documento recepcionado
     }
 
     public function enSeguimiento()
     {
-        return $this -> getEstadoDocumento() == 3; // Documento en seguimiento
+        return $this->getEstadoDocumento() == 3; // Documento en seguimiento
     }
 
     public function finalizado()
     {
-        return $this -> getEstadoDocumento() == 4; // Documento finalizado
+        return $this->getEstadoDocumento() == 4; // Documento finalizado
     }
 
     public function rechazado()
     {
-        return $this -> getEstadoDocumento() == 5; // Documento rechazado
+        return $this->getEstadoDocumento() == 5; // Documento rechazado
     }
 
     /* Local Scopes */
 
     public function scopeGuardado($query)
     {
-        return $query -> where('DOCU_GUARDADO',1);
+        return $query->where('DOCU_GUARDADO',1);
     }
 
     public function scopeNoGuardado($query)
     {
-        return $query -> where('DOCU_GUARDADO',0);
+        return $query->where('DOCU_GUARDADO',0);
     }
 
 
@@ -129,47 +129,47 @@ class MDocumento extends BaseModel
 
     public function AcuseRecepcion()
     {
-        return $this -> hasOne('App\Model\MAcuseRecepcion','ACUS_DOCUMENTO',$this -> getKeyName()) -> where('ACUS_CAPTURA',1);
+        return $this->hasOne('App\Model\MAcuseRecepcion','ACUS_DOCUMENTO',$this->getKeyName())->where('ACUS_CAPTURA',1);
     }
 
     public function Denuncia()
     {
-        return $this -> hasOne('App\Model\MDenuncia','DENU_DOCUMENTO',$this -> getKeyName());
+        return $this->hasOne('App\Model\MDenuncia','DENU_DOCUMENTO',$this->getKeyName());
     }
 
     public function Detalle()
     {
-        return $this -> hasOne('App\Model\MDetalle','DETA_DETALLE','DOCU_DETALLE');
+        return $this->hasOne('App\Model\MDetalle','DETA_DETALLE','DOCU_DETALLE');
     }
 
     public function DocumentoDenuncia()
     {
-        return $this -> belongsTo('App\Model\MDocumentoDenuncia',$this -> getKeyName(),'DODE_DOCUMENTO_LOCAL');
+        return $this->belongsTo('App\Model\MDocumentoDenuncia',$this->getKeyName(),'DODE_DOCUMENTO_LOCAL');
     }
 
     public function DocumentoForaneo()
     {
-        return $this -> hasOne('App\Model\MDocumentoForaneo','DOFO_DOCUMENTO_LOCAL',$this -> getKeyName());
+        return $this->hasOne('App\Model\MDocumentoForaneo','DOFO_DOCUMENTO_LOCAL',$this->getKeyName());
     }
 
     public function Escaneos()
     {
-        return $this -> hasMany('App\Model\MEscaneo','ESCA_DOCUMENTO_LOCAL',$this -> getKeyName());
+        return $this->hasMany('App\Model\MEscaneo','ESCA_DOCUMENTO_LOCAL',$this->getKeyName());
     }
 
     public function EstadoDocumento()
     {
-        return $this -> hasOne('App\Model\System\MSystemEstadoDocumento','SYED_ESTADO_DOCUMENTO','DOCU_SYSTEM_ESTADO_DOCTO');
+        return $this->hasOne('App\Model\System\MSystemEstadoDocumento','SYED_ESTADO_DOCUMENTO','DOCU_SYSTEM_ESTADO_DOCTO');
     }
 
     public function Seguimientos()
     {
-        return $this -> hasMany('App\Model\MSeguimiento','SEGU_DOCUMENTO',$this -> getKeyName());
+        return $this->hasMany('App\Model\MSeguimiento','SEGU_DOCUMENTO',$this->getKeyName());
     }
 
     public function TipoDocumento()
     {
-        return $this -> hasOne('App\Model\System\MSystemTipoDocumento','SYTD_TIPO_DOCUMENTO','DOCU_SYSTEM_TIPO_DOCTO');
+        return $this->hasOne('App\Model\System\MSystemTipoDocumento','SYTD_TIPO_DOCUMENTO','DOCU_SYSTEM_TIPO_DOCTO');
     }
 
 }

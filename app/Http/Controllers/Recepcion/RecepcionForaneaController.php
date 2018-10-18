@@ -36,7 +36,7 @@ class RecepcionForaneaController extends BaseController
     {
         parent::__construct();
 
-        $this->middleware('can:REC.DOCUMENTO.FORANEO,REC.VER.FORANEO',['only' => ['index','postDataTable']]);
+        $this->middleware('can:REC.VER.FORANEO,REC.DOCUMENTO.FORANEO',['only' => ['index','postDataTable']]);
         $this->setLog('RecepcionForaneaController.log');
     }
 
@@ -221,9 +221,7 @@ class RecepcionForaneaController extends BaseController
 
             /* !!! El documento foráneo no debe crear ningún primer seguimiento !!! */
             
-            $nombre_acuse = sprintf('ARDF/%s/%s/%s/',date('Y'),date('m'),$documento->getCodigo());
-            $folio_acuse = sprintf('ARDF/%s/%s/%s/',date('Y'),date('m'),$documento->getCodigo(),$tipo_documento->getCodigoAcuse()); // ARDF/2018/10/005/DENU/
-
+            $folio_acuse = sprintf('ARDF/%s/%s/%s/',date('Y'),date('m'),$documento->getFolio(),$tipo_documento->getCodigoAcuse()); // ARDF/2018/10/005/DENU/
 
             if ($tipo_documento->getKey() == 1) // Si el tipo de documento es denuncia ...
             {
@@ -250,7 +248,7 @@ class RecepcionForaneaController extends BaseController
             else
             {
                 $redirect = '?view=documentos';
-                $folio_acuse .= $documento->getCodigo(); // ARD/2018/10/005/DENU/005
+                $folio_acuse .= $documento->getFolio(); // ARD/2018/10/005/DENU/005
             }
             
             // Creamos el registro del acuse de recepción del documento
@@ -291,7 +289,7 @@ class RecepcionForaneaController extends BaseController
             
             // Crear la notificación para usuarios del sistema
             $data = [
-                'contenido'  => sprintf('Se ha recepcionado un nuevo documento foráneo #%s de tipo %s', $documento->getCodigo(),$documento->TipoDocumento->getNombre()),
+                'contenido'  => sprintf('Se ha recepcionado un nuevo documento foráneo #%s de tipo %s', $documento->getFolio(),$documento->TipoDocumento->getNombre()),
                 'url'        => 'recepcion/documentos-foraneos/recepcionados' . $redirect,
             ];
             NotificacionController::nuevaNotificacion('VER.REC.FOR.NUE.REC.FOR',$data);
@@ -359,7 +357,7 @@ class RecepcionForaneaController extends BaseController
                     break;
             }
 
-            $message = sprintf('<i class="fa fa-fw fa-warning"></i> Recepción foránea <b>%s</b> eliminada',$documento->getCodigo());
+            $message = sprintf('<i class="fa fa-fw fa-warning"></i> Recepción foránea <b>%s</b> eliminada',$documento->getFolio());
 
             return $this->responseWarningJSON($message,'danger',$tables);
         } catch(Exception $error) {
@@ -374,7 +372,7 @@ class RecepcionForaneaController extends BaseController
         $documento->DOFO_FECHA_ENVIADO   = Carbon::now();
         $documento->save();
 
-        $message = sprintf('Documento #<b>%s</b> enviado <i class="fa fa-fw fa-car"></i>',$documento->getCodigo());
+        $message = sprintf('Documento #<b>%s</b> enviado <i class="fa fa-fw fa-car"></i>',$documento->getFolio());
 
         if ($documento->getTipoDocumento() == 1)
         {
@@ -394,7 +392,7 @@ class RecepcionForaneaController extends BaseController
 
         // Crear la notificación para usuarios del sistema
         $data = [
-            'contenido'  => sprintf('Documento foráneo #%s <b>%s</b> en tránsito', $documento->getCodigo(), $documento->TipoDocumento->getNombre()),
+            'contenido'  => sprintf('Documento foráneo #%s <b>%s</b> en tránsito', $documento->getFolio(), $documento->TipoDocumento->getNombre()),
             'url'        => 'recepcion/documentos/foraneos' . $redirect,
         ];
         
