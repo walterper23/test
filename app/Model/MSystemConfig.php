@@ -12,34 +12,34 @@ class MSystemConfig extends BaseModel
     /* Methods */
     public function getNombre()
     {
-    	return $this->getAttribute('SYCO_NOMBRE');
+        return $this->getAttribute('SYCO_NOMBRE');
     }
 
     public function getDescripcion()
     {
-    	return $this->getAttribute('SYCO_DESCRIPCION');
+        return $this->getAttribute('SYCO_DESCRIPCION');
     }
 
     public function getVariable()
     {
-    	return $this->getAttribute('SYCO_VARIABLE');
+        return $this->getAttribute('SYCO_VARIABLE');
     }
 
     public function getValor()
     {
-    	return $this->getAttribute('SYCO_VALOR');
+        return $this->getAttribute('SYCO_VALOR');
     }
 
     public static function getAllVariables()
     {
-    	return cache('System.Config.Variables');
+        return cache('System.Config.Variables');
     }
 
     public static function setAllVariables()
     {
-    	cache()->forget('System.Config.Variables');
+        cache()->forget('System.Config.Variables');
 
-    	cache()->rememberForever('System.Config.Variables',function(){
+        cache()->rememberForever('System.Config.Variables',function(){
             return self::all();
         });
 
@@ -47,7 +47,7 @@ class MSystemConfig extends BaseModel
 
         cache()->rememberForever('System.Config.Variables.Array',function(){
             return cache('System.Config.Variables')->pluck('SYCO_VALOR','SYCO_VARIABLE')->toArray();
-        });  
+        });
     }
 
     /* Relationships */

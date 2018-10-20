@@ -20,7 +20,7 @@ class DocumentosDataTable extends CustomDataTable
     {
         return [
             [
-                'title'  => '# FOLIO',
+                'title'  => '#',
                 'render' => function($documento){
                     return sprintf('<p class="text-center"><b>%s</b></p>',$documento->getFolio());
                 }
@@ -32,7 +32,7 @@ class DocumentosDataTable extends CustomDataTable
                 }
             ],
             [
-                'title'  => '# RECEPCIÓN',
+                'title'  => 'FOLIO RECEPCIÓN',
                 'render' => function($documento){
                     return $documento->AcuseRecepcion->getNumero();
                 }

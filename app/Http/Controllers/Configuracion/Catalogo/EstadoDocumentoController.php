@@ -27,7 +27,7 @@ class EstadoDocumentoController extends BaseController
     public function __construct()
     {
         parent::__construct();
-        $this -> setLog('EstadoDocumentoController.log');
+        $this->setLog('EstadoDocumentoController.log');
     }
 
     /**
@@ -37,7 +37,7 @@ class EstadoDocumentoController extends BaseController
     {
 
         $data['table']    = $dataTables;
-        $data['form_id']  = $this -> form_id;
+        $data['form_id']  = $this->form_id;
         $data['form_url'] = url('configuracion/catalogos/estados-documentos/nuevo');
 
         return view('Configuracion.Catalogo.EstadoDocumento.indexEstadoDocumento')->with($data);
@@ -48,21 +48,21 @@ class EstadoDocumentoController extends BaseController
      */
     public function manager(EstadoDocumentoRequest $request)
     {
-        switch ($request -> action) {
+        switch ($request->action) {
             case 1: // Nuevo
-                $response = $this -> nuevoEstadoDocumento( $request );
+                $response = $this->nuevoEstadoDocumento( $request );
                 break;
             case 2: // Editar
-                $response = $this -> editarEstadoDocumento( $request );
+                $response = $this->editarEstadoDocumento( $request );
                 break;
             case 3: // Visualizar estado de documento
-                $response = $this -> verEstadoDocumento( $request );
+                $response = $this->verEstadoDocumento( $request );
                 break;
             case 4: // Activar / Desactivar
-                $response = $this -> activarEstadoDocumento( $request );
+                $response = $this->activarEstadoDocumento( $request );
                 break;
             case 5: // Eliminar
-                $response = $this -> eliminarEstadoDocumento( $request );
+                $response = $this->eliminarEstadoDocumento( $request );
                 break;
             default:
                 return response()->json(['message'=>'Petición no válida'],404);
@@ -89,41 +89,41 @@ class EstadoDocumentoController extends BaseController
 
             $data['title']         = 'Nuevo estado de documento';
             $data['url_send_form'] = url('configuracion/catalogos/estados-documentos/manager');
-            $data['form_id']       = $this -> form_id;
+            $data['form_id']       = $this->form_id;
             $data['modelo']        = null;
             $data['action']        = 1;
             $data['id']            = null;
 
             /* Consultar las direcciones asignadas directa o indirectamente al usuario */
-            if( !userIsSuperAdmin() )
+            if (! user()->isSuperAdmin() )
             {
-                $direcciones_asignadas   = user() -> Direcciones;
-                $departamentos_asignados = user() -> Departamentos;
+                $direcciones_asignadas   = user()->Direcciones;
+                $departamentos_asignados = user()->Departamentos;
             }
             else
             {
-                $direcciones_asignadas   = MDireccion::existenteDisponible() -> get();
-                $departamentos_asignados = MDepartamento::existenteDisponible() -> get();
+                $direcciones_asignadas   = MDireccion::existenteDisponible()->get();
+                $departamentos_asignados = MDepartamento::existenteDisponible()->get();
             }
 
-            $direcciones_asignadas   = $direcciones_asignadas -> pluck('DIRE_DIRECCION') -> toArray();
+            $direcciones_asignadas   = $direcciones_asignadas->pluck('DIRE_DIRECCION')->toArray();
 
             $data['departamentos'] = [];
 
             foreach ($departamentos_asignados as $departamento) {
-                if(! in_array($direccion = $departamento -> getDireccion(), $direcciones_asignadas) )
+                if(! in_array($direccion = $departamento->getDireccion(), $direcciones_asignadas) )
                     $direcciones_asignadas[] = $direccion;
 
                 $data['departamentos'][] = [
-                    $departamento -> getDireccion(),
-                    $departamento -> getKey(),
-                    $departamento -> getNombre()
+                    $departamento->getDireccion(),
+                    $departamento->getKey(),
+                    $departamento->getNombre()
                 ];
             }
 
-            $direcciones = MDireccion::whereIn('DIRE_DIRECCION',$direcciones_asignadas) -> get();
+            $direcciones = MDireccion::whereIn('DIRE_DIRECCION',$direcciones_asignadas)->get();
 
-            $data['direcciones'] = $direcciones -> pluck('DIRE_NOMBRE','DIRE_DIRECCION') -> toArray();
+            $data['direcciones'] = $direcciones->pluck('DIRE_NOMBRE','DIRE_DIRECCION')->toArray();
 
             return view('Configuracion.Catalogo.EstadoDocumento.formEstadoDocumento')->with($data);
         } catch(Exception $error) {
@@ -138,22 +138,22 @@ class EstadoDocumentoController extends BaseController
     {
         try {
 
-            $departamento = $request -> departamento;
+            $departamento = $request->departamento;
 
             if( $departamento == 0 )
                 $departamento = null;
 
             $estadoDocumento = new MEstadoDocumento;
-            $estadoDocumento -> ESDO_NOMBRE       = $request -> nombre;
-            $estadoDocumento -> ESDO_DIRECCION    = $request -> direccion;
-            $estadoDocumento -> ESDO_DEPARTAMENTO = $departamento;
-            $estadoDocumento -> save();         
+            $estadoDocumento->ESDO_NOMBRE       = $request->nombre;
+            $estadoDocumento->ESDO_DIRECCION    = $request->direccion;
+            $estadoDocumento->ESDO_DEPARTAMENTO = $departamento;
+            $estadoDocumento->save();         
 
             $tables = ['dataTableBuilder',null,true];
 
-            $message = sprintf('<i class="fa fa-fw fa-flash"></i> Estado de documento <b>%s</b> creado',$estadoDocumento -> getCodigo());
+            $message = sprintf('<i class="fa fa-fw fa-flash"></i> Estado de documento <b>%s</b> creado',$estadoDocumento->getCodigo());
 
-            return $this -> responseSuccessJSON($message,$tables);
+            return $this->responseSuccessJSON($message,$tables);
         
         } catch(Exception $error) {
 
@@ -168,57 +168,57 @@ class EstadoDocumentoController extends BaseController
         try {
             $data['title']         = 'Editar estado de documento';
             $data['url_send_form'] = url('configuracion/catalogos/estados-documentos/manager');
-            $data['form_id']       = $this -> form_id;
-            $data['modelo']        = $modelo = MEstadoDocumento::findOrFail( $request -> id );
+            $data['form_id']       = $this->form_id;
+            $data['modelo']        = $modelo = MEstadoDocumento::findOrFail( $request->id );
             $data['action']        = 2;
-            $data['id']            = $request -> id;
+            $data['id']            = $request->id;
 
             $direcciones = MDireccion::with(['DepartamentosExistentesDisponibles'=>function($query) use($modelo){
                 
                 // Agregamos el ID del departamento del Estado de Documento a la lista
-                $ids_departamentos[] = $modelo -> getDepartamento();
+                $ids_departamentos[] = $modelo->getDepartamento();
                 // Si el usuario no puede administrar todos los departamentos, buscamos solos los departamentos que tenga asignados     
-                if (! (user() -> can('SIS.ADMIN.DEPTOS')) )
+                if (! (user()->can('SIS.ADMIN.DEPTOS')) )
                 {
-                    $ids_departamentos += user() -> Departamentos -> pluck('DEPA_DEPARTAMENTO') -> toArray();
+                    $ids_departamentos += user()->Departamentos->pluck('DEPA_DEPARTAMENTO')->toArray();
                 }
                 
-                $query -> orWhere('DEPA_DEPARTAMENTO',$ids_departamentos);
+                $query->orWhere('DEPA_DEPARTAMENTO',$ids_departamentos);
                 
                 return $query;
 
-            }]) -> select('DIRE_DIRECCION','DIRE_NOMBRE') -> existenteDisponible();
+            }])->select('DIRE_DIRECCION','DIRE_NOMBRE')->existenteDisponible();
 
             // Si el usuario no puede administrar todas las direcciones, agregamos la condición de buscar solos las direcciones que tenga asignadas     
-            if (! (user() -> can('SIS.ADMIN.DIRECC')) )
+            if (! (user()->can('SIS.ADMIN.DIRECC')) )
             {
-                $ids_direcciones = user() -> Direcciones -> pluck('DIRE_DIRECCION') -> toArray();
-                $direcciones -> whereIn('DIRE_DIRECCION',$ids_direcciones);
+                $ids_direcciones = user()->Direcciones->pluck('DIRE_DIRECCION')->toArray();
+                $direcciones->whereIn('DIRE_DIRECCION',$ids_direcciones);
             }
 
             // Aseguramos de colocar la dirección del Estado de Documento aunque haya sido desactivada o eliminada
-            $direcciones = $direcciones -> orWhere('DIRE_DIRECCION', $modelo -> getDireccion());
+            $direcciones = $direcciones->orWhere('DIRE_DIRECCION', $modelo->getDireccion());
 
-            $direcciones = $direcciones -> orderBy('DIRE_NOMBRE') -> get();
+            $direcciones = $direcciones->orderBy('DIRE_NOMBRE')->get();
 
             $data['departamentos'] = [];
 
             foreach ($direcciones as $direccion)
             {
-                $departamentos = $direccion -> DepartamentosExistentesDisponibles;
+                $departamentos = $direccion->DepartamentosExistentesDisponibles;
                 foreach ($departamentos as $departamento)
                 {
                     $data['departamentos'][] = [
-                        $direccion -> getKey(),
-                        $departamento -> getKey(),
-                        $departamento -> getNombre()
+                        $direccion->getKey(),
+                        $departamento->getKey(),
+                        $departamento->getNombre()
                     ];
                 }
             }
             
-            $data['direcciones'] = $direcciones -> pluck('DIRE_NOMBRE','DIRE_DIRECCION') -> toArray();
+            $data['direcciones'] = $direcciones->pluck('DIRE_NOMBRE','DIRE_DIRECCION')->toArray();
 
-            return view('Configuracion.Catalogo.EstadoDocumento.formEstadoDocumento') -> with($data);
+            return view('Configuracion.Catalogo.EstadoDocumento.formEstadoDocumento')->with($data);
 
         } catch(Exception $error) {
 
@@ -231,22 +231,22 @@ class EstadoDocumentoController extends BaseController
     public function editarEstadoDocumento( $request )
     {
         try {
-            $departamento = $request -> get('departamento',0);
+            $departamento = $request->get('departamento',0);
 
             if( $departamento == 0 )
                 $departamento = null;
 
-            $estadoDocumento = MEstadoDocumento::findOrFail( $request -> id );
-            $estadoDocumento -> ESDO_NOMBRE       = $request -> nombre;
-            $estadoDocumento -> ESDO_DIRECCION    = $request -> direccion;
-            $estadoDocumento -> ESDO_DEPARTAMENTO = $departamento;
-            $estadoDocumento -> save();         
+            $estadoDocumento = MEstadoDocumento::findOrFail( $request->id );
+            $estadoDocumento->ESDO_NOMBRE       = $request->nombre;
+            $estadoDocumento->ESDO_DIRECCION    = $request->direccion;
+            $estadoDocumento->ESDO_DEPARTAMENTO = $departamento;
+            $estadoDocumento->save();         
 
             $tables = 'dataTableBuilder';
 
-            $message = sprintf('<i class="fa fa-fw fa-flash"></i> Estado de documento <b>%s</b> modificado',$estadoDocumento -> getCodigo());
+            $message = sprintf('<i class="fa fa-fw fa-flash"></i> Estado de documento <b>%s</b> modificado',$estadoDocumento->getCodigo());
 
-            return $this -> responseSuccessJSON($message,$tables);
+            return $this->responseSuccessJSON($message,$tables);
         } catch(Exception $error) {
             
         }
@@ -258,18 +258,18 @@ class EstadoDocumentoController extends BaseController
     public function verEstadoDocumento( $request )
     {
         try {
-            $estado        = MEstadoDocumento::findOrFail( $request -> id );
-            $data['title'] = sprintf('Estado de Documento #%s', $estado -> getCodigo() );
+            $estado        = MEstadoDocumento::findOrFail( $request->id );
+            $data['title'] = sprintf('Estado de Documento #%s', $estado->getCodigo() );
 
             $data['detalles'] = [
-                ['Código', $estado -> getCodigo()],
-                ['Dirección', $estado -> Direccion -> getNombre()],
-                ['Departamento', $estado -> Departamento ? $estado -> Departamento -> getNombre() : ''],
-                ['Nombre', $estado -> getNombre()],
-                ['Fecha',  $estado -> presenter() -> getFechaCreacion()]
+                ['Código', $estado->getCodigo()],
+                ['Dirección', $estado->Direccion->getNombre()],
+                ['Departamento', $estado->Departamento ? $estado->Departamento->getNombre() : ''],
+                ['Nombre', $estado->getNombre()],
+                ['Fecha',  $estado->presenter()->getFechaCreacion()]
             ];
 
-            return view('Configuracion.Catalogo.EstadoDocumento.verEstadoDocumento') -> with($data);
+            return view('Configuracion.Catalogo.EstadoDocumento.verEstadoDocumento')->with($data);
         } catch(Exception $error) {
 
         }
@@ -282,21 +282,21 @@ class EstadoDocumentoController extends BaseController
     public function activarEstadoDocumento( $request )
     {
         try {
-            $estadoDocumento = MEstadoDocumento::findOrFail( $request -> id );
-            $estadoDocumento -> cambiarDisponibilidad() -> save();
+            $estadoDocumento = MEstadoDocumento::findOrFail( $request->id );
+            $estadoDocumento->cambiarDisponibilidad()->save();
             
-            if ( $estadoDocumento -> disponible() )
+            if ( $estadoDocumento->disponible() )
             {
-                $message = sprintf('<i class="fa fa-fw fa-check"></i> Estado de Documento <b>%s</b> activado',$estadoDocumento -> getCodigo());
-                return $this -> responseInfoJSON($message);
+                $message = sprintf('<i class="fa fa-fw fa-check"></i> Estado de Documento <b>%s</b> activado',$estadoDocumento->getCodigo());
+                return $this->responseInfoJSON($message);
             }
             else
             {
-                $message = sprintf('<i class="fa fa-fw fa-warning"></i> Estado de Documento <b>%s</b> desactivado',$estadoDocumento -> getCodigo());
-                return $this -> responseWarningJSON($message);
+                $message = sprintf('<i class="fa fa-fw fa-warning"></i> Estado de Documento <b>%s</b> desactivado',$estadoDocumento->getCodigo());
+                return $this->responseWarningJSON($message);
             }
 
-            return $this -> responseTypeJSON($message,$type);
+            return $this->responseTypeJSON($message,$type);
         } catch(Exception $error) {
             return response()->json(['status'=>false,'message'=>'Ocurrió un error al guardar los cambios. Error ' . $error->getCode() ]);
         }
@@ -308,15 +308,15 @@ class EstadoDocumentoController extends BaseController
     public function eliminarEstadoDocumento( $request )
     {
         try {
-            $estadoDocumento = MEstadoDocumento::findOrFail( $request -> id );
-            $estadoDocumento -> eliminar() -> save();
+            $estadoDocumento = MEstadoDocumento::findOrFail( $request->id );
+            $estadoDocumento->eliminar()->save();
 
             // Lista de tablas que se van a recargar automáticamente
             $tables = 'dataTableBuilder';
 
-            $message = sprintf('<i class="fa fa-fw fa-warning"></i> Estado de Documento <b>%s</b> eliminado',$estadoDocumento -> getCodigo());
+            $message = sprintf('<i class="fa fa-fw fa-warning"></i> Estado de Documento <b>%s</b> eliminado',$estadoDocumento->getCodigo());
 
-            return $this -> responseWarningJSON($message,'danger',$tables);
+            return $this->responseWarningJSON($message,'danger',$tables);
         } catch(Exception $error) {
             return response()->json(['status'=>false,'message'=>'Ocurrió un error al eliminar el estado de documento. Error ' . $error->getMessage() ]);
         }

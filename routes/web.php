@@ -1,14 +1,6 @@
 <?php
 
-if( config('app.debug') ){
-    DB::listen(function($query){
-        \Illuminate\Support\Facades\Log::info($query->sql);
-        \Illuminate\Support\Facades\Log::info($query->bindings);
-        \Illuminate\Support\Facades\Log::info('');
-    });
-}
-
-Route::middleware('preventBackHistory')->group(function(){
+Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
 
     // Route::get('documentacion', 'DocumentacionController@index');
 
@@ -148,7 +140,7 @@ Route::middleware('preventBackHistory')->group(function(){
                 Route::get('/', 'CatalogoManagerController@index');
 
                 // Catálogo de anexos
-                Route::prefix('anexos')->middleware('can:SIS.ADMIN.CATALOGOS,SIS.ADMIN.ANEXOS')->group(function(){
+                Route::prefix('anexos')->middleware('canAtLeast:SIS.ADMIN.CATALOGOS,SIS.ADMIN.ANEXOS')->group(function(){
                     Route::get('/',                'AnexoController@index');
                     Route::post('post-data',       'AnexoController@postDataTable');
                     Route::post('nuevo',           'AnexoController@formNuevoAnexo');
@@ -157,7 +149,7 @@ Route::middleware('preventBackHistory')->group(function(){
                 });
                 
                 // Catálogo de departamentos
-                Route::prefix('departamentos')->middleware('can:SIS.ADMIN.CATALOGOS,SIS.ADMIN.DEPTOS')->group(function(){
+                Route::prefix('departamentos')->middleware('canAtLeast:SIS.ADMIN.CATALOGOS,SIS.ADMIN.DEPTOS')->group(function(){
                     Route::get('/',          'DepartamentoController@index');
                     Route::post('post-data', 'DepartamentoController@postDataTable');
                     Route::post('nuevo',     'DepartamentoController@formNuevoDepartamento');
@@ -166,7 +158,7 @@ Route::middleware('preventBackHistory')->group(function(){
                 });
                 
                 // Catálogo de direcciones
-                Route::prefix('direcciones')->middleware('can:SIS.ADMIN.CATALOGOS,SIS.ADMIN.DIRECC')->group(function(){
+                Route::prefix('direcciones')->middleware('canAtLeast:SIS.ADMIN.CATALOGOS,SIS.ADMIN.DIRECC')->group(function(){
                     Route::get('/',          'DireccionController@index');
                     Route::post('post-data', 'DireccionController@postDataTable');
                     Route::post('nuevo',     'DireccionController@formNuevaDireccion');
@@ -175,7 +167,7 @@ Route::middleware('preventBackHistory')->group(function(){
                 });
 
                 // Catálogo de puestos
-                Route::prefix('puestos')->middleware('can:SIS.ADMIN.CATALOGOS,SIS.ADMIN.PUESTOS')->group(function(){
+                Route::prefix('puestos')->middleware('canAtLeast:SIS.ADMIN.CATALOGOS,SIS.ADMIN.PUESTOS')->group(function(){
                     Route::get('/',          'PuestoController@index');
                     Route::post('post-data', 'PuestoController@postDataTable');
                     Route::post('nuevo',     'PuestoController@formNuevoPuesto');
@@ -184,7 +176,8 @@ Route::middleware('preventBackHistory')->group(function(){
                 });
 
                 // Catálogo de estados de documentos
-                Route::prefix('estados-documentos')->middleware('can:SIS.ADMIN.CATALOGOS,SIS.ADMIN.ESTA.DOC')->group(function(){
+                // Route::prefix('estados-documentos')->middleware('canAtLeast:SIS.ADMIN.CATALOGOS,SIS.ADMIN.ESTA.DOC')->group(function(){
+                Route::prefix('estados-documentos')->middleware('canAtLeast:SIS.ADMIN.CATALOGOS,SIS.ADMIN.ESTA.DOC')->group(function(){
                     Route::get('/',          'EstadoDocumentoController@index');
                     Route::post('post-data', 'EstadoDocumentoController@postDataTable');
                     Route::post('nuevo',     'EstadoDocumentoController@formNuevoEstadoDocumento');
@@ -195,7 +188,7 @@ Route::middleware('preventBackHistory')->group(function(){
             });
 
             // Administración de usuarios, sus permisos y asignaciones
-            Route::prefix('usuarios')->middleware('can:USU.ADMIN.USUARIOS,USU.ADMIN.PERMISOS.ASIG')->namespace('Usuario')->group(function(){
+            Route::prefix('usuarios')->middleware('canAtLeast:USU.ADMIN.USUARIOS,USU.ADMIN.PERMISOS.ASIG')->namespace('Usuario')->group(function(){
                 Route::get('/',           'UsuarioController@index');
                 Route::post('post-data',  'UsuarioController@postDataTable');
                 Route::post('nuevo',      'UsuarioController@formNuevoUsuario');

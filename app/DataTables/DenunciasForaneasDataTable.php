@@ -18,13 +18,13 @@ class DenunciasForaneasDataTable extends CustomDataTable
     protected function columnsTable(){
         return [
             [
-                'title'  => '# FOLIO',
+                'title'  => '#',
                 'render' => function($denuncia){
                     return sprintf('<p class="text-center"><b>%s</b></p>',$denuncia->getFolio());
                 }
             ],
             [
-                'title'  => '# RECEPCIÓN',
+                'title'  => 'FOLIO RECEPCIÓN',
                 'render' => function($denuncia){
                     return $denuncia->AcuseRecepcion->getNumero();
                 }

@@ -41,7 +41,7 @@
     </head>
     <body>
         <!-- Page Container -->
-        <div id="page-container" class="sidebar-inverse side-scroll page-header-fixed page-header-inverse">
+        <div id="page-container" class="sidebar-inverse side-scroll page-header-fixed page-header-inverse font-size-sm">
             <!-- Sidebar -->
             <nav id="sidebar">
                 <!-- Sidebar Scroll Container -->
@@ -132,7 +132,7 @@
             <footer id="page-footer" class="opacity-0" style="opacity: 1;">
                 <div class="content p-10 font-size-xs clearfix">
                     <div class="float-left">
-                        <span class="font-w600 text-primary">{{ config_var('Sistema.Siglas') }} {{ config_var('Sistema.Version') }}</span> &copy; <span class="js-year-copy">2017</span>
+                        <span class="font-w600 text-primary">{{ config_var('Sistema.Siglas') . ' ' . config_var('Sistema.Version') }}</span> &copy; <span class="js-year-copy">2017</span>
                     </div>
                     <div class="float-right">
                         Powered by <span class="font-w600 text-danger">ITCh</span>

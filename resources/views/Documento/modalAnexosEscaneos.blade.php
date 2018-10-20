@@ -6,6 +6,13 @@
 
 @section('content')
 <div class="col-12">
+
+	<div class="row">
+		<div class="col-md-12 text-center">
+			<p class="font-size-md"><span class="text-danger"><b>Folio de Recepción:</b></span> {{ $folio_recepcion }}</p>
+		</div>
+	</div>
+
 	<div class="row">
 		{!! $anexos or '' !!}
 		{!! $escaneos or '' !!}

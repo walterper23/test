@@ -26,10 +26,10 @@
         </li>
         <li class="nav-item ml-auto">
             <div class="block-options mr-15">
-            <a href="{{ url('recepcion/documentos/nueva-recepcion') }}" class="btn-block-option">
-                <i class="fa fa-plus"></i> Nueva recepci&oacute;n
-            </a>
-            <button type="button" class="btn-block-option" onclick="hRecibirRecepcionForanea.reload('dataTableBuilder')">
+            <button type="button" class="btn-block-option d-none d-sm-inline" onclick="location.href='{{ url('recepcion/documentos/nueva-recepcion') }}'">
+                <i class="fa fa-fw fa-plus"></i> Nueva recepción
+            </button>
+            {{-- <button type="button" class="btn-block-option" onclick="hRecibirRecepcionForanea.reload('dataTableBuilder')">
                 <i class="fa fa-refresh"></i> Actualizar
             </button>
             <div class="dropdown">
@@ -43,7 +43,7 @@
                         <i class="fa fa-fw fa-refresh mr-5"></i>Actualizar registros
                     </a>
                 </div>
-            </div>
+            </div> --}}
         </div>
         </li>
     </ul>

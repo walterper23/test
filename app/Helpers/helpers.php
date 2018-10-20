@@ -1,5 +1,4 @@
 <?php
-use Illuminate\Support\Facades\Cache;
 
 if (! function_exists('config_var'))
 {
@@ -33,15 +32,12 @@ if (! function_exists('permisoUsuario'))
     {
         $permisosUsuario = sprintf('Permisos.Usuario.Actual.%d', userKey());
 
-        //Cache::flush('Permisos.Usuario.Actual');
-        $permisos = Cache::rememberForever($permisosUsuario,function(){
-            return user() -> Permisos;
+        $permisos = cache()->rememberForever($permisosUsuario,function(){
+            return user()->Permisos;
         });
-        
 
-        $permisos = $permisos -> pluck('SYPE_CODIGO') -> toArray();
+        $permisos = $permisos->pluck('SYPE_CODIGO')->toArray();
 
-        //dd('a ber',$permisos,in_array($permiso, $permisos),$permiso);
         return in_array($permiso, $permisos);
     }
 }
@@ -61,15 +57,6 @@ if (! function_exists('userKey'))
     function userKey()
     {
         return \Auth::id();
-    }
-}
-
-if (! function_exists('userIsSuperAdmin'))
-{
-    // Helper para recuperar el ID del usuario en sesión
-    function userIsSuperAdmin()
-    {
-        return user() -> isSuperAdmin();
     }
 }
 

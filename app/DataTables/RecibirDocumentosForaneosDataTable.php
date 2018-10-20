@@ -22,13 +22,19 @@ class RecibirDocumentosForaneosDataTable extends CustomDataTable
             [
                 'title'  => '#',
                 'render' => function($documento){
-                    return $documento->getCodigo();
+                    return sprintf('<p class="text-center"><b>%s</b></p>',$documento->getFolio());
                 }
             ],
             [
-                'title'  => 'TIPO',
+                'title'  => 'TIPO DOCUMENTO',
                 'render' => function($documento){
-                    return $documento->TipoDocumento->getNombre();
+                    return $documento->TipoDocumento->presenter()->getBadge();
+                }
+            ],
+            [
+                'title'  => 'FOLIO RECEPCIÓN',
+                'render' => function($documento){
+                    return $documento->AcuseRecepcion->getNumero();
                 }
             ],
             [

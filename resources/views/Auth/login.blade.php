@@ -7,21 +7,15 @@
 
         <title>{{ title('Iniciar sesión') }}</title>
 
-        <meta name="description" content="Sistema Gestor de Documentos :: PPA">
+        <meta name="description" content="{{ config_var('Sistema.Nombre') }}">
         <meta name="author" content="Instituto Tecnológico de Chetumal">
         <meta name="robots" content="noindex, nofollow">
 
-        <!-- Open Graph Meta -->
-        <meta property="og:title" content="Sistema Gestor de Documentos">
-        <meta property="og:site_name" content="SIGESD">
-        <meta property="og:description" content="Sistema Gestor de Documentos creado por Instituto Tecnológico de Chetumal">
-        <meta property="og:type" content="webapp">
-
         <!-- Icons -->
         <!-- The following icons can be replaced with your own, they are used by desktop and mobile browsers -->
-        <link rel="shortcut icon" href="img/favicon/favicon.ico">
-        <link rel="icon" type="image/png" sizes="192x192" href="img/favicon/favicon-192x192.png">
-        <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon-180x180.png">
+        <link rel="shortcut icon" href="{{ url('img/favicon/favicon.ico') }}">
+        <link rel="icon" type="image/png" sizes="192x192" href="{{ url('img/favicon/favicon-192x192.png') }}">
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ url('img/favicon/apple-touch-icon-180x180.png') }}">
         <!-- END Icons -->
 
         <!-- Stylesheets -->
@@ -55,7 +49,7 @@
                         <!-- Header -->
                         <div class="py-30 px-5 text-center">
                             <h1 class="h2 font-w700 mt-30 mb-10">
-                                {{ config_var('Sistema.Nombre') . ' v' . config_var('Sistema.Version') }}<br>
+                                {{ config_var('Sistema.Nombre') . ' ' . config_var('Sistema.Version') }}<br>
                                 {{ Html::image('img/favicon/logo.png','',['width'=>'60']) }}
                             </h1>
                             <h2 class="h4 font-w400 text-muted mb-0">Iniciar sesi&oacute;n</h2>

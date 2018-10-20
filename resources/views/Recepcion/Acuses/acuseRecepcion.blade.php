@@ -8,14 +8,13 @@
         @page {
             header: page-header;
             footer: page-footer;
+            background-image: url(/img/background/acuse-bg.png);
+            background-position: right center;
         }
         
         body {
             font-family: 'Calibri';
             font-size: 10pt;
-            background-image: url('/img/background/background.png');
-            background-repeat : no-repeat;
-            background-position: right center;
         }
         
         .text-center {
@@ -75,7 +74,7 @@
     <h3 class="text-center">ACUSE DE RECEPCIÓN DE DOCUMENTO</h3>
 
     <p class="text-right">
-        <b>ACUSE DE RECEPCIÓN:</b><br>
+        <b>FOLIO DE RECEPCIÓN:</b><br>
         {{ $acuse->getNumero() }}<br>
         <b>Fecha de recepción:</b> {{ $detalle->getFechaRecepcion() }}<br>
         <b>Fecha de captura:</b> {{ $detalle->presenter()->getFechaHora() }}
@@ -190,7 +189,7 @@
             </tr>
             <tr>
                 <td class="text-left">
-                    {{ title(config_var('Sistema.Nombre') . ' v' . config_var('Sistema.Version')) }}<br>   
+                    {{ title(config_var('Sistema.Nombre') . ' ' . config_var('Sistema.Version')) }}<br>   
                     <b>Acuse generado:</b> {{ date('Y-m-d h:i:s a') }}</td>
                 <td class="text-right">Página <b>{PAGENO}</b> de <b>{nb}</b></td>
             </tr>

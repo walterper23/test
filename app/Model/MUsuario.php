@@ -93,8 +93,9 @@ class MUsuario extends Authenticatable
         $permisos = func_get_args();
         foreach ($permisos as $permiso)
         {
-            if ($this->can($permiso))
+            if ($this->can($permiso)){
                 return true;
+            }
         }
         
         return false;

@@ -6,8 +6,8 @@
 
 @section('breadcrumb')
     <nav class="breadcrumb bg-body-light mb-0">
-        <a class="breadcrumb-item" href="{{ url() -> previous() }}"><i class="fa fa-server"></i> Panel de trabajo</a>
-        <a class="breadcrumb-item" href="{{ url() -> previous() }}">Documentos</a>
+        <a class="breadcrumb-item" href="{{ url()->previous() }}"><i class="fa fa-server"></i> Panel de trabajo</a>
+        <a class="breadcrumb-item" href="{{ url()->previous() }}">Documentos</a>
         <span class="breadcrumb-item active">{{ $title }}</span>
     </nav>
 @endsection
@@ -20,9 +20,9 @@
 
     function url_ver_seguimiento( $seguimiento )
     {
-        $url = sprintf('panel/documentos/seguimiento?search=%d',$seguimiento -> getKey());
+        $url = sprintf('panel/documentos/seguimiento?search=%d',$seguimiento->getKey());
 
-        if (! $seguimiento -> leido())
+        if (! $seguimiento->leido())
             $url = sprintf('%s&read=1',$url);
 
         return url( $url );
@@ -72,11 +72,11 @@
                                 </div>
                                 <div class="col-md-6 col-sm-8">
                                     {{ Form::open(['method'=>'GET']) }}
-                                        {{ Form::hidden('view',request() -> get('view','all')) }}
+                                        {{ Form::hidden('view',request()->get('view','all')) }}
                                         <div class="form-group row">
                                             <div class="col-md-12">
                                                 <div class="input-group">
-                                                    <input type="search" class="form-control" id="search" name="search" placeholder="Tipo documento, Nó. documento, Nó. expediente, Asunto..." value="{{ request() -> get('search') }}" {{ $field_search }}>
+                                                    <input type="search" class="form-control" id="search" name="search" placeholder="Tipo documento, Nó. documento, Nó. expediente, Asunto..." value="{{ request()->get('search') }}" {{ $field_search }}>
                                                     <div class="input-group-append">
                                                         <button type="submit" class="btn btn-secondary" {{ $field_search }}><i class="fa fa-search"></i> Buscar</button>
                                                     </div>
@@ -110,41 +110,41 @@
 
             @forelse ($documentos as $seguimiento)
             @php
-                $documento = $seguimiento -> Documento;
+                $documento = $seguimiento->Documento;
             @endphp
-            <div class="block {{ (! $seguimiento -> leido()) ? 'bg-info-light' : '' }}">
+            <div class="block {{ (! $seguimiento->leido()) ? 'bg-info-light' : '' }}">
                 <div class="block-content block-content-full">
                     <div class="row">
                         <div class="col-md-5">
                             <div class="row">
                                 <div class="col-12">
                                     <p>
-                                        <span class="badge badge-{{ $seguimiento -> SYTD_RIBBON_COLOR }}">
-                                            #{{ $documento -> getCodigo() }}
-                                            {{ $seguimiento -> SYTD_NOMBRE }}
-                                            @if ( $documento -> getTipoDocumento() == 1)
-                                                <span @can('DOC.CREAR.NO.EXPE') style="cursor: pointer;" onclick="hPanel.expediente({{ $documento -> getKey() }})" @endcan>
+                                        <span class="badge badge-{{ $seguimiento->SYTD_RIBBON_COLOR }}">
+                                            #{{ $documento->getFolio() }}
+                                            {{ $seguimiento->SYTD_NOMBRE }}
+                                            @if ( $documento->getTipoDocumento() == 1)
+                                                <span @can('DOC.CREAR.NO.EXPE') style="cursor: pointer;" onclick="hPanel.expediente({{ $documento->getKey() }})" @endcan>
                                                 <i class="fa fa-fw fa-legal"></i>
-                                                @if (! empty($seguimiento -> DENU_NO_EXPEDIENTE) )
-                                                    {{ $seguimiento -> DENU_NO_EXPEDIENTE }}
+                                                @if (! empty($seguimiento->DENU_NO_EXPEDIENTE) )
+                                                    {{ $seguimiento->DENU_NO_EXPEDIENTE }}
                                                 @else
-                                                    _ _ _ _
+                                                    <span title="La denuncia aún no tiene Nó. de Expediente asignado">_ _ _ _</span>
                                                 @endif
                                             </span>
                                         @endif
                                         </span>
-                                        <span class="badge badge-secondary">{{ $documento -> getNumero() }}</span>
+                                        <span class="badge badge-secondary">{{ $documento->getNumero() }}</span>
                                     </p>
-                                    <p><i class="fa fa-fw fa-calendar"></i> <b>Fecha de Recepción:</b> {{ $seguimiento -> DETA_FECHA_RECEPCION }}</p>
-                                    <p><i class="fa fa-fw fa-files-o"></i> <b>Asunto:</b> {{ $seguimiento -> DETA_DESCRIPCION }}</p>
-                                    @if (! empty($seguimiento -> DETA_ANEXOS) )
-                                    <button type="button" class="btn btn-sm btn-rounded btn-alt-primary" onclick="hPanel.verAnexos({{ $documento -> getKey()  }})">
+                                    <p><i class="fa fa-fw fa-calendar"></i> <b>Fecha de Recepción:</b> {{ $seguimiento->DETA_FECHA_RECEPCION }}</p>
+                                    <p><i class="fa fa-fw fa-files-o"></i> <b>Asunto:</b> {{ $seguimiento->DETA_DESCRIPCION }}</p>
+                                    @if (! empty($seguimiento->DETA_ANEXOS) )
+                                    <button type="button" class="btn btn-sm btn-rounded btn-alt-primary" onclick="hPanel.verAnexos({{ $documento->getKey()  }})">
                                         <i class="fa fa-fw fa-clipboard"></i> Anexos
                                     </button>
                                     @endif
-                                    @if ($seguimiento -> Escaneos -> count() > 0 )
-                                    <button type="button" class="btn btn-sm btn-rounded btn-alt-danger" onclick="hPanel.verEscaneos({{ $documento -> getKey()  }})">
-                                        <i class="fa fa-fw fa-clipboard"></i> Escaneos <span class="badge badge-pill badge-danger">{{ $seguimiento -> Escaneos -> count() }}</span>
+                                    @if ($seguimiento->Escaneos->count() > 0 )
+                                    <button type="button" class="btn btn-sm btn-rounded btn-alt-danger" onclick="hPanel.verEscaneos({{ $documento->getKey()  }})">
+                                        <i class="fa fa-fw fa-clipboard"></i> Escaneos <span class="badge badge-pill badge-danger">{{ $seguimiento->Escaneos->count() }}</span>
                                     </button>
                                     @endif
                                 </div>
@@ -153,40 +153,38 @@
                         <div class="col-md-5">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <a class="text-dark" href="{{ url_ver_seguimiento( $seguimiento ) }}" title="Seguimiento #{{ $seguimiento -> getCodigo() }}">
-                                        <span class="badge badge-danger"><i class="fa fa-fw fa-flash"></i> #{{ $seguimiento -> getCodigo() }}</span>
-                                        <b>{{ $seguimiento -> EstadoDocumento -> getNombre() }}</b>
+                                    <a class="text-dark" href="{{ url_ver_seguimiento( $seguimiento ) }}">
+                                        <span class="badge badge-success" title="Fecha y hora del cambio de estado"><i class="fa fa-fw fa-calendar"></i> {{ $seguimiento->presenter()->getFechaSeguimiento() }}</span>
+                                        <span class="badge badge-danger" title="Seguimiento #{{ $seguimiento->getCodigo() }}"><i class="fa fa-fw fa-flash"></i> #{{ $seguimiento->getCodigo() }}</span>
+                                        <b>{{ $seguimiento->EstadoDocumento->getNombre() }}</b>
                                     </a>
                                 </div>
                                 <div class="col-md-12">
-                                    <a href="javascript:void(0)">
-                                        <span class="badge badge-success"><i class="fa fa-fw fa-calendar"></i> {{ $seguimiento -> presenter() -> getFechaSeguimiento() }}</span>
-                                    </a>
-                                    @if (is_null($seguimiento -> DepartamentoOrigen))
-                                    <a href="javascript:void(0)">
-                                        <span class="badge badge-secondary"><i class="fa fa-fw fa-legal"></i> {{ $seguimiento -> DireccionOrigen -> getNombre() }}</span>
+                                    @if (is_null($seguimiento->DepartamentoOrigen))
+                                    <a href="javascript:void(0)" class="font-size-xs">
+                                        <span class="badge badge-secondary" title="Dirección que hizo la recepción"><i class="fa fa-fw fa-legal"></i> {{ $seguimiento->DireccionOrigen->getNombre() }}</span>
                                     </a>
                                     @else
-                                    <a href="javascript:void(0)">
-                                        <span class="badge badge-warning"><i class="fa fa-fw fa-sitemap"></i> {{ $seguimiento -> DepartamentoOrigen -> getNombre() }}</span>
+                                    <a href="javascript:void(0)" class="font-size-xs">
+                                        <span class="badge badge-warning" title="Departamento que hizo la recepción"><i class="fa fa-fw fa-sitemap"></i> {{ $seguimiento->DepartamentoOrigen->getNombre() }}</span>
                                     </a>
                                     @endif
-                                    <a href="javascript:void(0)">
+                                    <a href="javascript:void(0)" class="font-size-xs">
                                         <span class="badge badge-primary"><i class="fa fa-fw fa-user"></i>
-                                            {{ trim(sprintf('%s :: %s %s',$seguimiento -> USDE_NO_TRABAJADOR, $seguimiento -> USDE_NOMBRES,$seguimiento -> USDE_APELLIDOS)) }}
+                                            {{ trim(sprintf('%s :: %s %s',$seguimiento->USDE_NO_TRABAJADOR, $seguimiento->USDE_NOMBRES,$seguimiento->USDE_APELLIDOS)) }}
                                         </span>
                                     </a>
                                 </div>
                             </div>
-                            <p><span class="font-w600"><i class="fa fa-fw fa-comment-o"></i> Observaciones:</span> {{ $seguimiento -> getObservacion() }}</p>
-                            @if($documento -> enSeguimiento())
-                            <p><span class="font-w600"><i class="fa fa-fw fa-street-view"></i> Instrucción al destino:</span> {{ $seguimiento -> getInstruccion() }}</p>
+                            <p><span class="font-w600"><i class="fa fa-fw fa-comment-o"></i> Observaciones:</span> {{ $seguimiento->getObservacion() }}</p>
+                            @if($documento->enSeguimiento())
+                            <p><span class="font-w600"><i class="fa fa-fw fa-street-view"></i> Instrucción al destino:</span> {{ $seguimiento->getInstruccion() }}</p>
                             @endif
                         </div>
                         <div class="col-md-2 text-right section-options">
-                            <div class="font-size-sm text-muted text-right" title="Documento #{{ $documento -> getCodigo() }}">
-                                <a href="javascript:void(0)" onclick="hPanel.marcarImportante(this, {{ $documento -> getKey() }})">
-                                    @if ($documento -> importante())
+                            <div class="font-size-sm text-muted text-right" title="Documento #{{ $documento->getCodigo() }}">
+                                <a href="javascript:void(0)" onclick="hPanel.marcarImportante(this, {{ $documento->getKey() }})">
+                                    @if ($documento->importante())
                                         <i class="fa fa-fw fa-star text-warning star" title="Marcar como importante"></i>
                                     @else
                                         <i class="fa fa-fw fa-star-o star" title="Marcar como importante"></i>
@@ -196,28 +194,28 @@
                                     <div class="btn-group show" role="group">
                                         <button type="button" class="btn btn-sm btn-alt-secondary dropdown-toggle" id="btnGroupDrop2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Opciones</button>
                                         <div class="dropdown-menu" aria-labelledby="btnGroupDrop2" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 94px, 0px); top: 0px; left: 40px; will-change: transform;">
-                                            @if (! $documento -> finalizado() && ! $documento -> rechazado() && user() -> can('SEG.CAMBIAR.ESTADO') )
-                                            <a class="dropdown-item" href="#" onclick="hPanel.cambiarEstado({{ $documento -> getKey() }})">
+                                            @if (! $documento->finalizado() && ! $documento->rechazado() && user()->can('SEG.CAMBIAR.ESTADO') )
+                                            <a class="dropdown-item" href="#" onclick="hPanel.cambiarEstado({{ $documento->getKey() }})">
                                                 <i class="fa fa-fw fa-history text-danger"></i> Cambiar estado
                                             </a>
                                             @endif
                                             <a class="dropdown-item" href="{{ url_ver_seguimiento( $seguimiento ) }}">
                                                 <i class="fa fa-fw fa-paper-plane text-success"></i> Ver seguimiento
                                             </a>
-                                            @if ( user() -> can('DOC.CREAR.NO.EXPE') && $documento -> getTipoDocumento() == 1)
-                                            <a class="dropdown-item" href="#" onclick="hPanel.expediente({{ $documento -> getKey() }})">
+                                            @if ( user()->can('DOC.CREAR.NO.EXPE') && $documento->getTipoDocumento() == 1)
+                                            <a class="dropdown-item" href="#" onclick="hPanel.expediente({{ $documento->getKey() }})">
                                                 <i class="fa fa-fw fa-legal text-danger"></i> Número de Expediente
                                             </a>
                                             @endif
-                                            <a class="dropdown-item" href="javascript:void(0)" onclick="hPanel.marcarImportante(this, {{ $documento -> getKey() }})">
-                                            @if ($documento -> importante())
+                                            <a class="dropdown-item" href="javascript:void(0)" onclick="hPanel.marcarImportante(this, {{ $documento->getKey() }})">
+                                            @if ($documento->importante())
                                                 <i class="fa fa-fw fa-star text-warning star"></i> Importante
                                             @else
                                                 <i class="fa fa-fw fa-star-o star"></i> Importante
                                             @endif
                                             </a>
-                                            <a class="dropdown-item" href="javascript:void(0)" onclick="hPanel.marcarArchivado(this, {{ $documento -> getKey() }})">
-                                            @if (! $documento -> archivado() )
+                                            <a class="dropdown-item" href="javascript:void(0)" onclick="hPanel.marcarArchivado(this, {{ $documento->getKey() }})">
+                                            @if (! $documento->archivado() )
                                                 <i class="fa fa-fw fa-archive archive"></i> <span id="arch">Archivar</span>
                                             @else
                                                 <i class="fa fa-fw fa-archive archive text-primary"></i> <span id="arch">Desarchivar</span>
@@ -226,7 +224,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <br>{{ $seguimiento -> SYED_NOMBRE }}
+                                <br>{{ $seguimiento->SYED_NOMBRE }}
                             </div>
                         </div>
                     </div>

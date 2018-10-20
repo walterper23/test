@@ -24,6 +24,7 @@ use App\Model\MMunicipio;
 use App\Model\MSeguimiento;
 use App\Model\Catalogo\MAnexo;
 use App\Model\System\MSystemTipoDocumento;
+use App\Model\System\MSystemConfig;
 
 /* DataTables */
 use App\DataTables\DenunciasDataTable;
@@ -212,12 +213,27 @@ class RecepcionController extends BaseController
 
             // Guardamos el documento
             $documento = new MDocumento;
+            $documento->DOCU_FOLIO               = 0;
             $documento->DOCU_SYSTEM_TIPO_DOCTO   = $tipo_documento->getKey();
             $documento->DOCU_SYSTEM_ESTADO_DOCTO = 2; // Documento recepcionado
             $documento->DOCU_TIPO_RECEPCION      = 1; // Recepción local
             $documento->DOCU_DETALLE             = $detalle->getKey();
             $documento->DOCU_NUMERO_DOCUMENTO    = $request->numero;
             $documento->save();
+
+            $fecha_reinicio = config_var('Adicional.Fecha.Reinicio.Folios');
+
+            if (! is_null($fecha_reinicio) && $fecha_reinicio <= date('Y-m-d H:i:s') )
+            {
+                $documento->DOCU_FOLIO = config_var('Adicional.Folio.Reinicio.Folios');
+                $documento->save();
+
+                $fecha_reinicio = MSystemConfig::where('SYCO_VARIABLE','Adicional.Fecha.Reinicio.Folios')->limit(1)->first();
+                $fecha_reinicio->SYCO_VALOR = null;
+                $fecha_reinicio->save();
+
+                MSystemConfig::setAllVariables(); // Volvemos a cargar la variables de configuración al caché
+            }
 
             // Guardamos el primer seguimiento del documento
             $seguimiento = new MSeguimiento;

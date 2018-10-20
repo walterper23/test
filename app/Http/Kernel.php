@@ -54,8 +54,10 @@ class Kernel extends HttpKernel
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
+        'canAtLeast' => \App\Http\Middleware\CanAtLeast::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'preventBackHistory' => \App\Http\Middleware\PreventBackHistory::class,
+        'queryListenLog' => \App\Http\Middleware\QueryListenLog::class,
     ];
 }

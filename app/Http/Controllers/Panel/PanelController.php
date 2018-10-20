@@ -488,7 +488,7 @@ class PanelController extends BaseController
 
             $importante = $documento->importante();
 
-            $message = sprintf('Documento <b>#%s</b> importante <i class="fa fa-fw fa-star"></i>', $documento->getCodigo());
+            $message = sprintf('Documento <b>#%s</b> importante <i class="fa fa-fw fa-star"></i>', $documento->getFolio());
 
             return $this->responseWarningJSON(['message'=>$message,'importante'=>$importante]);
 
@@ -507,7 +507,7 @@ class PanelController extends BaseController
             $documento->save();
 
             if( $documento->archivado() ){
-                $message = sprintf('Documento <b>#%s</b> archivado <i class="fa fa-fw fa-archive"></i>', $documento->getCodigo());
+                $message = sprintf('Documento <b>#%s</b> archivado <i class="fa fa-fw fa-archive"></i>', $documento->getFolio());
                 return $this->responseInfoJSON(['message'=>$message,'archivado'=>true]);
             }
             
@@ -555,9 +555,9 @@ class PanelController extends BaseController
         $documento->Denuncia->DENU_NO_EXPEDIENTE = $request->expediente;
         $documento->Denuncia->save();
 
-        cache()->forget('denunciasAlRecepcionar');
+        cache()->forget('denunciasAlRecepcionar'); // variable en caché de la lista de denuncias que se pueden elegir en la recepción de documentos
 
-        $message = sprintf('Nó. expediente <b>%s</b> asignado a Documento <b>#%s</b>',$documento->Denuncia->getNoExpediente(), $documento->getCodigo());
+        $message = sprintf('Nó. expediente <b>%s</b> asignado a Documento <b>#%s</b>',$documento->Denuncia->getNoExpediente(), $documento->getFolio());
 
         return $this->responseSuccessJSON($message);
     }

@@ -211,6 +211,7 @@ class RecepcionForaneaController extends BaseController
 
             // Guardamos el documento foráneo
             $documento = new MDocumentoForaneo;
+            $documento->DOFO_FOLIO               = 0;
             $documento->DOFO_SYSTEM_TIPO_DOCTO   = $request->tipo_documento;
             $documento->DOFO_DETALLE             = $detalle->getKey();
             $documento->DOFO_NUMERO_DOCUMENTO    = $request->numero;
@@ -218,6 +219,20 @@ class RecepcionForaneaController extends BaseController
             $documento->DOFO_VALIDADO            = 0; // Documento foráneo aún no Validado por Oficialía de partes
             $documento->DOFO_RECEPCIONADO        = 0; // Documento foráneo aún no Recepcionado por Oficialía de partes
             $documento->save();
+            
+            $fecha_reinicio = config_var('Adicional.Fecha.Reinicio.Folios.Foraneo');
+
+            if (! is_null($fecha_reinicio) && $fecha_reinicio <= date('Y-m-d H:i:s') )
+            {
+                $documento->DOFO_FOLIO = config_var('Adicional.Folio.Reinicio.Folios.Foraneo');
+                $documento->save();
+
+                $fecha_reinicio = MSystemConfig::where('SYCO_VARIABLE','Adicional.Fecha.Reinicio.Folios.Foraneo')->limit(1)->first();
+                $fecha_reinicio->SYCO_VALOR = null;
+                $fecha_reinicio->save();
+
+                MSystemConfig::setAllVariables(); // Volvemos a cargar la variables de configuración al caché
+            }
 
             /* !!! El documento foráneo no debe crear ningún primer seguimiento !!! */
             
@@ -392,7 +407,7 @@ class RecepcionForaneaController extends BaseController
 
         // Crear la notificación para usuarios del sistema
         $data = [
-            'contenido'  => sprintf('Documento foráneo #%s <b>%s</b> en tránsito', $documento->getFolio(), $documento->TipoDocumento->getNombre()),
+            'contenido'  => sprintf('Documento foráneo #%s <b>%s</b> ha sido puesto en tránsito. Recuerde recibir el documento.', $documento->getFolio(), $documento->TipoDocumento->getNombre()),
             'url'        => 'recepcion/documentos/foraneos' . $redirect,
         ];
         

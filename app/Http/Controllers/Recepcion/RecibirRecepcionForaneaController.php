@@ -182,12 +182,25 @@ class RecibirRecepcionForaneaController extends BaseController
 				}
 
 				$documento = new MDocumento;
+				$documento->DOCU_FOLIO               = 0;
 				$documento->DOCU_SYSTEM_TIPO_DOCTO   = $documentoForaneo->getTipoDocumento();
 				$documento->DOCU_SYSTEM_ESTADO_DOCTO = 2; // Documento recepcionado
 				$documento->DOCU_TIPO_RECEPCION      = 2; // Recepción foránea
 				$documento->DOCU_DETALLE             = $documentoForaneo->getDetalle();
 				$documento->DOCU_NUMERO_DOCUMENTO    = $documentoForaneo->getNumero();
 				$documento->save();
+
+				if (! is_null($fecha_reinicio) && $fecha_reinicio <= date('Y-m-d H:i:s') )
+	            {
+	                $documento->DOCU_FOLIO = config_var('Adicional.Folio.Reinicio.Folios');
+	                $documento->save();
+
+	                $fecha_reinicio = MSystemConfig::where('SYCO_VARIABLE','Adicional.Fecha.Reinicio.Folios')->limit(1)->first();
+	                $fecha_reinicio->SYCO_VALOR = null;
+	                $fecha_reinicio->save();
+
+	                MSystemConfig::setAllVariables(); // Volvemos a cargar la variables de configuración al caché
+	            }
 
 				// Actualizamos el Documento Denuncia si lo generó el documento foráneo, para actualizar el nuevo ID del documento local
 				$documentoForaneo->DocumentoDenuncia()->update([

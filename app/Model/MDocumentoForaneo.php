@@ -39,6 +39,11 @@ class MDocumentoForaneo extends BaseModel
         return $this->getTipoRecepcion() == 2;
     }
 
+    public function noEnviado()
+    {
+        return $this->getAttribute('DOFO_SYSTEM_TRANSITO') == 0;
+    }
+
     public function enviado()
     {
         return $this->getAttribute('DOFO_SYSTEM_TRANSITO') == 1;
