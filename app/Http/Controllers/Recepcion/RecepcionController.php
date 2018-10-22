@@ -322,11 +322,12 @@ class RecepcionController extends BaseController
                 $request->session()->flash('urlAcuseAutomatico', $url);
             }
             
-            // Crear la notificación para usuarios del sistema
+            // Crear la notificación sobre la recepción de un nuevo documento local
             $data = [
-                'contenido'  => sprintf('Se ha recepcionado un nuevo documento #%s de tipo <b>%s</b>', $documento->getFolio(),$documento->TipoDocumento->getNombre()),
-                'direccion'  => $seguimiento->getDireccionDestino(),
-                'url'        => sprintf('panel/documentos/seguimiento?search=%d&read=1',$seguimiento->getKey()),
+                'contenido'    => sprintf('Se ha recepcionado un nuevo documento #%s de tipo <b>%s</b>', $documento->getFolio(),$documento->TipoDocumento->getNombre()),
+                'direccion'    => $seguimiento->getDireccionDestino(),
+                'departamento' => $seguimiento->getDepartamentoDestino(),
+                'url'          => sprintf('panel/documentos/seguimiento?search=%d&read=1',$seguimiento->getKey()),
             ];
             
             // Creamos la nueva notificación para el Panel de Trabajo sobre nuevo documento recibido

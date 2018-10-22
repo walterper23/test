@@ -2,7 +2,6 @@
 namespace App\Http\Controllers\Panel;
 
 use Illuminate\Http\Request;
-use App\Http\Requests\ManagerUsuarioRequest;
 use Carbon\Carbon;
 use DB;
 
@@ -11,7 +10,6 @@ use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Dashboard\NotificacionController;
 
 /* Models */
-use App\Model\MUsuario;
 use App\Model\MDenuncia;
 use App\Model\MDocumento;
 use App\Model\MDocumentoSemaforizado;
@@ -26,6 +24,9 @@ class PanelController extends BaseController
     public function __construct()
     {
         parent::__construct();
+
+        $this->middleware('can:DOC.CREAR.NO.EXPE',['only'=>['formAsignarNoExpedienteDenuncia','asignarNoExpedienteDenuncia']]);
+
         $this->setLog('PanelController.log');
     }
 
@@ -399,14 +400,18 @@ class PanelController extends BaseController
                 $documentoSemaforizado->DOSE_RESPUESTA_FECHA     = Carbon::now();
                 $documentoSemaforizado->save();
 
-                // Crear la notificación para usuarios del sistema
+                // Crear la notificación sobre que se ha respondido a un documento semaforizado
                 $data = [
-                    'contenido'  => sprintf('Ha recibido respuesta al documento semaforizado #%s', $documentoSemaforizado->getCodigo()),
-                    'url'        => sprintf('panel/documentos/semaforizados/?view=%s&open=2',$documentoSemaforizado->getKey()),
+                    'contenido' => sprintf('Ha recibido respuesta al documento <b>#%s</b> con semaforización <b>#%s</b>',
+                                    $documento->getFolio(),$documentoSemaforizado->getCodigo()),
+                    'url'       => sprintf('panel/documentos/semaforizados/?view=%s&open=2',$documentoSemaforizado->getKey()),
                 ];
                 
                 NotificacionController::nuevaNotificacion('DOC.SEM.RES',$data);
             }
+
+            $notificacion_adicional = '';
+            $notificacion_codigo    = 'PAN.TRA.NUE.DOC.REC';
 
             if ($request->dispersion == 1 && $documento->enSeguimiento()) // Si la dispersión es normal y el documento aun estará en seguimiento
             {
@@ -423,6 +428,10 @@ class PanelController extends BaseController
                     $semaforo->DOSE_FECHA_LIMITE  = $fecha_limite;
                     $semaforo->DOSE_SEGUIMIENTO_A = $seguimientoNuevo->getKey();
                     $semaforo->save();
+
+                    // Le añadimos a la notificación "que el documento se encuentra semaforizado"
+                    $notificacion_adicional = ' y se encuentra semaforizado';
+                    $notificacion_codigo    = 'PAN.TRA.DOC.SEM.REC';
                 }
             }
             elseif ($request->dispersion == 2 && $documento->finalizado()) // Si la dispersión es múltiple y el documento ya se finalizará
@@ -452,7 +461,19 @@ class PanelController extends BaseController
 
             if (! in_array($documento->getEstadoDocumento(),[2,3] ) ) // Documento recepcionado, Documento en seguimiento
             {
-                cache()->forget('denunciasAlRecepcionar');
+                cache()->forget('denunciasAlRecepcionar'); // Lista de denuncias que se pueden elegir en la recepción de documentos
+            }
+
+            if( $documento->enSeguimiento() )
+            {
+                $data = [
+                    'contenido'    => sprintf('Ha recibido el documento <b>#%s</b> en su panel de trabajo' . $notificacion_adicional, $documento->getFolio()),
+                    'direccion'    => $seguimientoNuevo->getDireccionDestino(),
+                    'departamento' => $seguimientoNuevo->getDepartamentoDestino(),
+                    'url'          => sprintf('panel/documentos/seguimiento?search=%d&read=1',$seguimientoNuevo->getKey()),
+                ];
+                
+                NotificacionController::nuevaNotificacion($notificacion_codigo,$data);
             }
 
             DB::commit();
@@ -520,10 +541,6 @@ class PanelController extends BaseController
 
     public function formAsignarNoExpedienteDenuncia(Request $request)
     {
-        if (user()->cant('DOC.CREAR.NO.EXPE')){
-            abort(403);
-        }
-
         $data = [
             'title'         => 'Nó. de expediende de denuncia',
             'url_send_form' => url('panel/documentos/manager'),
@@ -546,16 +563,12 @@ class PanelController extends BaseController
 
     public function asignarNoExpedienteDenuncia( $request )
     {
-        if (user()->cant('DOC.CREAR.NO.EXPE')){
-            abort(403);
-        }
-
         $documento = MDocumento::with('Denuncia')->find( $request->id );
 
         $documento->Denuncia->DENU_NO_EXPEDIENTE = $request->expediente;
         $documento->Denuncia->save();
 
-        cache()->forget('denunciasAlRecepcionar'); // variable en caché de la lista de denuncias que se pueden elegir en la recepción de documentos
+        cache()->forget('denunciasAlRecepcionar'); // Lista de denuncias que se pueden elegir en la recepción de documentos pueden elegir en la recepción de documentos
 
         $message = sprintf('Nó. expediente <b>%s</b> asignado a Documento <b>#%s</b>',$documento->Denuncia->getNoExpediente(), $documento->getFolio());
 

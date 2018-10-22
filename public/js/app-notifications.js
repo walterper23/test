@@ -48,7 +48,7 @@ var AppNotificacion = new Vue({
             }
         },
         _eliminarNotificacion : function( notificacion ){
-            axios.post('manager',{
+            axios.post('/manager',{
                 action : 'eliminar-notificacion',
                 id : notificacion.id
             }).then( response => {

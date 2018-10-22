@@ -416,7 +416,8 @@ class RecepcionForaneaController extends BaseController
             'contenido'  => sprintf('Documento foráneo #%s <b>%s</b> ha sido puesto en tránsito. Recuerde recibir el documento.', $documento->getFolio(), $documento->TipoDocumento->getNombre()),
             'url'        => 'recepcion/documentos/foraneos' . $redirect,
         ];
-        
+            
+        // Creamos la notificación de que el documento ya está en tránsito
         NotificacionController::nuevaNotificacion('REC.LOC.DOC.FOR.TRA',$data);
 
         return $this->responseSuccessJSON($message,$tables);

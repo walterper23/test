@@ -53,14 +53,14 @@ class MSystemTipoDocumento extends BaseModel
 
         if( is_null($tipos) )
         {
-            self::setAllVariables();
+            self::setAllTiposDocumentos();
             return self::getAllTiposDocumentos();
         }
 
         return $tipos;
     }
 
-    public static function setAllVariables()
+    public static function setAllTiposDocumentos()
     {
         cache()->forget('System.Tipos.Documentos');
 

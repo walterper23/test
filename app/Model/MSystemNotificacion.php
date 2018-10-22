@@ -1,5 +1,7 @@
 <?php
-namespace App\Model;
+namespace App\Model\System;
+
+use App\Model\BaseModel;
 
 class MSystemNotificacion extends BaseModel
 {
@@ -11,32 +13,32 @@ class MSystemNotificacion extends BaseModel
 
     public function getCodigo( $size = 3, $str = '0', $direction = STR_PAD_LEFT )
 	{
-		return $this -> getAttribute('SYNO_CODIGO');
+		return $this->getAttribute('SYNO_CODIGO');
 	}
 
 	public function getColor()
 	{
-		return $this -> getAttribute('SYNO_COLOR');
+		return $this->getAttribute('SYNO_COLOR');
 	}
 
 	public function getNombre()
 	{
-		return $this -> getAttribute('SYNO_NOMBRE');
+		return $this->getAttribute('SYNO_NOMBRE');
 	}
 
 	public function getDescripcion()
 	{
-		return $this -> getAttribute('SYNO_DESCRIPCION');
+		return $this->getAttribute('SYNO_DESCRIPCION');
 	}
 
 	public function getPermiso()
 	{
-		return $this -> getAttribute('SYNO_SYSTEM_PERMISO');
+		return $this->getAttribute('SYNO_SYSTEM_PERMISO');
 	}
 
 	public function getTipo()
 	{
-		return $this -> getAttribute('SYNO_SYSTEM_TIPO');
+		return $this->getAttribute('SYNO_SYSTEM_TIPO');
 	}
 
 	public static function setAllNotificaciones()
@@ -44,7 +46,7 @@ class MSystemNotificacion extends BaseModel
         cache()->forget('System.Notificaciones');
 
         cache()->rememberForever('System.Notificaciones',function(){
-            return self::disponible()->get();
+            return self::where('SYNO_ENABLED',1)->get();
         });
     }
 
@@ -52,12 +54,12 @@ class MSystemNotificacion extends BaseModel
 
 	public function Permiso()
 	{
-		return $this -> belongsTo('App\Model\MPermiso','SYNO_SYSTEM_PERMISO','SYPE_PERMISO');
+		return $this->belongsTo('App\Model\MPermiso','SYNO_SYSTEM_PERMISO','SYPE_PERMISO');
 	}
 
 	public function TipoNotificacion()
 	{
-		return $this -> belongsTo('App\Model\MSystemTipoNotificacion','SYNO_SYSTEM_TIPO','SYTN_TIPO');
+		return $this->belongsTo('App\Model\MSystemTipoNotificacion','SYNO_SYSTEM_TIPO','SYTN_TIPO');
 	}
 
 }

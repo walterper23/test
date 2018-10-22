@@ -2,22 +2,19 @@
 namespace App\Http\Controllers\Recepcion;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Input;
 use Carbon\Carbon;
 use Exception;
 use DB;
 
 /* Controllers */
 use App\Http\Controllers\BaseController;
+use App\Http\Controllers\Dashboard\NotificacionController;
 
 /* Models */
 use App\Model\MAcuseRecepcion;
 use App\Model\MDenuncia;
-use App\Model\MDetalle;
 use App\Model\MDocumento;
 use App\Model\MDocumentoForaneo;
-use App\Model\MEscaneo;
-use App\Model\MMunicipio;
 use App\Model\MSeguimiento;
 
 /* DataTables */
@@ -189,6 +186,8 @@ class RecibirRecepcionForaneaController extends BaseController
 				$documento->DOCU_NUMERO_DOCUMENTO    = $documentoForaneo->getNumero();
 				$documento->save();
 
+            	$fecha_reinicio = config_var('Adicional.Fecha.Reinicio.Folios');
+
 				if (! is_null($fecha_reinicio) && $fecha_reinicio <= date('Y-m-d H:i:s') )
 	            {
 	                $documento->DOCU_FOLIO = config_var('Adicional.Folio.Reinicio.Folios');
@@ -212,7 +211,7 @@ class RecibirRecepcionForaneaController extends BaseController
 				]);
 
 				$documentoForaneo->DOFO_DOCUMENTO_LOCAL     = $documento->getKey();
-				$documentoForaneo->DOFO_RECEPCIONADO        = 1; // Documento recepcionado por Oficialía de Partes
+				$documentoForaneo->DOFO_RECEPCIONADO        = 1; // Marcar que el documento ha sido recepcionado por Oficialía de Partes
 				$documentoForaneo->DOFO_FECHA_RECEPCIONADO  = Carbon::now(); // Fecha y hora de recepcionado
 				$documentoForaneo->save();
 
@@ -230,6 +229,8 @@ class RecibirRecepcionForaneaController extends BaseController
 				// Crear el acuse de recepción
             	$folio_acuse = sprintf('ARD/%s/%s/%s/%s/',date('Y'),date('m'),$documento->getFolio(),$tipo_documento->getCodigoAcuse()); // ARD/2018/10/005/DENU/
 
+            	$url_notificacion = 'recepcion/documentos-foraneos/recepcionados?view=';
+            	
 				if ($documentoForaneo->getTipoDocumento() == 1){
 
 					$denuncia = new MDenuncia; // Crear el registro de la denuncia
@@ -239,16 +240,19 @@ class RecibirRecepcionForaneaController extends BaseController
                 	$folio_acuse .= $denuncia->getFolio(); // ARD/2018/10/005/DENU/001
 
 					$tables = ['recibir-denuncias-datatable',null,true];
+					$url_notificacion .= 'denuncias';
 				}
 				else if ($documentoForaneo->getTipoDocumento() == 2){
                 	$folio_acuse .= $documento->DocumentoDenuncia->getCodigo();  // ARD/2018/10/005/DODE/002
 
 					$tables = ['recibir-documentos-denuncias-datatable',null,true];
+					$url_notificacion .= 'documentos-denuncias';
 				}
 				else{
                 	$folio_acuse .= $documento->getFolio(); // ARD/2018/10/005/DENU/005
 
 					$tables = ['recibir-documentos-datatable',null,true];
+					$url_notificacion .= 'documentos';
 				}
 
 				// Creamos el registro del acuse de recepción del documento
@@ -262,6 +266,16 @@ class RecibirRecepcionForaneaController extends BaseController
 				$acuse->ACUS_ENTREGO   = $documentoForaneo->AcuseRecepcion->getEntrego();
 				$acuse->ACUS_RECIBIO   = $documentoForaneo->AcuseRecepcion->getRecibio();
 				$acuse->save();
+
+				// Crear la notificación sobre de que el documento foráneo ha sido recibido en Oficialía de Partes
+	            $data = [
+	                'contenido'  => sprintf('Documento <b>#%s</b> de tipo <b>%s</b> ha sido recibido y recepcionado exitosamente!',
+	                						$documentoForaneo->getFolio(),$documentoForaneo->TipoDocumento->getNombre()),
+	                'url'        => $url_notificacion,
+	            ];
+	            
+	            // Creamos la nueva notificación sobre que el documento foráneo ha sido recibido exitosamente
+	            NotificacionController::nuevaNotificacion('REC.FOR.DOC.FOR.REC',$data);
 
 				$message = sprintf('Documento foráneo <b>#%s</b> recepcionado', $documentoForaneo->getFolio());
 

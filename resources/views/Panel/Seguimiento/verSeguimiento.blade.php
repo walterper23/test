@@ -1,6 +1,6 @@
 @extends('app.layoutMaster')
 
-@section('title', title('Seguimiento de documento') )
+@section('title', title('Seguimiento de documento #' . $documento->getFolio()))
 
 @section('breadcrumb')
     <nav class="breadcrumb bg-body-light mb-0">

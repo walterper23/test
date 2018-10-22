@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Events\NuevoDocumentoLocalRecepcionado;
-// use App\Events\NuevoDocumentoForaneoRecepcionado;
+use App\Events\NuevoDocumentoForaneoRecepcionado;
 
 /* Controllers */
 use App\Http\Controllers\BaseController;
@@ -12,7 +12,6 @@ use App\Http\Controllers\BaseController;
 /* Models */
 use App\Model\MNotificacion;
 use App\Model\MNotificacionArea;
-use App\Model\MSystemNotificacion;
 
 use Exception;
 
