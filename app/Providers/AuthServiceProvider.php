@@ -49,6 +49,8 @@ class AuthServiceProvider extends ServiceProvider
         }
 
         \App\Model\System\MSystemConfig::setAllVariables();
+        \App\Model\System\MSystemPreferencia::setAllPreferencias();
+        \App\Model\System\MSystemPreferencia::setAllNotificaciones();
 
     }
 }

@@ -13,8 +13,11 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'App\Events\Event' => [
-            'App\Listeners\EventListener',
+        'App\Events\NuevoDocumentoLocalRecepcionado' => [
+            'App\Listeners\EnviarCorreoSobreDocumentoLocal',
+        ],
+        'App\Events\NuevoDocumentoForaneoRecepcionado' => [
+            'App\Listeners\EnviarCorreoSobreDocumentoForaneo',
         ],
     ];
 

@@ -2,7 +2,9 @@
 namespace App\Http\Controllers\Dashboard;
 
 use Illuminate\Http\Request;
-use \Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Mail;
+use App\Events\NuevoDocumentoLocalRecepcionado;
+// use App\Events\NuevoDocumentoForaneoRecepcionado;
 
 /* Controllers */
 use App\Http\Controllers\BaseController;
@@ -34,27 +36,27 @@ class NotificacionController extends BaseController
       */
     public static function nuevaNotificacion( $codigo_notificacion, Array $data )
     {
-        $system_notificacion = MSystemNotificacion::where('SYNO_CODIGO',$codigo_notificacion) -> limit(1) -> first();
+        $system_notificacion = cache('System.Notificaciones')->where('SYNO_CODIGO',$codigo_notificacion)->first();
 
         $notificacion = new MNotificacion;
-        $notificacion -> NOTI_SYSTEM_NOTIFICACION = $system_notificacion -> getKey();
-        $notificacion -> NOTI_SYSTEM_TIPO         = $system_notificacion -> getTipo();
-        $notificacion -> NOTI_SYSTEM_PERMISO      = $system_notificacion -> getPermiso();
-        $notificacion -> NOTI_COLOR               = $system_notificacion -> getColor();
-        $notificacion -> NOTI_CONTENIDO           = isset($data['contenido']) ? $data['contenido'] : null;
-        $notificacion -> NOTI_URL                 = isset($data['url']) ? $data['url'] : null;
-        $notificacion -> NOTI_USUARIOS_VISTO      = [];
-        $notificacion -> save();
+        $notificacion->NOTI_SYSTEM_NOTIFICACION = $system_notificacion->getKey();
+        $notificacion->NOTI_SYSTEM_TIPO         = $system_notificacion->getTipo();
+        $notificacion->NOTI_SYSTEM_PERMISO      = $system_notificacion->getPermiso();
+        $notificacion->NOTI_COLOR               = $system_notificacion->getColor();
+        $notificacion->NOTI_CONTENIDO           = isset($data['contenido']) ? $data['contenido'] : null;
+        $notificacion->NOTI_URL                 = isset($data['url']) ? $data['url'] : null;
+        $notificacion->NOTI_USUARIOS_VISTO      = [];
+        $notificacion->save();
 
         // En este paso se verifica si la notificación se registrará para alguna dirección o departamento.
         // El tipo de notificación deberá ser tipo 3 => Panel de trabajo.
-        if( $notificacion -> getTipo() == 3 ) // Panel de trabajo
+        if( $notificacion->getTipo() == 3 ) // Panel de trabajo
         {
             $notificacion_area = new MNotificacionArea;
-            $notificacion_area -> NOAR_NOTIFICACION = $notificacion -> getKey();
-            $notificacion_area -> NOAR_DIRECCION    = $data['direccion'];
-            $notificacion_area -> NOAR_DEPARTAMENTO = isset($data['departamento']) ? $data['departamento'] : null;
-            $notificacion_area -> save();
+            $notificacion_area->NOAR_NOTIFICACION = $notificacion->getKey();
+            $notificacion_area->NOAR_DIRECCION    = $data['direccion'];
+            $notificacion_area->NOAR_DEPARTAMENTO = isset($data['departamento']) ? $data['departamento'] : null;
+            $notificacion_area->save();
         }
 
         return true;
@@ -69,79 +71,50 @@ class NotificacionController extends BaseController
 
             $notificacion = MNotificacion::findOrFail( $id_notificacion );
             
-            $usuarios = $notificacion -> getUsuariosVisto() ?? [];
+            $usuarios = $notificacion->getUsuariosVisto() ?? []; // Recuperamos la lista de usuarios
 
-            if (! in_array(userKey(), $usuarios) )
+            if (! in_array(userKey(), $usuarios) ) // Verificamos que el usuario no esté en la lista
             {
-                array_push($usuarios, userKey());
+                array_push($usuarios, userKey()); // Agregamos al usuario a la lista
             }
 
-            $notificacion -> NOTI_USUARIOS_VISTO = $usuarios;
-            $notificacion -> save();
+            $notificacion->NOTI_USUARIOS_VISTO = $usuarios; // Guardamos la nueva lista
+            $notificacion->save();
 
-            return (new self) -> responseSuccessJSON();
+            $instance = new static;
+            
+            return $instance->responseSuccessJSON();
         } catch(Exception $error) {
-
+            
         }
     }
 
-    public static function mandarNotificacionCorreo($documento)
+    public static function enviarCorreoSobreNuevaRecepcion($codigo_preferencia, $documento)
     {
-        $correos = [];
-        
-        if( config('app.debug') === false && boolval(config_var('Configuracion.Envio.Correo.Prod')) === true )
+        if( config('app.debug') === false && boolval(config_var('Adicional.Envio.Correo.Prod')) === true )
         {
-            if ($documento -> getTipoRecepcion() == 1){ // Recepción local
+            $preferencia = cache('System.Preferencias')->where('SYPR_CODIGO',$codigo_preferencia)->first();
 
-                if( $documento -> getTipoDocumento() == 1 ) // Denuncia
-                {
-                    $preferencia = \App\Model\MPreferencia::find(1);
-                }
-                else if( $documento -> getTipoDocumento() == 2 ) // Documento para denuncia
-                {
-                    $preferencia = \App\Model\MPreferencia::find(2);
-                }
-                else // Otro tipo de documento
-                {
-                    $preferencia = \App\Model\MPreferencia::find(3);
-                }
-            }
-            else
+            // Buscamos a los usuarios que tengan la preferencia marcada
+            $usuarios = $preferencia->Usuarios()->with('UsuarioDetalle')->get();
+
+            // Obtener un array con los correos de los usuarios
+            $correos = $usuarios->map(function($usuario){
+                return $usuario->UsuarioDetalle->getEmail();
+            })->toArray();
+
+            // Si se encontraron correos, procedemos a hacer el envío de la notificación
+            if( sizeof($correos) > 0 )
             {
-                if( $documento -> getTipoDocumento() == 1 ) // Denuncia
+                if ($documento->getTipoRecepcion() == 1) // Recepción local
                 {
-                    $preferencia = \App\Model\MPreferencia::find(4);
+                    event(new NuevoDocumentoLocalRecepcionado($documento, $correos));
                 }
-                else if( $documento -> getTipoDocumento() == 2 ) // Documento para denuncia
+                else
                 {
-                    $preferencia = \App\Model\MPreferencia::find(5);
+                    event(new NuevoDocumentoForaneoRecepcionado($documento, $correos));
                 }
-                else // Otro tipo de documento
-                {
-                    $preferencia = \App\Model\MPreferencia::find(6);
-                }   
             }
-
-            $usuarios = $preferencia -> Usuarios() -> with('UsuarioDetalle') -> get();
-
-            $correos = $usuarios -> map(function($usuario){
-                return $usuario -> UsuarioDetalle -> getEmail();
-            }) -> toArray();
         }
-        else
-        {
-            $correos[0] = 'rcl6395@gmail.com';
-            $correos[1] = 'notificaciones.sigesd@qroo.gob.mx';
-        }
-
-        if( sizeof($correos) > 0 )
-        {
-            if ($documento -> getTipoRecepcion() == 1) // Recepción local
-                Mail::to($correos) -> queue( new \App\Mail\NuevoDocumentoRecibido($documento) ); // Mandar notificación sobre documento local
-            else
-                Mail::to($correos) -> queue( new \App\Mail\NuevoDocumentoForaneoRecibido($documento) ); // Mandar notificación sobre documento foráneo
-        }
-
     }
-
 }

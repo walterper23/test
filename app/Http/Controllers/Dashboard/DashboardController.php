@@ -68,7 +68,6 @@ class DashboardController extends BaseController
         
     }
 
-
     public function manager(Request $request)
     {
         switch ($request->action) {

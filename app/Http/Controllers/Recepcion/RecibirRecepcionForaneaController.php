@@ -164,7 +164,6 @@ class RecibirRecepcionForaneaController extends BaseController
 		$message = sprintf('Documento foráneo <b>#%s</b> validado', $documento->getFolio());
 
 		return $this->responseSuccessJSON($message,$tables);
-		
 	}
 
 	public function recepcionarDocumento( $request )
@@ -274,5 +273,4 @@ class RecibirRecepcionForaneaController extends BaseController
 			return $this->responseDangerJSON($error->getMessage());
 		}
 	}
-
 }

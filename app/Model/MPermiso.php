@@ -9,21 +9,23 @@ class MPermiso extends Model
     protected $primaryKey  = 'SYPE_PERMISO';
     public    $timestamps  = false;
 
+    /* Methods */
+    
     public function getCodigo()
     {
-    	return $this -> getAttribute('SYPE_CODIGO');
+    	return $this->getAttribute('SYPE_CODIGO');
     }
 
     public function getDescripcion()
     {
-    	return $this -> getAttribute('SYPE_DESCRIPCION');
+    	return $this->getAttribute('SYPE_DESCRIPCION');
     }
 
     /* Relationships */
 
     public function Recurso()
     {
-        return $this -> belongsTo('App\Model\MRecurso','SYPE_RECURSO','SYRE_RECURSO');
+        return $this->belongsTo('App\Model\MRecurso','SYPE_RECURSO','SYRE_RECURSO');
     }
 
 }

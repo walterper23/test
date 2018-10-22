@@ -89,7 +89,7 @@ Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
             });
 
             // Recepción de documentos foráneos
-            Route::prefix('documentos-foraneos')->group(function(){ // Middleware aplicado en el controlador
+            Route::prefix('documentos-foraneos')->middleware('canAtLeast:REC.VER.FORANEO,REC.DOCUMENTO.FORANEO')->group(function(){
                 Route::redirect('/',           '/recepcion/documentos-foraneos/recepcionados');
                 Route::get('recepcionados',    'RecepcionForaneaController@index');
                 Route::post('post-data',       'RecepcionForaneaController@postDataTable');

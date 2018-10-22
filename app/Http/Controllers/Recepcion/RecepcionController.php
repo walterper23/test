@@ -257,6 +257,7 @@ class RecepcionController extends BaseController
 
                 $redirect = '?view=denuncias';
                 $folio_acuse .= $denuncia->getCodigo(); // ARD/2018/10/005/DENU/001
+                $codigo_preferencia = 'NUE.REC.DEN';
             }
             else if ( $tipo_documento->getKey() == 2 ) // Si el tipo de documento es un documento para denuncia ...
             {
@@ -273,11 +274,13 @@ class RecepcionController extends BaseController
 
                 $redirect = '?view=documentos-denuncias';
                 $folio_acuse .= $documentoDenuncia->getCodigo();  // ARD/2018/10/005/DODE/002
+                $codigo_preferencia = 'NUE.REC.DODE';
             }
             else
             {
                 $redirect = '?view=documentos';
                 $folio_acuse .= $documento->getFolio(); // ARD/2018/10/005/DENU/005
+                $codigo_preferencia = 'NUE.REC.DOC';
             }
 
             // Sustituimos las diagonales por guiones bajos
@@ -326,9 +329,11 @@ class RecepcionController extends BaseController
                 'url'        => sprintf('panel/documentos/seguimiento?search=%d&read=1',$seguimiento->getKey()),
             ];
             
+            // Creamos la nueva notificación para el Panel de Trabajo sobre nuevo documento recibido
             NotificacionController::nuevaNotificacion('PAN.TRA.NUE.DOC.REC',$data);
+
             // Mandamos el correo de notificación a los usuarios que tengan la preferencia asignada
-            //NotificacionController::mandarNotificacionCorreo($documento);
+            NotificacionController::enviarCorreoSobreNuevaRecepcion($codigo_preferencia, $documento);
 
             return $this->responseSuccessJSON(url('recepcion/documentos/recepcionados' . $redirect));
         } catch(Exception $error) {

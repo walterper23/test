@@ -135,7 +135,7 @@ class MUsuario extends Authenticatable
 
     public function Preferencias()
     {
-        return $this->belongsToMany('App\Model\MPreferencia','usuarios_preferencias','USPR_USUARIO','USPR_PREFERENCIA');
+        return $this->belongsToMany('App\Model\System\MSystemPreferencia','usuarios_preferencias','USPR_USUARIO','USPR_PREFERENCIA');
     }
 
 

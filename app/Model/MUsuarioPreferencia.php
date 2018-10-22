@@ -8,21 +8,26 @@ class MUsuarioPreferencia extends BaseModel
 	protected $prefix       = 'USPR';
 	
 	/* Methods */
+	public function getUsuario()
+	{
+		return $this->getAttribute('USPR_USUARIO');
+	}
 
-
+	public function getPreferencia()
+	{
+		return $this->getAttribute('USPR_PREFERENCIA');
+	}
 
 	/* Relationships */
 
 	public function Usuario()
 	{
-		return $this -> belongsTo('App\Model\MUsuario','USPR_USUARIO','USUA_USUARIO');
+		return $this->belongsTo('App\Model\MUsuario','USPR_USUARIO','USUA_USUARIO');
 	}
 
 	public function Preferencia()
 	{
-		return $this -> belongsTo('App\Model\MPreferencia','USPR_PREFERENCIA','PREF_PREFERENCIA');
+		return $this->belongsTo('App\Model\System\MSystemPreferencia','USPR_PREFERENCIA','SYPR_PREFERENCIA');
 	}
-
-    /* Presenter */    
 
 }

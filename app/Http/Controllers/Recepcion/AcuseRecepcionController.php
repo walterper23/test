@@ -37,6 +37,9 @@ class AcuseRecepcionController extends BaseController
             return $pdf->stream( $nombre_acuse );
     }
 
+    /**
+     * Método para buscar todos los datos a incluir en los acuses de recepción
+     */
     public function makeAcuseRecepcion($acuseRecepcion, $nombre_acuse = '')
     {
         $data = [
@@ -57,6 +60,5 @@ class AcuseRecepcionController extends BaseController
 
         return $pdf;
     }
-
 
 }

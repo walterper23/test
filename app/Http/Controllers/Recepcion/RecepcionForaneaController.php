@@ -36,7 +36,7 @@ class RecepcionForaneaController extends BaseController
     {
         parent::__construct();
 
-        $this->middleware('can:REC.VER.FORANEO,REC.DOCUMENTO.FORANEO',['only' => ['index','postDataTable']]);
+        $this->middleware('canAtLeast:REC.VER.FORANEO,REC.DOCUMENTO.FORANEO',['only' => ['index','postDataTable']]);
         $this->setLog('RecepcionForaneaController.log');
     }
 
@@ -243,6 +243,7 @@ class RecepcionForaneaController extends BaseController
                 /* !!! El documento foráneo no debe crear ningún registro de denuncia !!! */
                 $redirect = '?view=denuncias';
                 $folio_acuse .= $denuncia->getCodigo(); // ARD/2018/10/005/DENU/001
+                $codigo_preferencia = 'NUE.REC.DEN.FOR';
             }
             else if ($tipo_documento->getKey() == 2 ) // Si el tipo de documento es un documento para denuncia ...
             {
@@ -259,11 +260,13 @@ class RecepcionForaneaController extends BaseController
 
                 $redirect = '?view=documentos-denuncias';
                 $folio_acuse .= $documentoDenuncia->getCodigo();  // ARD/2018/10/005/DODE/002
+                $codigo_preferencia = 'NUE.REC.DODE.FOR';
             }
             else
             {
                 $redirect = '?view=documentos';
                 $folio_acuse .= $documento->getFolio(); // ARD/2018/10/005/DENU/005
+                $codigo_preferencia = 'NUE.REC.DOC.FOR';
             }
             
             // Creamos el registro del acuse de recepción del documento
@@ -307,9 +310,12 @@ class RecepcionForaneaController extends BaseController
                 'contenido'  => sprintf('Se ha recepcionado un nuevo documento foráneo #%s de tipo %s', $documento->getFolio(),$documento->TipoDocumento->getNombre()),
                 'url'        => 'recepcion/documentos-foraneos/recepcionados' . $redirect,
             ];
+    
+            // Creamos la notificación para los usuarios que pueden ver las recepciones foráneas            
             NotificacionController::nuevaNotificacion('VER.REC.FOR.NUE.REC.FOR',$data);
+
             // Mandamos el correo de notificación a los usuarios que tengan la preferencia asignada
-            NotificacionController::mandarNotificacionCorreo($documento);
+            NotificacionController::enviarCorreoSobreNuevaRecepcion($codigo_preferencia, $documento);
 
             return $this->responseSuccessJSON(url('recepcion/documentos-foraneos/recepcionados' . $redirect));
         } catch(Exception $error) {

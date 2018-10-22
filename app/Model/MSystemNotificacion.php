@@ -39,6 +39,15 @@ class MSystemNotificacion extends BaseModel
 		return $this -> getAttribute('SYNO_SYSTEM_TIPO');
 	}
 
+	public static function setAllNotificaciones()
+    {
+        cache()->forget('System.Notificaciones');
+
+        cache()->rememberForever('System.Notificaciones',function(){
+            return self::disponible()->get();
+        });
+    }
+
 	/* Relationships */
 
 	public function Permiso()
