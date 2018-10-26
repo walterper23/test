@@ -17,7 +17,7 @@ class MUsuario extends Authenticatable
     protected $prefix       = 'USUA';
     public    $timestamps   = false;
 
-    protected $hidden = ['USUA_PASSWORD'];
+    // protected $hidden = ['USUA_PASSWORD'];
 
     protected static function boot()
     {
@@ -45,9 +45,10 @@ class MUsuario extends Authenticatable
         return $this->getAttribute('USUA_USERNAME');
     }
 
-    public function setUsuaPasswordAttribute( $password ){
-        $this->setAttribute('USUA_PASSWORD',bcrypt($password));
-    }
+    // public function setUsuaPasswordAttribute( $password )
+    // {
+    //     $this->setAttribute('USUA_PASSWORD',bcrypt($password));
+    // }
 
     public function getAuthPassword()
     {
@@ -67,6 +68,16 @@ class MUsuario extends Authenticatable
     public function getAvatarFull()
     {
         return $this->getAttribute('USUA_AVATAR_FULL');
+    }
+
+    public function getAvatarDefault( $genero = 'HOMBRE' )
+    {
+        if($genero == 'HOMBRE')
+        {
+            return 'no-profile-male.png';
+        }
+
+        return 'no-profile-female.png';
     }
     
     public function getRecentLogin()

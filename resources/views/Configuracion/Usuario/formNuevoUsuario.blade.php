@@ -4,7 +4,7 @@
 
 @section('content')
     <!-- Validation Wizard Classic -->
-    <div id="js-wizard-validation-form" style="margin: -18px">
+    <div id="js-wizard-validation-form" style="margin: -20px">
         <!-- Step Tabs -->
         <ul class="nav nav-tabs nav-tabs-block nav-fill" role="tablist">
             <li class="nav-item">

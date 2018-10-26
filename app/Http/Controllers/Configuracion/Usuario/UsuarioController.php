@@ -27,7 +27,7 @@ class UsuarioController extends BaseController
     public function __construct()
     {
         parent::__construct();
-        $this -> setLog('UsuarioController.log');
+        $this->setLog('UsuarioController.log');
     }
 
     /**
@@ -36,10 +36,10 @@ class UsuarioController extends BaseController
     public function index(UsuariosDataTable $dataTables)
     {
         $data['table']    = $dataTables;
-        $data['form_id']  = $this -> form_id;
+        $data['form_id']  = $this->form_id;
         $data['form_url'] = url('configuracion/usuarios/nuevo');
 
-        return view('Configuracion.Usuario.indexUsuario') -> with($data);
+        return view('Configuracion.Usuario.indexUsuario')->with($data);
     }
 
     /**
@@ -47,24 +47,24 @@ class UsuarioController extends BaseController
      */
     public function manager(ManagerUsuarioRequest $request)
     {
-        switch ($request -> action) {
+        switch ($request->action) {
             case 1: // Nuevo
-                $response = $this -> nuevoUsuario( $request );
+                $response = $this->nuevoUsuario( $request );
                 break;
             case 2: // Editar
-                $response = $this -> editarUsuario( $request );
+                $response = $this->editarUsuario( $request );
                 break;
             case 3: // Ver
-                $response = $this -> verUsuario( $request );
+                $response = $this->verUsuario( $request );
                 break;
             case 4: // Activar / Desactivar
-                $response = $this -> activarUsuario( $request );
+                $response = $this->activarUsuario( $request );
                 break;
             case 5: // Eliminar
-                $response = $this -> eliminarUsuario( $request );
+                $response = $this->eliminarUsuario( $request );
                 break;
             case 6: // Cambiar contraseña
-                $response = $this -> modificarPassword( $request );
+                $response = $this->modificarPassword( $request );
                 break;
             default:
                 return response()->json(['message'=>'Petición no válida'],404);
@@ -79,7 +79,7 @@ class UsuarioController extends BaseController
      */
     public function postDataTable(UsuariosDataTable $dataTables)
     {
-        return $dataTables -> getData();
+        return $dataTables->getData();
     }
 
     /**
@@ -88,11 +88,11 @@ class UsuarioController extends BaseController
     public function formNuevoUsuario()
     {
         $data['title']         = 'Nuevo usuario';
-        $data['form_id']       = $this -> form_id;
+        $data['form_id']       = $this->form_id;
         $data['url_send_form'] = url('configuracion/usuarios/manager');
         $data['action']        = 1;
         
-        return view('Configuracion.Usuario.formNuevoUsuario') -> with($data);
+        return view('Configuracion.Usuario.formNuevoUsuario')->with($data);
     }
 
     /**
@@ -103,45 +103,37 @@ class UsuarioController extends BaseController
         try {
 
             DB::beginTransaction();
-
-            $usuario = new MUsuario;
-            $usuario -> USUA_USERNAME    = $request -> usuario;
-            $usuario -> USUA_PASSWORD    = $request -> password;
-            $usuario -> USUA_DESCRIPCION = $request -> descripcion;
-
-            if( $request -> genero == 'HOMBRE')
-            {
-                $usuario -> USUA_AVATAR_SMALL = 'no-profile-male.png';
-            }
-            else
-            {
-                $usuario -> USUA_AVATAR_FULL  = 'no-profile-female.png';
-            }
-
-            $usuario -> USUA_AVATAR_FULL  = $usuario -> getAvatarSmall();
             
-            $detalle = new MUsuarioDetalle;
-            $detalle -> USDE_NO_TRABAJADOR = $request -> no_trabajador;
-            $detalle -> USDE_NOMBRES       = $request -> nombres;
-            $detalle -> USDE_APELLIDOS     = $request -> apellidos;
-            $detalle -> USDE_GENERO        = $request -> genero;
-            $detalle -> USDE_EMAIL         = $request -> email;
-            $detalle -> USDE_TELEFONO      = $request -> telefono;
-            $detalle -> save();
+            $usuario = new MUsuario;
+            $usuario->USUA_USERNAME     = $request->usuario;
+            $usuario->USUA_PASSWORD     = bcrypt($request->password);
+            $usuario->USUA_DESCRIPCION  = $request->descripcion;
+            $usuario->USUA_AVATAR_SMALL = $usuario->getAvatarDefault($request->genero);
+            $usuario->USUA_AVATAR_FULL  = $usuario->getAvatarSmall();
 
-            $usuario -> USUA_DETALLE = $detalle -> getKey();
-            $usuario -> save();
+            $detalle = new MUsuarioDetalle;
+            $detalle->USDE_NO_TRABAJADOR = $request->no_trabajador;
+            $detalle->USDE_NOMBRES       = $request->nombres;
+            $detalle->USDE_APELLIDOS     = $request->apellidos;
+            $detalle->USDE_GENERO        = $request->genero;
+            $detalle->USDE_EMAIL         = $request->email;
+            $detalle->USDE_TELEFONO      = $request->telefono;
+            $detalle->save();
+
+            $usuario->USUA_DETALLE = $detalle->getKey();
+            
+            $usuario->save();
 
             DB::commit();
 
             $tables = ['dataTableBuilder',null,true];
 
-            $message = sprintf('<i class="fa fa-fw fa-user"></i> Usuario <b>%s : %s</b> creado',$usuario -> getCodigo(), $usuario -> getAuthUsername());
+            $message = sprintf('<i class="fa fa-fw fa-user"></i> Usuario <b>%s : %s</b> creado',$usuario->getCodigo(), $usuario->getAuthUsername());
 
-            return $this -> responseSuccessJSON($message, $tables);
+            return $this->responseSuccessJSON($message, $tables);
         } catch(Exception $error) {
             DB::rollback();
-            return $this -> responseDangerJSON('Ocurrió un error al guardar los cambios. Error ' . $error -> getMessage() );
+            return $this->responseDangerJSON('Ocurrió un error al guardar los cambios. Error ' . $error->getMessage() );
         }
 
     }
@@ -151,23 +143,23 @@ class UsuarioController extends BaseController
      */
     public function formEditarUsuario(Request $request)
     {
-        if ( $request -> id == 1 )
+        if ( $request->id == 1 )
         {
             abort(403);
         }
         
         try {
-            $modelo                = MUsuario::find( $request -> id );
-            $data['title']         = 'Editar usuario ' . $modelo -> getCodigoHash();
+            $modelo                = MUsuario::find( $request->id );
+            $data['title']         = 'Editar usuario ' . $modelo->getCodigoHash();
             $data['form_id']       = 'form-editar-usuario';
             $data['url_send_form'] = url('configuracion/usuarios/manager');
             $data['modelo']        = $modelo;
             $data['action']        = 2;
-            $data['id']            = $request -> id;
+            $data['id']            = $request->id;
 
             return view('Configuracion.Usuario.formEditarUsuario')->with($data);
         } catch(Exception $error) {
-            return $this -> responseDangerJSON('Ocurrió un error: ' . $error -> getMessage() );
+            return $this->responseDangerJSON('Ocurrió un error: ' . $error->getMessage() );
         }
     }
 
@@ -178,35 +170,35 @@ class UsuarioController extends BaseController
     {
         try {
 
-            $usuario = MUsuario::find( $request -> id );
-            $usuario -> USUA_DESCRIPCION = $request -> descripcion;
+            $usuario = MUsuario::find( $request->id );
+            $usuario->USUA_DESCRIPCION = $request->descripcion;
             
-            if ($request -> password)
+            if ($request->password)
             {
-                $usuario -> USUA_PASSWORD    = $request -> password;
+                $usuario->USUA_PASSWORD    = $request->password;
             }
 
-            $detalle = $usuario -> UsuarioDetalle;
-            $detalle -> USDE_NO_TRABAJADOR = $request -> no_trabajador;
-            $detalle -> USDE_NOMBRES       = $request -> nombres;
-            $detalle -> USDE_APELLIDOS     = $request -> apellidos;
-            $detalle -> USDE_GENERO        = $request -> genero;
-            $detalle -> USDE_EMAIL         = $request -> email;
-            $detalle -> USDE_TELEFONO      = $request -> telefono;
-            $detalle -> save();
+            $detalle = $usuario->UsuarioDetalle;
+            $detalle->USDE_NO_TRABAJADOR = $request->no_trabajador;
+            $detalle->USDE_NOMBRES       = $request->nombres;
+            $detalle->USDE_APELLIDOS     = $request->apellidos;
+            $detalle->USDE_GENERO        = $request->genero;
+            $detalle->USDE_EMAIL         = $request->email;
+            $detalle->USDE_TELEFONO      = $request->telefono;
+            $detalle->save();
 
-            $usuario -> save();
+            $usuario->save();
 
             DB::commit();
 
-            $message = sprintf('<i class="fa fa-fw fa-check"></i> Usuario <b>%s</b> modificado',$usuario -> getCodigo());
+            $message = sprintf('<i class="fa fa-fw fa-check"></i> Usuario <b>%s</b> modificado',$usuario->getCodigo());
 
             $tables = 'dataTableBuilder';
 
-            return $this -> responseSuccessJSON($message,$tables);
+            return $this->responseSuccessJSON($message,$tables);
         } catch(Exception $error) {
             DB::rollback();
-            return $this -> responseDangerJSON('Ocurrió un error al guardar los cambios. Error ' . $error -> getMessage() );
+            return $this->responseDangerJSON('Ocurrió un error al guardar los cambios. Error ' . $error->getMessage() );
         }
     }
 
@@ -219,10 +211,10 @@ class UsuarioController extends BaseController
         $data['form_id']       = 'form-password';
         $data['url_send_form'] = url('configuracion/usuarios/manager');
         $data['action']        = 5;
-        $data['usuario']       = MUsuario::find( request() -> id ) -> getAuthUsername();
-        $data['id']            = request() -> id;
+        $data['usuario']       = MUsuario::find( request()->id )->getAuthUsername();
+        $data['id']            = request()->id;
 
-        return view('Configuracion.Usuario.formPassword') -> with($data);
+        return view('Configuracion.Usuario.formPassword')->with($data);
     }
 
     /**
@@ -231,14 +223,14 @@ class UsuarioController extends BaseController
     public function modificarPassword( $request )
     {
         try {
-            $usuario = MUsuario::find( $request -> id );
-            $usuario -> USUA_PASSWORD = $request -> password;
-            $usuario -> save();
+            $usuario = MUsuario::find( $request->id );
+            $usuario->USUA_PASSWORD = $request->password;
+            $usuario->save();
 
-            return $this -> responseWarningJSON('<i class="fa fa-key"></i> Contraseña modificada correctamente');
+            return $this->responseWarningJSON('<i class="fa fa-key"></i> Contraseña modificada correctamente');
 
         } catch(Exception $error) {
-            return $this -> responseDangerJSON('Ocurrió un error al guardar los cambios. Error ' . $error -> getMessage() );
+            return $this->responseDangerJSON('Ocurrió un error al guardar los cambios. Error ' . $error->getMessage() );
         }
     }
 
@@ -249,29 +241,29 @@ class UsuarioController extends BaseController
     {
         try {
             // Validar que el usuario en sesión no pueda activar/desactivar su usuario
-            if ( $request -> id != userKey() )
+            if ( $request->id != userKey() )
             {
-                $usuario = MUsuario::find( $request -> id );
-                $usuario -> cambiarDisponibilidad() -> save();
+                $usuario = MUsuario::find( $request->id );
+                $usuario->cambiarDisponibilidad()->save();
 
-                if ( $usuario -> disponible() )
+                if ( $usuario->disponible() )
                 {
-                    $message = sprintf('<i class="fa fa-check"></i> Usuario <b>%s</b> activado',$usuario -> getCodigo());
-                    return $this -> responseInfoJSON($message);
+                    $message = sprintf('<i class="fa fa-check"></i> Usuario <b>%s</b> activado',$usuario->getCodigo());
+                    return $this->responseInfoJSON($message);
                 }
                 else
                 {
-                    $message = sprintf('<i class="fa fa-warning"></i> Usuario <b>%s</b> desactivado',$usuario -> getCodigo());
-                    return $this -> responseWarningJSON($message);
+                    $message = sprintf('<i class="fa fa-warning"></i> Usuario <b>%s</b> desactivado',$usuario->getCodigo());
+                    return $this->responseWarningJSON($message);
                 }
             }
             else
             {
-                return $this -> responseDangerJSON('No puede <b>activar/desactivar</b> su usuario si ha iniciado sesión');
+                return $this->responseDangerJSON('No puede <b>activar/desactivar</b> su usuario si ha iniciado sesión');
             }
 
         } catch(Exception $error) {
-            return $this -> responseDangerJSON('Ocurrió un error al guardar los cambios. Error ' . $error -> getMessage() );
+            return $this->responseDangerJSON('Ocurrió un error al guardar los cambios. Error ' . $error->getMessage() );
         }
     }
 
@@ -281,16 +273,16 @@ class UsuarioController extends BaseController
     public function eliminarUsuario( $request )
     {
         try {
-            $usuario = MUsuario::find( $request -> id );
-            $usuario -> eliminar() -> save();
+            $usuario = MUsuario::find( $request->id );
+            $usuario->eliminar()->save();
 
             $tables = 'dataTableBuilder';
 
-            $message = sprintf('<i class="fa fa-fw fa-warning"></i> Usuario <b>%s</b> eliminado',$usuario -> getCodigo());
+            $message = sprintf('<i class="fa fa-fw fa-warning"></i> Usuario <b>%s</b> eliminado',$usuario->getCodigo());
 
-            return $this -> responseDangerJSON($message,$tables);
+            return $this->responseDangerJSON($message,$tables);
         } catch(Exception $error) {
-            return $this -> responseDangerJSON('Ocurrió un error al eliminar al usuario. Error ' . $error -> getCode() );
+            return $this->responseDangerJSON('Ocurrió un error al eliminar al usuario. Error ' . $error->getCode() );
         }
 
     }

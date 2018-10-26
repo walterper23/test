@@ -128,7 +128,7 @@ textarea.form-control {
     margin-bottom: 3px;
 }
 
-.block-content {
+div.content div.block-content {
     padding: 10px;
 }
 

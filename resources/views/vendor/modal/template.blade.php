@@ -11,7 +11,7 @@
 
 @stack('css-custom')
 
-<div class="block-content" style="max-height: 73vh; overflow-y: auto;">
+<div class="block-content" style="max-height: 85vh;">
 @yield('content')
 </div>
 
