@@ -133,3 +133,16 @@ var hPanel = function(){
 		}
 	};
 }();
+
+
+var appPanel = new Vue({
+	el : '#panel-documentos',
+	mounted : function(){
+
+	},
+	methods : {
+		recargarPagina : function(){
+			location.reload();
+		}
+	}
+});

@@ -13,7 +13,7 @@ class MSeguimiento extends BaseModel
 
     public function getCodigo( $size = 5, $str = '0', $direction = STR_PAD_LEFT )
     {
-        return parent::getCodigo($size);
+        return parent::getCodigo($size, $str, $direction);
     }
 
     public function getDireccionOrigen()

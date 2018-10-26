@@ -32,10 +32,14 @@
     {
         return sprintf('%s %s',$type,badge($count));
     }
+
+
+    dd( url( url()->current() , request()->query() ), request()->query() );
+
 @endphp
 
 @section('content')
-    <div class="row">
+    <div class="row" id="panel-documentos">
         <div class="col-12">
             <!-- Message List -->
             <div class="block">
@@ -46,7 +50,7 @@
                                 <div class="col-md-2 col-sm-4">
                                     <div class="btn-group" role="group" aria-label="Documentos a visualizar">
                                         <div class="btn-group show" role="group">
-                                            <button type="button" class="btn btn-alt-secondary dropdown-toggle" id="btnGroupDrop1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{!! filter_view($view, $count) !!}</button>
+                                            <button type="button" class="btn btn-alt-secondary dropdown-toggle" id="btnGroupDrop1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{!! filter_view($view, $total_documentos) !!}</button>
                                             <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 34px, 0px); top: 0px; left: 0px; will-change: transform;">
                                                 <a class="dropdown-item" href="{{ url('panel/documentos?view=recents') }}">
                                                     <i class="fa fa-folder mx-5"></i> Recientes {!! badge($recientes) !!}
@@ -94,16 +98,18 @@
                             <i class="fa fa-fw fa-flash"></i> Nuevo estado
                         </button>
                         @endcan
-                        <!--strong>1 - {{ sizeof($documentos) }}</strong> de <strong>{{ sizeof($documentos) }}</strong>
+                        @if( $total_documentos > 0 )
+                        <strong>1 - {{ sizeof($documentos) }}</strong> de <strong>{{ $total_documentos }}</strong>
                         <button type="button" class="btn-block-option" data-toggle="block-option">
                             <i class="si si-arrow-left"></i>
                         </button>
                         <button type="button" class="btn-block-option" data-toggle="block-option">
                             <i class="si si-arrow-right"></i>
                         </button>
-                        <button type="button" class="btn-block-option" data-toggle="block-option">
+                        <button type="button" class="btn-block-option" data-toggle="block-option" @click.prevent="recargarPagina()">
                             <i class="si si-refresh"></i>
-                        </button-->
+                        </button>
+                        @endif
                     </div>
                 </div>
             </div>

@@ -32,9 +32,11 @@ class PanelController extends BaseController
 
     public function index(Request $request)
     {
-        $view = $request->get('view','all');
-
-        $search = $request->get('search');
+    	// Preparamos las variables para la visualización del listado de documentos
+        $view   = $request->get('view','all'); // Clasificación de documentos para ver
+        $search = $request->get('search'); // Filtro de búsqueda realizado
+        $step   = $request->get('step',10); // Cantidad de documentos por página
+        $page   = $request->get('search',1); // Número de página
 
         // Recuperar las direcciones asignadas al usuario
         $ids_direcciones = user()->Direcciones->pluck('DIRE_DIRECCION')->toArray();
@@ -52,8 +54,8 @@ class PanelController extends BaseController
                        ->orWhereIn('SEGU_DIRECCION_DESTINO',$ids_direcciones)
                        ->orWhereIn('SEGU_DEPARTAMENTO_ORIGEN',$ids_departamentos)
                        ->orWhereIn('SEGU_DEPARTAMENTO_DESTINO',$ids_departamentos)
-                       ->orWhereIn('SEDI_DIRECCION',$ids_direcciones)
-                       ->orWhereIn('SEDI_DEPARTAMENTO',$ids_departamentos)
+                       ->orWhereIn('SEDI_DIRECCION',$ids_direcciones) // Seguimiento disperso
+                       ->orWhereIn('SEDI_DEPARTAMENTO',$ids_departamentos) // Seguimiento disperso
                        ->pluck('id_documento')
                        ->toArray();
 
@@ -67,7 +69,7 @@ class PanelController extends BaseController
                        ->leftJoin('system_estados_documentos','SYED_ESTADO_DOCUMENTO','=','DOCU_SYSTEM_ESTADO_DOCTO')
                        ->leftJoin('denuncias','DENU_DOCUMENTO','=','DOCU_DOCUMENTO')
                        ->whereRaw('SEGU_SEGUIMIENTO in (select max(SEGU_SEGUIMIENTO) from seguimiento group by SEGU_DOCUMENTO order by SEGU_SEGUIMIENTO desc)')
-                       ->where('DOCU_SYSTEM_ESTADO_DOCTO','!=',6) // Recepción eliminada
+                       ->where('DOCU_SYSTEM_ESTADO_DOCTO','!=',6) // Recepción no eliminada
                        ->whereIn('SEGU_DOCUMENTO',$documentos)
                        ->where(function($query) use ($search) {
                             if (! is_null($search) && ! empty($search))
@@ -79,17 +81,17 @@ class PanelController extends BaseController
                                 $query->orWhere('SYTD_NOMBRE','like',$search);
                             }
                         })
-                       ->orderBy('SEGU_SEGUIMIENTO','DESC')
+                       ->orderBy('SEGU_SEGUIMIENTO','DESC') // Listar desde el seguimiento más reciente
                        ->get();
 
         // Creamos un contenedor donde se almacenarán los seguimientos y documentos de acuerdo a ciertas clasificaciones
         $documentos = [
-            'recientes'   => [], // Documentos/seguimientos que el usuario aún no ha leído
-            'todos'       => [], // Todos los documentos encontrados
-            'importantes' => [], // Los documentos que el usuario ha marcado como importantes
-            'archivados'  => [], // Los documentos que el usuario ha marcado como archivados
-            'rechazados'  => [], // Los documentos que fueron rechazados
-            'finalizados' => [], // Los documentos que ya fueron finalizados
+            'recientes'   => collect(), // Documentos/seguimientos que el usuario aún no ha leído
+            'todos'       => collect(), // Todos los documentos encontrados
+            'importantes' => collect(), // Los documentos que el usuario ha marcado como importantes
+            'archivados'  => collect(), // Los documentos que el usuario ha marcado como archivados
+            'rechazados'  => collect(), // Los documentos que fueron rechazados
+            'finalizados' => collect(), // Los documentos que ya fueron finalizados
         ];
 
         // Recorremos todos los seguimientos encontrados y vamos guardando en el contenedor anterior
@@ -97,36 +99,36 @@ class PanelController extends BaseController
             
             // Añadimos el seguimiento a Todos, si no es un documento archivado por el usuario
             if (! $seguimiento->Documento->archivado())
-                $documentos['todos'][] = $seguimiento;
+                $documentos['todos']->push($seguimiento);
             
             // Si el usuario no ha leido el seguimiento, lo añadimos a Recientes
             if (! $seguimiento->leido() )
             {
-                $documentos['recientes'][] = $seguimiento;
+                $documentos['recientes']->push($seguimiento);
             }
 
             // Si el usuario tiene marcado el documento como Importante, lo añadimos a Importantes
             if ($seguimiento->Documento->importante())
             {
-                $documentos['importantes'][] = $seguimiento;
+                $documentos['importantes']->push($seguimiento);
             }
 
             // Si el usuario tiene marcado el documento como Archivado, lo añadimos a Archivados
             if ($seguimiento->Documento->archivado())
             {
-                $documentos['archivados'][] = $seguimiento;
+                $documentos['archivados']->push($seguimiento);
             }
 
             // Si el documento fue rechazado
             if ($seguimiento->Documento->rechazado())
             {
-                $documentos['rechazados'][] = $seguimiento;
+                $documentos['rechazados']->push($seguimiento);
             }
 
             // Si el documento fue finalizado
             if ($seguimiento->Documento->finalizado())
             {
-                $documentos['finalizados'][] = $seguimiento;
+                $documentos['finalizados']->push($seguimiento);
             }
 
         }
@@ -177,8 +179,8 @@ class PanelController extends BaseController
         $data['rechazados']  = sizeof($documentos['rechazados']);
         $data['finalizados'] = sizeof($documentos['finalizados']);
 
-        $data['count']        = sizeof($data['documentos']);
-        $data['field_search'] = sizeof($data['documentos']) ? '' : 'disabled';
+		$data['total_documentos'] = sizeof($data['documentos']);
+		$data['field_search']     = sizeof($data['documentos']) ? '' : 'disabled';
 
         return view('Panel.Documentos.index')->with($data);
     }
