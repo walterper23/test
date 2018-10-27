@@ -33,9 +33,6 @@
         return sprintf('%s %s',$type,badge($count));
     }
 
-
-    dd( url( url()->current() , request()->query() ), request()->query() );
-
 @endphp
 
 @section('content')
@@ -47,74 +44,62 @@
                     <div class="block-title">
                         <div class="push">
                             <div class="row">
-                                <div class="col-md-2 col-sm-4">
-                                    <div class="btn-group" role="group" aria-label="Documentos a visualizar">
-                                        <div class="btn-group show" role="group">
-                                            <button type="button" class="btn btn-alt-secondary dropdown-toggle" id="btnGroupDrop1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{!! filter_view($view, $total_documentos) !!}</button>
-                                            <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 34px, 0px); top: 0px; left: 0px; will-change: transform;">
-                                                <a class="dropdown-item" href="{{ url('panel/documentos?view=recents') }}">
-                                                    <i class="fa fa-folder mx-5"></i> Recientes {!! badge($recientes) !!}
+                                <div class="col-md-7">
+                                    {{ Form::open(['method'=>'GET']) }}
+                                    {{ Form::hidden('view',request()->get('view','all')) }}
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-sm btn-secondary">{!! filter_view($view, $paginador->total_documentos) !!}</button>
+                                            <button type="button" class="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                                            <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(80px, 34px, 0px);">
+                                                <a class="dropdown-item" href="{{ url('panel/documentos') . '?'. http_build_query(['search'=>$search,'view'=>'recents'])  }}">
+                                                    <i class="fa fa-fw fa-folder mr-5"></i> Recientes {!! badge($recientes) !!}
                                                 </a>
-                                                <a class="dropdown-item" href="{{ url('panel/documentos?view=all') }}">
+                                                <a class="dropdown-item" href="{{ url('panel/documentos') . '?'. http_build_query(['search'=>$search,'view'=>'all']) }}">
                                                     <i class="fa fa-fw fa-files-o mr-5"></i> Todos {!! badge($todos) !!}
                                                 </a>
-                                                <a class="dropdown-item" href="{{ url('panel/documentos?view=important') }}">
+                                                <a class="dropdown-item" href="{{ url('panel/documentos') . '?'. http_build_query(['search'=>$search,'view'=>'important']) }}">
                                                     <i class="fa fa-fw fa-star mr-5"></i> Importantes {!! badge($importantes) !!}
                                                 </a>
-                                                <a class="dropdown-item" href="{{ url('panel/documentos?view=archived') }}">
-                                                    <i class="fa fa-fw fa-archive mr-5"></i> Archivados {!! badge($archivados) !!}
-                                                </a>
-                                                <a class="dropdown-item" href="{{ url('panel/documentos?view=rejected') }}">
+                                                <a class="dropdown-item" href="{{ url('panel/documentos') . '?'. http_build_query(['search'=>$search,'view'=>'rejected']) }}">
                                                     <i class="fa fa-fw fa-thumbs-down mr-5"></i> Rechazados {!! badge($rechazados) !!}
                                                 </a>
-                                                <a class="dropdown-item" href="{{ url('panel/documentos?view=finished') }}">
+                                                <a class="dropdown-item" href="{{ url('panel/documentos') . '?'. http_build_query(['search'=>$search,'view'=>'finished']) }}">
                                                     <i class="fa fa-fw fa-flag-checkered mr-5"></i> Finalizados {!! badge($finalizados) !!}
+                                                </a>
+                                                <div class="dropdown-divider"></div>
+                                                <a class="dropdown-item" href="{{ url('panel/documentos') . '?'. http_build_query(['search'=>$search,'view'=>'archived']) }}">
+                                                    <i class="fa fa-fw fa-archive mr-5"></i> Archivados {!! badge($archivados) !!}
                                                 </a>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-sm-8">
-                                    {{ Form::open(['method'=>'GET']) }}
-                                        {{ Form::hidden('view',request()->get('view','all')) }}
-                                        <div class="form-group row">
-                                            <div class="col-md-12">
-                                                <div class="input-group">
-                                                    <input type="search" class="form-control" id="search" name="search" placeholder="Tipo documento, Nó. documento, Nó. expediente, Asunto..." value="{{ request()->get('search') }}" {{ $field_search }}>
-                                                    <div class="input-group-append">
-                                                        <button type="submit" class="btn btn-secondary" {{ $field_search }}><i class="fa fa-search"></i> Buscar</button>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        <input type="search" class="form-control form-control-sm" id="search" name="search" placeholder="Tipo documento, Nó. documento, Nó. expediente, Asunto..." value="{{ $search }}">
+                                        <div class="input-group-append">
+                                            <button type="submit" class="btn btn-sm btn-secondary"><i class="fa fa-search"></i> Buscar</button>
                                         </div>
+                                    </div>
                                     {{ Form::close() }}
+                                </div>
+                                <div class="col-md-5 text-right">
+                                    @can('SIS.ADMIN.ESTA.DOC')
+                                    <button type="button" class="btn btn-sm btn-danger" onclick="hPanel.nuevoEstado()">
+                                        <i class="fa fa-fw fa-flash"></i> Nuevo estado
+                                    </button>
+                                    @endcan
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        @include('Panel.Documentos.paginacionDocumentos')
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-secondary js-tooltip-enabled" data-toggle="tooltip" title="" data-original-title="Recargar documentos" @click.prevent="recargarPagina()">
+                                        <i class="fa fa-refresh fa-fw"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="block-options">
-                        @can('SIS.ADMIN.ESTA.DOC')
-                        <button type="button" class="btn btn-danger" onclick="hPanel.nuevoEstado()">
-                            <i class="fa fa-fw fa-flash"></i> Nuevo estado
-                        </button>
-                        @endcan
-                        @if( $total_documentos > 0 )
-                        <strong>1 - {{ sizeof($documentos) }}</strong> de <strong>{{ $total_documentos }}</strong>
-                        <button type="button" class="btn-block-option" data-toggle="block-option">
-                            <i class="si si-arrow-left"></i>
-                        </button>
-                        <button type="button" class="btn-block-option" data-toggle="block-option">
-                            <i class="si si-arrow-right"></i>
-                        </button>
-                        <button type="button" class="btn-block-option" data-toggle="block-option" @click.prevent="recargarPagina()">
-                            <i class="si si-refresh"></i>
-                        </button>
-                        @endif
-                    </div>
                 </div>
             </div>
 
-            @forelse ($documentos as $seguimiento)
+            @forelse ($paginador->getDocumentos() as $seguimiento)
             @php
                 $documento = $seguimiento->Documento;
             @endphp

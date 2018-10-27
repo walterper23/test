@@ -19,6 +19,8 @@ use App\Model\Catalogo\MDireccion;
 use App\Model\Catalogo\MDepartamento;
 use App\Model\Catalogo\MEstadoDocumento;
 
+use App\Panel\PaginadorDocumentos;
+
 class PanelController extends BaseController
 {
     public function __construct()
@@ -33,10 +35,10 @@ class PanelController extends BaseController
     public function index(Request $request)
     {
     	// Preparamos las variables para la visualización del listado de documentos
-        $view   = $request->get('view','all'); // Clasificación de documentos para ver
-        $search = $request->get('search'); // Filtro de búsqueda realizado
-        $step   = $request->get('step',10); // Cantidad de documentos por página
-        $page   = $request->get('search',1); // Número de página
+        $view      = $request->get('view','all'); // Clasificación de documentos para ver
+        $search    = $request->get('search'); // Filtro de búsqueda realizado
+        $intervalo = $request->get('step',10); // Cantidad de documentos por página
+        $pagina    = $request->get('page',1); // Número de página
 
         // Recuperar las direcciones asignadas al usuario
         $ids_direcciones = user()->Direcciones->pluck('DIRE_DIRECCION')->toArray();
@@ -136,39 +138,46 @@ class PanelController extends BaseController
         // Almacenar el título a mostrar de la vista y almacenar los documentos y seguimientos a mostrar de acuerdo al tipo de $view solicitado
         switch ($view) {
             case 'recents':
-                $data['title']      = 'Documentos recientes';
-                $data['documentos'] = $documentos['recientes'];
-                $data['view']       = 'Recientes';
+                $data['title']  = 'Documentos recientes';
+                $data['view']   = 'Recientes';
+                $parametros     = ['view'=>'recents'];
+                $documentos_ver = $documentos['recientes'];
                 break;
             case 'all':
-                $data['title']      = 'Documentos recibidos';
-                $data['documentos'] = $documentos['todos'];
-                $data['view']       = 'Todos';
+                $data['title']  = 'Documentos recibidos';
+                $data['view']   = 'Todos';
+                $parametros     = ['view'=>'all'];
+                $documentos_ver = $documentos['todos'];
                 break;
             case 'important':
-                $data['title']      = 'Documentos importantes';
-                $data['documentos'] = $documentos['importantes'];
-                $data['view']       = 'Importantes';
+                $data['title']  = 'Documentos importantes';
+                $data['view']   = 'Importantes';
+                $parametros     = ['view'=>'important'];
+                $documentos_ver = $documentos['importantes'];
                 break;
             case 'archived':
-                $data['title']      = 'Documentos archivados';
-                $data['documentos'] = $documentos['archivados'];
-                $data['view']       = 'Archivados';
+                $data['title']  = 'Documentos archivados';
+                $data['view']   = 'Archivados';
+                $parametros     = ['view'=>'archived'];
+                $documentos_ver = $documentos['archivados'];
                 break;
             case 'rejected':
-                $data['title']      = 'Documentos rechazados';
-                $data['documentos'] = $documentos['rechazados'];
-                $data['view']       = 'Rechazados';
+                $data['title']  = 'Documentos rechazados';
+                $data['view']   = 'Rechazados';
+                $parametros     = ['view'=>'rejected'];
+                $documentos_ver = $documentos['rechazados'];
                 break;
             case 'finished':
-                $data['title']      = 'Documentos finalizados';
-                $data['documentos'] = $documentos['finalizados'];
-                $data['view']       = 'Finalizados';
+                $data['title']  = 'Documentos finalizados';
+                $data['view']   = 'Finalizados';
+                $parametros     = ['view'=>'finished'];
+                $documentos_ver = $documentos['finalizados'];
                 break;
             default:
-                $data['title']      = 'Documentos recibidos';
-                $data['documentos'] = $documentos['todos'];
-                $data['view']       = 'Todos';
+                $data['title']  = 'Documentos recibidos';
+                $data['view']   = 'Todos';
+                $parametros     = ['view'=>'all'];
+                $documentos_ver = $documentos['todos'];
                 break;
         }
 
@@ -179,8 +188,12 @@ class PanelController extends BaseController
         $data['rechazados']  = sizeof($documentos['rechazados']);
         $data['finalizados'] = sizeof($documentos['finalizados']);
 
-		$data['total_documentos'] = sizeof($data['documentos']);
-		$data['field_search']     = sizeof($data['documentos']) ? '' : 'disabled';
+        $data['search'] = $search;
+
+        $paginador = new PaginadorDocumentos( $documentos_ver, $intervalo, $pagina );
+        $paginador->addParametros($parametros + compact('search'));
+
+        $data['paginador'] = $paginador;
 
         return view('Panel.Documentos.index')->with($data);
     }
