@@ -59,6 +59,14 @@ class MailNuevoDocumentoForaneoRecepcionado extends Mailable
         $mail->subject($subject);
         $mail->attachData($pdf->Output(), $acuseRecepcion->getNombre(), ['mime' => 'application/pdf']);
 
+        $escaneos = $this->documento->Escaneos()->with('Archivo')->limit(2)->get();
+
+        foreach ($escaneos as $escaneo) {
+            $path_archivo = $escaneo->Archivo->getPath();
+            $path_archivo = storage_path() . '/app/' . $path_archivo;
+            $mail->attach($path_archivo, ['as' => $escaneo->getNombre()]);
+        }
+
         return $mail;
     }
 }

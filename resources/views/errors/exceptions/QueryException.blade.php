@@ -5,7 +5,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
 
-        <title>{{ title('2002 Servidor de BD') }}</title>
+        <title>{{ title('2002 Servidor de BD no está en ejecución') }}</title>
         
         <meta name="description" content="{{ config_var('Sistema.Nombre') }}">
         <meta name="author" content="Instituto Tecnológico de Chetumal">

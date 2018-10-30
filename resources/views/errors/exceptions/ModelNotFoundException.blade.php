@@ -1,5 +1,6 @@
 @extends('app.layoutMaster')
 
+@section('title', title('Recurso no disponible') )
 
 @section('content')
 	<div class="row">

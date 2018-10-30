@@ -24,6 +24,6 @@ class ErrorException extends Exception
      */
     public static function render_($request)
     {
-        return view('Auth.login');
+        // return view('Auth.login');
     }
 }

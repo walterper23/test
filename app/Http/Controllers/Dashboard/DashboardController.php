@@ -28,7 +28,6 @@ class DashboardController extends BaseController
         $this->setLog('DashboardController.log');
     }
 
-
     public function index(Request $request)
     {
         if( user()->can('REC.DOCUMENTO.LOCAL') ) // Recepcionista local

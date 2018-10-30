@@ -47,5 +47,5 @@ Ver documento
 Además, se adjunta el Acuse de Recepción del documento y los escaneos anexos que se hayan registrado
 
 Saludos,<br>
-{{ title( config_var('Sistema.Nombre') ) }}
+{{ title( config_var('Sistema.Nombre') . ' ' . config_var('Sistema.Version') ) }}
 @endcomponent

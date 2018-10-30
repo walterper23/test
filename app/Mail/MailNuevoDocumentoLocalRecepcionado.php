@@ -55,20 +55,13 @@ class MailNuevoDocumentoLocalRecepcionado extends Mailable
         $mail->subject($subject);
         $mail->attachData($pdf->Output(), $acuseRecepcion->getNombre(), ['mime' => 'application/pdf']);
 
-        /*
-        if( ($escaneos = $this->documento->Escaneos)->count() > 0 )
-        {
-            if($escaneo = $escaneos->values()->get(0))
-            {
-                //$mail->attachData($pdf->Output(), $acuseRecepcion->getNombre(), ['mime' => 'application/pdf']);
-            }
+        $escaneos = $this->documento->Escaneos()->with('Archivo')->limit(2)->get();
 
-            if($escaneo = $escaneos->values()->get(9))
-            {
-                //$mail->attachData($pdf->Output(), $acuseRecepcion->getNombre(), ['mime' => 'application/pdf']);
-            }
+        foreach ($escaneos as $escaneo) {
+            $path_archivo = $escaneo->Archivo->getPath();
+            $path_archivo = storage_path() . '/app/' . $path_archivo;
+            $mail->attach($path_archivo, ['as' => $escaneo->getNombre()]);
         }
-        */
 
         return $mail;
     }

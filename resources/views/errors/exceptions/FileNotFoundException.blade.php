@@ -1,5 +1,6 @@
 @extends('app.layoutMaster')
 
+@section('title', title('Archivo no encontrado') )
 
 @section('content')
 	<div class="row">

@@ -11,12 +11,12 @@ class MEscaneo extends BaseModel
 
     public function getNombre()
     {
-        return $this -> getAttribute('ESCA_NOMBRE');
+        return $this->getAttribute('ESCA_NOMBRE');
     }
 
     public function getDescripcion()
     {
-        return $this -> getAttribute('ESCA_DESCRIPCION');
+        return $this->getAttribute('ESCA_DESCRIPCION');
     }
     
 
@@ -24,17 +24,17 @@ class MEscaneo extends BaseModel
     
     public function DocumentoLocal()
     {
-       return $this -> belongsTo('App\Model\MDocumento','ESCA_DOCUMENTO_LOCAL','DOCU_DOCUMENTO');
+       return $this->belongsTo('App\Model\MDocumento','ESCA_DOCUMENTO_LOCAL','DOCU_DOCUMENTO');
     }
 
     public function DocumentoForaneo()
     {
-       return $this -> belongsTo('App\Model\MDocumento','ESCA_DOCUMENTO_FORANEO','DOCU_DOCUMENTO');
+       return $this->belongsTo('App\Model\MDocumento','ESCA_DOCUMENTO_FORANEO','DOCU_DOCUMENTO');
     }
 
     public function Archivo()
     {
-       return $this -> hasOne('App\Model\MArchivo','ARCH_ARCHIVO','ESCA_ARCHIVO');
+       return $this->hasOne('App\Model\MArchivo','ARCH_ARCHIVO','ESCA_ARCHIVO');
     }
 
 }

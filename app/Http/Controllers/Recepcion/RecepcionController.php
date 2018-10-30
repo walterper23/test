@@ -359,7 +359,7 @@ class RecepcionController extends BaseController
     public function nuevoEscaneo(MDocumento $documento, $file, $data)
     {
         $archivo = new MArchivo;
-        $archivo->ARCH_FOLDER   = 'app/escaneos';
+        $archivo->ARCH_FOLDER   = 'escaneos';
         $archivo->ARCH_FILENAME = '';
         $archivo->ARCH_PATH     = '';
         $archivo->ARCH_TYPE     = $file->extension();
@@ -379,7 +379,7 @@ class RecepcionController extends BaseController
         $file->storeAs('',$filename,'escaneos');
         
         $archivo->ARCH_FILENAME = $filename;
-        $archivo->ARCH_PATH     = 'app/escaneos/' . $filename;
+        $archivo->ARCH_PATH     = 'escaneos/' . $filename;
         $archivo->save();
     }
 
