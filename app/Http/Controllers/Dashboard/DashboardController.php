@@ -306,13 +306,14 @@ class DashboardController extends BaseController
         }
 
         /*****************************************************************/
+
+        // Buscamos las direcciones asignadas al usuario
         $ids_direcciones_usuario = user()->Direcciones->pluck('DIRE_DIRECCION')->toArray();
+        $ids_departamentos_usuario = user()->Departamentos->pluck('DEPA_DEPARTAMENTO')->toArray();
         
         $notificaciones_areas = [];
-        if ( sizeof($ids_direcciones_usuario) > 0 )
+        if ( sizeof($ids_direcciones_usuario) > 0 || sizeof($ids_departamentos_usuario) > 0 )
         {
-            $ids_departamentos_usuario = user()->Departamentos->pluck('DEPA_DEPARTAMENTO')->toArray();
-
             $notificaciones_areas = MUsuario::select('NOTI_NOTIFICACION','NOTI_SYSTEM_TIPO','NOTI_COLOR','NOTI_CREATED_AT','NOTI_CONTENIDO','NOTI_URL','SYTN_CODIGO','SYTN_NOMBRE')
             ->join('notificaciones',function($query){
                 $query->whereRaw('!JSON_CONTAINS(NOTI_USUARIOS_VISTO, CAST(USUA_USUARIO AS JSON),"$")');

@@ -2,6 +2,9 @@
 
 @section('title', title('Configuración de variables') )
 
+@include('vendor.plugins.datepicker')
+@include('vendor.plugins.select2')
+
 @section('breadcrumb')
     <nav class="breadcrumb bg-body-light mb-0">
         <a class="breadcrumb-item" href="javascript:void(0)"><i class="fa fa-cogs"></i> Configuraci&oacute;n</a>
@@ -35,21 +38,19 @@
         {{ Form::open(['url'=>$url_send_form,'id'=>$form_id,'method'=>'POST']) }}
         {{ Form::hidden('action',1) }}
         <div class="block-content tab-content">
-            <div class="tab-pane active" id="btabswo-static-one" role="tabpanel">
+            <div class="tab-pane" id="btabswo-static-one" role="tabpanel">
                 <div class="col-md-7">
-                    @foreach([1,2,14] as $key)
-                    @php $variable = $var[ $key ]; @endphp
-                    {!! Field::text('var' . $key,$variable->getValor(),['label'=>$variable->getNombre(),'popover'=>[$variable->getNombre(),$variable->getDescripcion()]]) !!}
-                    @endforeach
+                    {!! Field::text('var1',$var[1]->getValor(),['label'=>$var[1]->getNombre(),'popover'=>[$var[1]->getNombre(),$var[1]->getDescripcion()]]) !!}
+                    {!! Field::text('var2',$var[2]->getValor(),['label'=>$var[2]->getNombre(),'popover'=>[$var[2]->getNombre(),$var[2]->getDescripcion()]]) !!}
+                    {!! Field::text('var14',$var[14]->getValor(),['label'=>$var[14]->getNombre(),'popover'=>[$var[14]->getNombre(),$var[14]->getDescripcion()]]) !!}
                 </div>
             </div>
             <div class="tab-pane" id="btabswo-static-two" role="tabpanel">
                 <div class="col-md-7">
-                    @foreach([3,4,6] as $key)
-                    @php $variable = $var[ $key ]; @endphp
-                    {!! Field::text('var' . $key,$variable->getValor(),['label'=>$variable->getNombre(),'popover'=>[$variable->getNombre(),$variable->getDescripcion()]]) !!}
-                    @endforeach
+                    {!! Field::text('var3',$var[3]->getValor(),['label'=>$var[3]->getNombre(),'popover'=>[$var[3]->getNombre(),$var[3]->getDescripcion()]]) !!}
+                    {!! Field::text('var4',$var[4]->getValor(),['label'=>$var[4]->getNombre(),'popover'=>[$var[4]->getNombre(),$var[4]->getDescripcion()]]) !!}
                     {!! Field::textarea('var5',$var[5]->getValor(),['label'=>$var[5]->getNombre(),'popover'=>[$var[5]->getNombre(),$var[5]->getDescripcion()],'size'=>'20x3','noresize']) !!}
+                    {!! Field::text('var6',$var[6]->getValor(),['label'=>$var[6]->getNombre(),'popover'=>[$var[6]->getNombre(),$var[6]->getDescripcion()]]) !!}
                 </div>
             </div>
             <div class="tab-pane" id="btabswo-static-three" role="tabpanel">
@@ -58,7 +59,7 @@
                     {!! Field::select('var10',$var[10]->getValor(),['label'=>$var[10]->getNombre(),'popover'=>[$var[10]->getNombre(),$var[10]->getDescripcion()],'labelWidth'=>'col-md-4','width'=>'col-md-8'],$departamentos) !!}
                     {!! Field::select('var11',$var[11]->getValor(),['label'=>$var[11]->getNombre(),'popover'=>[$var[11]->getNombre(),$var[11]->getDescripcion()],'required','labelWidth'=>'col-md-4','width'=>'col-md-8'],$direcciones) !!}
                     {!! Field::select('var12',$var[12]->getValor(),['label'=>$var[12]->getNombre(),'popover'=>[$var[12]->getNombre(),$var[12]->getDescripcion()],'labelWidth'=>'col-md-4','width'=>'col-md-8'],$departamentos) !!}
-                    {!! Field::select('var15',$var[15]->getValor(),['label'=>$var[15]->getNombre(),'popover'=>[$var[15]->getNombre(),$var[15]->getDescripcion()],'required','labelWidth'=>'col-md-4','width'=>'col-md-8'],$direcciones) !!}
+                    {!! Field::select('var15',$var[15]->getValor(),['label'=>$var[15]->getNombre(),'popover'=>[$var[15]->getNombre(),$var[15]->getDescripcion()],'required','labelWidth'=>'col-md-4','width'=>'col-md-8','placeholder'=>false],$estados_documentos) !!}
                 </div>
             </div>
             <div class="tab-pane" id="btabswo-static-four" role="tabpanel">
@@ -66,9 +67,14 @@
                     
                 </div>
             </div>
-            <div class="tab-pane" id="btabswo-static-five" role="tabpanel">
+            <div class="tab-pane active" id="btabswo-static-five" role="tabpanel">
                 <div class="col-md-8">
-                    {!! Field::number('var13',$var[13]->getValor(),['label'=>$var[13]->getNombre(),'popover'=>[$var[13]->getNombre(),$var[13]->getDescripcion()]]) !!}
+                    {!! Field::text('var13',$var[13]->getValor(),['label'=>$var[13]->getNombre(),'popover'=>[$var[13]->getNombre(),$var[13]->getDescripcion()]]) !!}
+                    {!! Field::datepicker('var17',$var[17]->getValor(),['label'=>$var[17]->getNombre(),'popover'=>[$var[17]->getNombre(),$var[17]->getDescripcion()],'placeholder'=>'yyyy-mm-dd']) !!}
+                    {!! Field::text('var18',$var[18]->getValor(),['label'=>$var[18]->getNombre(),'popover'=>[$var[18]->getNombre(),$var[18]->getDescripcion()]]) !!}
+                    {!! Field::datepicker('var19',$var[19]->getValor(),['label'=>$var[19]->getNombre(),'popover'=>[$var[19]->getNombre(),$var[19]->getDescripcion()],'placeholder'=>'yyyy-mm-dd']) !!}
+                    {!! Field::text('var20',$var[20]->getValor(),['label'=>$var[20]->getNombre(),'popover'=>[$var[20]->getNombre(),$var[20]->getDescripcion()]]) !!}
+
                 </div>
             </div>
         </div>
@@ -99,10 +105,9 @@
         this.btnCancel_ = '#btn-cancel';
 
         this.start = function(){
-            Codebase.helper('select2');
+            Codebase.helpers(['datepicker','select2']);
 
             var self = this;
-            
         };
 
         this.successSubmitHandler = function( result ){

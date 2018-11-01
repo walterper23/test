@@ -2,7 +2,6 @@
 namespace App\Http\Controllers\Configuracion\System;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Input;
 use DB;
 
 /* Controllers */
@@ -11,6 +10,7 @@ use App\Http\Controllers\BaseController;
 /* Models */
 use App\Model\Catalogo\MDireccion;
 use App\Model\Catalogo\MDepartamento;
+use App\Model\Catalogo\MEstadoDocumento;
 use App\Model\System\MSystemConfig;
 
 /**
@@ -57,6 +57,12 @@ class SystemVariableController extends BaseController
                                     -> pluck('DEPA_NOMBRE','DEPA_DEPARTAMENTO')
                                     -> toArray();
 
+        $data['estados_documentos'] = MEstadoDocumento::select('ESDO_NOMBRE','ESDO_ESTADO_DOCUMENTO')
+                                    -> Disponible()
+                                    -> orderBy('ESDO_NOMBRE')
+                                    -> pluck('ESDO_NOMBRE','ESDO_ESTADO_DOCUMENTO')
+                                    -> toArray();
+
 		return view('Configuracion.Sistema.Variables.indexVariables') -> with($data);
 	}
 
@@ -85,7 +91,35 @@ class SystemVariableController extends BaseController
 
             $variables = MSystemConfig::all();
 
-            foreach ([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15] as $key) {
+            $variable = $variables->find(1);
+            $variable->SYCO_VALOR = $request->get('var1',1);
+            $variable->save();
+
+            $variable = $variables->find(2);
+            $variable->SYCO_VALOR = $request->get('var2',1);
+            $variable->save();
+
+            $variable = $variables->find(3);
+            $variable->SYCO_VALOR = $request->get('var3',1);
+            $variable->save();
+
+            $variable = $variables->find(4);
+            $variable->SYCO_VALOR = $request->get('var4',1);
+            $variable->save();
+
+            $variable = $variables->find(5);
+            $variable->SYCO_VALOR = $request->get('var5',1);
+            $variable->save();
+
+            $variable = $variables->find(6);
+            $variable->SYCO_VALOR = $request->get('var6',1);
+            $variable->save();
+
+            $variable = $variables->find(7);
+            $variable->SYCO_VALOR = $request->get('var7',1);
+            $variable->save();
+
+            foreach ([1,2,3,4,5,6,7,8,9,10,11,12,13,14] as $key) {
                 $variable = $variables->find($key);
 
                 $variable->SYCO_VALOR = $request->get('var' . $key);
