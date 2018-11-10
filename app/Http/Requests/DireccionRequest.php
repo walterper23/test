@@ -24,8 +24,8 @@ class DireccionRequest extends FormRequest
     public function rules()
     {
         return [
-            'action' => 'required|in:1,2,3,4',
-            'id'     => 'required_if:action:2,3,4',
+            'action' => 'required|in:1,2,3,4,5',
+            'id'     => 'required_if:action:2,3,4,5',
             'nombre' => 'required_if:action,1,2|min:1,max:255'
         ];
     }

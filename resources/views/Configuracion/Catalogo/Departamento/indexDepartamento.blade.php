@@ -26,13 +26,11 @@
                 <div class="dropdown">
                     <button type="button" class="btn-block-option dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cog"></i> Opciones</button>
                     <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="javascript:void(0)">
-                            <i class="fa fa-fw fa-bell mr-5"></i>News
+                        @if(user()->canAtLeast('SIS.ADMIN.CATALOGOS','SIS.ADMIN.DIRECC'))
+                        <a class="dropdown-item" href="{{ url('configuracion/catalogos/direcciones') }}">
+                            <i class="fa fa-fw fa-sitemap mr-5"></i>Direcciones
                         </a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="javascript:void(0)">
-                            <i class="fa fa-fw fa-pencil mr-5"></i>Edit Profile
-                        </a>
+                        @endif
                     </div>
                 </div>
             </div>

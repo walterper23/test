@@ -25,7 +25,7 @@ class DireccionController extends BaseController {
     public function __construct()
     {
         parent::__construct();
-        $this -> setLog('DireccionController.log');
+        $this->setLog('DireccionController.log');
     }
 
 	/**
@@ -34,7 +34,7 @@ class DireccionController extends BaseController {
 	public function index(DireccionesDataTable $dataTables)
 	{
 		$data['table']    = $dataTables;
-		$data['form_id']  = $this -> form_id;
+		$data['form_id']  = $this->form_id;
 		$data['form_url'] = url('configuracion/catalogos/direcciones/nuevo');
 
 		return view('Configuracion.Catalogo.Direccion.indexDireccion')->with($data);
@@ -46,21 +46,21 @@ class DireccionController extends BaseController {
 	public function manager(DireccionRequest $request)
 	{
 
-		switch ($request -> action) {
+		switch ($request->action) {
 			case 1: // Nuevo
-				$response = $this -> nuevaDireccion( $request );
+				$response = $this->nuevaDireccion( $request );
 				break;
 			case 2: // Editar
-				$response = $this -> editarDireccion( $request );
+				$response = $this->editarDireccion( $request );
 				break;
 			case 3: // Visualizar dirección
-                $response = $this -> verDireccion( $request );
+                $response = $this->verDireccion( $request );
                 break;
 			case 4: // Activar / Desactivar
-				$response = $this -> activarDireccion( $request );
+				$response = $this->activarDireccion( $request );
 				break;
 			case 5: // Eliminar
-				$response = $this -> eliminarDireccion( $request );
+				$response = $this->eliminarDireccion( $request );
 				break;
 			default:
 				return response()->json(['message'=>'Petición no válida'],404);
@@ -85,7 +85,7 @@ class DireccionController extends BaseController {
 		try {
 	 		$data = [
 	 			'title'         =>'Nueva dirección',
-	 			'form_id'       => $this -> form_id,
+	 			'form_id'       => $this->form_id,
 	 			'url_send_form' => url('configuracion/catalogos/direcciones/manager'),
 	 			'action'        => 1,
 	 			'modelo'        => null,
@@ -106,15 +106,15 @@ class DireccionController extends BaseController {
 	{
 		try {
 			$direccion = new MDireccion;
-			$direccion -> DIRE_NOMBRE  = $request -> nombre;
-			$direccion -> save();
+			$direccion->DIRE_NOMBRE  = $request->nombre;
+			$direccion->save();
 
 			// Lista de tablas que se van a recargar automáticamente
 			$tables = ['dataTableBuilder',null,true];
 
-			$message = sprintf('<i class="fa fa-fw fa-sitemap"></i> Dirección <b>%s</b> creada',$direccion -> getCodigo());
+			$message = sprintf('<i class="fa fa-fw fa-sitemap"></i> Dirección <b>%s</b> creada',$direccion->getCodigo());
 
-            return $this -> responseSuccessJSON($message,$tables);
+            return $this->responseSuccessJSON($message,$tables);
 		
 		} catch(Exception $error) {
 			return response()->json(['status'=>false,'message'=>'Ocurrió un error al crear la dirección. Error ' . $error->getMessage() ]);
@@ -129,7 +129,7 @@ class DireccionController extends BaseController {
 		try {
 			$data = [
 	 			'title'         =>'Editar dirección',
-	 			'form_id'       => $this -> form_id,
+	 			'form_id'       => $this->form_id,
 	 			'url_send_form' => url('configuracion/catalogos/direcciones/manager'),
 	 			'action'        => 2,
 	 			'modelo'        => MDireccion::find( Input::get('id') ),
@@ -148,9 +148,9 @@ class DireccionController extends BaseController {
 	public function editarDireccion( $request )
 	{
 		try {
-			$direccion = MDireccion::findOrFail( $request -> id );
-			$direccion -> DIRE_NOMBRE = $request -> nombre;
-			$direccion -> save();
+			$direccion = MDireccion::findOrFail( $request->id );
+			$direccion->DIRE_NOMBRE = $request->nombre;
+			$direccion->save();
 
 			// Lista de tablas que se van a recargar automáticamente
 			$tables = 'dataTableBuilder';
@@ -168,17 +168,17 @@ class DireccionController extends BaseController {
 	public function verDireccion( $request )
     {
         try {
-            $direccion         = MDireccion::findOrFail( $request -> id );
-            $data['title']     = sprintf('Dirección #%s', $direccion -> getCodigo() );
+            $direccion         = MDireccion::findOrFail( $request->id );
+            $data['title']     = sprintf('Dirección #%s', $direccion->getCodigo() );
             
             $data['detalles'] = [
-                ['Código', $direccion -> getCodigo()],
-                ['Nombre', $direccion -> getNombre()],
-                ['Nó. departamentos', $direccion -> Departamentos -> count()],
-                ['Fecha',  $direccion -> presenter() -> getFechaCreacion()]
+                ['Código', $direccion->getCodigo()],
+                ['Nombre', $direccion->getNombre()],
+                ['Nó. departamentos', $direccion->Departamentos->count()],
+                ['Fecha',  $direccion->presenter()->getFechaCreacion()]
             ];
 
-            return view('Configuracion.Catalogo.Direccion.verDireccion') -> with($data);
+            return view('Configuracion.Catalogo.Direccion.verDireccion')->with($data);
         } catch(Exception $error) {
 
         }
@@ -191,18 +191,18 @@ class DireccionController extends BaseController {
 	public function activarDireccion( $request )
 	{
 		try{
-			$direccion = MDireccion::findOrFail( $request -> id );
-            $direccion -> cambiarDisponibilidad() -> save();
+			$direccion = MDireccion::findOrFail( $request->id );
+            $direccion->cambiarDisponibilidad()->save();
             
-            if ( $direccion -> disponible() )
+            if ( $direccion->disponible() )
             {
-                $message = sprintf('<i class="fa fa-fw fa-check"></i> Dirección <b>%s</b> activada',$direccion -> getCodigo());
-                return $this -> responseInfoJSON($message);
+                $message = sprintf('<i class="fa fa-fw fa-check"></i> Dirección <b>%s</b> activada',$direccion->getCodigo());
+                return $this->responseInfoJSON($message);
             }
             else
             {
-                $message = sprintf('<i class="fa fa-fw fa-warning"></i> Dirección <b>%s</b> desactivada',$direccion -> getCodigo());
-                return $this -> responseWarningJSON($message);
+                $message = sprintf('<i class="fa fa-fw fa-warning"></i> Dirección <b>%s</b> desactivada',$direccion->getCodigo());
+                return $this->responseWarningJSON($message);
             }
 
 		} catch(Exception $error) {
@@ -216,16 +216,16 @@ class DireccionController extends BaseController {
 	public function eliminarDireccion( $request )
 	{
 		try{
-			$direccion = MDireccion::findOrFail( $request -> id );
+			$direccion = MDireccion::findOrFail( $request->id );
 			
-			$direccion -> eliminar() -> save();
+			$direccion->eliminar()->save();
 
 			// Lista de tablas que se van a recargar automáticamente
 			$tables = 'dataTableBuilder';
 
-			$message = sprintf('<i class="fa fa-fw fa-warning"></i> Dirección <b>%s</b> eliminada',$direccion -> getCodigo());
+			$message = sprintf('<i class="fa fa-fw fa-warning"></i> Dirección <b>%s</b> eliminada',$direccion->getCodigo());
 
-			return $this -> responseWarningJSON($message,'danger',$tables);
+			return $this->responseWarningJSON($message,'danger',$tables);
 		} catch(Exception $error) {
 			return response()->json(['status'=>false,'message'=>'Ocurrió un error al eliminar la dirección. Error ' . $error->getMessage() ]);
 		}

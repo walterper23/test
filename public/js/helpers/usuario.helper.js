@@ -11,7 +11,7 @@ App.loadScript('/js/helpers/helper.js', function(){
 
 			new_ : function(id, url){
 				App.openModal({
-					id, url, footer : false
+					id, url, size : 'modal-lg'
 				});
 			},
 

@@ -26,16 +26,18 @@
                 <div class="dropdown">
                     <button type="button" class="btn-block-option dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cog"></i> Opciones</button>
                     <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="javascript:void(0)">
+                        {{-- <a class="dropdown-item" href="javascript:void(0)">
                             <i class="fa fa-fw fa-pencil mr-5"></i>Editar direcci&oacute;n
+                        </a> --}}
+                        @if(user()->canAtLeast('SIS.ADMIN.CATALOGOS','SIS.ADMIN.DEPTOS'))
+                        <a class="dropdown-item" href="{{ url('configuracion/catalogos/departamentos') }}">
+                            <i class="fa fa-fw fa-sitemap mr-5"></i>Departamentos
                         </a>
-                        <a class="dropdown-item" href="javascript:void(0)">
-                            <i class="fa fa-fw fa-sitemap mr-5"></i>Crear departamento
-                        </a>
-                        <div class="dropdown-divider"></div>
+                        @endif
+                        {{-- <div class="dropdown-divider"></div>
                         <a class="dropdown-item text-danger" href="javascript:void(0)">
                             <i class="fa fa-fw fa-trash mr-5"></i>Eliminar
-                        </a>
+                        </a> --}}
                     </div>
                 </div>
             </div>
