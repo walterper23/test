@@ -219,6 +219,8 @@ class RecepcionForaneaController extends BaseController
             $documento->DOFO_VALIDADO            = 0; // Documento foráneo aún no Validado por Oficialía de partes
             $documento->DOFO_RECEPCIONADO        = 0; // Documento foráneo aún no Recepcionado por Oficialía de partes
             $documento->save();
+
+            $documento = MDocumentoForaneo::find($documento->getKey());
             
             $fecha_reinicio = config_var('Adicional.Fecha.Reinicio.Folios.Foraneo');
 
@@ -265,7 +267,7 @@ class RecepcionForaneaController extends BaseController
             else
             {
                 $redirect = '?view=documentos';
-                $folio_acuse .= $documento->getFolio(); // ARD/2018/10/005/DENU/005
+                $folio_acuse .= $documento->getCodigo(); // ARD/2018/10/005/DENU/001
                 $codigo_preferencia = 'NUE.REC.DOC.FOR';
             }
             

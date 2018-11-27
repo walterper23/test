@@ -221,6 +221,8 @@ class RecepcionController extends BaseController
             $documento->DOCU_NUMERO_DOCUMENTO    = $request->numero;
             $documento->save();
 
+            $documento = MDocumento::find($documento->getKey());
+
             $fecha_reinicio = config_var('Adicional.Fecha.Reinicio.Folios');
 
             if (! is_null($fecha_reinicio) && $fecha_reinicio <= date('Y-m-d H:i:s') )
@@ -279,7 +281,7 @@ class RecepcionController extends BaseController
             else
             {
                 $redirect = '?view=documentos';
-                $folio_acuse .= $documento->getFolio(); // ARD/2018/10/005/DENU/005
+                $folio_acuse .= $documento->getCodigo(); // ARD/2018/10/005/DENU/001
                 $codigo_preferencia = 'NUE.REC.DOC';
             }
 
