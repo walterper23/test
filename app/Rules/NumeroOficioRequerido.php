@@ -33,9 +33,6 @@ class NumeroOficioRequerido implements Rule
         // Si la acción es Nueva o Editar y el tipo de documento no es Denuncia
         if ( in_array($action, [1,2]) && $tipo_documento != 1 )
         {
-            $this->message = 'Introduzca el número del documento';
-            return false;
-            
             if ( strlen($numero) == 0 )
             {
                 $this->message = 'Mínimo 1 caracter';
@@ -47,6 +44,8 @@ class NumeroOficioRequerido implements Rule
                 $this->message = 'Máximo 255 caracteres';
                 return false;
             }
+
+            return true;
         }
 
 
