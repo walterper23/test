@@ -3,8 +3,8 @@ namespace App\Componentes\Field;
 
 use Form;
 
-class FieldBuilder {
-
+class FieldBuilder
+{
     private $type;
     private $name;
     private $attributes;
@@ -70,9 +70,13 @@ class FieldBuilder {
         {
             if( isset($this->attributes['placeholder']) && $this->attributes['placeholder'] !== true ){
                 if( $this->attributes['placeholder'] === false )
+                {
                     $this->prepareControlSelect(false); // Preparamos el select para que no agregue "Seleccione una opción" por default
+                }
                 else
-                    $this->prepareControlSelect(true, $this->attributes['placeholder']); // Preparamos el select para que no agregue Seleccione una opción por default
+                {
+                    $this->prepareControlSelect(true, $this->attributes['placeholder']); // Preparamos el select para que agregue una opción por default personalizada
+                }
                 
                 unset($this->attributes['placeholder']); // Removemos el atributo Placeholder de los atributos
             }
@@ -84,9 +88,13 @@ class FieldBuilder {
         else if( $this->type == 'selectTwo' )
         {
             if( !isset($this->attributes['placeholder']) )
+            {
                 $this->attributes['data-placeholder'] = 'Seleccione una opción';
+            }
             else if( is_bool($this->attributes['placeholder']) && $this->attributes['placeholder'] == false )
+            {
                 unset($this->attributes['data-placeholder']); // Removemos el atributo Placeholder de los atributos
+            }
         }
 
         $this->buildClass = $this->defaultClass;
@@ -235,10 +243,10 @@ class FieldBuilder {
             }
             else
             {
-                $color = $this->attributes['popover'][1]; // Color del icono del Popover
+                $color = $this->attributes['popover'][2]; // Color del icono del Popover
             }
 
-            unset($this->attributes['popover']); // Removemos el atributo label
+            unset($this->attributes['popover']); // Removemos el atributo Popover
 
             $popover = sprintf('<i class="fa fa-fw fa-question-circle text-%s" data-toggle="popover" title="%s" data-placement="right" data-content="%s"></i>',$color,$title,$content);
         }

@@ -127,11 +127,17 @@ class RecibirRecepcionForaneaController extends BaseController
 		$documento->save();
 
 		if ($documento->getTipoDocumento() == 1)
+		{
 			$tables = ['recibir-denuncias-datatable',null,true];
+		}
 		else if ($documento->getTipoDocumento() == 2)
+		{
 			$tables = ['recibir-documentos-denuncias-datatable',null,true];
+		}
 		else
+		{
 			$tables = ['recibir-documentos-datatable',null,true];
+		}
 
 		$message = sprintf('Documento foráneo <b>#%s</b> recibido', $documento->getFolio());
 
@@ -185,6 +191,8 @@ class RecibirRecepcionForaneaController extends BaseController
 				$documento->DOCU_DETALLE             = $documentoForaneo->getDetalle();
 				$documento->DOCU_NUMERO_DOCUMENTO    = $documentoForaneo->getNumero();
 				$documento->save();
+
+				$documento = MDocumento::find($documento->getKey());
 
             	$fecha_reinicio = config_var('Adicional.Fecha.Reinicio.Folios');
 

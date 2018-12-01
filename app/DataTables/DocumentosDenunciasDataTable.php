@@ -18,12 +18,12 @@ class DocumentosDenunciasDataTable extends CustomDataTable
 
     protected function columnsTable(){
         return [
-            [
-                'title'  => '#',
-                'render' => function($documento){
-                    return sprintf('<p class="text-center"><b>%s</b></p>',$documento->getFolio());
-                }
-            ],
+            // [
+            //     'title'  => '#',
+            //     'render' => function($documento){
+            //         return sprintf('<p class="text-center"><b>%s</b></p>',$documento->getFolio());
+            //     }
+            // ],
             [
                 'title'  => 'FOLIO RECEPCIÓN',
                 'render' => function($documento){
@@ -73,6 +73,13 @@ class DocumentosDenunciasDataTable extends CustomDataTable
 
     protected function getUrlAjax(){
         return url('recepcion/documentos/post-data?type=documentos-denuncias');
+    }
+
+    protected function getCustomOptionsParameters()
+    {
+        return [
+            'pageLength' => 10
+        ];
     }
 
 }

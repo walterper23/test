@@ -134,51 +134,51 @@ class RecepcionForaneaController extends BaseController
 
     public function formNuevaRecepcion()
     {
-
         $data = [];
 
-        // Recuperamos los tipos de documentos que se pueden recepcionar
-        $data['tipos_documentos'] = MSystemTipoDocumento::where('SYTD_ENABLED',1)->get();
+        // Recuperamos los tipos de documentsos que se pueden recepcionar
+        $tiposDocumentosExistentesDisponibles = cache()->rememberForever('tiposDocumentosExistentesDisponibles',function(){
+            return MSystemTipoDocumento::existenteDisponible()->get();
+        });
 
-        user()->Direcciones()->with('Departamentos');
+        $data['tipos_documentos'] = $tiposDocumentosExistentesDisponibles;
 
-        $data['direcciones'] = user()->Direcciones->pluck('DIRE_NOMBRE','DIRE_DIRECCION')->toArray();
+        $denunciasAlRecepcionar = cache()->rememberForever('denunciasAlRecepcionar',function(){
+            return MDenuncia::select('DENU_DENUNCIA','DENU_NO_EXPEDIENTE')
+                   ->join('documentos','DENU_DOCUMENTO','=','DOCU_DOCUMENTO')
+                   ->whereNotNull('DENU_NO_EXPEDIENTE') // Número de expediente ya asignado
+                   ->whereIn('DOCU_SYSTEM_ESTADO_DOCTO',[2,3]) // Documento recepcionado, Documento en seguimiento
+                   ->get();
+        });
 
-        $data['departamentos'] = [];
-
-        foreach (user()->Direcciones as $direccion)
-        {
-            foreach ($direccion->Departamentos as $departamento)
-            {
-                $data['departamentos'][] = [
-                    $direccion->getKey(),
-                    $departamento->getKey(),
-                    $departamento->getNombre()
-                ];
-            }
-        }
-
-        $data['denuncias'] = MDenuncia::select('DENU_DENUNCIA','DENU_NO_EXPEDIENTE')
-                        ->join('documentos','DENU_DOCUMENTO','=','DOCU_DOCUMENTO')
-                        ->whereNotNull('DENU_NO_EXPEDIENTE')
-                        ->whereIn('DOCU_SYSTEM_ESTADO_DOCTO',[2,3]) // Documento recepcionado, Documento en seguimiento
-                        ->pluck('DENU_NO_EXPEDIENTE','DENU_DENUNCIA')
-                        ->toArray();
+        $data['denuncias'] = $denunciasAlRecepcionar->pluck('DENU_NO_EXPEDIENTE','DENU_DENUNCIA')->toArray();
 
         // Recuperamos los anexos almacenados en el sistema
-        $data['anexos'] = MAnexo::existenteDisponible()->orderBy('ANEX_NOMBRE')->pluck('ANEX_NOMBRE','ANEX_ANEXO')->toArray();
+        $anexosExistentesDisponibles = cache()->rememberForever('anexosExistentesDisponibles',function(){
+            return MAnexo::existenteDisponible()->get();
+        });
 
-        $data['municipios'] = MMunicipio::selectRaw('MUNI_MUNICIPIO AS id, CONCAT(MUNI_CLAVE," - ",MUNI_NOMBRE) AS nombre,MUNI_ENABLED')->disponible()->pluck('nombre','id')->toArray();
+        $data['anexos'] = $anexosExistentesDisponibles->sortBy('ANEX_NOMBRE')->pluck('ANEX_NOMBRE','ANEX_ANEXO')->toArray();
 
-        $data['context']       = 'context-form-recepcion-foranea';
-        $data['form_id']       = 'form-recepcion-foranea';
-        $data['url_send_form'] = url('recepcion/documentos-foraneos/manager');
+        $cacheMunicipios = cache()->rememberForever('municipiosDisponibles',function(){
+            return MMunicipio::disponible()->get();
+        });
 
-        $data['form'] = view('Recepcion.formNuevaRecepcionForanea')->with($data);
+        $data['municipios'] = $cacheMunicipios->sortBy('MUNI_CLAVE')->mapWithKeys(function($item){
+            return [ $item->getKey() => sprintf('%s :: %s',$item->getClave(),$item->getNombre()) ];
+        })->toArray();
+
+        $data['panel_titulo']      = 'Nueva recepción foránea';
+        $data['context']           = 'context-form-recepcion-foranea';
+        $data['form_id']           = 'form-recepcion-foranea';
+        $data['url_send_form']     = url('recepcion/documentos-foraneos/manager');
+        $data['municipio_default'] = 5; // Benito Juárez
+
+        $data['form'] = view('Recepcion.formNuevaRecepcion')->with($data);
 
         unset($data['tipos_documentos']);
 
-        return view('Recepcion.nuevaRecepcionForanea')->with($data);
+        return view('Recepcion.nuevaRecepcion')->with($data);
 
     }
 
@@ -209,25 +209,32 @@ class RecepcionForaneaController extends BaseController
             $detalle->DETA_ENTREGO_IDENTIFICACION = $request->identificacion;
             $detalle->save();
 
+            $ultimo_folio = MDocumentoForaneo::select('DOFO_FOLIO')->existente()->orderBy('DOFO_DOCUMENTO','DESC')->limit(1)->first();
+
+            if( $ultimo_folio )
+            {
+                $ultimo_folio = $ultimo_folio->getFolio();
+            }
+            else
+            {
+                $ultimo_folio = 0;
+            }
+
             // Guardamos el documento foráneo
             $documento = new MDocumentoForaneo;
-            $documento->DOFO_FOLIO               = 0;
+            $documento->DOFO_FOLIO               = $ultimo_folio + 1;
             $documento->DOFO_SYSTEM_TIPO_DOCTO   = $request->tipo_documento;
             $documento->DOFO_DETALLE             = $detalle->getKey();
             $documento->DOFO_NUMERO_DOCUMENTO    = $request->numero;
             $documento->DOFO_SYSTEM_TRANSITO     = 0; // Documento foráneo aún No enviado a Oficialía de partes
             $documento->DOFO_VALIDADO            = 0; // Documento foráneo aún no Validado por Oficialía de partes
             $documento->DOFO_RECEPCIONADO        = 0; // Documento foráneo aún no Recepcionado por Oficialía de partes
-            $documento->save();
 
-            $documento = MDocumentoForaneo::find($documento->getKey());
-            
             $fecha_reinicio = config_var('Adicional.Fecha.Reinicio.Folios.Foraneo');
 
             if (! is_null($fecha_reinicio) && $fecha_reinicio <= date('Y-m-d H:i:s') )
             {
                 $documento->DOFO_FOLIO = config_var('Adicional.Folio.Reinicio.Folios.Foraneo');
-                $documento->save();
 
                 $fecha_reinicio = MSystemConfig::where('SYCO_VARIABLE','Adicional.Fecha.Reinicio.Folios.Foraneo')->limit(1)->first();
                 $fecha_reinicio->SYCO_VALOR = null;
@@ -236,6 +243,8 @@ class RecepcionForaneaController extends BaseController
                 MSystemConfig::setAllVariables(); // Volvemos a cargar la variables de configuración al caché
             }
 
+            $documento->save();
+            
             /* !!! El documento foráneo no debe crear ningún primer seguimiento !!! */
             
             $folio_acuse = sprintf('ARDF/%s/%s/%s/',date('Y'),date('m'),$documento->getFolio(),$tipo_documento->getCodigoAcuse()); // ARDF/2018/10/005/DENU/
@@ -331,7 +340,7 @@ class RecepcionForaneaController extends BaseController
     public function nuevoEscaneo(MDocumentoForaneo $documento, $file, $data)
     {
         $archivo = new MArchivo;
-        $archivo->ARCH_FOLDER   = 'escaneos';
+        $archivo->ARCH_FOLDER   = 'app/escaneos';
         $archivo->ARCH_FILENAME = '';
         $archivo->ARCH_PATH     = '';
         $archivo->ARCH_TYPE     = $file->extension();
@@ -351,7 +360,7 @@ class RecepcionForaneaController extends BaseController
         $file->storeAs('',$filename,'escaneos');
         
         $archivo->ARCH_FILENAME = $filename;
-        $archivo->ARCH_PATH     = 'escaneos/' . $filename;
+        $archivo->ARCH_PATH     = 'app/escaneos/' . $filename;
         $archivo->save();
     }
 

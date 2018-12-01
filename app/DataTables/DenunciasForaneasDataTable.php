@@ -17,12 +17,12 @@ class DenunciasForaneasDataTable extends CustomDataTable
 
     protected function columnsTable(){
         return [
-            [
-                'title'  => '#',
-                'render' => function($denuncia){
-                    return sprintf('<p class="text-center"><b>%s</b></p>',$denuncia->getFolio());
-                }
-            ],
+            // [
+            //     'title'  => '#',
+            //     'render' => function($denuncia){
+            //         return sprintf('<p class="text-center"><b>%s</b></p>',$denuncia->getFolio());
+            //     }
+            // ],
             [
                 'title'  => 'FOLIO RECEPCIÓN',
                 'render' => function($denuncia){
@@ -102,6 +102,13 @@ class DenunciasForaneasDataTable extends CustomDataTable
 
     protected function getUrlAjax(){
         return url('recepcion/documentos-foraneos/post-data?type=denuncias');
+    }
+
+    protected function getCustomOptionsParameters()
+    {
+        return [
+            'pageLength' => 10
+        ];
     }
 
 }

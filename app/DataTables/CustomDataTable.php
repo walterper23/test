@@ -9,187 +9,197 @@ use Exception;
 
 class CustomDataTable {
 
-	private $instanceTable;
-	protected $builderHtml;
+    private $instanceTable;
+    protected $builderHtml;
 
-	protected $sourceData;
-	private $columns;
+    protected $sourceData;
+    private $columns;
 
-	public function __construct()
-	{
-		$datatables = new DataTables();
-		$this->instanceTable = $datatables;
-		$this->builderHtml   = $datatables->getHtmlBuilder();
-		$this->setSourceData();
-		$this->initInstance()->initConfig();
-	}
+    public function __construct()
+    {
+        $datatables = new DataTables();
+        $this->instanceTable = $datatables;
+        $this->builderHtml   = $datatables->getHtmlBuilder();
+        $this->setSourceData();
+        $this->initInstance()->initConfig();
+    }
 
-	protected function setSourceData()
-	{
-		$this->sourceData = collect([]);
-	}
+    protected function setSourceData()
+    {
+        $this->sourceData = collect([]);
+    }
 
-	protected function getSourceData()
-	{
-		return $this->sourceData;
-	}
-	
-	private function initInstance()
-	{
-		$this->instanceTable = $this->instanceTable->of( $this->getSourceData() );
-		return $this;
-	}
+    protected function getSourceData()
+    {
+        return $this->sourceData;
+    }
+    
+    private function initInstance()
+    {
+        $this->instanceTable = $this->instanceTable->of( $this->getSourceData() );
+        return $this;
+    }
 
-	private function initConfig()
-	{
-		$this->columns = [];
-		$this->readColumsTable()
-				->setRawColumns();
+    private function initConfig()
+    {
+        $this->columns = [];
+        $this->readColumsTable()
+                ->setRawColumns();
 
-	}
+    }
 
-	private function readColumsTable()
-	{
-		foreach ($this->columnsTable() as $key => $column) {
-			$config = [];
+    private function readColumsTable()
+    {
+        foreach ($this->columnsTable() as $key => $column) {
+            $config = [];
 
-			// Config *name* attribute
-			$config['name']  = $key;
+            // Config *name* attribute
+            $config['name']  = $key;
 
-			// Config *title* attribute. Using value empty if it is not set.
-			$config['title'] = isset($column['title']) ? $column['title'] : '';
+            // Config *title* attribute. Using value empty if it is not set.
+            $config['title'] = isset($column['title']) ? $column['title'] : '';
 
-			$config['searchable'] = isset($column['searchable']) ? $column['searchable'] : true;
+            $config['searchable'] = isset($column['searchable']) ? $column['searchable'] : true;
 
-			$config['orderable'] = isset($column['orderable']) ? $column['orderable'] : true;
-			
-			// Config *render* attribute. Using value *data* if it's not set.
-			if( isset($column['render']) ){
-				$config['render'] = $column['render'];
-			}else{
-				$config['render'] = '{{$'.$column['data'].'}}';
-			}
+            $config['orderable'] = isset($column['orderable']) ? $column['orderable'] : true;
+            
+            // Config *render* attribute. Using value *data* if it's not set.
+            if( isset($column['render']) ){
+                $config['render'] = $column['render'];
+            }else{
+                $config['render'] = '{{$'.$column['data'].'}}';
+            }
 
-			$this->addColumn( $config )->pushColumn( $config )->pushRawColumn( $config['name'] );
-		}
+            $this->addColumn( $config )->pushColumn( $config )->pushRawColumn( $config['name'] );
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	protected function columnsTable()
-	{
-		return [
-            ['data' => 'id', 'name' => 'id', 'title' => 'Id'],
-            ['data' => 'name', 'name' => 'name', 'title' => 'Name'],
-            ['data' => 'email', 'name' => 'email', 'title' => 'Email'],
-            ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Created At'],
-            ['data' => 'updated_at', 'name' => 'updated_at', 'title' => 'Updated At'],
+    protected function columnsTable()
+    {
+        return [
+            // ['data' => 'id', 'name' => 'id', 'title' => 'Id'],
+            // ['data' => 'name', 'name' => 'name', 'title' => 'Name'],
+            // ['data' => 'email', 'name' => 'email', 'title' => 'Email'],
+            // ['data' => 'created_at', 'name' => 'created_at', 'title' => 'Created At'],
+            // ['data' => 'updated_at', 'name' => 'updated_at', 'title' => 'Updated At'],
         ];
-	}
+    }
 
-	private function addColumn( $config ){
-		$this->instanceTable = $this->instanceTable->addColumn($config['name'],$config['render']);
-		return $this;
-	}
+    private function addColumn( $config ){
+        $this->instanceTable = $this->instanceTable->addColumn($config['name'],$config['render']);
+        return $this;
+    }
 
-	private function pushColumn( $config ){
-		$this->columns[] = $this->array_only(['data','name','title','searchable','orderable'], $config);
-		return $this;
-	}
+    private function pushColumn( $config ){
+        $this->columns[] = $this->array_only(['data','name','title','searchable','orderable'], $config);
+        return $this;
+    }
 
-	private function array_only($keys, $array){
-		$result = [];
-		foreach ($keys as $key) {
-			if( isset($array[ $key ]) ){
-				$result[ $key ] = $array[ $key ];
-			}
-		}
-		return $result;
-	}
+    private function array_only($keys, $array){
+        $result = [];
+        foreach ($keys as $key) {
+            if( isset($array[ $key ]) ){
+                $result[ $key ] = $array[ $key ];
+            }
+        }
+        return $result;
+    }
 
-	private function pushRawColumn( $column ){
-		$this->rawColumns[] = $column;
-		return $this;
-	}
+    private function pushRawColumn( $column ){
+        $this->rawColumns[] = $column;
+        return $this;
+    }
 
-	protected function setRawColumns()
-	{
-		$this->instanceTable = $this->instanceTable->rawColumns( $this->rawColumns );
-		return $this;
-	}
+    protected function setRawColumns()
+    {
+        $this->instanceTable = $this->instanceTable->rawColumns( $this->rawColumns );
+        return $this;
+    }
 
-	protected function removeColumns()
-	{
-		$this->instanceTable = $this->instanceTable->removeColumn( $this->removeColumns() );
-		return $this;
-	}
+    protected function removeColumns()
+    {
+        $this->instanceTable = $this->instanceTable->removeColumn( $this->removeColumns() );
+        return $this;
+    }
 
-	private function setRemoveColumns(Array $columns){
-		return ['*'];
-	}
+    private function setRemoveColumns(Array $columns){
+        return ['*'];
+    }
 
 
 
-	/********************* B U I L D E R ***************************/
-	
-	private function buildOptionsParameters()
-	{
-		$this->builderHtml = $this->builderHtml->parameters( $this->optionsParameters() );
-		return $this;
-	}
+    /********************* B U I L D E R ***************************/
 
-	private function buildAjaxParameters()
-	{
-		$this->builderHtml = $this->builderHtml->ajax( $this->ajaxParameters() );
-		return $this;
-	}
-	
-	private function buildTable()
-	{
-		$this->builderHtml = $this->builderHtml->columns($this->columns);
-		return $this;
-	}
+    protected function getCustomOptionsParameters()
+    {
+        return [];
+    }
+    
+    private function buildOptionsParameters()
+    {
+        $optionsParameters = array_merge($this->optionsParameters(), $this->getCustomOptionsParameters());
+        
+        $this->builderHtml = $this->builderHtml->parameters( $optionsParameters );
 
-	protected function optionsParameters()
-	{
-		return config('datatables-html.options');
-	}
+        return $this;
+    }
 
-	protected function ajaxParameters()
-	{
-		return [
-			'method' => $this->getMethodAjax(),
-			'url'    => $this->getUrlAjax()
-		];
-	}
+    private function buildAjaxParameters()
+    {
+        $this->builderHtml = $this->builderHtml->ajax( $this->ajaxParameters() );
+        
+        return $this;
+    }
+    
+    private function buildTable()
+    {
+        $this->builderHtml = $this->builderHtml->columns( $this->columns );
 
-	protected function getMethodAjax()
-	{
-		return 'POST';
-	}
+        return $this;
+    }
 
-	protected function getUrlAjax()
-	{
-		return '/';
-	}
+    protected function optionsParameters()
+    {
+        return config('datatables-html.options');
+    }
 
-	public function html( $attributes = [] ){
-		return $this->buildOptionsParameters()
-					->buildAjaxParameters()
-					->buildTable()
-					->builderHtml
-					->table();
-	}
+    protected function ajaxParameters()
+    {
+        return [
+            'method' => $this->getMethodAjax(),
+            'url'    => $this->getUrlAjax()
+        ];
+    }
 
-	public function javascript()
-	{
-		return $this->builderHtml->scripts();
-	}
+    protected function getMethodAjax()
+    {
+        return 'POST';
+    }
 
-	/**************************************************************/
+    protected function getUrlAjax()
+    {
+        return '/';
+    }
 
-	public function getData( $type = true ){
-		return $this->instanceTable->make( $type );
-	}
+    public function html( $attributes = [] ){
+        return $this->buildOptionsParameters()
+                    ->buildAjaxParameters()
+                    ->buildTable()
+                    ->builderHtml
+                    ->table();
+    }
+
+    public function javascript()
+    {
+        return $this->builderHtml->scripts();
+    }
+
+    /**************************************************************/
+
+    public function getData( $type = true ){
+        return $this->instanceTable->make( $type );
+    }
 
 }

@@ -24,7 +24,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(GateContract $gate)
     {
-        $this -> registerPolicies($gate);
+        $this->registerPolicies($gate);
 
         // Binding eloquent.custom to our EloquentCustomUserProvider
         Auth::provider('eloquent.custom', function($app, array $config) {
@@ -32,19 +32,19 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         GateContract::before(function($user, $ability){
-            if( $user -> isSuperAdmin() ){
+            if( $user->isSuperAdmin() ){
                 return true;
             }
         });
 
         // Recuperamos todos los permisos disponibles en el sistema
         $permisosSistema = cache()->rememberForever('Permisos.Sistema',function(){
-            return \App\Model\MPermiso::with('Recurso') -> get();
+            return \App\Model\MPermiso::with('Recurso')->get();
         });
         
         foreach ($permisosSistema as $permiso) {
-            GateContract::define($permiso -> getCodigo(), function($user) use ($permiso){
-                return permisoUsuario( $permiso -> getCodigo() );
+            GateContract::define($permiso->getCodigo(), function($user) use ($permiso){
+                return permisoUsuario( $permiso->getCodigo() );
             });
         }
 

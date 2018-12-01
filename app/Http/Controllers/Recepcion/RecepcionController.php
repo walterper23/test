@@ -168,19 +168,20 @@ class RecepcionController extends BaseController
         });
 
         $data['municipios'] = $cacheMunicipios->sortBy('MUNI_CLAVE')->mapWithKeys(function($item){
-            return [ $item->getKey() => sprintf('%s - %s',$item->getClave(),$item->getNombre()) ];
+            return [ $item->getKey() => sprintf('%s :: %s',$item->getClave(),$item->getNombre()) ];
         })->toArray();
 
-        $data['context']       = 'context-form-recepcion';
-        $data['form_id']       = 'form-recepcion';
-        $data['url_send_form'] = url('recepcion/documentos/manager');
+        $data['panel_titulo']      = 'Nueva recepción';
+        $data['context']           = 'context-form-recepcion';
+        $data['form_id']           = 'form-recepcion';
+        $data['url_send_form']     = url('recepcion/documentos/manager');
+        $data['municipio_default'] = 4; // Othón P. Blanco
 
         $data['form'] = view('Recepcion.formNuevaRecepcion')->with($data);
 
         unset($data['tipos_documentos']);
 
         return view('Recepcion.nuevaRecepcion')->with($data);
-
     }
 
 
@@ -211,24 +212,31 @@ class RecepcionController extends BaseController
             $detalle->DETA_ENTREGO_IDENTIFICACION = $request->identificacion;
             $detalle->save();
 
+            $ultimo_folio = MDocumento::select('DOCU_FOLIO')->existente()->orderBy('DOCU_DOCUMENTO','DESC')->limit(1)->first();
+
+            if( $ultimo_folio )
+            {
+                $ultimo_folio = $ultimo_folio->getFolio();
+            }
+            else
+            {
+                $ultimo_folio = 0;
+            }
+
             // Guardamos el documento
             $documento = new MDocumento;
-            $documento->DOCU_FOLIO               = 0;
+            $documento->DOCU_FOLIO               = $ultimo_folio + 1;
             $documento->DOCU_SYSTEM_TIPO_DOCTO   = $tipo_documento->getKey();
             $documento->DOCU_SYSTEM_ESTADO_DOCTO = 2; // Documento recepcionado
             $documento->DOCU_TIPO_RECEPCION      = 1; // Recepción local
             $documento->DOCU_DETALLE             = $detalle->getKey();
             $documento->DOCU_NUMERO_DOCUMENTO    = $request->numero;
-            $documento->save();
-
-            $documento = MDocumento::find($documento->getKey());
 
             $fecha_reinicio = config_var('Adicional.Fecha.Reinicio.Folios');
 
             if (! is_null($fecha_reinicio) && $fecha_reinicio <= date('Y-m-d H:i:s') )
             {
                 $documento->DOCU_FOLIO = config_var('Adicional.Folio.Reinicio.Folios');
-                $documento->save();
 
                 $fecha_reinicio = MSystemConfig::where('SYCO_VARIABLE','Adicional.Fecha.Reinicio.Folios')->limit(1)->first();
                 $fecha_reinicio->SYCO_VALOR = null;
@@ -237,6 +245,8 @@ class RecepcionController extends BaseController
                 MSystemConfig::setAllVariables(); // Volvemos a cargar la variables de configuración al caché
             }
 
+            $documento->save();
+            
             // Guardamos el primer seguimiento del documento
             $seguimiento = new MSeguimiento;
             $seguimiento->SEGU_USUARIO              = userKey();
@@ -258,7 +268,7 @@ class RecepcionController extends BaseController
                 $denuncia->save();
 
                 $redirect = '?view=denuncias';
-                $folio_acuse .= $denuncia->getCodigo(); // ARD/2018/10/005/DENU/001
+                $folio_acuse .= $denuncia->getCodigo(); // ARD/2018/10/005/DENU/{001}
                 $codigo_preferencia = 'NUE.REC.DEN';
             }
             else if ( $tipo_documento->getKey() == 2 ) // Si el tipo de documento es un documento para denuncia ...
@@ -275,13 +285,13 @@ class RecepcionController extends BaseController
                 $documentoDenuncia->save();
 
                 $redirect = '?view=documentos-denuncias';
-                $folio_acuse .= $documentoDenuncia->getCodigo();  // ARD/2018/10/005/DODE/002
+                $folio_acuse .= $documentoDenuncia->getCodigo();  // ARD/2018/10/005/DODE/{002}
                 $codigo_preferencia = 'NUE.REC.DODE';
             }
             else
             {
                 $redirect = '?view=documentos';
-                $folio_acuse .= $documento->getCodigo(); // ARD/2018/10/005/DENU/001
+                $folio_acuse .= $documento->getCodigo(); // ARD/2018/10/005/DENU/{001}
                 $codigo_preferencia = 'NUE.REC.DOC';
             }
 
@@ -306,7 +316,7 @@ class RecepcionController extends BaseController
             // Guardamos los archivos o escaneos que se hayan agregado al archivo
             foreach ($request->escaneo ?? [] as $key => $escaneo) {
 
-                $nombre = $escaneo->getClientOriginalName();
+                $nombre = sprintf('Documento_%');
                 
                 if( isset($escaneo_nombres[$key]) && !empty(trim($escaneo_nombres[$key])) )
                 {

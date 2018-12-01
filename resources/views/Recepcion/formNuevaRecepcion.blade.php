@@ -3,10 +3,10 @@
     <div class="row">
         <div class="col-md-7">
             <div class="form-group row">
-                <label for="tipo_documento" class="col-md-3 col-form-label" required>Tipo de documento</label>
+                <label for="tipo_documento" class="col-md-3 col-form-label" required>Tipo de documento <i class="fa fa-fw fa-question-circle text-info" data-toggle="popover" title="Nó. documento" data-placement="right" data-content="Introduzca el nó. de oficio, nó. de circular, etc. que contenga el documento que está recepcionando"></i></label>
                 <div class="col-md-9">
                     <select required id="tipo_documento" class="form-control" name="tipo_documento">
-                        <option selected="selected" value="">Seleccione una opción</option>
+                        <option selected="selected" value="" data-label="Nó. documento">Seleccione una opción</option>
                         @foreach( $tipos_documentos as $tipo )
                             {!! sprintf('<option value="%d" data-label="%s">%s</option>',$tipo -> getKey(), $tipo -> getEtiqueta(), $tipo -> getNombre() ) !!}
                         @endforeach
@@ -15,36 +15,30 @@
             </div>
         </div>
         <div class="col-md-5">
-            {!! Field::datepicker('recepcion',date('Y-m-d'),['label'=>'Recepción','required','placeholder'=>'yyyy-mm-dd']) !!}
+            {!! Field::datepicker('recepcion',date('Y-m-d'),['label'=>'Recepción','required','placeholder'=>date('Y-12-31'),'popover'=>['Recepción','Introduzca la fecha en la que recepcionó el documento']]) !!}
         </div>
     </div>
     <div class="row">
         <div class="col-md-7">
-            {!! Field::text('numero','',['label'=>'Nó.','required']) !!}
-        </div>
-        <div class="col-md-5">
-            {!! Field::select('municipio',4,['label'=>'Municipio','required'],$municipios) !!}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-7">
-            {!! Field::select('denuncia','',['label'=>'Expediente / Denuncia','required'],$denuncias) !!}
+            {!! Field::text('numero','',['label'=>'Nó. documento','popover'=>['Nó. documento','Introduzca el nó. de oficio, nó. de circular, etc. que contenga el documento que está recepcionando'],'required']) !!}
+            {!! Field::select('denuncia','',['label'=>'Expediente / Denuncia','addLabelClass'=>'text-danger','placeholder'=>'Seleccione un nó. de expediente','popover'=>['Seleccione un número de expediente','A continuación seleccione el nó. de expediente al que va relacionado al documento que está recepcionando en este momento.'],'required'],$denuncias) !!}
             {!! Field::textarea('descripcion','',['label'=>'Asunto / Descripción','placeholder'=>'Introduzca una descripción del documento','size'=>'20x3','required','noresize']) !!}
             {!! Field::text('responsable','',['label'=>'Responsable','required']) !!}
-            {!! Field::textarea('observaciones','',['label'=>'Observaciones','placeholder'=>'Opcional','size'=>'20x2','noresize']) !!}
+            {!! Field::textarea('observaciones','',['label'=>'Observaciones','placeholder'=>'Opcional','size'=>'20x3','noresize']) !!}
         </div>
         <div class="col-md-5">
+            {!! Field::select('municipio',$municipio_default,['label'=>'Municipio','required','popover'=>['Municipio','Seleccione el municipio de procedencia del documento']],$municipios) !!}
             <div class="form-group row">
                 <label for="anexo" class="col-md-3 col-form-label">Lista de anexos</label>
                 <div class="col-md-9">
                     <div class="input-group">
                         {{ Form::select('anexo',$anexos,null,['id'=>'anexo','class'=>'form-control js-select2','placeholder'=>'Seleccione una opción']) }}
                         <div class="input-group-prepend">
-                            <button type="button" class="btn btn-alt-danger" id="addAnexo">
+                            <button type="button" class="btn btn-alt-danger" id="addAnexo" title="Utilizar anexo seleccionado de la lista">
                                 <i class="fa fa-fw fa-download"></i>
                             </button>
                             @can('SIS.ADMIN.ANEXOS')
-                            <button type="button" class="btn btn-alt-primary" tabindex="-1" onclick="hRecepcion.nuevoAnexo('form-anexo','{{ url('configuracion/catalogos/anexos/nuevo') }}')">
+                            <button type="button" class="btn btn-alt-primary" title="Crear nuevo anexo para añadir a la lista" tabindex="-1" onclick="hRecepcion.nuevoAnexo('form-anexo','{{ url('configuracion/catalogos/anexos/nuevo') }}')">
                                 <i class="fa fa-fw fa-plus"></i> Nuevo
                             </button>
                             @endcan

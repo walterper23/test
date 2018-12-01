@@ -90,7 +90,7 @@ class NotificacionController extends BaseController
 
     public static function enviarCorreoSobreNuevaRecepcion($codigo_preferencia, $documento)
     {
-        if( config('app.debug') === false && boolval(config_var('Adicional.Envio.Correo.Prod')) === true )
+        if( boolval(config_var('Adicional.Envio.Correo.Prod')) === true )
         {
             $preferencia = cache('System.Preferencias')->where('SYPR_CODIGO',$codigo_preferencia)->first();
 

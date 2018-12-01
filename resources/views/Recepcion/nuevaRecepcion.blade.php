@@ -9,7 +9,7 @@
     <nav class="breadcrumb bg-body-light mb-0">
         <a class="breadcrumb-item" href="javascript:void(0)"><i class="fa fa-home"></i> Recepci&oacute;n</a>
         <a class="breadcrumb-item" href="{{ url('recepcion/documentos') }}">Documentos</a>
-        <span class="breadcrumb-item active">Nueva recepci&oacute;n</span>
+        <span class="breadcrumb-item active">{{ $panel_titulo }}</span>
     </nav>
 @endsection
 
@@ -19,17 +19,22 @@
            <!-- Normal Form -->
             <div class="block block-themed" id="{{ $context }}">
                 <div class="block-header bg-corporate">
-                    <h3 class="block-title"><i class="fa fa-fw fa-edit"></i> Nueva recepci&oacute;n</h3>
+                    <h3 class="block-title"><i class="fa fa-fw fa-edit"></i> {{ $panel_titulo }}</h3>
                     <div class="block-options">
                         <div class="dropdown">
                             <button type="button" class="btn-block-option dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cog"></i> Opciones</button>
                             <div class="dropdown-menu dropdown-menu-right">
+                                @can('SIS.ADMIN.ANEXOS')
+                                <a class="dropdown-item" title="Crear nuevo anexo para añadir a la lista" href="javascript:void(0)" onclick="hRecepcion.nuevoAnexo('form-anexo','{{ url('configuracion/catalogos/anexos/nuevo') }}')">
+                                    <i class="fa fa-fw fa-plus"></i> Nuevo anexo
+                                </a>
+                                @endcan
                                 <!--a class="dropdown-item" href="javascript:void(0)">
                                     <i class="fa fa-fw fa-save mr-5"></i>Guardar captura
                                 </a>
                                 <div class="dropdown-divider"></div-->
                                 <a class="dropdown-item" onclick="hRecepcion.cancelar()">
-                                    <i class="fa fa-fw fa-times mr-5 text-danger"></i>Cancelar
+                                    <i class="fa fa-fw fa-times text-danger"></i>Cancelar
                                 </a>
                             </div>
                         </div>
@@ -86,7 +91,9 @@
                 
                 let label = $(this).find('option:selected').data('label');
 
-                if( label != '' ){
+                selectDenuncia.closest('div.form-group.row').hide();
+
+                if( label && label.length ){
                     labelNumero.text( label );
                     labelNumero.closest('div.form-group.row').show();
                 }else{

@@ -19,22 +19,22 @@ class DocumentosForaneosDataTable extends CustomDataTable
     protected function columnsTable()
     {
         return [
+            // [
+            //     'title'  => '#',
+            //     'render' => function($documento){
+            //         return sprintf('<p class="text-center"><b>%s</b></p>',$documento->getFolio());
+            //     }
+            // ],
             [
-                'title'  => '#',
+                'title'  => 'FOLIO RECEPCIÓN',
                 'render' => function($documento){
-                    return sprintf('<p class="text-center"><b>%s</b></p>',$documento->getFolio());
+                    return $documento->AcuseRecepcion->getNumero();
                 }
             ],
             [
                 'title'  => 'TIPO DOCUMENTO',
                 'render' => function($documento){
                     return $documento->TipoDocumento->presenter()->getBadge();
-                }
-            ],
-            [
-                'title'  => 'FOLIO RECEPCIÓN',
-                'render' => function($documento){
-                    return $documento->AcuseRecepcion->getNumero();
                 }
             ],
             [
@@ -115,6 +115,13 @@ class DocumentosForaneosDataTable extends CustomDataTable
     protected function getUrlAjax()
     {
         return url('recepcion/documentos-foraneos/post-data?type=documentos');
+    }
+
+    protected function getCustomOptionsParameters()
+    {
+        return [
+            'pageLength' => 10
+        ];
     }
 
 }
