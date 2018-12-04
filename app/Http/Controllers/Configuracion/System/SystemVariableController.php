@@ -27,7 +27,7 @@ class SystemVariableController extends BaseController
     public function __construct()
     {
         parent::__construct();
-        $this -> setLog('SystemVariableController.log');
+        $this->setLog('SystemVariableController.log');
     }
 
     /**
@@ -42,24 +42,24 @@ class SystemVariableController extends BaseController
         });
 
         $data['direcciones'] = MDireccion::select('DIRE_DIRECCION','DIRE_NOMBRE')
-                                    -> existente()
-                                    -> orderBy('DIRE_NOMBRE')
-                                    -> pluck('DIRE_NOMBRE','DIRE_DIRECCION')
-                                    -> toArray();
+                                   ->existente()
+                                   ->orderBy('DIRE_NOMBRE')
+                                   ->pluck('DIRE_NOMBRE','DIRE_DIRECCION')
+                                   ->toArray();
 
         $data['departamentos'] = MDepartamento::select('DEPA_DEPARTAMENTO','DEPA_NOMBRE')
-                                    -> existente()
-                                    -> orderBy('DEPA_NOMBRE')
-                                    -> pluck('DEPA_NOMBRE','DEPA_DEPARTAMENTO')
-                                    -> toArray();
+                                   ->existente()
+                                   ->orderBy('DEPA_NOMBRE')
+                                   ->pluck('DEPA_NOMBRE','DEPA_DEPARTAMENTO')
+                                   ->toArray();
 
         $data['estados_documentos'] = MEstadoDocumento::select('ESDO_NOMBRE','ESDO_ESTADO_DOCUMENTO')
-                                    -> Disponible()
-                                    -> orderBy('ESDO_NOMBRE')
-                                    -> pluck('ESDO_NOMBRE','ESDO_ESTADO_DOCUMENTO')
-                                    -> toArray();
+                                   ->Disponible()
+                                   ->orderBy('ESDO_NOMBRE')
+                                   ->pluck('ESDO_NOMBRE','ESDO_ESTADO_DOCUMENTO')
+                                   ->toArray();
 
-		return view('Configuracion.Sistema.Variables.indexVariables') -> with($data);
+		return view('Configuracion.Sistema.Variables.indexVariables')->with($data);
 	}
 
     /**
@@ -67,12 +67,12 @@ class SystemVariableController extends BaseController
      */
     public function manager(Request $request)
     {
-        switch ($request -> action) {
+        switch ($request->action) {
             case 1: // Guardar cambios de variables
-                $response = $this -> guardarCambios( $request );
+                $response = $this->guardarCambios( $request );
                 break;
             default:
-                return response() -> json(['message'=>'Petición no válida'],404);
+                return response()->json(['message'=>'Petición no válida'],404);
                 break;
         }
 

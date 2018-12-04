@@ -59,7 +59,7 @@ class MailNuevoDocumentoLocalRecepcionado extends Mailable
 
         foreach ($escaneos as $escaneo) {
             $path_archivo = $escaneo->Archivo->getPath();
-            $path_archivo = storage_path() . '/app/' . $path_archivo;
+            $path_archivo = storage_path( $path_archivo );
             $mail->attach($path_archivo, ['as' => $escaneo->getNombre()]);
         }
 

@@ -232,12 +232,13 @@ class RecepcionController extends BaseController
 
             $fecha_reinicio = config_var('Adicional.Fecha.Reinicio.Folios');
 
+            // Si existe una fecha de reinicio de folios y esa fecha es menor o igual al momento de hoy
             if (! is_null($fecha_reinicio) && $fecha_reinicio <= date('Y-m-d H:i:s') )
             {
                 $documento->DOCU_FOLIO = config_var('Adicional.Folio.Reinicio.Folios');
 
                 $fecha_reinicio = MSystemConfig::where('SYCO_VARIABLE','Adicional.Fecha.Reinicio.Folios')->limit(1)->first();
-                $fecha_reinicio->SYCO_VALOR = null;
+                $fecha_reinicio->SYCO_VALOR = null; // Vaciamos la fecha de reinicio
                 $fecha_reinicio->save();
 
                 MSystemConfig::setAllVariables(); // Volvemos a cargar la variables de configuración al caché
@@ -530,13 +531,12 @@ class RecepcionController extends BaseController
 
         $filename = sprintf('docto_%d_scan_%d_arch_%d_%s.pdf',$documento->getKey(), $escaneo->getKey(), $archivo->getKey(), time());
         
-        $file->storeAs('',$filename,'escaneos');
+        $file->storeAs('escaneos',$filename);
         
         $archivo->ARCH_FILENAME = $filename;
         $archivo->ARCH_PATH     = 'app/escaneos/' . $filename;
         $archivo->save();
     }
-
 
     public function verRecepcion( $request )
     {

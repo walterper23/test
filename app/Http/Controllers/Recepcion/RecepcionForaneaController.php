@@ -228,12 +228,13 @@ class RecepcionForaneaController extends BaseController
 
             $fecha_reinicio = config_var('Adicional.Fecha.Reinicio.Folios.Foraneo');
 
+            // Si existe una fecha de reinicio de folios y esa fecha es menor o igual al momento de hoy
             if (! is_null($fecha_reinicio) && $fecha_reinicio <= date('Y-m-d H:i:s') )
             {
                 $documento->DOFO_FOLIO = config_var('Adicional.Folio.Reinicio.Folios.Foraneo');
 
                 $fecha_reinicio = MSystemConfig::where('SYCO_VARIABLE','Adicional.Fecha.Reinicio.Folios.Foraneo')->limit(1)->first();
-                $fecha_reinicio->SYCO_VALOR = null;
+                $fecha_reinicio->SYCO_VALOR = null; // Vaciamos la fecha de reinicio
                 $fecha_reinicio->save();
 
                 MSystemConfig::setAllVariables(); // Volvemos a cargar la variables de configuración al caché

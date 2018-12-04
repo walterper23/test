@@ -38,7 +38,7 @@
         {{ Form::open(['url'=>$url_send_form,'id'=>$form_id,'method'=>'POST']) }}
         {{ Form::hidden('action',1) }}
         <div class="block-content tab-content">
-            <div class="tab-pane" id="btabswo-static-one" role="tabpanel">
+            <div class="tab-pane active" id="btabswo-static-one" role="tabpanel">
                 <div class="col-md-6">
                     {!! Field::text('var1',$var[1]->getValor(),['label'=>$var[1]->getNombre(),'popover'=>[$var[1]->getNombre(),$var[1]->getDescripcion()],'labelWidth'=>'col-md-5','width'=>'col-md-7']) !!}
                     {!! Field::text('var2',$var[2]->getValor(),['label'=>$var[2]->getNombre(),'popover'=>[$var[2]->getNombre(),$var[2]->getDescripcion()],'labelWidth'=>'col-md-5','width'=>'col-md-7']) !!}
@@ -67,7 +67,7 @@
                     
                 </div>
             </div>
-            <div class="tab-pane active" id="btabswo-static-five" role="tabpanel">
+            <div class="tab-pane" id="btabswo-static-five" role="tabpanel">
                 <div class="col-md-6">
                     <div class="form-group row">
                         <label for="var16" class="col-md-5 col-form-label">{{ $var[16]->getNombre() }}<i class="fa fa-fw fa-question-circle text-info" data-toggle="popover" title="{{ $var[16]->getNombre() }}" data-placement="right" data-content="{{ $var[16]->getDescripcion() }}" data-original-title="Días Límite Semáforo"></i></label>
@@ -88,9 +88,9 @@
                         </div>
                     </div>
                     {!! Field::text('var13',$var[13]->getValor(),['label'=>$var[13]->getNombre(),'popover'=>[$var[13]->getNombre(),$var[13]->getDescripcion()],'labelWidth'=>'col-md-5','width'=>'col-md-7']) !!}
-                    {!! Field::datepicker('var17',$var[17]->getValor(),['label'=>$var[17]->getNombre(),'popover'=>[$var[17]->getNombre(),$var[17]->getDescripcion()],'labelWidth'=>'col-md-5','width'=>'col-md-7','placeholder'=>'yyyy-mm-dd']) !!}
+                    {!! Field::datepicker('var17',$var[17]->getValor(),['label'=>$var[17]->getNombre(),'popover'=>[$var[17]->getNombre(),$var[17]->getDescripcion()],'labelWidth'=>'col-md-5','width'=>'col-md-7','placeholder'=>date('Y-12-31')]) !!}
                     {!! Field::text('var18',$var[18]->getValor(),['label'=>$var[18]->getNombre(),'popover'=>[$var[18]->getNombre(),$var[18]->getDescripcion()],'labelWidth'=>'col-md-5','width'=>'col-md-7']) !!}
-                    {!! Field::datepicker('var19',$var[19]->getValor(),['label'=>$var[19]->getNombre(),'popover'=>[$var[19]->getNombre(),$var[19]->getDescripcion()],'labelWidth'=>'col-md-5','width'=>'col-md-7','placeholder'=>'yyyy-mm-dd']) !!}
+                    {!! Field::datepicker('var19',$var[19]->getValor(),['label'=>$var[19]->getNombre(),'popover'=>[$var[19]->getNombre(),$var[19]->getDescripcion()],'labelWidth'=>'col-md-5','width'=>'col-md-7','placeholder'=>date('Y-12-31')]) !!}
                     {!! Field::text('var20',$var[20]->getValor(),['label'=>$var[20]->getNombre(),'popover'=>[$var[20]->getNombre(),$var[20]->getDescripcion()],'labelWidth'=>'col-md-5','width'=>'col-md-7']) !!}
 
                 </div>
