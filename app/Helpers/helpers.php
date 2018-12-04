@@ -87,3 +87,12 @@ if (! function_exists('nombreFecha'))
         return $fecha;
     }
 }
+
+if (! function_exists('toBoolean'))
+{
+    // Helper para obtener el nombre del mes
+    function toBoolean($value)
+    {
+        return filter_var( $value, FILTER_VALIDATE_BOOLEAN );
+    }
+}

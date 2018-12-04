@@ -35,15 +35,11 @@ class SystemVariableController extends BaseController
      */
 	public function index()
     {
-
-        // cache()->forget('System.Config.Variables');
-
         $data['form_id']       = $this->form_id;
         $data['url_send_form'] = url('configuracion/sistema/variables/manager');
         $data['var']           = cache('System.Config.Variables')->mapWithKeys(function($item){
             return [ $item->getKey() => $item ];
         });
-
 
         $data['direcciones'] = MDireccion::select('DIRE_DIRECCION','DIRE_NOMBRE')
                                     -> existente()
@@ -86,45 +82,33 @@ class SystemVariableController extends BaseController
     public function guardarCambios( $request )
     {
         try {
-
             DB::beginTransaction();
 
             $variables = MSystemConfig::all();
 
-            $variable = $variables->find(1);
-            $variable->SYCO_VALOR = $request->get('var1',1);
-            $variable->save();
-
-            $variable = $variables->find(2);
-            $variable->SYCO_VALOR = $request->get('var2',1);
-            $variable->save();
-
-            $variable = $variables->find(3);
-            $variable->SYCO_VALOR = $request->get('var3',1);
-            $variable->save();
-
-            $variable = $variables->find(4);
-            $variable->SYCO_VALOR = $request->get('var4',1);
-            $variable->save();
-
-            $variable = $variables->find(5);
-            $variable->SYCO_VALOR = $request->get('var5',1);
-            $variable->save();
-
-            $variable = $variables->find(6);
-            $variable->SYCO_VALOR = $request->get('var6',1);
-            $variable->save();
-
-            $variable = $variables->find(7);
-            $variable->SYCO_VALOR = $request->get('var7',1);
-            $variable->save();
-
-            foreach ([1,2,3,4,5,6,7,8,9,10,11,12,13,14] as $key) {
+            foreach ([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18,19,20] as $key) {
                 $variable = $variables->find($key);
 
                 $variable->SYCO_VALOR = $request->get('var' . $key);
                 $variable->save();
             }
+
+            // Guardando la variable "Institucion.Login.Logo.Izquierdo"
+            // $variable = $variables->find(7);
+            // $variable->SYCO_VALOR = $request->get('var7',1);
+            // $variable->save();
+
+            // Guardando la variable "Institucion.Login.Logo.Derecho"
+            // $variable = $variables->find(8);
+            // $variable->SYCO_VALOR = $request->get('var8',1);
+            // $variable->save();
+
+            // Guardando la variable "Adicional.Envio.Correo.Prod"
+            $var16 = $request->get('var16',false);
+            $var16 = toBoolean($request->get('var16',false));
+            $variable = $variables->find(16);
+            $variable->SYCO_VALOR = $var16;
+            $variable->save();
 
             DB::commit();
 
@@ -141,12 +125,6 @@ class SystemVariableController extends BaseController
 
             return $this->responseDangerJSON($message);
         }
-
-
-
-
-
-
     }
 
 }
