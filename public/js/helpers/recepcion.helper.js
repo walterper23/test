@@ -38,10 +38,11 @@ App.loadScript('/js/helpers/helper.js', function(){
 				})
 			},
 
-			cancelar : function(){
+			cancelar : function( type = 1 ){
+				let msg = type == 1 ? 'recepción' : 'modificación';
 				AppAlert.confirm({
-					title : 'Cancelar recepción',
-					text  : '¿Está seguro que desea cancelar la recepción?',
+					title : 'Cancelar ' + msg,
+					text  : '¿Está seguro que desea cancelar la ' + msg + '?',
 					cancelBtnText : 'Regresar',
 					then : function(){
 						location.href = '/recepcion/documentos/recepcionados'

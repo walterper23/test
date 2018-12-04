@@ -6,37 +6,44 @@ class MDocumentoDenuncia extends BaseModel
     protected $table        = 'documentos_denuncias';
     protected $primaryKey   = 'DODE_DOCUMENTO_DENUNCIA';
     protected $prefix       = 'DODE';
+
+    /** Methods **/
+
+    public function getDenuncia()
+    {
+        return $this->getAttribute('DODE_DENUNCIA');
+    }
     
     /** Relationships **/
 
     public function DocumentoLocal()
     {
-        return $this -> belongsTo('App\Model\MDocumento','DOCU_DOCUMENTO','DODE_DOCUMENTO_LOCAL');
+        return $this->belongsTo('App\Model\MDocumento','DOCU_DOCUMENTO','DODE_DOCUMENTO_LOCAL');
     }
 
     public function DocumentoForaneo()
     {
-        return $this -> belongsTo('App\Model\MDocumento','DOCU_DOCUMENTO','DODE_DOCUMENTO_FORANEO');
+        return $this->belongsTo('App\Model\MDocumento','DOCU_DOCUMENTO','DODE_DOCUMENTO_FORANEO');
     }
 
     public function DocumentoOrigen()
     {
-        return $this -> belongsTo('App\Model\MDocumento','DOCU_DOCUMENTO','DODE_DOCUMENTO_ORIGEN');
+        return $this->belongsTo('App\Model\MDocumento','DOCU_DOCUMENTO','DODE_DOCUMENTO_ORIGEN');
     }
 
     public function Denuncia()
     {
-    	return $this -> belongsTo('App\Model\MDenuncia','DODE_DENUNCIA','DENU_DENUNCIA');
+    	return $this->belongsTo('App\Model\MDenuncia','DODE_DENUNCIA','DENU_DENUNCIA');
     }
 
     public function Detalle()
     {
-    	return $this -> hasOne('App\Model\MDetalle','DETA_DETALLE','DODE_DETALLE');
+    	return $this->hasOne('App\Model\MDetalle','DETA_DETALLE','DODE_DETALLE');
     }
 
     public function Seguimiento()
     {
-        return $this -> hasOne('App\Model\MSeguimiento','SEGU_SEGUIMIENTO','DODE_SEGUIMIENTO');
+        return $this->hasOne('App\Model\MSeguimiento','SEGU_SEGUIMIENTO','DODE_SEGUIMIENTO');
     }
 
 }

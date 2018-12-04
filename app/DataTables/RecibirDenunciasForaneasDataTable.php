@@ -12,17 +12,19 @@ class RecibirDenunciasForaneasDataTable extends CustomDataTable
     }
 
     protected function setSourceData(){
-        $this->sourceData = MDocumentoForaneo::with('Detalle')->existente()->noGuardado()->where('DOFO_SYSTEM_TIPO_DOCTO',1)->orderBy('DOFO_DOCUMENTO','DESC')->get(); // Denuncia
+        $this->sourceData = MDocumentoForaneo::with(['Detalle','Documento'=>function($query){
+            $query->with('AcuseRecepcion');
+        }])->existente()->noGuardado()->where('DOFO_SYSTEM_TIPO_DOCTO',1)->orderBy('DOFO_DOCUMENTO','DESC')->get(); // Denuncia
     }
 
     protected function columnsTable(){
         return [
-            [
-                'title'  => '#',
-                'render' => function($documento){
-                    return sprintf('<p class="text-center"><b>%s</b></p>',$documento->getFolio());
-                }
-            ],
+            // [
+            //     'title'  => '#',
+            //     'render' => function($documento){
+            //         return sprintf('<p class="text-center"><b>%s</b></p>',$documento->getFolio());
+            //     }
+            // ],
             [
                 'title'  => 'FOLIO RECEPCIÓN',
                 'render' => function($documento){
@@ -30,7 +32,7 @@ class RecibirDenunciasForaneasDataTable extends CustomDataTable
                 }
             ],
             [
-                'title'  => 'Nó. Documento',
+                'title'  => 'NÓ. DOCUMENTO',
                 'data'   => 'DOFO_NUMERO_DOCUMENTO'
             ],
             [
@@ -71,7 +73,7 @@ class RecibirDenunciasForaneasDataTable extends CustomDataTable
                 'title' => 'Recepcionado',
                 'render' => function($documento){
                     if ($documento->recepcionado() )
-                        return '<span class="badge badge-success"><i class="fa fa-fw fa-check"></i> Recepcionado</span>';
+                        return '<span class="badge badge-success"><i class="fa fa-fw fa-check"></i> ' . $documento->Documento->AcuseRecepcion->getNumero() . '</span>';
                     elseif ($documento->recibido())
                         return sprintf('<button type="button" class="btn btn-sm btn-success" onclick="hRecibirRecepcionForanea.recepcionar(%d)" title="Recepcionar documento"><i class="fa fa-fw fa-check"></i> Recepcionar</button>', $documento->getKey());
                     else
@@ -88,7 +90,7 @@ class RecibirDenunciasForaneasDataTable extends CustomDataTable
                     $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecibirRecepcionForanea.anexos(%d)" title="Ver anexos del documento"><i class="fa fa-fw fa-clipboard"></i></button>', $documento->getKey());
 
                     $url = url( sprintf('recepcion/acuse/documento/%s',$documento->AcuseRecepcion->getNombre()) );
-                    $buttons .= sprintf(' <a class="btn btn-sm btn-circle btn-alt-success" href="%s" target="_blank" title="Acuse de Recepción"><i class="fa fa-fw fa-file-text"></i></a>', $url);
+                    $buttons .= sprintf(' <a class="btn btn-sm btn-circle btn-alt-primary" href="%s" target="_blank" title="Acuse de Recepción"><i class="fa fa-fw fa-file-text"></i></a>', $url);
                     
                     return $buttons;
                 }
@@ -98,6 +100,13 @@ class RecibirDenunciasForaneasDataTable extends CustomDataTable
 
     protected function getUrlAjax(){
         return url('recepcion/documentos/foraneos/post-data?type=denuncias');
+    }
+
+    protected function getCustomOptionsParameters()
+    {
+        return [
+            'pageLength' => 10
+        ];
     }
 
 }

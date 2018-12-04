@@ -76,6 +76,7 @@ Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
                 Route::get('en-captura',       'RecepcionController@documentosEnCaptura');
                 Route::post('post-data',       'RecepcionController@postDataTable');
                 Route::get('nueva-recepcion',  'RecepcionController@formNuevaRecepcion');
+                Route::get('editar-recepcion', 'RecepcionController@formEditarRecepcion');
                 Route::post('manager',         'RecepcionController@manager');
 
                 Route::prefix('foraneos')->group(function(){
@@ -94,6 +95,7 @@ Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
                 Route::get('recepcionados',    'RecepcionForaneaController@index');
                 Route::post('post-data',       'RecepcionForaneaController@postDataTable');
                 Route::get('nueva-recepcion',  'RecepcionForaneaController@formNuevaRecepcion');
+                Route::get('editar-recepcion', 'RecepcionForaneaController@formEditarRecepcion');
                 Route::post('manager',         'RecepcionForaneaController@manager');
                 Route::get('en-captura',       'RecepcionForaneaController@documentosEnCaptura');
             });

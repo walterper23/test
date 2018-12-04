@@ -27,6 +27,11 @@ class MDetalle extends BaseModel
         return $this -> getAttribute('DETA_FECHA_RECEPCION');
     }
 
+    public function getMunicipio()
+    {
+        return $this->getAttribute('DETA_MUNICIPIO');
+    }
+
     public function getObservaciones()
     {
         return $this -> getAttribute('DETA_OBSERVACIONES');

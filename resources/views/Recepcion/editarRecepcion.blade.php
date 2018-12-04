@@ -1,6 +1,6 @@
 @extends('app.layoutMaster')
 
-@section('title', title('Nueva recepción de documento') )
+@section('title', title('Editar recepción de documento') )
 
 @include('vendor.plugins.datepicker')
 @include('vendor.plugins.select2')
@@ -18,7 +18,7 @@
         <div class="col-lg-12">
            <!-- Normal Form -->
             <div class="block block-themed" id="{{ $context }}">
-                <div class="block-header bg-corporate">
+                <div class="block-header bg-flat">
                     <h3 class="block-title"><i class="fa fa-fw fa-edit"></i> {{ $panel_titulo }}</h3>
                     <div class="block-options">
                         <div class="dropdown">
@@ -33,7 +33,7 @@
                                     <i class="fa fa-fw fa-save mr-5"></i>Guardar captura
                                 </a>
                                 <div class="dropdown-divider"></div-->
-                                <a class="dropdown-item" onclick="hRecepcion.cancelar()">
+                                <a class="dropdown-item" onclick="hRecepcion.cancelar(2)">
                                     <i class="fa fa-fw fa-times text-danger"></i>Cancelar
                                 </a>
                             </div>
@@ -44,9 +44,9 @@
                     {!! $form !!}
                 </div>
                 <div class="block-content block-content-full block-content-sm bg-body-light text-right">
-                    <button class="btn btn-default" id="btn-cancel" onclick="hRecepcion.cancelar()"><i class="fa fa-fw fa-times text-danger"></i> Cancelar</button>
+                    <button class="btn btn-default" id="btn-cancel" onclick="hRecepcion.cancelar(2)"><i class="fa fa-fw fa-times text-danger"></i> Cancelar</button>
                     <!--button class="btn btn-alt-primary" tabindex="-1"><i class="fa fa-save"></i> Guardar captura</button-->
-                    <button class="btn btn-primary" id="btn-ok"><i class="fa fa-fw fa-edit"></i> Recepcionar</button>
+                    <button class="btn btn-primary" id="btn-ok"><i class="fa fa-fw fa-edit"></i> Guardar cambios</button>
                 </div>
             </div>
             <!-- END Normal Form -->
@@ -140,7 +140,6 @@
             escaneoGroup.on('click','.escaneo_eliminar',function(){
                 $(this).closest('.form-group').remove();
                 self.updateConteoEscaneos()
-
             });
 
         }
@@ -166,7 +165,7 @@
 
             AppAlert.waiting({
                 type  : 'info',
-                title : 'Recepcionar documento',
+                title : 'Guardar cambios',
                 text  : 'Confirme la información antes de continuar',
                 okBtnText : 'Continuar',
                 cancelBtnText : 'Regresar',
@@ -192,15 +191,15 @@
                 then : function(result){
                     if( result.status ){
                         AppAlert.success({
-                            title : 'Recepción exitosa',
-                            text  : 'El documento ha sido recepcionado correctamente',
+                            title : 'Cambios guardados',
+                            text  : 'Los cambios se han guardado correctamente',
                             then  : function(){
-                                location.href = result.message;
+                                location.href = '{{ url()->previous() }}';
                             }
                         });
                     }else{
                         AppAlert.error({
-                            title : 'Recepción fallida',
+                            title : 'Ha ocurrido un error',
                             text  : result.message
                         });
                     }

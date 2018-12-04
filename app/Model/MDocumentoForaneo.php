@@ -98,6 +98,11 @@ class MDocumentoForaneo extends BaseModel
         return $this->hasOne('App\Model\MDocumentoDenuncia','DODE_DOCUMENTO_FORANEO',$this->getKeyName());
     }
 
+    public function Documento()
+    {
+        return $this->hasOne('App\Model\MDocumento','DOCU_DOCUMENTO','DOFO_DOCUMENTO_LOCAL');
+    }
+
     public function Escaneos()
     {
         return $this->hasMany('App\Model\MEscaneo','ESCA_DOCUMENTO_FORANEO',$this->getKeyName());

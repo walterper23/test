@@ -51,13 +51,17 @@ class DocumentosDenunciasDataTable extends CustomDataTable
                 'render' => function($documento){
                     $url = url( sprintf('recepcion/acuse/documento/%s',$documento->AcuseRecepcion->getNombre()) );
 
+                    $url_editar = url( sprintf('recepcion/documentos/editar-recepcion?search=%d',$documento->getKey()) );
+
                     //$buttons .= sprintf('<button type="button" class="btn btn-sm btn-circle btn-alt-primary" onclick="hRecepcion.view(%d)" title="Ver documento"><i class="fa fa-fw fa-eye"></i></button>', $documento->getKey());
                     
                     $buttons = sprintf('
+                        <a class="btn btn-sm btn-circle btn-alt-success" href="%s" title="Editar recepción"><i class="fa fa-fw fa-pencil"></i></a>
                         <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcion.anexos(%d)" title="Anexos del documento">
                             <i class="fa fa-fw fa-clipboard"></i>
                         </button>
-                        <a class="btn btn-sm btn-circle btn-alt-success" href="%s" target="_blank" title="Acuse de Recepción"><i class="fa fa-fw fa-file-text"></i></a>', $documento->getKey(), $url
+                        <a class="btn btn-sm btn-circle btn-alt-primary" href="%s" target="_blank" title="Acuse de Recepción"><i class="fa fa-fw fa-file-text"></i></a>',
+                        $url_editar, $documento->getKey(), $url
                     );
 
                     if( user()->can('REC.ELIMINAR.LOCAL') && $documento->recepcionado() )

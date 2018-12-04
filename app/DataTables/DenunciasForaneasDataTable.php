@@ -30,10 +30,6 @@ class DenunciasForaneasDataTable extends CustomDataTable
                 }
             ],
             [
-                'title'  => 'Nó. Documento',
-                'data'   => 'DOFO_NUMERO_DOCUMENTO'
-            ],
-            [
                 'title'  => 'ASUNTO',
                 'render' => function($query){
                     return $query->Detalle->getDescripcion();
@@ -80,14 +76,19 @@ class DenunciasForaneasDataTable extends CustomDataTable
             [
                 'title'  => 'Opciones',
                 'render' => function($denuncia){
+
+                    $url_editar = url( sprintf('recepcion/documentos-foraneos/editar-recepcion?search=%d',$denuncia->getKey()) );
+
                     $buttons = '';
 
                     //$buttons .= sprintf('<button type="button" class="btn btn-sm btn-circle btn-alt-primary" onclick="hRecepcionForanea.view(%d)" title="Ver documento"><i class="fa fa-fw fa-eye"></i></button>', $denuncia->getKey());
+
+                    $buttons .= sprintf('<a class="btn btn-sm btn-circle btn-alt-success" href="%s" title="Editar recepción"><i class="fa fa-fw fa-pencil"></i></a>', $url_editar);
                     
                     $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcionForanea.anexos(%d)" title="Ver anexos del documento"><i class="fa fa-fw fa-clipboard"></i></button>', $denuncia->getKey());
 
                     $url = url( sprintf('recepcion/acuse/documento/%s',$denuncia->AcuseRecepcion->getNombre()) );
-                    $buttons .= sprintf(' <a class="btn btn-sm btn-circle btn-alt-success" href="%s" target="_blank" title="Acuse de Recepción"><i class="fa fa-fw fa-file-text"></i></a>', $url);
+                    $buttons .= sprintf(' <a class="btn btn-sm btn-circle btn-alt-primary" href="%s" target="_blank" title="Acuse de Recepción"><i class="fa fa-fw fa-file-text"></i></a>', $url);
 
                     if( user()->can('REC.ELIMINAR.FORANEO') && ! $denuncia->recibido() )
                     {

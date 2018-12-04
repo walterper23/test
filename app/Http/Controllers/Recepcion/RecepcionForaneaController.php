@@ -136,7 +136,7 @@ class RecepcionForaneaController extends BaseController
     {
         $data = [];
 
-        // Recuperamos los tipos de documentsos que se pueden recepcionar
+        // Recuperamos los tipos de documento->Detalle que se pueden recepcionar
         $tiposDocumentosExistentesDisponibles = cache()->rememberForever('tiposDocumentosExistentesDisponibles',function(){
             return MSystemTipoDocumento::existenteDisponible()->get();
         });
@@ -179,26 +179,22 @@ class RecepcionForaneaController extends BaseController
         unset($data['tipos_documentos']);
 
         return view('Recepcion.nuevaRecepcion')->with($data);
-
     }
 
     // Método para realizar el guardado y la recepción de un documento foráneo
     public function nuevaRecepcion( $request )
     {
         try {
-            // Reemplazamos los saltos de línea, por "\n"
-            $anexos = preg_replace('/\r|\n/','\n',$request->anexos);
-            // Reemplazamos las "\n" repetidas
-            $anexos = str_replace('\n\n','\n',$anexos);
-
             DB::beginTransaction();
 
             $tipo_documento = MSystemTipoDocumento::find( $request->tipo_documento );
 
+            $fecha_recepcion = $request->recepcion;
+
             // Guardamos los detalles del documento
             $detalle = new MDetalle;
             $detalle->DETA_MUNICIPIO              = $request->municipio;
-            $detalle->DETA_FECHA_RECEPCION        = $request->recepcion;
+            $detalle->DETA_FECHA_RECEPCION        = $fecha_recepcion;
             $detalle->DETA_DESCRIPCION            = $request->descripcion;
             $detalle->DETA_RESPONSABLE            = $request->responsable;
             $detalle->DETA_ANEXOS                 = $anexos;
@@ -247,13 +243,10 @@ class RecepcionForaneaController extends BaseController
             
             /* !!! El documento foráneo no debe crear ningún primer seguimiento !!! */
             
-            $folio_acuse = sprintf('ARDF/%s/%s/%s/',date('Y'),date('m'),$documento->getFolio(),$tipo_documento->getCodigoAcuse()); // ARDF/2018/10/005/DENU/
-
             if ($tipo_documento->getKey() == 1) // Si el tipo de documento es denuncia ...
             {
                 /* !!! El documento foráneo no debe crear ningún registro de denuncia !!! */
                 $redirect = '?view=denuncias';
-                $folio_acuse .= $denuncia->getCodigo(); // ARD/2018/10/005/DENU/001
                 $codigo_preferencia = 'NUE.REC.DEN.FOR';
             }
             else if ($tipo_documento->getKey() == 2 ) // Si el tipo de documento es un documento para denuncia ...
@@ -270,20 +263,26 @@ class RecepcionForaneaController extends BaseController
                 $documentoDenuncia->save();
 
                 $redirect = '?view=documentos-denuncias';
-                $folio_acuse .= $documentoDenuncia->getCodigo();  // ARD/2018/10/005/DODE/002
                 $codigo_preferencia = 'NUE.REC.DODE.FOR';
             }
             else
             {
                 $redirect = '?view=documentos';
-                $folio_acuse .= $documento->getCodigo(); // ARD/2018/10/005/DENU/001
                 $codigo_preferencia = 'NUE.REC.DOC.FOR';
             }
+
+            $fecha_carbon = Carbon::createFromFormat('Y-m-d',$fecha_recepcion);
+
+            $folio_acuse = sprintf('ARDF/%s/%s/%s/%s/%s',
+                            $documento->getFolio(),$fecha_carbon->format('Y'),$fecha_carbon->format('m'),$fecha_carbon->format('d'),$tipo_documento->getCodigoAcuse());
+
+            // Sustituimos las diagonales por guiones bajos
+            $nombre_acuse_pdf = sprintf('%s.pdf',str_replace('/','_', $folio_acuse));
             
             // Creamos el registro del acuse de recepción del documento
             $acuse = new MAcuseRecepcion;
             $acuse->ACUS_NUMERO    = $folio_acuse;
-            $acuse->ACUS_NOMBRE    = sprintf('%s.pdf',str_replace('/','_', $folio_acuse));
+            $acuse->ACUS_NOMBRE    = $nombre_acuse_pdf;
             $acuse->ACUS_DOCUMENTO = $documento->getKey();
             $acuse->ACUS_CAPTURA   = 2; // Documento foráneo
             $acuse->ACUS_DETALLE   = $detalle->getKey();
@@ -298,7 +297,7 @@ class RecepcionForaneaController extends BaseController
             // Guardamos los archivos o escaneos que se hayan agregado al archivo
             foreach ($request->escaneo ?? [] as $key => $escaneo) {
 
-                $nombre = $escaneo->getClientOriginalName();
+                $nombre = sprintf('Documento_%s_%s',$documento->getFolio(),time());
                 
                 if( isset($escaneo_nombres[$key]) && !empty(trim($escaneo_nombres[$key])) )
                 {
@@ -333,7 +332,155 @@ class RecepcionForaneaController extends BaseController
             DB::rollback();
             return $this->responseDangerJSON( $error->getMessage() );
         }
+    }
 
+    public function formEditarRecepcion(Request $request)
+    {
+        $documento = $request->get('search');
+        $documento = MDocumentoForaneo::findOrFail($documento);
+
+        $data = [];
+
+        // Recuperamos los tipos de documento->Detalle que se pueden recepcionar
+        $tiposDocumentosExistentesDisponibles = cache()->rememberForever('tiposDocumentosExistentesDisponibles',function(){
+            return MSystemTipoDocumento::existenteDisponible()->get();
+        });
+
+        $data['tipos_documentos'] = $tiposDocumentosExistentesDisponibles;
+
+        $denunciasAlRecepcionar = cache()->rememberForever('denunciasAlRecepcionar',function(){
+            return MDenuncia::select('DENU_DENUNCIA','DENU_NO_EXPEDIENTE')
+                   ->join('documentos','DENU_DOCUMENTO','=','DOCU_DOCUMENTO')
+                   ->whereNotNull('DENU_NO_EXPEDIENTE') // Número de expediente ya asignado
+                   ->whereIn('DOCU_SYSTEM_ESTADO_DOCTO',[2,3]) // Documento recepcionado, Documento en seguimiento
+                   ->get();
+        });
+
+        $data['denuncias'] = $denunciasAlRecepcionar->pluck('DENU_NO_EXPEDIENTE','DENU_DENUNCIA')->toArray();
+
+        // Recuperamos los anexos almacenados en el sistema
+        $anexosExistentesDisponibles = cache()->rememberForever('anexosExistentesDisponibles',function(){
+            return MAnexo::existenteDisponible()->get();
+        });
+
+        $data['anexos'] = $anexosExistentesDisponibles->sortBy('ANEX_NOMBRE')->pluck('ANEX_NOMBRE','ANEX_ANEXO')->toArray();
+
+        $cacheMunicipios = cache()->rememberForever('municipiosDisponibles',function(){
+            return MMunicipio::disponible()->get();
+        });
+
+        $data['municipios'] = $cacheMunicipios->sortBy('MUNI_CLAVE')->mapWithKeys(function($item){
+            return [ $item->getKey() => sprintf('%s :: %s',$item->getClave(),$item->getNombre()) ];
+        })->toArray();
+
+        $data['panel_titulo']      = 'Editar recepción foránea';
+        $data['context']           = 'context-form-editar-recepcion-foranea';
+        $data['form_id']           = 'form-editar-recepcion-foranea';
+        $data['url_send_form']     = url('recepcion/documentos-foraneos/manager');
+        $data['municipio_default'] = $documento->Detalle->getMunicipio();
+        $data['documento']         = $documento;
+        $data['detalle']           = $documento->Detalle;
+
+        $data['form'] = view('Recepcion.formEditarRecepcion')->with($data);
+
+        unset($data['tipos_documentos']);
+
+        return view('Recepcion.editarRecepcion')->with($data);
+    }
+
+    // Método para realizar la modificación de una recepción
+    public function editarRecepcion( $request )
+    {
+        try {
+            $tipo_documento = MSystemTipoDocumento::find( $request->tipo_documento );
+
+            $fecha_recepcion = $request->recepcion;
+
+            DB::beginTransaction();
+
+            // Buscamos el documento
+            $documento = MDocumentoForaneo::findOrFail($request->id);
+            $documento->DOFO_SYSTEM_TIPO_DOCTO   = $tipo_documento->getKey();
+            $documento->DOFO_NUMERO_DOCUMENTO    = $request->numero;
+            $documento->save();
+
+            // Guardamos los detalles del documento
+            $detalle = $documento->Detalle;
+            $detalle->DETA_MUNICIPIO              = $request->municipio;
+            $detalle->DETA_FECHA_RECEPCION        = $fecha_recepcion;
+            $detalle->DETA_DESCRIPCION            = $request->descripcion;
+            $detalle->DETA_RESPONSABLE            = $request->responsable;
+            $detalle->DETA_ANEXOS                 = $request->anexos;
+            $detalle->DETA_OBSERVACIONES          = $request->observaciones;
+            $detalle->DETA_ENTREGO_NOMBRE         = $request->nombre;
+            $detalle->DETA_ENTREGO_EMAIL          = $request->e_mail;
+            $detalle->DETA_ENTREGO_TELEFONO       = $request->telefono;
+            $detalle->DETA_ENTREGO_IDENTIFICACION = $request->identificacion;
+            $detalle->save();
+
+            if ($tipo_documento->getKey() == 1) // Si el tipo de documento es denuncia ...
+            {
+                $documento->DOFO_NUMERO_DOCUMENTO = null;
+                $documento->save();
+            }
+            else if ($tipo_documento->getKey() == 2) // Si el tipo de documento es un documento para denuncia ...
+            {
+                $denuncia = MDenuncia::findOrFail( $request->denuncia );
+
+                $documentoDenuncia = $documento->DocumentoDenuncia;
+
+                if(! $documentoDenuncia ) // Si el documento aún no se encuentra ligado a una denuncia, ligamos el documento a la denuncia
+                {
+                    $documentoDenuncia = new MDocumentoDenuncia; // ... registramos el documento a la denuncia
+                    $documentoDenuncia->DODE_DOCUMENTO_FORANEO = $documento->getKey();
+                    $documentoDenuncia->DODE_DETALLE           = $denuncia->Documento->Detalle->getKey();
+                    // Relacionamos la recepción del documento-denuncia al último seguimiento del documento original (denuncia)
+                    $documentoDenuncia->DODE_SEGUIMIENTO       = $denuncia->Documento->Seguimientos->last()->getKey();
+                }
+
+                $documentoDenuncia->DODE_DENUNCIA         = $denuncia->getKey();
+                $documentoDenuncia->DODE_DOCUMENTO_ORIGEN = $denuncia->getDocumento();
+                $documentoDenuncia->save();
+            }
+
+            $fecha_carbon = Carbon::createFromFormat('Y-m-d',$fecha_recepcion);
+
+            $folio_acuse = sprintf('ARDF/%s/%s/%s/%s/%s',
+                            $documento->getFolio(),$fecha_carbon->format('Y'),$fecha_carbon->format('m'),$fecha_carbon->format('d'),$tipo_documento->getCodigoAcuse());
+
+            // Sustituimos las diagonales por guiones bajos
+            $nombre_acuse_pdf = sprintf('%s.pdf',str_replace('/','_', $folio_acuse));
+            
+            // Modificamos el registro del acuse de recepción del documento
+            $acuse = $documento->AcuseRecepcion;
+            $acuse->ACUS_NUMERO    = $folio_acuse;
+            $acuse->ACUS_NOMBRE    = $nombre_acuse_pdf;
+            $acuse->ACUS_ENTREGO   = $detalle->getEntregoNombre();
+            $acuse->save();
+
+            // Lista de los nombres de los escaneos
+            $escaneo_nombres = $request->escaneo_nombre ?? [];
+
+            // Guardamos los archivos o escaneos que se hayan agregado al archivo
+            foreach ($request->escaneo ?? [] as $key => $escaneo) {
+
+                $nombre = sprintf('Documento_%s_%s',$documento->getFolio(),time());
+                
+                if( isset($escaneo_nombres[$key]) && !empty(trim($escaneo_nombres[$key])) )
+                {
+                    $nombre = trim($escaneo_nombres[$key]);
+                }
+
+                $this->nuevoEscaneo($documento, $escaneo,['escaneo_nombre'=>$nombre]);
+            }
+
+            DB::commit();
+
+            return $this->responseSuccessJSON();
+        } catch(Exception $error) {
+            DB::rollback();
+            return $this->responseDangerJSON( $error->getMessage() );
+        }
     }
 
     // Método para agregar un nuevo archivo a un documento foráneo

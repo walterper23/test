@@ -9,16 +9,21 @@ class MDenuncia extends BaseModel
 
 	/* Methods */
 
+	public function getDocumento()
+	{
+		return $this->getAttribute('DENU_DOCUMENTO');
+	}
+
 	public function getNoExpediente()
 	{
-		return $this -> attributes['DENU_NO_EXPEDIENTE'];
+		return $this->getAttribute('DENU_NO_EXPEDIENTE');
 	}
 
 	/* Relationships */
 
 	public function Documento()
 	{
-		return $this -> belongsTo('App\Model\MDocumento','DENU_DOCUMENTO','DOCU_DOCUMENTO');
+		return $this->belongsTo('App\Model\MDocumento','DENU_DOCUMENTO','DOCU_DOCUMENTO');
 	}
 
 }
