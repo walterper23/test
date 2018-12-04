@@ -13,7 +13,9 @@ class RecibirDocumentosForaneosDataTable extends CustomDataTable
     
     protected function setSourceData()
     {
-        $this->sourceData = MDocumentoForaneo::with('TipoDocumento','Detalle')->existente()->noGuardado()->whereNotIn('DOFO_SYSTEM_TIPO_DOCTO',[1,2])->get(); // Denuncias, Documentos de denuncias
+        $this->sourceData = MDocumentoForaneo::with(['TipoDocumento','Detalle','Documento'=>function($query){
+            $query->with('AcuseRecepcion');
+        }])->existente()->noGuardado()->whereNotIn('DOFO_SYSTEM_TIPO_DOCTO',[1,2])->get(); // Denuncias, Documentos de denuncias
     }
 
     protected function columnsTable()
@@ -79,7 +81,7 @@ class RecibirDocumentosForaneosDataTable extends CustomDataTable
                 'title' => 'Recepcionado',
                 'render' => function($documento){
                     if ($documento->recepcionado() )
-                        return '<span class="badge badge-success"><i class="fa fa-fw fa-check"></i> Recepcionado</span>';
+                        return '<span class="badge badge-success"><i class="fa fa-fw fa-check"></i> ' . $documento->Documento->AcuseRecepcion->getNumero() . '</span>';
                     elseif ($documento->recibido())
                         return sprintf('<button type="button" class="btn btn-sm btn-success" onclick="hRecibirRecepcionForanea.recepcionar(%d)" title="Recepcionar documento"><i class="fa fa-fw fa-check"></i> Recepcionar</button>', $documento->getKey());
                     else
