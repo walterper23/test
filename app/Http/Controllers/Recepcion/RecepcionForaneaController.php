@@ -197,7 +197,7 @@ class RecepcionForaneaController extends BaseController
             $detalle->DETA_FECHA_RECEPCION        = $fecha_recepcion;
             $detalle->DETA_DESCRIPCION            = $request->descripcion;
             $detalle->DETA_RESPONSABLE            = $request->responsable;
-            $detalle->DETA_ANEXOS                 = $anexos;
+            $detalle->DETA_ANEXOS                 = $request->anexos;
             $detalle->DETA_OBSERVACIONES          = $request->observaciones;
             $detalle->DETA_ENTREGO_NOMBRE         = $request->nombre;
             $detalle->DETA_ENTREGO_EMAIL          = $request->e_mail;

@@ -121,16 +121,28 @@
             });
 
             escaneoNuevo.on('click',function(){
-                if (! escaneoGroup.find('input[type=text]:disabled').length)
+                if (! escaneoGroup.find('input[type=text]:disabled').length){
                     escaneoGroup.append( escaneoInput );
+                }
             });
 
             escaneoGroup.on('click','.escaneo_buscar',function(){
-                $(this).closest('.form-group').find('input[type=file]').change(function(){
+                $(this).closest('.form-group').find('input[type=file]').on('change',function(e){
                     var inputText = $(this).closest('.form-group').find('input[type=text]');
                     if ( this.value.length ){
-                        inputText.prop('disabled',false).focus();
-                        self.updateConteoEscaneos()
+                        if( this.files[0].size > 3000000 ){
+                            AppAlert.notify({
+                                icon : 'fa fa-warning',
+                                type : 'danger',
+                                message : 'El archivo es mayor a 3 Mb',
+                                z_index : 9999
+                            });
+                            return false;
+                        }else{
+                            inputText.val(this.files[0].name)
+                            inputText.prop('disabled',false).focus();
+                            self.updateConteoEscaneos()
+                        }
                     }else{
                         inputText.prop('disabled',true)
                     }

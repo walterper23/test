@@ -52,10 +52,12 @@
             <div class="form-group row">
                 <div class="col-md-9 ml-auto">
                     <button type="button" class="btn btn-danger btn-rounded btn-sm" data-toggle="modal" data-target="#modal-escaneos"><i class="fa fa-fw fa-clipboard"></i> Escaneos <span class="badge badge-pill badge-secondary" id="conteo-escaneos"></span></button>
-                    <button type="button" class="btn btn-success btn-rounded btn-sm" data-toggle="modal" data-target="#modal-entrega"><i class="fa fa-fw fa-vcard-o"></i> Quién entrega</span></button>
+                    <button type="button" class="btn btn-success btn-rounded btn-sm" data-toggle="modal" data-target="#modal-entrega"><i class="fa fa-fw fa-vcard-o"></i> Entrega<span class="badge badge-pill badge-secondary d-none" id="entrega"><i class="fa fa-check"></i></span></button>
                     <div class="custom-control custom-checkbox custom-control-inline">
-                        <input class="custom-control-input" name="acuse" id="acuse" value="1" checked="" type="checkbox">
-                        <label class="custom-control-label" for="acuse">Abrir acuse de recepción automáticamente</label>
+                        <label class="css-control css-control-sm css-control-primary css-switch">
+                            <input type="checkbox" name="acuse" id="acuse" class="css-control-input" value="1" checked>
+                            <span class="css-control-indicator"></span> Abrir acuse de recepción al finalizar
+                        </label>
                     </div>
                 </div>
             </div>
@@ -127,13 +129,11 @@
                         </div>
                     </div>
                     <div class="block-content">
-                        <p class="mb-10">Agregue información de contacto de quién entrega el documento. Esta información será reflejada opcionalmente en el Acuse de Recepción.</p>
-
+                        <p class="mb-10">Agregue información de contacto de quién entrega el documento. Esta información será mostrada en el Acuse de Recepción.</p>
                         {!! Field::text('nombre','',['label'=>'Nombre','placeholder'=>'Opcional']) !!}
                         {!! Field::text('telefono','',['label'=>'Teléfono','placeholder'=>'Opcional']) !!}
                         {!! Field::text('e_mail','',['label'=>'E-mail','placeholder'=>'Opcional']) !!}
                         {!! Field::text('identificacion','',['label'=>'Identificación','placeholder'=>'Opcional']) !!}
-
                     </div>
                 </div>
                 <div class="modal-footer">

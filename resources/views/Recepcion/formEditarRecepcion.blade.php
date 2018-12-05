@@ -55,7 +55,7 @@
             <div class="form-group row">
                 <div class="col-md-9 ml-auto">
                     <button type="button" class="btn btn-danger btn-rounded btn-sm" data-toggle="modal" data-target="#modal-escaneos"><i class="fa fa-fw fa-clipboard"></i> Escaneos <span class="badge badge-pill badge-secondary" id="conteo-escaneos"></span></button>
-                    <button type="button" class="btn btn-success btn-rounded btn-sm" data-toggle="modal" data-target="#modal-entrega"><i class="fa fa-fw fa-vcard-o"></i> Quién entrega</span></button>
+                    <button type="button" class="btn btn-success btn-rounded btn-sm" data-toggle="modal" data-target="#modal-entrega"><i class="fa fa-fw fa-vcard-o"></i> Entrega<span class="badge badge-pill badge-secondary d-none" id="entrega"><i class="fa fa-check"></i></span></button>
                 </div>
             </div>
         </div>
