@@ -440,7 +440,7 @@ class RecepcionController extends BaseController
 
             if ($tipo_documento->getKey() == 1) // Si el tipo de documento es denuncia ...
             {
-                $documento->DOFO_NUMERO_DOCUMENTO = null;
+                $documento->DOCU_NUMERO_DOCUMENTO = null;
                 $documento->save();
 
                 if(! $documento->Denuncia)

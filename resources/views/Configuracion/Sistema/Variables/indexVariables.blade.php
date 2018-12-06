@@ -88,9 +88,9 @@
                         </div>
                     </div>
                     {!! Field::text('var13',$var[13]->getValor(),['label'=>$var[13]->getNombre(),'popover'=>[$var[13]->getNombre(),$var[13]->getDescripcion()],'labelWidth'=>'col-md-5','width'=>'col-md-7']) !!}
-                    {!! Field::datepicker('var17',$var[17]->getValor(),['label'=>$var[17]->getNombre(),'popover'=>[$var[17]->getNombre(),$var[17]->getDescripcion()],'labelWidth'=>'col-md-5','width'=>'col-md-7','placeholder'=>date('Y-12-31')]) !!}
+                    {!! Field::datepicker('var17',$var[17]->getValor(),['label'=>$var[17]->getNombre(),'popover'=>[$var[17]->getNombre(),$var[17]->getDescripcion()],'labelWidth'=>'col-md-5','width'=>'col-md-7','placeholder'=>'Introduzca una fecha']) !!}
                     {!! Field::text('var18',$var[18]->getValor(),['label'=>$var[18]->getNombre(),'popover'=>[$var[18]->getNombre(),$var[18]->getDescripcion()],'labelWidth'=>'col-md-5','width'=>'col-md-7']) !!}
-                    {!! Field::datepicker('var19',$var[19]->getValor(),['label'=>$var[19]->getNombre(),'popover'=>[$var[19]->getNombre(),$var[19]->getDescripcion()],'labelWidth'=>'col-md-5','width'=>'col-md-7','placeholder'=>date('Y-12-31')]) !!}
+                    {!! Field::datepicker('var19',$var[19]->getValor(),['label'=>$var[19]->getNombre(),'popover'=>[$var[19]->getNombre(),$var[19]->getDescripcion()],'labelWidth'=>'col-md-5','width'=>'col-md-7','placeholder'=>'Introduzca una fecha']) !!}
                     {!! Field::text('var20',$var[20]->getValor(),['label'=>$var[20]->getNombre(),'popover'=>[$var[20]->getNombre(),$var[20]->getDescripcion()],'labelWidth'=>'col-md-5','width'=>'col-md-7']) !!}
 
                 </div>
