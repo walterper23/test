@@ -12,7 +12,7 @@ class DenunciasForaneasDataTable extends CustomDataTable
     }
 
     protected function setSourceData(){
-        $this->sourceData = MDocumentoForaneo::with('Detalle','AcuseRecepcion')->existente()->noGuardado()->where('DOFO_SYSTEM_TIPO_DOCTO',1)->orderBy('DOFO_DOCUMENTO','DESC')->get(); // Denuncia
+        $this->sourceData = MDocumentoForaneo::with('Detalle','AcuseRecepcion')->existente()->noGuardado()->where('DOFO_SYSTEM_TIPO_DOCTO',1)->get(); // Denuncia
     }
 
     protected function columnsTable(){
@@ -108,7 +108,8 @@ class DenunciasForaneasDataTable extends CustomDataTable
     protected function getCustomOptionsParameters()
     {
         return [
-            'pageLength' => 10
+            'pageLength' => 10,
+            'order' => [[ 0, 'desc' ]]
         ];
     }
 
