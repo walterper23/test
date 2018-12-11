@@ -24,8 +24,8 @@ class ManagerUsuarioRequest extends FormRequest
     public function rules()
     {
         return [
-            'action'      => 'required|in:1,2,3,4,5',
-            'id'          => 'required_if:action:2,3,4,5',
+            'action'      => 'required|in:1,2,3,4,5,6',
+            'id'          => 'required_if:action:2,3,4,5,6',
             'usuario'     => [
                 'required_if:action,1',
                 \Illuminate\Validation\Rule::unique('usuarios','USUA_USERNAME') -> where(function($query){

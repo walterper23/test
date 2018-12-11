@@ -350,7 +350,7 @@ class RecepcionController extends BaseController
             return $this->responseSuccessJSON(url('recepcion/documentos/recepcionados' . $redirect));
         } catch(Exception $error) {
             DB::rollback();
-            return $this->responseDangerJSON( $error->getMessage() );
+            return $this->responseErrorJSON( $error->getMessage() );
         }
     }
 
@@ -506,7 +506,7 @@ class RecepcionController extends BaseController
             return $this->responseSuccessJSON();
         } catch(Exception $error) {
             DB::rollback();
-            return $this->responseDangerJSON( $error->getMessage() );
+            return $this->responseErrorJSON( $error->getMessage() );
         }
     }
 

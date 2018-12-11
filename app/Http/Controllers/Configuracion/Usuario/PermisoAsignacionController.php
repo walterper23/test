@@ -141,7 +141,7 @@ class PermisoAsignacionController extends BaseController
 
         if(! $usuario)
         {
-            return $this->responseDangerJSON(sprintf('<i class="fa fa-fw fa-warning"></i> Usuario <b>#%s</b> no encontrado',$id_usuario));
+            return $this->responseErrorJSON(sprintf('<i class="fa fa-fw fa-warning"></i> Usuario <b>#%s</b> no encontrado',$id_usuario));
         }
         
         // Editamos los permisos del usuario
