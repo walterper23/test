@@ -174,7 +174,7 @@
             <td class="text-center" style="vertical-align: top;">
                 <b>Recibido por</b><br>
                 {{ $usuario->UsuarioDetalle->presenter()->getNombreCompleto() }}<br>
-                {{ $usuario->UsuarioDetalle->Puesto->getNombre() }}
+                {{ $usuario->UsuarioDetalle->getDescripcion() }}
             </td>
         </tr>
     </table>
