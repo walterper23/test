@@ -92,7 +92,7 @@ class DenunciasForaneasDataTable extends CustomDataTable
 
                     if( user()->can('REC.ELIMINAR.FORANEO') && ! $denuncia->recibido() )
                     {
-                        $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcionForanea.delete_(%d)"><i class="fa fa-trash"></i></button>', $documento->getKey());
+                        $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcionForanea.delete_(%d)"><i class="fa fa-trash"></i></button>', $denuncia->getKey());
                     }
 
                     return $buttons;
