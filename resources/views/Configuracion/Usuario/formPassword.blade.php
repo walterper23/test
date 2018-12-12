@@ -7,8 +7,8 @@
     {!! Form::hidden('action',$action) !!}
     {!! Form::hidden('id',$id) !!}
     {!! Field::email('usuario',$usuario,['label'=>'Usuario','addClass'=>'text-lowercase','disabled'=>'disabled']) !!}
-    {!! Field::password('password','',['label'=>'Contraseña','required']) !!}
-    {!! Field::password('password_confirmation','',['label'=>'Confirmar contraseña','required']) !!}
+    {!! Field::password('password','',['label'=>'Contraseña','placeholder'=>'******','required']) !!}
+    {!! Field::password('password_confirmation','',['label'=>'Confirmar contraseña','placeholder'=>'******','required']) !!}
 {!! Form::close() !!}
 @endsection
 

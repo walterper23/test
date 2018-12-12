@@ -123,7 +123,7 @@ class SystemVariableController extends BaseController
 
             $message = '<i class="fa fa-fw fa-warning"></i> No se pudieron guardar los cambios';
 
-            return $this->responseDangerJSON($message);
+            return $this->responseErrorJSON($message);
         }
     }
 

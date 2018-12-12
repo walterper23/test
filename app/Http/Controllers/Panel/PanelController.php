@@ -340,12 +340,12 @@ class PanelController extends BaseController
 
             if ($documento->finalizado())
             {
-                return $this->responseDangerJSON('<i class="fa fa-fw fa-warning"></i> El documento ya fue finalizado. No se permiten más cambios de estado.');
+                return $this->responseErrorJSON('<i class="fa fa-fw fa-warning"></i> El documento ya fue finalizado. No se permiten más cambios de estado.');
             }
 
             if ($documento->rechazado())
             {
-                return $this->responseDangerJSON('<i class="fa fa-fw fa-warning"></i> El documento fue rechazado. No se permiten más cambios de estado.');
+                return $this->responseErrorJSON('<i class="fa fa-fw fa-warning"></i> El documento fue rechazado. No se permiten más cambios de estado.');
             }
 
             $documentoSemaforizado = MDocumentoSemaforizado::where('DOSE_DOCUMENTO',$documento->getKey())
@@ -355,7 +355,7 @@ class PanelController extends BaseController
 
             if ( $documentoSemaforizado && ! $request->has('contestacion') )
             {
-                return $this->responseDangerJSON('<i class="fa fa-fw fa-warning"></i> Debe contestar a la solicitud realizada por el origen anterior.');
+                return $this->responseErrorJSON('<i class="fa fa-fw fa-warning"></i> Debe contestar a la solicitud realizada por el origen anterior.');
             }
 
             if($request->estado_documento == 1 && $request->get('semaforizar') == 1 && !user()->can('SEG.ADMIN.SEMAFORO') ) // Permitir semaforizar el documento, si aun estará en seguimiento y si el usuario tiene el permiso
@@ -499,7 +499,7 @@ class PanelController extends BaseController
             
         } catch(Exception $error) {
             DB::rollback();
-            return $this->responseDangerJSON($error->getMessage());
+            return $this->responseErrorJSON($error->getMessage());
         }
 
     }

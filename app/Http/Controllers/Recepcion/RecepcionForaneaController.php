@@ -331,7 +331,7 @@ class RecepcionForaneaController extends BaseController
             return $this->responseSuccessJSON(url('recepcion/documentos-foraneos/recepcionados' . $redirect));
         } catch(Exception $error) {
             DB::rollback();
-            return $this->responseDangerJSON( $error->getMessage() );
+            return $this->responseErrorJSON( $error->getMessage() );
         }
     }
 
@@ -480,7 +480,7 @@ class RecepcionForaneaController extends BaseController
             return $this->responseSuccessJSON();
         } catch(Exception $error) {
             DB::rollback();
-            return $this->responseDangerJSON( $error->getMessage() );
+            return $this->responseErrorJSON( $error->getMessage() );
         }
     }
 

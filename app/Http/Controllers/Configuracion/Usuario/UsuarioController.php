@@ -133,7 +133,7 @@ class UsuarioController extends BaseController
             return $this->responseSuccessJSON($message, $tables);
         } catch(Exception $error) {
             DB::rollback();
-            return $this->responseDangerJSON('Ocurrió un error al guardar los cambios. Error ' . $error->getMessage() );
+            return $this->responseErrorJSON('Ocurrió un error al guardar los cambios. Error ' . $error->getMessage() );
         }
 
     }
@@ -159,7 +159,7 @@ class UsuarioController extends BaseController
 
             return view('Configuracion.Usuario.formEditarUsuario')->with($data);
         } catch(Exception $error) {
-            return $this->responseDangerJSON('Ocurrió un error: ' . $error->getMessage() );
+            return $this->responseErrorJSON('Ocurrió un error: ' . $error->getMessage() );
         }
     }
 
@@ -175,7 +175,7 @@ class UsuarioController extends BaseController
             
             if ($request->password)
             {
-                $usuario->USUA_PASSWORD    = $request->password;
+                $usuario->USUA_PASSWORD = bcrypt($request->password);
             }
 
             $detalle = $usuario->UsuarioDetalle;
@@ -198,7 +198,7 @@ class UsuarioController extends BaseController
             return $this->responseSuccessJSON($message,$tables);
         } catch(Exception $error) {
             DB::rollback();
-            return $this->responseDangerJSON('Ocurrió un error al guardar los cambios. Error ' . $error->getMessage() );
+            return $this->responseErrorJSON('Ocurrió un error al guardar los cambios. Error ' . $error->getMessage() );
         }
     }
 
@@ -210,7 +210,7 @@ class UsuarioController extends BaseController
         $data['title']         = 'Cambiar contraseña';
         $data['form_id']       = 'form-password';
         $data['url_send_form'] = url('configuracion/usuarios/manager');
-        $data['action']        = 5;
+        $data['action']        = 6;
         $data['usuario']       = MUsuario::find( request()->id )->getAuthUsername();
         $data['id']            = request()->id;
 
@@ -224,13 +224,13 @@ class UsuarioController extends BaseController
     {
         try {
             $usuario = MUsuario::find( $request->id );
-            $usuario->USUA_PASSWORD = $request->password;
+            $usuario->USUA_PASSWORD = bcrypt($request->password);
             $usuario->save();
 
             return $this->responseWarningJSON('<i class="fa fa-key"></i> Contraseña modificada correctamente');
 
         } catch(Exception $error) {
-            return $this->responseDangerJSON('Ocurrió un error al guardar los cambios. Error ' . $error->getMessage() );
+            return $this->responseErrorJSON('Ocurrió un error al guardar los cambios. Error ' . $error->getMessage() );
         }
     }
 
@@ -259,11 +259,11 @@ class UsuarioController extends BaseController
             }
             else
             {
-                return $this->responseDangerJSON('No puede <b>activar/desactivar</b> su usuario si ha iniciado sesión');
+                return $this->responseErrorJSON('No puede <b>activar/desactivar</b> su usuario si ha iniciado sesión');
             }
 
         } catch(Exception $error) {
-            return $this->responseDangerJSON('Ocurrió un error al guardar los cambios. Error ' . $error->getMessage() );
+            return $this->responseErrorJSON('Ocurrió un error al guardar los cambios. Error ' . $error->getMessage() );
         }
     }
 
@@ -282,7 +282,7 @@ class UsuarioController extends BaseController
 
             return $this->responseDangerJSON($message,$tables);
         } catch(Exception $error) {
-            return $this->responseDangerJSON('Ocurrió un error al eliminar al usuario. Error ' . $error->getCode() );
+            return $this->responseErrorJSON('Ocurrió un error al eliminar al usuario. Error ' . $error->getCode() );
         }
 
     }

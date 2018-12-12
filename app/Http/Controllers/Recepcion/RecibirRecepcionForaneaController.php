@@ -311,7 +311,7 @@ class RecibirRecepcionForaneaController extends BaseController
             return $this->responseSuccessJSON($message,$tables);
         } catch (Exception $error) {
             DB::rollback();
-            return $this->responseDangerJSON($error->getMessage());
+            return $this->responseErrorJSON($error->getMessage());
         }
     }
 }
