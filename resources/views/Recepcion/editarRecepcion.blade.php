@@ -62,7 +62,9 @@
 @push('js-custom')
 <script type="text/javascript">
     'use strict';
+    
     var formRecepcion = new AppForm;
+
     $.extend(formRecepcion, new function(){
 
         this.context_   = '#{{ $context }}';

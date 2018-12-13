@@ -35,7 +35,6 @@ class EstadoDocumentoController extends BaseController
      */
     public function index(EstadosDocumentosDataTable $dataTables)
     {
-
         $data['table']    = $dataTables;
         $data['form_id']  = $this->form_id;
         $data['form_url'] = url('configuracion/catalogos/estados-documentos/nuevo');

@@ -33,6 +33,15 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $exception)
     {
+        $log = new \App\Model\System\MSystemLog;
+        $log->SYLO_USUARIO  = user() ? userKey() : null;
+        $log->SYLO_LEVEL    = class_basename($exception);
+        $log->SYLO_CODE     = $exception->getCode();
+        $log->SYLO_FILENAME = $exception->getFile();
+        $log->SYLO_LINE     = $exception->getLine();
+        $log->SYLO_MESSAGE  = $exception->getMessage();
+        $log->save();
+
         parent::report($exception);
     }
 

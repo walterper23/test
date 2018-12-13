@@ -45,7 +45,8 @@ App.loadScript('/js/helpers/helper.js', function(){
 					text  : '¿Está seguro que desea cancelar la ' + msg + '?',
 					cancelBtnText : 'Regresar',
 					then : function(){
-						location.href = '/recepcion/documentos/recepcionados'
+						console.log(document.referrer)
+						location.href = document.referrer
 					}
 				})
 			},
