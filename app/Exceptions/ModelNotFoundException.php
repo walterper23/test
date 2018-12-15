@@ -25,9 +25,9 @@ class ModelNotFoundException extends Exception
     public static function render($request)
     {
 
-        if ( $request -> ajax() )
+        if ( $request->ajax() )
         {
-            return response() -> json(['status'=>false,'message'=>'Recurso no disponible']);
+            return response()->json(['status'=>false,'message'=>'Recurso no disponible']);
         }
         else
         {

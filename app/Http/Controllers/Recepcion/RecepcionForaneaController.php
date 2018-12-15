@@ -3,7 +3,6 @@ namespace App\Http\Controllers\Recepcion;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\RecepcionForaneaRequest;
-use Illuminate\Filesystem\Filesystem;
 use Carbon\Carbon;
 use Exception;
 use DB;

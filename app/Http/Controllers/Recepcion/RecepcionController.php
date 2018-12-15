@@ -2,9 +2,7 @@
 namespace App\Http\Controllers\Recepcion;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Input;
 use App\Http\Requests\RecepcionLocalRequest;
-use Illuminate\Filesystem\Filesystem;
 use Carbon\Carbon;
 use Exception;
 use DB;
@@ -42,6 +40,13 @@ class RecepcionController extends BaseController
 
     public function index(Request $request)
     {
+
+
+
+        return view('Recepcion.nuevaRecepcion2');
+
+
+
         $tabla1 = new DenunciasDataTable();
         $tabla2 = new DocumentosDenunciasDataTable();
         $tabla3 = new DocumentosDataTable();
@@ -309,22 +314,6 @@ class RecepcionController extends BaseController
             $acuse->ACUS_RECIBIO   = user()->UsuarioDetalle->presenter()->getNombreCompleto();
             $acuse->save();
 
-            // Lista de los nombres de los escaneos
-            $escaneo_nombres = $request->escaneo_nombre ?? [];
-
-            // Guardamos los archivos o escaneos que se hayan agregado al archivo
-            foreach ($request->escaneo ?? [] as $key => $escaneo) {
-
-                $nombre = sprintf('Documento_%s_%s',$documento->getFolio(),time());
-                
-                if( isset($escaneo_nombres[$key]) && !empty(trim($escaneo_nombres[$key])) )
-                {
-                    $nombre = trim($escaneo_nombres[$key]);
-                }
-
-                $this->nuevoEscaneo($documento, $escaneo,['escaneo_nombre'=>$nombre]);
-            }
-
             DB::commit();
 
             if ($request->has('acuse') && $request->acuse == 1) // Si el usuario ha indicado que quiere abrir inmediatamente el acuse de recepción
@@ -485,22 +474,6 @@ class RecepcionController extends BaseController
             $acuse->ACUS_ENTREGO   = $detalle->getEntregoNombre();
             $acuse->save();
 
-            // Lista de los nombres de los escaneos
-            $escaneo_nombres = $request->escaneo_nombre ?? [];
-
-            // Guardamos los archivos o escaneos que se hayan agregado al archivo
-            foreach ($request->escaneo ?? [] as $key => $escaneo) {
-
-                $nombre = sprintf('Documento_%s_%s',$documento->getFolio(),time());
-                
-                if( isset($escaneo_nombres[$key]) && !empty(trim($escaneo_nombres[$key])) )
-                {
-                    $nombre = trim($escaneo_nombres[$key]);
-                }
-
-                $this->nuevoEscaneo($documento, $escaneo,['escaneo_nombre'=>$nombre]);
-            }
-
             DB::commit();
 
             return $this->responseSuccessJSON();
@@ -513,29 +486,7 @@ class RecepcionController extends BaseController
     // Método para agregar un nuevo archivo a un documento
     public function nuevoEscaneo(MDocumento $documento, $file, $data)
     {
-        $archivo = new MArchivo;
-        $archivo->ARCH_FOLDER   = 'app/escaneos';
-        $archivo->ARCH_FILENAME = '';
-        $archivo->ARCH_PATH     = '';
-        $archivo->ARCH_TYPE     = $file->extension();
-        $archivo->ARCH_MIME     = $file->getMimeType();
-        $archivo->ARCH_SIZE     = $file->getClientSize();
-
-        $archivo->save();
-
-        $escaneo = new MEscaneo;
-        $escaneo->ESCA_ARCHIVO          = $archivo->getKey(); 
-        $escaneo->ESCA_DOCUMENTO_LOCAL  = $documento->getKey(); 
-        $escaneo->ESCA_NOMBRE           = $data['escaneo_nombre']; 
-        $escaneo->save();
-
-        $filename = sprintf('docto_%d_scan_%d_arch_%d_%s.pdf',$documento->getKey(), $escaneo->getKey(), $archivo->getKey(), time());
         
-        $file->storeAs('escaneos',$filename);
-        
-        $archivo->ARCH_FILENAME = $filename;
-        $archivo->ARCH_PATH     = 'app/escaneos/' . $filename;
-        $archivo->save();
     }
 
     public function verRecepcion( $request )
