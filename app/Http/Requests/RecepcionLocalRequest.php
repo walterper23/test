@@ -24,8 +24,8 @@ class RecepcionLocalRequest extends FormRequest
     public function rules()
     {
         return [
-            'action'         => 'required|in:0,1,2,3,4',
-            'id'             => 'required_if:action:2,3,4',
+            'action'         => 'required|in:0,1,2,3,4,5',
+            'id'             => 'required_if:action:2,3,4,5',
             'tipo_documento' => 'required_if:action:0,1,2|exists:system_tipos_documentos,SYTD_TIPO_DOCUMENTO',
             'numero'         => [ new NumeroOficioRequerido ],
             'recepcion'      => 'required_if:action,1|date_format:Y-m-d',

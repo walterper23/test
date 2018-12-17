@@ -40,13 +40,6 @@ class RecepcionController extends BaseController
 
     public function index(Request $request)
     {
-
-
-
-        return view('Recepcion.nuevaRecepcion2');
-
-
-
         $tabla1 = new DenunciasDataTable();
         $tabla2 = new DocumentosDenunciasDataTable();
         $tabla3 = new DocumentosDataTable();
@@ -93,10 +86,10 @@ class RecepcionController extends BaseController
             case 0: // Guardar recepción en captura
                 $response = $this->capturarRecepcion( $request );
                 break;
-            case 1: // Nueva recepción
+            case 1: // Iniciar recepción
                 $response = $this->nuevaRecepcion( $request );
                 break;
-            case 2: // Editar
+            case 2: // Editar recepción
                 $response = $this->editarRecepcion( $request );
                 break;
             case 3: // Visualizar recepción
@@ -104,6 +97,9 @@ class RecepcionController extends BaseController
                 break;
             case 4: // Eliminar
                 $response = $this->eliminarRecepcion( $request );
+                break;
+            case 5: // Finalizar captura de recepción
+                $response = $this->finalizarRecepcion( $request );
                 break;
             default:
                 return response()->json(['message'=>'Petición no válida'],404);
@@ -177,11 +173,12 @@ class RecepcionController extends BaseController
             return [ $item->getKey() => sprintf('%s :: %s',$item->getClave(),$item->getNombre()) ];
         })->toArray();
 
-        $data['panel_titulo']      = 'Nueva recepción';
-        $data['context']           = 'context-form-recepcion';
-        $data['form_id']           = 'form-recepcion';
-        $data['url_send_form']     = url('recepcion/documentos/manager');
-        $data['municipio_default'] = 4; // Othón P. Blanco
+        $data['panel_titulo']          = 'Nueva recepción';
+        $data['context']               = 'context-form-recepcion';
+        $data['form_id']               = 'form-recepcion';
+        $data['url_send_form']         = url('recepcion/documentos/manager');
+        $data['url_send_form_escaneo'] = url('recepcion/documentos/nuevo-escaneo');
+        $data['municipio_default']     = 4; // Othón P. Blanco
 
         $data['form'] = view('Recepcion.formNuevaRecepcion')->with($data);
 
@@ -268,9 +265,6 @@ class RecepcionController extends BaseController
                 $denuncia = new MDenuncia; // ... crear el registro de la denuncia
                 $denuncia->DENU_DOCUMENTO = $documento->getKey();
                 $denuncia->save();
-
-                $redirect = '?view=denuncias';
-                $codigo_preferencia = 'NUE.REC.DEN';
             }
             else if ( $tipo_documento->getKey() == 2 ) // Si el tipo de documento es un documento para denuncia ...
             {
@@ -284,14 +278,6 @@ class RecepcionController extends BaseController
                 // Relacionamos la recepción del documento-denuncia al último seguimiento del documento original (denuncia)
                 $documentoDenuncia->DODE_SEGUIMIENTO       = $denuncia->Documento->Seguimientos->last()->getKey();
                 $documentoDenuncia->save();
-
-                $redirect = '?view=documentos-denuncias';
-                $codigo_preferencia = 'NUE.REC.DODE';
-            }
-            else
-            {
-                $redirect = '?view=documentos';
-                $codigo_preferencia = 'NUE.REC.DOC';
             }
 
             $fecha_carbon = Carbon::createFromFormat('Y-m-d',$fecha_recepcion);
@@ -316,30 +302,65 @@ class RecepcionController extends BaseController
 
             DB::commit();
 
-            if ($request->has('acuse') && $request->acuse == 1) // Si el usuario ha indicado que quiere abrir inmediatamente el acuse de recepción
+            return $this->responseSuccessJSON(['documento'=>$documento->getKey(),'tipo'=>'local']);
+        } catch(Exception $error) {
+            DB::rollback();
+            return $this->responseErrorJSON( $error->getMessage() );
+        }
+    }
+
+    public function finalizarRecepcion(Request $request)
+    {
+        try{
+            $id_documento = $request->get('id');
+            $documento = MDocumento::findOrFail($id_documento);
+
+            $acuse = $documento->AcuseRecepcion;
+
+            if ($request->has('acuse') && $request->get('acuse') == 1) // Si el usuario ha indicado que quiere abrir inmediatamente el acuse de recepción
             {
                 $url = url( sprintf('recepcion/acuse/documento/%s?d=0',$acuse->getNombre()) );
                 $request->session()->flash('urlAcuseAutomatico', $url);
             }
             
+            // Primer seguimiento
+            $seguimiento = $documento->Seguimientos->first();
+
+            $tipo_documento = $documento->TipoDocumento;
+
             // Crear la notificación sobre la recepción de un nuevo documento local
             $data = [
-                'contenido'    => sprintf('Se ha recepcionado un nuevo documento #%s de tipo <b>%s</b>', $documento->getFolio(),$documento->TipoDocumento->getNombre()),
+                'contenido'    => sprintf('Se ha recepcionado un nuevo documento #%s de tipo <b>%s</b>', $documento->getFolio(),$tipo_documento->getNombre()),
                 'direccion'    => $seguimiento->getDireccionDestino(),
                 'departamento' => $seguimiento->getDepartamentoDestino(),
                 'url'          => sprintf('panel/documentos/seguimiento?search=%d&read=1',$seguimiento->getKey()),
             ];
-            
+
             // Creamos la nueva notificación para el Panel de Trabajo sobre nuevo documento recibido
             NotificacionController::nuevaNotificacion('PAN.TRA.NUE.DOC.REC',$data);
+
+            if ($tipo_documento->getKey() == 1) // Si el tipo de documento es denuncia ...
+            {
+                $redirect = '?view=denuncias';
+                $codigo_preferencia = 'NUE.REC.DEN';
+            }
+            else if ( $tipo_documento->getKey() == 2 ) // Si el tipo de documento es un documento para denuncia ...
+            {
+                $redirect = '?view=documentos-denuncias';
+                $codigo_preferencia = 'NUE.REC.DODE';
+            }
+            else
+            {
+                $redirect = '?view=documentos';
+                $codigo_preferencia = 'NUE.REC.DOC';
+            }
 
             // Mandamos el correo de notificación a los usuarios que tengan la preferencia asignada
             NotificacionController::enviarCorreoSobreNuevaRecepcion($codigo_preferencia, $documento);
 
             return $this->responseSuccessJSON(url('recepcion/documentos/recepcionados' . $redirect));
         } catch(Exception $error) {
-            DB::rollback();
-            return $this->responseErrorJSON( $error->getMessage() );
+            return $this->responseErrorJSON($error->getMessage());
         }
     }
 
@@ -382,13 +403,14 @@ class RecepcionController extends BaseController
             return [ $item->getKey() => sprintf('%s :: %s',$item->getClave(),$item->getNombre()) ];
         })->toArray();
 
-        $data['panel_titulo']      = 'Editar recepción';
-        $data['context']           = 'context-form-editar-recepcion';
-        $data['form_id']           = 'form-editar-recepcion';
-        $data['url_send_form']     = url('recepcion/documentos/manager');
-        $data['municipio_default'] = $documento->Detalle->getMunicipio();
-        $data['documento']         = $documento;
-        $data['detalle']           = $documento->Detalle;
+        $data['panel_titulo']          = 'Editar recepción';
+        $data['context']               = 'context-form-editar-recepcion';
+        $data['form_id']               = 'form-editar-recepcion';
+        $data['url_send_form']         = url('recepcion/documentos/manager');
+        $data['url_send_form_escaneo'] = url('recepcion/documentos/nuevo-escaneo');
+        $data['municipio_default']     = $documento->Detalle->getMunicipio();
+        $data['documento']             = $documento;
+        $data['detalle']               = $documento->Detalle;
 
         $data['form'] = view('Recepcion.formEditarRecepcion')->with($data);
 
@@ -481,12 +503,6 @@ class RecepcionController extends BaseController
             DB::rollback();
             return $this->responseErrorJSON( $error->getMessage() );
         }
-    }
-
-    // Método para agregar un nuevo archivo a un documento
-    public function nuevoEscaneo(MDocumento $documento, $file, $data)
-    {
-        
     }
 
     public function verRecepcion( $request )

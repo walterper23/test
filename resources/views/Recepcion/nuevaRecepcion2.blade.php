@@ -7,10 +7,9 @@
 
 
 @section('content')
-    <form id="my_form" enctype="multipart/form-data" method="post" action="{{ url('recepcion/documentos/nuevo-escaneo') }}">
+    <form id="my_form" enctype="multipart/form-data" method="post" action="{{ $url_send_form }}">
       <input type="file" class="escaneo" /><br>
       <input type="file" class="escaneo" /><br>
-      <progress id="progressBar" value="0" max="100" style="width:300px;"></progress>
       <h3 id="status_nombre"></h3>
       <h4 id="status"></h4>
       <p id="loaded_n_total"></p>
@@ -30,38 +29,65 @@
     'use strict';
 
     var inputEscaneos = [];
+    var recepcionCreada = false;
 
-    $("#my_form").submit(function(event){
+    var myForm = $("#my_form");
+
+    myForm.submit(function(event){
         event.preventDefault(); //prevent default action
 
         AppAlert.waiting({
             type  : 'info',
             title : 'Recepcionar documento',
             html  :
-            `<span id="resultado">Confirme la información antes de continuar</span>
-            <progress id="progressBar2" value="0" max="100" style="width:300px;"></progress>`,
+            `<span id="span-message">Confirme la información antes de continuar</span>
+            <div id="content-progress-bar" class="progress push mb-5 mt-5" style="display:none">
+                <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                    <span id="progress-bar-label" class="progress-bar-label">0%</span>
+                </div>
+            </div>`,
             okBtnText : 'Continuar',
             cancelBtnText : 'Regresar',
             showLoader : true,
             preConfirm : function(){
+
+                $('#content-progress-bar').show();
+
                 var requestForm = new Promise(function(resolve, reject) {
 
-                    $('#resultado').text('Cambiando texto');
-                    $('#progressBar2').val(67);
+                    $('#span-message').text('Creando recepción de documento...');
+
+                    var result = {};
+                    result.tipo = 'local';
+                    result.documento = 1;
+
+                    recepcionCreada = true;
+
+                    inputEscaneos = $('input[type="file"].escaneo');
+                    var nombreEscaneo = 'mi archivo';
+
+
+                    if( inputEscaneos.length > 0 )
+                    {
+                        enviarDocumento(resolve, reject, myForm, result.tipo, result.documento, 0, nombreEscaneo);
+                    }
+                    else
+                    {
+                        finalizarRecepcion(resolve, reject, result.documento);
+                    }
+
                 });
 
                 return requestForm;
                 // return new Promise(function(resolve, reject) {
                 //     App.ajaxRequest({
-                //         url   : form.attr('action'),
-                //         data  : new FormData(form[0]),
-                //         cache : false,
-                //         processData : false,
-                //         contentType : false,
+                //         url   : myForm.attr('action'),
+                //         data  : myForm.serialize(),
                 //         success : function(result){
                 //             resolve(result)
                 //         },
                 //         error : function(result){
+                //             recepcionCreada = false;
                 //             resolve(result)
                 //         }
                 //     });
@@ -69,58 +95,45 @@
                 // });
             },
             then : function(result){
-                alert('then()');
-                // if( result.status ){
-                //     AppAlert.success({
-                //         title : 'Recepción exitosa',
-                //         text  : 'El documento ha sido recepcionado correctamente',
-                //         then  : function(){
-                //             location.href = result.message;
-                //         }
-                //     });
-                // }else{
-                //     AppAlert.error({
-                //         title : 'Recepción fallida',
-                //         text  : result.message
-                //     });
-                // }
+                if( result.status ){
+                    AppAlert.success({
+                        title : 'Recepción exitosa',
+                        text  : 'El documento ha sido recepcionado correctamente',
+                        then  : function(){
+                            location.href = result.message;
+                        }
+                    });
+                }else{
+                    AppAlert.error({
+                        title : 'Recepción fallida',
+                        text  : result.message
+                    });
+                }
             }
         });
-        
-        // inputEscaneos = $('input.escaneo');
-        // var nombreEscaneo = 'mi archivo';
-        
-        // var tipo = 'local';
-        // var documento = 1;
-
-        // if( inputEscaneos.length > 0 )
-        // {
-        //     enviarDocumento($(this), tipo, documento, 0, nombreEscaneo);
-        // }
             
     });
 
 
-    function enviarDocumento(form, tipo, documento, indexFile, nombreEscaneo)
+    function enviarDocumento(resolve, reject, form, tipo, documento, indexFile, nombreEscaneo)
     {
-        if( typeof inputEscaneos[indexFile] !== 'undefined' )
+        if( typeof inputEscaneos[indexFile] !== 'undefined' && typeof inputEscaneos[indexFile].files[0] !== 'undefined' )
         {
+            $('#progress-bar').css('width','0%');
+
             var inputFile = inputEscaneos[indexFile].files[0];
 
             nombreEscaneo = nombreEscaneo + ' ' + indexFile;
 
-            var post_url = form.attr("action"); //get form action url
-            var request_method = form.attr("method"); //get form GET/POST method
-
-            var form_data = new FormData(); //Encode form elements for submission
-            form_data.append('tipo','local');
+            var form_data = new FormData();
+            form_data.append('tipo',tipo);
             form_data.append('documento',documento);
             form_data.append('escaneo', inputFile)
             form_data.append('nombre_escaneo',nombreEscaneo);
 
             $.ajax({
-                url : post_url,
-                type: request_method,
+                url : '{{ $url_send_form_escaneo }}',
+                type: form.attr("method"),
                 data : form_data,
                 contentType: false,
                 processData:false,
@@ -135,70 +148,48 @@
                             if (event.lengthComputable) {
                                 percent = Math.ceil(position / total * 100);
                             }
-                            console.log(percent)
-                            //update progressbar
-                            // $("#upload-progress .progress-bar").css("width", + percent +"%");
-                            $("#progressBar").val(percent);
-                            $("#loaded_n_total").text( "Uploaded " + position + " bytes of " + total );
-                            $("#status").text( Math.round(percent) + "% uploaded... please wait" );
-                            $("#status_nombre").text('Subiendo ' + nombreEscaneo );
+                            
+                            var progressBar = $('#progress-bar').css('width', percent  + '%');
+                            // Update progress label
+                            $('#progress-bar-label', progressBar).html(percent  + '%');
+                            $('#span-message').html('Subiendo escaneo: <b>' + nombreEscaneo + '</b>');
+
                         }, false);
                     }
 
                     xhr.addEventListener('load',function(event){
-                        alert(event.target.responseText);
-                        $("#progressBar").val(0); //wil clear progress bar after successful upload
-                        setTimeout(enviarDocumento(form, tipo, documento, indexFile + 1, nombreEscaneo),1500)
+                        console.log(event.target.responseText);
+                        setTimeout(enviarDocumento(resolve, reject, form, tipo, documento, indexFile + 1, nombreEscaneo),1500)
+                    },false)
+
+                    xhr.addEventListener('error',function(event){
+                        alert(event);
                     },false)
 
                     return xhr;
                 }
-            }).done(function(response){ //
-                // response = JSON.parse(response)
-                // alert(response);
-                $("#server-results").html(response);
             });
+        }else{
+            finalizarRecepcion(resolve, reject, documento);
         }
     }
-    
-    function _(el) {
-      return document.getElementById(el);
-    }
 
-    function uploadFile() {
-      var file = _("file1").files[0];
-      // alert(file.name+" | "+file.size+" | "+file.type);
-      var formdata = new FormData();
-      formdata.append("file1", file);
-      var ajax = new XMLHttpRequest();
-      ajax.upload.addEventListener("progress", progressHandler, false);
-      ajax.addEventListener("load", completeHandler, false);
-      ajax.addEventListener("error", errorHandler, false);
-      ajax.addEventListener("abort", abortHandler, false);
-      ajax.open("POST", "file_upload_parser.php"); // http://www.developphp.com/video/JavaScript/File-Upload-Progress-Bar-Meter-Tutorial-Ajax-PHP
-      //use file_upload_parser.php from above url
-      ajax.send(formdata);
-    }
+    function finalizarRecepcion(resolve, reject, documento){
+        
+        $('#span-message').html('Finalizando recepción...');
+        
+        // App.ajaxRequest({
+        //     url   : myForm.attr('action'),
+        //     data  : { action : 5 , acuse : 1, id : documento },
+        //     success : function(result){
+        //         resolve(result)
+        //     },
+        //     error : function(result){
+        //         resolve(result)
+        //     }
+        // });
 
-    function progressHandler(event) {
-      console.log(event)
-      _("loaded_n_total").innerHTML = "Uploaded " + event.loaded + " bytes of " + event.total;
-      var percent = (event.loaded / event.total) * 100;
-      _("progressBar").value = Math.round(percent);
-      _("status").innerHTML = Math.round(percent) + "% uploaded... please wait";
-    }
-
-    function completeHandler(event) {
-      _("status").innerHTML = event.target.responseText;
-      _("progressBar").value = 0; //wil clear progress bar after successful upload
-    }
-
-    function errorHandler(event) {
-      _("status").innerHTML = "Upload Failed";
-    }
-
-    function abortHandler(event) {
-      _("status").innerHTML = "Upload Aborted";
+        resolve({ status:true, message : 'todo bien' });
     }
 
 </script>

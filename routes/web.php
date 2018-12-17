@@ -77,7 +77,7 @@ Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
                 Route::post('post-data',           'RecepcionController@postDataTable');
                 Route::get('nueva-recepcion',      'RecepcionController@formNuevaRecepcion');
                 Route::get('editar-recepcion',     'RecepcionController@formEditarRecepcion');
-                Route::get('finalizar-recepcion',  'RecepcionController@formFinalizarRecepcion');
+                Route::get('finalizar-recepcion',  'RecepcionController@finalizarRecepcion');
                 Route::post('manager',             'RecepcionController@manager');
                 Route::post('nuevo-escaneo',       'EscaneoController@nuevoEscaneo');
 
@@ -99,7 +99,7 @@ Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
                 Route::post('post-data',           'RecepcionForaneaController@postDataTable');
                 Route::get('nueva-recepcion',      'RecepcionForaneaController@formNuevaRecepcion');
                 Route::get('editar-recepcion',     'RecepcionForaneaController@formEditarRecepcion');
-                Route::get('finalizar-recepcion',  'RecepcionForaneaController@formFinalizarRecepcion');
+                Route::get('finalizar-recepcion',  'RecepcionForaneaController@finalizarRecepcion');
                 Route::post('manager',             'RecepcionForaneaController@manager');
                 Route::post('nuevo-escaneo',       'EscaneoController@nuevoEscaneo');
             });

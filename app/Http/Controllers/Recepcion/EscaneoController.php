@@ -21,7 +21,6 @@ class EscaneoController extends BaseController
     public function nuevoEscaneo(EscaneoRequest $request)
     {
         try{
-
             $tipo_documento = $request->get('tipo');
             $id_documento   = $request->get('documento');
             $escaneo_file   = $request->file('escaneo',null);
@@ -74,17 +73,12 @@ class EscaneoController extends BaseController
 
             DB::commit();
 
-            $data_response = [
-                'nombre_escaneo' => $nombre_escaneo
-            ];
-
-            return $this->responseSuccessJSON($data_response); 
+            return $this->responseSuccessJSON(); 
         } catch(Exception $error) {
             DB::rollback();
             return $this->responseErrorJSON( $error->getMessage() );
         }
 
     }
-
 
 }
