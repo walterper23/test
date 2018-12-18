@@ -98,7 +98,10 @@ class RecepcionForaneaController extends BaseController
             case 4: // Eliminar
                 $response = $this->eliminarRecepcion( $request );
                 break;
-            case 5: // Enviar documento a Oficialía de Partes Local
+            case 5: // Finalizar captura de recepción foránea
+                $response = $this->finalizarRecepcion( $request );
+                break;
+            case 6: // Enviar documento a Oficialía de Partes Local
                 $response = $this->enviarDocumento( $request );
                 break;
             default:
@@ -110,7 +113,6 @@ class RecepcionForaneaController extends BaseController
 
     public function postDataTable(Request $request)
     {
-
         $type = $request->get('type','denuncias');
 
         switch ($type) {
@@ -131,7 +133,18 @@ class RecepcionForaneaController extends BaseController
         return $dataTables->getData();
     }
 
-    public function formNuevaRecepcion()
+    // Método para guardar un documento en estado de captura pendiente, o sea, aun no recepcionado completamente
+    public function capturarRecepcion( $request )
+    {
+
+    }
+
+    public function documentosEnCaptura()
+    {
+        return abort(404);
+    }
+
+    public function formNuevaRecepcion(Request $request)
     {
         $data = [];
 
@@ -167,11 +180,12 @@ class RecepcionForaneaController extends BaseController
             return [ $item->getKey() => sprintf('%s :: %s',$item->getClave(),$item->getNombre()) ];
         })->toArray();
 
-        $data['panel_titulo']      = 'Nueva recepción foránea';
-        $data['context']           = 'context-form-recepcion-foranea';
-        $data['form_id']           = 'form-recepcion-foranea';
-        $data['url_send_form']     = url('recepcion/documentos-foraneos/manager');
-        $data['municipio_default'] = 5; // Benito Juárez
+        $data['panel_titulo']          = 'Nueva recepción foránea';
+        $data['context']               = 'context-form-recepcion-foranea';
+        $data['form_id']               = 'form-recepcion-foranea';
+        $data['url_send_form']         = url('recepcion/documentos-foraneos/manager');
+        $data['url_send_form_escaneo'] = url('recepcion/documentos-foraneos/nuevo-escaneo');
+        $data['municipio_default']     = 5; // Benito Juárez
 
         $data['form'] = view('Recepcion.formNuevaRecepcion')->with($data);
 
@@ -243,13 +257,7 @@ class RecepcionForaneaController extends BaseController
             
             /* !!! El documento foráneo no debe crear ningún primer seguimiento !!! */
             
-            if ($tipo_documento->getKey() == 1) // Si el tipo de documento es denuncia ...
-            {
-                /* !!! El documento foráneo no debe crear ningún registro de denuncia !!! */
-                $redirect = '?view=denuncias';
-                $codigo_preferencia = 'NUE.REC.DEN.FOR';
-            }
-            else if ($tipo_documento->getKey() == 2 ) // Si el tipo de documento es un documento para denuncia ...
+            if ($tipo_documento->getKey() == 2 ) // Si el tipo de documento es un documento para denuncia ...
             {
                 $denuncia = MDenuncia::with('Documento')->find( $request->denuncia );
 
@@ -261,20 +269,13 @@ class RecepcionForaneaController extends BaseController
                 // Relacionamos la recepción del documento-denuncia al último seguimiento del documento original (denuncia)
                 $documentoDenuncia->DODE_SEGUIMIENTO       = $denuncia->Documento->Seguimientos->last()->getKey();
                 $documentoDenuncia->save();
-
-                $redirect = '?view=documentos-denuncias';
-                $codigo_preferencia = 'NUE.REC.DODE.FOR';
-            }
-            else
-            {
-                $redirect = '?view=documentos';
-                $codigo_preferencia = 'NUE.REC.DOC.FOR';
             }
 
             $fecha_carbon = Carbon::createFromFormat('Y-m-d',$fecha_recepcion);
 
             $folio_acuse = sprintf('ARDF/%s/%s/%s/%s/%s',
-                            $documento->getFolio(),$fecha_carbon->format('Y'),$fecha_carbon->format('m'),$fecha_carbon->format('d'),$tipo_documento->getCodigoAcuse());
+                            $documento->getFolio(),$fecha_carbon->format('Y'),$fecha_carbon->format('m'),$fecha_carbon->format('d'),
+                            $tipo_documento->getCodigoAcuse());
 
             // Sustituimos las diagonales por guiones bajos
             $nombre_acuse_pdf = sprintf('%s.pdf',str_replace('/','_', $folio_acuse));
@@ -291,43 +292,9 @@ class RecepcionForaneaController extends BaseController
             $acuse->ACUS_RECIBIO   = user()->UsuarioDetalle->presenter()->getNombreCompleto();
             $acuse->save();
 
-            // Lista de los nombres de los escaneos
-            $escaneo_nombres = $request->escaneo_nombre ?? [];
-
-            // Guardamos los archivos o escaneos que se hayan agregado al archivo
-            foreach ($request->escaneo ?? [] as $key => $escaneo) {
-
-                $nombre = sprintf('Documento_%s_%s',$documento->getFolio(),time());
-                
-                if( isset($escaneo_nombres[$key]) && !empty(trim($escaneo_nombres[$key])) )
-                {
-                    $nombre = trim($escaneo_nombres[$key]);
-                }
-
-                $this->nuevoEscaneo($documento, $escaneo,['escaneo_nombre'=>$nombre]);
-            }
-
             DB::commit();
 
-            if ($request->acuse) // Si el usuario ha indicado que quiere abrir inmediatamente el acuse de recepción
-            {
-                $url = url( sprintf('recepcion/acuse/documento/%s?d=0',$acuse->getNombre()) );
-                $request->session()->flash('urlAcuseAutomatico', $url);
-            }
-            
-            // Crear la notificación para usuarios del sistema
-            $data = [
-                'contenido'  => sprintf('Se ha recepcionado un nuevo documento foráneo #%s de tipo %s', $documento->getFolio(),$documento->TipoDocumento->getNombre()),
-                'url'        => 'recepcion/documentos-foraneos/recepcionados' . $redirect,
-            ];
-    
-            // Creamos la notificación para los usuarios que pueden ver las recepciones foráneas            
-            NotificacionController::nuevaNotificacion('VER.REC.FOR.NUE.REC.FOR',$data);
-
-            // Mandamos el correo de notificación a los usuarios que tengan la preferencia asignada
-            NotificacionController::enviarCorreoSobreNuevaRecepcion($codigo_preferencia, $documento);
-
-            return $this->responseSuccessJSON(url('recepcion/documentos-foraneos/recepcionados' . $redirect));
+            return $this->responseSuccessJSON(['documento'=>$documento->getKey(),'tipo'=>'foraneo']);
         } catch(Exception $error) {
             DB::rollback();
             return $this->responseErrorJSON( $error->getMessage() );
@@ -373,13 +340,14 @@ class RecepcionForaneaController extends BaseController
             return [ $item->getKey() => sprintf('%s :: %s',$item->getClave(),$item->getNombre()) ];
         })->toArray();
 
-        $data['panel_titulo']      = 'Editar recepción foránea';
-        $data['context']           = 'context-form-editar-recepcion-foranea';
-        $data['form_id']           = 'form-editar-recepcion-foranea';
-        $data['url_send_form']     = url('recepcion/documentos-foraneos/manager');
-        $data['municipio_default'] = $documento->Detalle->getMunicipio();
-        $data['documento']         = $documento;
-        $data['detalle']           = $documento->Detalle;
+        $data['panel_titulo']          = 'Editar recepción foránea';
+        $data['context']               = 'context-form-editar-recepcion-foranea';
+        $data['form_id']               = 'form-editar-recepcion-foranea';
+        $data['url_send_form']         = url('recepcion/documentos-foraneos/manager');
+        $data['url_send_form_escaneo'] = url('recepcion/documentos-foraneos/nuevo-escaneo');
+        $data['municipio_default']     = $documento->Detalle->getMunicipio();
+        $data['documento']             = $documento;
+        $data['detalle']               = $documento->Detalle;
 
         $data['form'] = view('Recepcion.formEditarRecepcion')->with($data);
 
@@ -458,64 +426,70 @@ class RecepcionForaneaController extends BaseController
             $acuse->ACUS_ENTREGO   = $detalle->getEntregoNombre();
             $acuse->save();
 
-            // Lista de los nombres de los escaneos
-            $escaneo_nombres = $request->escaneo_nombre ?? [];
-
-            // Guardamos los archivos o escaneos que se hayan agregado al archivo
-            foreach ($request->escaneo ?? [] as $key => $escaneo) {
-
-                $nombre = sprintf('Documento_%s_%s',$documento->getFolio(),time());
-                
-                if( isset($escaneo_nombres[$key]) && !empty(trim($escaneo_nombres[$key])) )
-                {
-                    $nombre = trim($escaneo_nombres[$key]);
-                }
-
-                $this->nuevoEscaneo($documento, $escaneo,['escaneo_nombre'=>$nombre]);
-            }
-
             DB::commit();
 
-            return $this->responseSuccessJSON();
+            return $this->responseSuccessJSON(['documento'=>$documento->getKey(),'tipo'=>'foraneo']);
         } catch(Exception $error) {
             DB::rollback();
             return $this->responseErrorJSON( $error->getMessage() );
         }
     }
 
-    // Método para agregar un nuevo archivo a un documento foráneo
-    public function nuevoEscaneo(MDocumentoForaneo $documento, $file, $data)
+    public function finalizarRecepcion($request)
     {
-        $archivo = new MArchivo;
-        $archivo->ARCH_FOLDER   = 'app/escaneos';
-        $archivo->ARCH_FILENAME = '';
-        $archivo->ARCH_PATH     = '';
-        $archivo->ARCH_TYPE     = $file->extension();
-        $archivo->ARCH_MIME     = $file->getMimeType();
-        $archivo->ARCH_SIZE     = $file->getClientSize();
+        try{
+            $id_documento = $request->get('id');
+            $documento = MDocumentoForaneo::findOrFail($id_documento);
 
-        $archivo->save();
+            $acuse = $documento->AcuseRecepcion;
 
-        $escaneo = new MEscaneo;
-        $escaneo->ESCA_ARCHIVO            = $archivo->getKey(); 
-        $escaneo->ESCA_DOCUMENTO_FORANEO  = $documento->getKey(); 
-        $escaneo->ESCA_NOMBRE             = $data['escaneo_nombre']; 
-        $escaneo->save();
+            if ($request->has('acuse') && $request->get('acuse') == 1) // Si el usuario ha indicado que quiere abrir inmediatamente el acuse de recepción
+            {
+                $url = url( sprintf('recepcion/acuse/documento/%s?d=0',$acuse->getNombre()) );
+                $request->session()->flash('urlAcuseAutomatico', $url);
+            }
+            
+            $tipo_documento = $documento->TipoDocumento;
 
-        $filename = sprintf('docto_foraneo_%d_scan_%d_arch_%d_%s.pdf',$documento->getKey(), $escaneo->getKey(), $archivo->getKey(), time());
-        
-        $file->storeAs('',$filename,'escaneos');
-        
-        $archivo->ARCH_FILENAME = $filename;
-        $archivo->ARCH_PATH     = 'app/escaneos/' . $filename;
-        $archivo->save();
+
+            if ($tipo_documento->getKey() == 1) // Si el tipo de documento es denuncia ...
+            {
+                $redirect = '?view=denuncias';
+                $codigo_preferencia = 'NUE.REC.DEN.FOR';
+            }
+            else if ( $tipo_documento->getKey() == 2 ) // Si el tipo de documento es un documento para denuncia ...
+            {
+                $redirect = '?view=documentos-denuncias';
+                $codigo_preferencia = 'NUE.REC.DODE.FOR';
+            }
+            else
+            {
+                $redirect = '?view=documentos';
+                $codigo_preferencia = 'NUE.REC.DOC.FOR';
+            }
+
+            // Crear la notificación sobre la recepción de un nuevo documento local
+            $data = [
+                'contenido' => sprintf('Se ha recepcionado un nuevo documento foráneo #%s de tipo %s', $documento->getFolio(), $tipo_documento->getNombre()),
+                'url'       => 'recepcion/documentos-foraneos/recepcionados' . $redirect,
+            ];
+
+            // Creamos la notificación para los usuarios que pueden ver las recepciones foráneas            
+            NotificacionController::nuevaNotificacion('VER.REC.FOR.NUE.REC.FOR',$data);
+
+            // Mandamos el correo de notificación a los usuarios que tengan la preferencia asignada
+            NotificacionController::enviarCorreoSobreNuevaRecepcion($codigo_preferencia, $documento);
+
+            return $this->responseSuccessJSON(url('recepcion/documentos-foraneos/recepcionados' . $redirect));
+        } catch(Exception $error) {
+            return $this->responseErrorJSON($error->getMessage());
+        }
     }
 
     public function verRecepcion( $request )
     {
 
     }
-
 
     public function eliminarRecepcion( $request )
     {

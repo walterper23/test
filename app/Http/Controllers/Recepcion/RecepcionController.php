@@ -75,11 +75,6 @@ class RecepcionController extends BaseController
         return view('Recepcion.indexRecepcion')->with($data);
     }
 
-    public function documentosEnCaptura()
-    {
-        abort(404);
-    }
-
     public function manager(RecepcionLocalRequest $request)
     {
         switch ($request->action) {
@@ -137,7 +132,12 @@ class RecepcionController extends BaseController
 
     }
 
-    public function formNuevaRecepcion()
+    public function documentosEnCaptura()
+    {
+        return abort(404);
+    }
+
+    public function formNuevaRecepcion(Request $request)
     {
         $data = [];
 
@@ -186,7 +186,6 @@ class RecepcionController extends BaseController
 
         return view('Recepcion.nuevaRecepcion')->with($data);
     }
-
 
     // Método para realizar el guardado y la recepción de un documento
     public function nuevaRecepcion( $request )
@@ -283,7 +282,8 @@ class RecepcionController extends BaseController
             $fecha_carbon = Carbon::createFromFormat('Y-m-d',$fecha_recepcion);
 
             $folio_acuse = sprintf('ARD/%s/%s/%s/%s/%s',
-                            $documento->getFolio(),$fecha_carbon->format('Y'),$fecha_carbon->format('m'),$fecha_carbon->format('d'),$tipo_documento->getCodigoAcuse());
+                            $documento->getFolio(),$fecha_carbon->format('Y'),$fecha_carbon->format('m'),$fecha_carbon->format('d'),
+                            $tipo_documento->getCodigoAcuse());
 
             // Sustituimos las diagonales por guiones bajos
             $nombre_acuse_pdf = sprintf('%s.pdf',str_replace('/','_', $folio_acuse));
@@ -309,7 +309,7 @@ class RecepcionController extends BaseController
         }
     }
 
-    public function finalizarRecepcion(Request $request)
+    public function finalizarRecepcion($request)
     {
         try{
             $id_documento = $request->get('id');
@@ -498,7 +498,7 @@ class RecepcionController extends BaseController
 
             DB::commit();
 
-            return $this->responseSuccessJSON();
+            return $this->responseSuccessJSON(['documento'=>$documento->getKey(),'tipo'=>'local']);
         } catch(Exception $error) {
             DB::rollback();
             return $this->responseErrorJSON( $error->getMessage() );

@@ -25,8 +25,7 @@ class EscaneoRequest extends FormRequest
         return [
             'tipo'      => 'required|in:local,foraneo',
             'documento' => 'required',
-            // 'escaneo'   => 'required|max:3072|mimes:pdf',
-            'escaneo'   => 'required|max:10072',
+            'escaneo'   => 'required|max:3072|mimes:pdf',
         ];
     }
 

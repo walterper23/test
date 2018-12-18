@@ -88,14 +88,14 @@
                                                 <i class="fa fa-file-pdf-o"></i> Buscar
                                             </button>
                                         </div>
-                                        <input class="form-control" name="escaneo_nombre[]" placeholder="Nombre del archivo" type="text" disabled="">
+                                        <input class="form-control" name="escaneo_nombre" placeholder="Nombre del archivo" type="text" disabled="">
                                         <div class="input-group-append">
                                             <button type="button" class="btn btn-danger escaneo_eliminar">
                                                 <i class="fa fa-trash"></i>
                                             </button>
                                         </div>
+                                        <input type="file" name="escaneo" style="display: none;" accept="application/pdf">
                                     </div>
-                                    <input type="file" name="escaneo[]" style="display: none;" accept="application/pdf">
                                 </div>
                             </div>
                         </div>

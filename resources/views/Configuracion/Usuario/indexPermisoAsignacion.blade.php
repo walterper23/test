@@ -33,12 +33,12 @@
                         </a>
                         <div class="dropdown-divider"></div>
                         @endcan
-                        @can('SIS.ADMIN.DIRECC')
+                        @if( user() -> canAtLeast('SIS.ADMIN.CATALOGOS','SIS.ADMIN.DIRECC') )
                         <a class="dropdown-item" href="javascript:void(0)" onclick="location.href='{{ url('configuracion/catalogos/direcciones') }}'">
                             <i class="fa fa-fw fa-sitemap"></i> Direcciones
                         </a>
                         @endcan
-                        @can('SIS.ADMIN.DEPTOS')
+                        @if( user() -> canAtLeast('SIS.ADMIN.CATALOGOS','SIS.ADMIN.DEPTOS') )
                         <a class="dropdown-item" href="javascript:void(0)" onclick="location.href='{{ url('configuracion/catalogos/departamentos') }}'">
                             <i class="fa fa-fw fa-sitemap"></i> Departamentos
                         </a>
@@ -52,7 +52,7 @@
                 <a class="nav-link active" href="#btabswo-static-one">Permisos</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#btabswo-static-two">Asignaciones</a>
+                <a class="nav-link" href="#btabswo-static-two">Direcciones y Departamentos (Asignaciones)</a>
             </li>
             <li class="nav-item ml-auto" style="width: 40%">
                 <div class="block-options mr-15">

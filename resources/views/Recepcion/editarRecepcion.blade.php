@@ -52,6 +52,14 @@
             <!-- END Normal Form -->
         </div>
     </div>
+    <template id="template-progress-bar">
+        <span id="span-message">Confirme la información antes de continuar</span>
+        <div id="content-progress-bar" class="progress push mb-5 mt-5" style="display:none">
+            <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                <span id="progress-bar-label" class="progress-bar-label">0%</span>
+            </div>
+        </div>
+    </template>
 @endsection
 
 @push('js-script')
@@ -65,6 +73,8 @@
     
     var formRecepcion = new AppForm;
 
+    var inputEscaneos = [];
+    
     $.extend(formRecepcion, new function(){
 
         this.context_   = '#{{ $context }}';
@@ -82,12 +92,12 @@
                 ignore: 'input[type=hidden]'
             });
 
-            var labelNumero = $('label[for=numero]');
+            var labelNumero    = $('label[for=numero]');
             var selectDenuncia = $('#denuncia');
-            var txtAnexo = this.form.find('#anexos');
-            var escaneoNuevo = $('#escaneo_nuevo');
-            var escaneoGroup = $('#escaneo_group');
-            var escaneoInput = escaneoGroup.html();
+            var txtAnexo       = this.form.find('#anexos');
+            var escaneoNuevo   = $('#escaneo_nuevo');
+            var escaneoGroup   = $('#escaneo_group');
+            var escaneoInput   = escaneoGroup.html();
 
             selectDenuncia.closest('div.form-group.row').hide();
 
@@ -155,13 +165,12 @@
                 $(this).closest('.form-group').remove();
                 self.updateConteoEscaneos()
             });
-
         }
 
         this.updateConteoEscaneos = function(){
             let conteo = '';
 
-            let inputs = $('#modal-escaneos').find('input[type="file"][name="escaneo[]"]');
+            let inputs = $('#modal-escaneos').find('input[type="file"][name="escaneo"]');
 
             $.each(inputs,function(key,item){
                 if( item.files.length ) conteo++;
@@ -181,19 +190,32 @@
                 type  : 'info',
                 title : 'Guardar cambios',
                 text  : 'Confirme la información antes de continuar',
+                html  : $('#template-progress-bar').html(),
                 okBtnText : 'Continuar',
                 cancelBtnText : 'Regresar',
                 showLoader : true,
                 preConfirm : function(){
-                    return new Promise(function(resolve, reject) {
+                    $('#content-progress-bar').show();
+
+                    var requestFormPromise = new Promise(function(resolve, reject) {
+                        
+                        $('#span-message').text('Espere un momento...');
+                        
                         App.ajaxRequest({
                             url   : form.attr('action'),
-                            data  : new FormData(form[0]),
-                            cache : false,
-                            processData : false,
-                            contentType : false,
+                            type  : form.attr('method'),
+                            data  : form.serialize(),
                             success : function(result){
-                                resolve(result)
+                                inputEscaneos = $('input[type="file"][name="escaneo"]');
+
+                                if( inputEscaneos.length > 0 )
+                                {
+                                    formRecepcion.subirEscaneo(resolve, reject, form, result.tipo, result.documento, 0, result);
+                                }
+                                else
+                                {
+                                    resolve(result);
+                                }
                             },
                             error : function(result){
                                 resolve(result)
@@ -201,6 +223,8 @@
                         });
 
                     });
+
+                    return requestFormPromise;
                 },
                 then : function(result){
                     if( result.status ){
@@ -220,6 +244,72 @@
                 }
             });
         };
+
+        this.subirEscaneo = function(resolve, reject, form, tipo, documento, indexFile, result){
+
+            if( typeof inputEscaneos[indexFile] !== 'undefined' && typeof inputEscaneos[indexFile].files[0] !== 'undefined' )
+            {
+                $('#progress-bar').css('width','0%');
+
+                var nombreEscaneo = $(inputEscaneos[indexFile]).closest('.form-group').find('input[type=text][name="escaneo_nombre"]').val();
+
+                var inputFile = inputEscaneos[indexFile].files[0];
+
+                var form_data = new FormData();
+                form_data.append('tipo',tipo);
+                form_data.append('documento',documento);
+                form_data.append('escaneo', inputFile)
+
+                if( nombreEscaneo.length )
+                {
+                    form_data.append('nombre_escaneo',nombreEscaneo);
+                }
+                else
+                {
+                    nombreEscaneo = indexFile + 1;
+                }
+
+                $.ajax({
+                    url : '{{ $url_send_form_escaneo }}',
+                    type: form.attr('method'),
+                    data : form_data,
+                    contentType: false,
+                    processData:false,
+                    xhr: function(){
+                        //upload Progress
+                        var xhr = $.ajaxSettings.xhr();
+                        if (xhr.upload) {
+                            xhr.upload.addEventListener('progress', function(event) {
+                                var percent = 0;
+                                var position = event.loaded || event.position;
+                                var total = event.total;
+                                if (event.lengthComputable) {
+                                    percent = Math.ceil(position / total * 100);
+                                }
+                                
+                                var progressBar = $('#progress-bar').css('width', percent  + '%');
+                                // Update progress label
+                                $('#progress-bar-label', progressBar).html(percent  + '%');
+                                $('#span-message').html('Subiendo escaneo: <b>' + nombreEscaneo + '</b>');
+                            }, false);
+                        }
+
+                        xhr.addEventListener('load',function(event){
+                            setTimeout(formRecepcion.subirEscaneo(resolve, reject, form, tipo, documento, indexFile + 1, result),2000)
+                        },false)
+
+                        xhr.addEventListener('error',function(event){
+                            alert(event);
+                        },false)
+
+                        return xhr;
+                    }
+                });
+
+            }else{
+                resolve(result);
+            }
+        }
 
         this.rules = function(){
             return {

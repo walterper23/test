@@ -52,6 +52,15 @@
             <!-- END Normal Form -->
         </div>
     </div>
+    
+    <template id="template-progress-bar">
+        <span id="span-message">Confirme la información antes de continuar</span>
+        <div id="content-progress-bar" class="progress push mb-5 mt-5" style="display:none">
+            <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                <span id="progress-bar-label" class="progress-bar-label">0%</span>
+            </div>
+        </div>
+    </template>
 @endsection
 
 @push('js-script')
@@ -60,16 +69,6 @@
 @endpush
 
 @push('js-custom')
-
-<template id="template-progress-bar">
-    <span id="span-message">Confirme la información antes de continuar</span>
-    <div id="content-progress-bar" class="progress push mb-5 mt-5" style="display:none">
-        <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-            <span id="progress-bar-label" class="progress-bar-label">0%</span>
-        </div>
-    </div>
-</template>
-
 <script type="text/javascript">
     'use strict';
     
@@ -94,12 +93,12 @@
                 ignore: 'input[type=hidden]'
             });
 
-            var labelNumero = $('label[for=numero]');
+            var labelNumero    = $('label[for=numero]');
             var selectDenuncia = $('#denuncia');
-            var txtAnexo = this.form.find('#anexos');
-            var escaneoNuevo = $('#escaneo_nuevo');
-            var escaneoGroup = $('#escaneo_group');
-            var escaneoInput = escaneoGroup.html();
+            var txtAnexo       = this.form.find('#anexos');
+            var escaneoNuevo   = $('#escaneo_nuevo');
+            var escaneoGroup   = $('#escaneo_group');
+            var escaneoInput   = escaneoGroup.html();
 
             selectDenuncia.closest('div.form-group.row').hide();
 
@@ -196,7 +195,6 @@
                 cancelBtnText : 'Regresar',
                 showLoader : true,
                 preConfirm : function(){
-
                     $('#content-progress-bar').show();
 
                     var requestFormPromise = new Promise(function(resolve, reject) {
@@ -220,21 +218,21 @@
                                 }
                             },
                             error : function(result){
-                                console.log(result, 'error 1')
                                 resolve(result)
                             }
                         });
 
                     });
+
+                    return requestFormPromise;
                 },
                 then : function(result){
-                    console.log(result, 'then')
                     if( result.status ){
                         AppAlert.success({
                             title : 'Recepción exitosa',
                             text  : 'El documento ha sido recepcionado correctamente',
                             then  : function(){
-                                // location.href = result.message;
+                                location.href = result.message;
                             }
                         });
                     }else{
@@ -273,7 +271,7 @@
 
                 $.ajax({
                     url : '{{ $url_send_form_escaneo }}',
-                    type: form.attr("method"),
+                    type: form.attr('method'),
                     data : form_data,
                     contentType: false,
                     processData:false,
@@ -293,14 +291,11 @@
                                 // Update progress label
                                 $('#progress-bar-label', progressBar).html(percent  + '%');
                                 $('#span-message').html('Subiendo escaneo: <b>' + nombreEscaneo + '</b>');
-
                             }, false);
                         }
 
                         xhr.addEventListener('load',function(event){
-                            console.log('pasa')
-
-                            setTimeout(formRecepcion.subirEscaneo(resolve, reject, form, tipo, documento, indexFile + 1),1500)
+                            setTimeout(formRecepcion.subirEscaneo(resolve, reject, form, tipo, documento, indexFile + 1),2000)
                         },false)
 
                         xhr.addEventListener('error',function(event){
@@ -310,27 +305,26 @@
                         return xhr;
                     }
                 });
+
             }else{
                 this.finalizarRecepcion(resolve, reject, documento);
             }
         }
 
         this.finalizarRecepcion = function(resolve, reject, documento){
-            
-            $('#span-message').html('Finalizando recepción...');
-            
-            // App.ajaxRequest({
-            //     url   : formRecepcion.form.attr('action'),
-            //     data  : { action : 5 , acuse : 1, id : documento },
-            //     success : function(result){
-            //         resolve(result)
-            //     },
-            //     error : function(result){
-            //         resolve(result)
-            //     }
-            // });
-
-            resolve({ status : true, message : 'todo bien' });
+            App.ajaxRequest({
+                url   : formRecepcion.form.attr('action'),
+                data  : { action : 5 , acuse : 1, id : documento },
+                beforeSend : function(){
+                    $('#span-message').html('Finalizando recepción...');
+                },
+                success : function(result){
+                    resolve(result)
+                },
+                error : function(result){
+                    resolve(result)
+                }
+            });
         }
 
         this.rules = function(){

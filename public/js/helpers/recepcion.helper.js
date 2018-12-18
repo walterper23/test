@@ -45,7 +45,6 @@ App.loadScript('/js/helpers/helper.js', function(){
 					text  : '¿Está seguro que desea cancelar la ' + msg + '?',
 					cancelBtnText : 'Regresar',
 					then : function(){
-						console.log(document.referrer)
 						location.href = document.referrer
 					}
 				})

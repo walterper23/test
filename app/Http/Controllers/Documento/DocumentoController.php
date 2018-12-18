@@ -70,8 +70,8 @@ class DocumentoController extends BaseController
         $documento = MDocumento::find( $request->id );
 
         $data['title']           = sprintf('Anexos y escaneos: %s #%s', $documento->TipoDocumento->getNombre(), $documento->getFolio() );
-        $data['anexos']          = $this->getAnexos( $documento, 'col-md-6' );
-        $data['escaneos']        = $this->getEscaneos( $documento, 'col-md-6' );
+        $data['anexos']          = $this->getAnexos( $documento, 'col-md-5' );
+        $data['escaneos']        = $this->getEscaneos( $documento, 'col-md-7' );
         $data['folio_recepcion'] = $documento->AcuseRecepcion->getNumero();
 
         return view('Documento.modalAnexosEscaneos')->with($data);

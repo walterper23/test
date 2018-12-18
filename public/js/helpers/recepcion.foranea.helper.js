@@ -35,7 +35,7 @@ App.loadScript('/js/helpers/helper.js', function(){
 					cancelBtnText : 'Regresar',
 					then : function(){
 						hRecepcionForanea.active({
-							data : { action : 5, id }
+							data : { action : 6, id }
 						});
 					}
 				})

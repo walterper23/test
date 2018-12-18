@@ -63,7 +63,10 @@ class PermisoAsignacionController extends BaseController
             $usuarios->orWhere('USUA_USUARIO',1);
         }
 
-        $data['usuarios'] = $usuarios->pluck('USUA_USERNAME','USUA_USUARIO')->toArray();
+        $data['usuarios'] = $usuarios->with('UsuarioDetalle')->ExistenteDisponible()->get()->mapWithKeys(function($item){
+            return [ $item->getKey() => sprintf('%s :: %s (%s)', $item->getCodigo(), $item->getAuthUsername(),
+                                        $item->UsuarioDetalle->presenter()->getNombreCompleto())];
+        });
         
         $data['userKey'] = !is_null($usuario) ? $userKey : userKey(); // Almacenamos el ID del usuario si existe. Si no, almacenamos el ID del usuario en sesión
 

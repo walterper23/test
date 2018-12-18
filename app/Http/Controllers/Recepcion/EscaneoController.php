@@ -17,7 +17,6 @@ use App\Model\MArchivo;
 
 class EscaneoController extends BaseController
 {
-
     public function nuevoEscaneo(EscaneoRequest $request)
     {
         try{
@@ -32,18 +31,24 @@ class EscaneoController extends BaseController
 
             if( $tipo_documento == 'local' ) // Buscamos el documento local
             {
-                $documento = MDocumento::findOrFail($id_documento);
+                $documento       = MDocumento::findOrFail($id_documento);
+                $filename        = 'docto_%d_scan_%d_arch_%d_%s.pdf';
+                $columna_escaneo = 'ESCA_DOCUMENTO_LOCAL';
             }
             else // Buscamos el documento foráneo
             {
-                $documento = MDocumentoForaneo::findOrFail($id_documento);
+                $documento       = MDocumentoForaneo::findOrFail($id_documento);
+                $filename        = 'docto_foraneo_%d_scan_%d_arch_%d_%s.pdf';
+                $columna_escaneo = 'ESCA_DOCUMENTO_FORANEO';
             }
 
-            $nombre_escaneo = sprintf('Documento_%s_%s',$documento->getFolio(),time()); // Asignamos un nombre al escaneo por default
-                    
             if( $nombre_request = $request->get('nombre_escaneo',false) )
             {
                 $nombre_escaneo = $nombre_request; // Asignamos el nombre que nos ha especificado el usuario para el escaneo
+            }
+            else
+            {
+                $nombre_escaneo = sprintf('Documento_%s_%s',$documento->getFolio(),time()); // Asignamos un nombre al escaneo por default
             }
 
             DB::beginTransaction();
@@ -58,12 +63,12 @@ class EscaneoController extends BaseController
             $archivo->save();
 
             $escaneo = new MEscaneo;
-            $escaneo->ESCA_ARCHIVO          = $archivo->getKey(); 
-            $escaneo->ESCA_DOCUMENTO_LOCAL  = $documento->getKey(); 
-            $escaneo->ESCA_NOMBRE           = $nombre_escaneo; 
+            $escaneo->ESCA_ARCHIVO       = $archivo->getKey(); 
+            $escaneo->{$columna_escaneo} = $documento->getKey(); 
+            $escaneo->ESCA_NOMBRE        = $nombre_escaneo; 
             $escaneo->save();
 
-            $filename = sprintf('docto_%d_scan_%d_arch_%d_%s.pdf',$documento->getKey(), $escaneo->getKey(), $archivo->getKey(), time());
+            $filename = sprintf($filename,$documento->getKey(), $escaneo->getKey(), $archivo->getKey(), time());
             
             $escaneo_file->move(storage_path($archivo->getFolder()), $filename);
             
