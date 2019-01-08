@@ -23,6 +23,7 @@ use App\Model\MMunicipio;
 use App\Model\MSeguimiento;
 use App\Model\Catalogo\MAnexo;
 use App\Model\System\MSystemTipoDocumento;
+use App\Model\System\MSystemConfig;
 
 /* DataTables */
 use App\DataTables\DenunciasForaneasDataTable;
@@ -218,7 +219,13 @@ class RecepcionForaneaController extends BaseController
             $detalle->DETA_ENTREGO_IDENTIFICACION = $request->identificacion;
             $detalle->save();
 
-            $ultimo_folio = MDocumentoForaneo::select('DOFO_FOLIO')->existente()->orderBy('DOFO_DOCUMENTO','DESC')->limit(1)->first();
+            // Recuperar el folio del último documento recepcionado que sea del año actual y no eliminado
+            $ultimo_folio = MDocumentoForaneo::select('DOFO_FOLIO')
+                            ->where('DOFO_ANIO',date('Y')) // Año actual
+                            ->existente() // Existente
+                            ->orderBy('DOFO_FOLIO','DESC') // Folio descendente
+                            ->limit(1)
+                            ->first();
 
             if( $ultimo_folio )
             {
@@ -239,6 +246,11 @@ class RecepcionForaneaController extends BaseController
             $documento->DOFO_VALIDADO            = 0; // Documento foráneo aún no Validado por Oficialía de partes
             $documento->DOFO_RECEPCIONADO        = 0; // Documento foráneo aún no Recepcionado por Oficialía de partes
 
+            /**
+             * Los folios se reinician automáticamente cada año.
+             * El siguiente fragmento de código permite reiniciar los folios en cualquier momento del año
+             * pero siempre se reiniciarán cada inicio de año
+             */
             $fecha_reinicio = config_var('Adicional.Fecha.Reinicio.Folios.Foraneo');
 
             // Si existe una fecha de reinicio de folios y esa fecha es menor o igual al momento de hoy

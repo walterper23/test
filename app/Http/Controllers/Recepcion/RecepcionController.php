@@ -211,7 +211,13 @@ class RecepcionController extends BaseController
             $detalle->DETA_ENTREGO_IDENTIFICACION = $request->identificacion;
             $detalle->save();
 
-            $ultimo_folio = MDocumento::select('DOCU_FOLIO')->existente()->orderBy('DOCU_DOCUMENTO','DESC')->limit(1)->first();
+            // Recuperar el folio del último documento recepcionado que sea del año actual y no eliminado
+            $ultimo_folio = MDocumento::select('DOCU_FOLIO')
+                            ->where('DOCU_ANIO',date('Y')) // Año actual
+                            ->existente() // Existente
+                            ->orderBy('DOCU_FOLIO','DESC') // Folio descendente
+                            ->limit(1)
+                            ->first();
 
             if( $ultimo_folio )
             {
@@ -231,6 +237,11 @@ class RecepcionController extends BaseController
             $documento->DOCU_DETALLE             = $detalle->getKey();
             $documento->DOCU_NUMERO_DOCUMENTO    = $request->numero;
 
+            /**
+             * Los folios se reinician automáticamente cada año.
+             * El siguiente fragmento de código permite reiniciar los folios en cualquier momento del año
+             * pero siempre se reiniciarán cada inicio de año
+             */
             $fecha_reinicio = config_var('Adicional.Fecha.Reinicio.Folios');
 
             // Si existe una fecha de reinicio de folios y esa fecha es menor o igual al momento de hoy

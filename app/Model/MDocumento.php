@@ -9,6 +9,11 @@ class MDocumento extends BaseModel
 
     /* Methods */
 
+    public function getAnio()
+    {
+        return $this->getAttribute('DOCU_ANIO');
+    }
+
     public function getNumero()
     {
         return $this->getAttribute('DOCU_NUMERO_DOCUMENTO');
