@@ -9,9 +9,10 @@ class MDocumento extends BaseModel
 
     /* Methods */
 
-    public function getAnio()
+    // Método para devolver la columna FOLIO del registro como un código de longitud indicada
+    public function getFolio( $size = 4, $str = '0', $direction = STR_PAD_LEFT )
     {
-        return $this->getAttribute('DOCU_ANIO');
+        return parent::getFolio($size,$str,$direction);
     }
 
     public function getNumero()

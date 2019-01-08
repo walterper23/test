@@ -9,6 +9,12 @@ class MDocumentoForaneo extends BaseModel
 
     /* Methods */
 
+    // Método para devolver la columna FOLIO del registro como un código de longitud indicada
+    public function getFolio( $size = 4, $str = '0', $direction = STR_PAD_LEFT )
+    {
+        return parent::getFolio($size,$str,$direction);
+    }
+
     public function getDetalle()
     {
         return $this->getAttribute('DOFO_DETALLE');

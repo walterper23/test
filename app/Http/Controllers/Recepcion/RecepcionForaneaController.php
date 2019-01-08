@@ -205,8 +205,11 @@ class RecepcionForaneaController extends BaseController
 
             $fecha_recepcion = $request->recepcion;
 
+            $fecha_carbon = Carbon::createFromFormat('Y-m-d',$fecha_recepcion);
+
             // Guardamos los detalles del documento
             $detalle = new MDetalle;
+            $detalle->DETA_ANIO                   = $fecha_carbon->year;
             $detalle->DETA_MUNICIPIO              = $request->municipio;
             $detalle->DETA_FECHA_RECEPCION        = $fecha_recepcion;
             $detalle->DETA_DESCRIPCION            = $request->descripcion;
@@ -218,10 +221,11 @@ class RecepcionForaneaController extends BaseController
             $detalle->DETA_ENTREGO_TELEFONO       = $request->telefono;
             $detalle->DETA_ENTREGO_IDENTIFICACION = $request->identificacion;
             $detalle->save();
-
+            
             // Recuperar el folio del último documento recepcionado que sea del año actual y no eliminado
             $ultimo_folio = MDocumentoForaneo::select('DOFO_FOLIO')
-                            ->where('DOFO_ANIO',date('Y')) // Año actual
+                            ->join('detalles','DOFO_DETALLE','=','DETA_DETALLE')
+                            ->where('DETA_ANIO',$fecha_carbon->year) // Mismo año que el año de la recepción que se está haciendo 
                             ->existente() // Existente
                             ->orderBy('DOFO_FOLIO','DESC') // Folio descendente
                             ->limit(1)
@@ -235,6 +239,7 @@ class RecepcionForaneaController extends BaseController
             {
                 $ultimo_folio = 0;
             }
+
 
             // Guardamos el documento foráneo
             $documento = new MDocumentoForaneo;
@@ -283,11 +288,9 @@ class RecepcionForaneaController extends BaseController
                 $documentoDenuncia->save();
             }
 
-            $fecha_carbon = Carbon::createFromFormat('Y-m-d',$fecha_recepcion);
-
             $folio_acuse = sprintf('ARDF/%s/%s/%s/%s/%s',
-                            $documento->getFolio(),$fecha_carbon->format('Y'),$fecha_carbon->format('m'),$fecha_carbon->format('d'),
-                            $tipo_documento->getCodigoAcuse());
+                            $fecha_carbon->format('Y'),$fecha_carbon->format('m'),$fecha_carbon->format('d'),
+                            $documento->getFolio(),$tipo_documento->getCodigoAcuse());
 
             // Sustituimos las diagonales por guiones bajos
             $nombre_acuse_pdf = sprintf('%s.pdf',str_replace('/','_', $folio_acuse));
@@ -426,7 +429,8 @@ class RecepcionForaneaController extends BaseController
             $fecha_carbon = Carbon::createFromFormat('Y-m-d',$fecha_recepcion);
 
             $folio_acuse = sprintf('ARDF/%s/%s/%s/%s/%s',
-                            $documento->getFolio(),$fecha_carbon->format('Y'),$fecha_carbon->format('m'),$fecha_carbon->format('d'),$tipo_documento->getCodigoAcuse());
+                            $fecha_carbon->format('Y'),$fecha_carbon->format('m'),$fecha_carbon->format('d'),
+                            $documento->getFolio(),$tipo_documento->getCodigoAcuse());
 
             // Sustituimos las diagonales por guiones bajos
             $nombre_acuse_pdf = sprintf('%s.pdf',str_replace('/','_', $folio_acuse));

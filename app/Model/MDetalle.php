@@ -12,6 +12,11 @@ class MDetalle extends BaseModel
 
     /* Methods */
 
+    public function getAnio()
+    {
+        return $this->getAttribute('DETA_ANIO');
+    }
+
     public function getAnexos()
     {
         return $this -> getAttribute('DETA_ANEXOS');

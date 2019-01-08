@@ -197,8 +197,11 @@ class RecepcionController extends BaseController
 
             $fecha_recepcion = $request->recepcion;
 
+            $fecha_carbon = Carbon::createFromFormat('Y-m-d',$fecha_recepcion);
+
             // Guardamos los detalles del documento
             $detalle = new MDetalle;
+            $detalle->DETA_ANIO                   = $fecha_carbon->year;
             $detalle->DETA_MUNICIPIO              = $request->municipio;
             $detalle->DETA_FECHA_RECEPCION        = $fecha_recepcion;
             $detalle->DETA_DESCRIPCION            = $request->descripcion;
@@ -213,7 +216,8 @@ class RecepcionController extends BaseController
 
             // Recuperar el folio del último documento recepcionado que sea del año actual y no eliminado
             $ultimo_folio = MDocumento::select('DOCU_FOLIO')
-                            ->where('DOCU_ANIO',date('Y')) // Año actual
+                            ->join('detalles','DOCU_DETALLE','=','DETA_DETALLE')
+                            ->where('DETA_ANIO',$fecha_carbon->year) // Mismo año que el año de la recepción que se está haciendo 
                             ->existente() // Existente
                             ->orderBy('DOCU_FOLIO','DESC') // Folio descendente
                             ->limit(1)
@@ -290,11 +294,9 @@ class RecepcionController extends BaseController
                 $documentoDenuncia->save();
             }
 
-            $fecha_carbon = Carbon::createFromFormat('Y-m-d',$fecha_recepcion);
-
             $folio_acuse = sprintf('ARD/%s/%s/%s/%s/%s',
-                            $documento->getFolio(),$fecha_carbon->format('Y'),$fecha_carbon->format('m'),$fecha_carbon->format('d'),
-                            $tipo_documento->getCodigoAcuse());
+                            $fecha_carbon->format('Y'),$fecha_carbon->format('m'),$fecha_carbon->format('d'),
+                            $documento->getFolio(),$tipo_documento->getCodigoAcuse());
 
             // Sustituimos las diagonales por guiones bajos
             $nombre_acuse_pdf = sprintf('%s.pdf',str_replace('/','_', $folio_acuse));
@@ -495,7 +497,8 @@ class RecepcionController extends BaseController
             $fecha_carbon = Carbon::createFromFormat('Y-m-d',$fecha_recepcion);
 
             $folio_acuse = sprintf('ARD/%s/%s/%s/%s/%s',
-                            $documento->getFolio(),$fecha_carbon->format('Y'),$fecha_carbon->format('m'),$fecha_carbon->format('d'),$tipo_documento->getCodigoAcuse());
+                            $fecha_carbon->format('Y'),$fecha_carbon->format('m'),$fecha_carbon->format('d'),
+                            $documento->getFolio(),$tipo_documento->getCodigoAcuse());
 
             // Sustituimos las diagonales por guiones bajos
             $nombre_acuse_pdf = sprintf('%s.pdf',str_replace('/','_', $folio_acuse));
