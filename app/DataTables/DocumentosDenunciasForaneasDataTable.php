@@ -13,7 +13,9 @@ class DocumentosDenunciasForaneasDataTable extends CustomDataTable
 
     protected function setSourceData()
     {
-        $this->sourceData = MDocumentoForaneo::with('Detalle','AcuseRecepcion')->where('DOFO_SYSTEM_TIPO_DOCTO',2)->existente()->noGuardado()->get(); // Documentos de denuncias
+        $this->sourceData = MDocumentoForaneo::with(['Detalle','Documento'=>function($query){
+            $query->with('AcuseRecepcion');
+        }])->where('DOFO_SYSTEM_TIPO_DOCTO',2)->existente()->noGuardado()->get(); // Documentos de denuncias
     }
 
     protected function columnsTable(){
@@ -50,9 +52,9 @@ class DocumentosDenunciasForaneasDataTable extends CustomDataTable
                 'title' => 'Tránsito',
                 'render' => function($documento){
                     if ($documento->enviado())
-                        return '<span class="badge badge-primary">Documento enviado <i class="fa fa-fw fa-car"></i></span>';
+                        return '<span class="badge badge-primary">Enviado <i class="fa fa-fw fa-car"></i></span>';
                     elseif ($documento->recibido())
-                        return '<span class="badge badge-primary">Documento recibido <i class="fa fa-fw fa-folder"></i></span>';
+                        return '<span class="badge badge-primary">Recibido <i class="fa fa-fw fa-folder"></i></span>';
                     elseif (user()->can('REC.DOCUMENTO.FORANEO'))
                         return sprintf('<button type="button" class="btn btn-sm btn-success" onclick="hRecepcionForanea.enviar(%d)" title="Enviar documento"><i class="fa fa-fw fa-car"></i> Enviar documento</button>', $documento->getKey());
                     else
@@ -72,7 +74,7 @@ class DocumentosDenunciasForaneasDataTable extends CustomDataTable
                 'title' => 'Recepcionado',
                 'render' => function($documento){
                     if ($documento->recepcionado() )
-                        return '<span class="badge badge-success"><i class="fa fa-fw fa-check"></i> Recepcionado</span>';
+                        return '<span class="badge badge-success"><i class="fa fa-fw fa-check"></i> ' . $documento->Documento->AcuseRecepcion->getNumero() . '</span>';
                     else
                         return '<span class="badge badge-danger"><i class="fa fa-fw fa-times"></i> Aún no recepcionado</span>';
                 }

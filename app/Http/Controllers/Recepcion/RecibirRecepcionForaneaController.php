@@ -180,7 +180,7 @@ class RecibirRecepcionForaneaController extends BaseController
         try {
             DB::beginTransaction();
 
-                $documentoForaneo = MDocumentoForaneo::with('AcuseRecepcion')->find( $request->id );
+                $documentoForaneo = MDocumentoForaneo::with('AcuseRecepcion','Detalle')->find( $request->id );
 
                 $tipo_documento = $documentoForaneo->TipoDocumento;
 
@@ -189,7 +189,18 @@ class RecibirRecepcionForaneaController extends BaseController
                     // El documento ya fue recepcionado
                 }
 
-                $ultimo_folio = MDocumento::select('DOCU_FOLIO')->existente()->orderBy('DOCU_DOCUMENTO','DESC')->limit(1)->first();
+                $anio = $documentoForaneo->Detalle->getAnio();
+
+                // Recuperar el folio del último documento recepcionado que sea del año de la fecha de recepción y no eliminado
+                $ultimo_folio = MDocumento::select('DOCU_FOLIO')
+                            ->join('detalles','DOCU_DETALLE','=','DETA_DETALLE')
+                            ->where('DETA_ANIO',$anio) // Mismo año que el año de la recepción que se está recibiendo
+                            ->existente() // Existente
+                            ->orderBy('DOCU_FOLIO','DESC') // Folio descendente
+                            ->limit(1)
+                            ->first();
+
+                // $ultimo_folio = MDocumento::select('DOCU_FOLIO')->existente()->orderBy('DOCU_DOCUMENTO','DESC')->limit(1)->first();
 
                 if( $ultimo_folio )
                 {
@@ -271,13 +282,14 @@ class RecibirRecepcionForaneaController extends BaseController
                     $url_notificacion .= 'documentos';
                 }
 
-                $fecha_recepcion = $documento->Detalle->getFechaRecepcion();
+                $fecha_recepcion = $documentoForaneo->Detalle->getFechaRecepcion();
 
                 $fecha_carbon = Carbon::createFromFormat('Y-m-d',$fecha_recepcion);
 
                 // Crear el acuse de recepción
                 $folio_acuse = sprintf('ARD/%s/%s/%s/%s/%s',
-                            $documento->getFolio(),$fecha_carbon->format('Y'),$fecha_carbon->format('m'),$fecha_carbon->format('d'),$tipo_documento->getCodigoAcuse());
+                            $fecha_carbon->format('Y'),$fecha_carbon->format('m'),$fecha_carbon->format('d'),
+                            $documento->getFolio(),$tipo_documento->getCodigoAcuse());
 
                 // Sustituimos las diagonales por guiones bajos
                 $nombre_acuse_pdf = sprintf('%s.pdf',str_replace('/','_', $folio_acuse));

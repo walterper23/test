@@ -12,7 +12,9 @@ class DenunciasForaneasDataTable extends CustomDataTable
     }
 
     protected function setSourceData(){
-        $this->sourceData = MDocumentoForaneo::with('Detalle','AcuseRecepcion')->existente()->noGuardado()->where('DOFO_SYSTEM_TIPO_DOCTO',1)->get(); // Denuncia
+        $this->sourceData = MDocumentoForaneo::with(['Detalle','Documento'=>function($query){
+            $query->with('AcuseRecepcion');
+        }])->existente()->noGuardado()->where('DOFO_SYSTEM_TIPO_DOCTO',1)->get(); // Denuncia
     }
 
     protected function columnsTable(){
@@ -45,9 +47,9 @@ class DenunciasForaneasDataTable extends CustomDataTable
                 'title' => 'Tránsito',
                 'render' => function($denuncia){
                     if ($denuncia->enviado())
-                        return '<span class="badge badge-primary">Documento enviado <i class="fa fa-fw fa-car"></i></span>';
+                        return '<span class="badge badge-primary">Enviado <i class="fa fa-fw fa-car"></i></span>';
                     elseif ($denuncia->recibido())
-                        return '<span class="badge badge-primary">Documento recibido <i class="fa fa-fw fa-folder"></i></span>';
+                        return '<span class="badge badge-primary">Recibido <i class="fa fa-fw fa-folder"></i></span>';
                     elseif (user()->can('REC.DOCUMENTO.FORANEO'))
                         return sprintf('<button type="button" class="btn btn-sm btn-success" onclick="hRecepcionForanea.enviar(%d)" title="Enviar documento"><i class="fa fa-fw fa-car"></i> Enviar documento</button>', $denuncia->getKey());
                     else
@@ -68,7 +70,7 @@ class DenunciasForaneasDataTable extends CustomDataTable
                 'title' => 'Recepcionado',
                 'render' => function($denuncia){
                     if ($denuncia->recepcionado() )
-                        return '<span class="badge badge-success"><i class="fa fa-fw fa-check"></i> Recepcionado</span>';
+                        return '<span class="badge badge-success"><i class="fa fa-fw fa-check"></i> ' . $denuncia->Documento->AcuseRecepcion->getNumero() . '</span>';
                     else
                         return '<span class="badge badge-danger"><i class="fa fa-fw fa-times"></i> Aún no recepcionado</span>';
                 }

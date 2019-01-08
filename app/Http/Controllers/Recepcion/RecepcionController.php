@@ -214,7 +214,7 @@ class RecepcionController extends BaseController
             $detalle->DETA_ENTREGO_IDENTIFICACION = $request->identificacion;
             $detalle->save();
 
-            // Recuperar el folio del último documento recepcionado que sea del año actual y no eliminado
+            // Recuperar el folio del último documento recepcionado que sea del año de la fecha de recepción y no eliminado
             $ultimo_folio = MDocumento::select('DOCU_FOLIO')
                             ->join('detalles','DOCU_DETALLE','=','DETA_DETALLE')
                             ->where('DETA_ANIO',$fecha_carbon->year) // Mismo año que el año de la recepción que se está haciendo 

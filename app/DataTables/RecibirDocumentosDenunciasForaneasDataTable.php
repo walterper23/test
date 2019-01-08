@@ -20,12 +20,6 @@ class RecibirDocumentosDenunciasForaneasDataTable extends CustomDataTable
 
     protected function columnsTable(){
         return [
-            // [
-            //     'title'  => '#',
-            //     'render' => function($documento){
-            //         return sprintf('<p class="text-center"><b>%s</b></p>',$documento->getFolio());
-            //     }
-            // ],
             [
                 'title'  => 'FOLIO RECEPCIÓN',
                 'render' => function($documento){
@@ -50,7 +44,7 @@ class RecibirDocumentosDenunciasForaneasDataTable extends CustomDataTable
                     if ($documento->enviado())
                         return sprintf('<button type="button" class="btn btn-sm btn-success" onclick="hRecibirRecepcionForanea.recibir(%d)" title="Recibir documento"><i class="fa fa-fw fa-folder-open"></i> Recibir</button>', $documento->getKey());
                     elseif( $documento->recibido() )
-                        return '<span class="badge badge-primary"><i class="fa fa-fw fa-folder"></i> Documento recibido</span>';
+                        return '<span class="badge badge-primary"><i class="fa fa-fw fa-folder"></i> Recibido</span>';
                     else
                         return '<span class="badge badge-danger"><i class="fa fa-fw fa-car"></i> Aún no enviado</span>';
                 }
@@ -103,7 +97,8 @@ class RecibirDocumentosDenunciasForaneasDataTable extends CustomDataTable
     protected function getCustomOptionsParameters()
     {
         return [
-            'pageLength' => 10
+            'pageLength' => 10,
+            'order' => [[ 0, 'desc' ]]
         ];
     }
 
