@@ -43,17 +43,22 @@
                 <div class="block-header block-header-default">
                     <div class="block-title">
                         <div class="push">
+                            {{ Form::open(['method'=>'GET']) }}
                             <div class="row">
-                                <div class="col-md-7">
-                                    {{ Form::open(['method'=>'GET']) }}
+                                <div class="col-md-2">
                                     {{ Form::hidden('view',request()->get('view','all')) }}
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <button type="button" class="btn btn-sm btn-secondary">{!! filter_view($view, $paginador->total_documentos) !!}</button>
+                                        </div>
+                                        <div class="input-group-append">
                                             <button type="button" class="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                                             <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(80px, 34px, 0px);">
-                                                <a class="dropdown-item" href="{{ url('panel/documentos') . '?'. http_build_query(['search'=>$search,'view'=>'recents'])  }}">
-                                                    <i class="fa fa-fw fa-folder mr-5"></i> Recientes {!! badge($recientes) !!}
+                                                <a class="dropdown-item" href="{{ url('panel/documentos') . '?'. http_build_query(['search'=>$search,'view'=>'pending'])  }}">
+                                                    <i class="fa fa-fw fa-folder mr-5"></i> Por turnar {!! badge($pendientes) !!}
+                                                </a>
+                                                <a class="dropdown-item" href="{{ url('panel/documentos') . '?'. http_build_query(['search'=>$search,'view'=>'moved'])  }}">
+                                                    <i class="fa fa-fw fa-mail-forward mr-5"></i> Turnados {!! badge($turnados) !!}
                                                 </a>
                                                 <a class="dropdown-item" href="{{ url('panel/documentos') . '?'. http_build_query(['search'=>$search,'view'=>'all']) }}">
                                                     <i class="fa fa-fw fa-files-o mr-5"></i> Todos {!! badge($todos) !!}
@@ -73,14 +78,23 @@
                                                 </a>
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-sm btn-secondary">Folio</button>
+                                        </div>
+                                        <input type="search" class="form-control form-control-sm" id="search_folio" name="search_folio" placeholder="Ej. {{ date('Y')-1 }}-23, 27" value="{{ $search_folio }}" title="Folio de documento">
                                         <input type="search" class="form-control form-control-sm" id="search" name="search" placeholder="Tipo documento, Nó. documento, Nó. expediente, Asunto..." value="{{ $search }}">
                                         <div class="input-group-append">
                                             <button type="submit" class="btn btn-sm btn-secondary"><i class="fa fa-search"></i> Buscar</button>
                                         </div>
                                     </div>
-                                    {{ Form::close() }}
                                 </div>
-                                <div class="col-md-5 text-right">
+
+                                <div class="col-md-4 text-right">
                                     @can('SIS.ADMIN.ESTA.DOC')
                                     <button type="button" class="btn btn-sm btn-danger" onclick="hPanel.nuevoEstado()">
                                         <i class="fa fa-fw fa-flash"></i> Nuevo estado
@@ -94,6 +108,7 @@
                                     </button>
                                 </div>
                             </div>
+                            {{ Form::close() }}
                         </div>
                     </div>
                 </div>
@@ -109,25 +124,24 @@
                         <div class="col-md-5">
                             <div class="row">
                                 <div class="col-12">
-                                    <p>
-                                        <span class="badge badge-{{ $seguimiento->SYTD_RIBBON_COLOR }}">
-                                            #{{ $documento->getFolio() }}
-                                            {{ $seguimiento->SYTD_NOMBRE }}
-                                            @if ( $documento->getTipoDocumento() == 1)
-                                                <span @can('DOC.CREAR.NO.EXPE') style="cursor: pointer;" onclick="hPanel.expediente({{ $documento->getKey() }})" @endcan>
-                                                <i class="fa fa-fw fa-legal"></i>
-                                                @if (! empty($seguimiento->DENU_NO_EXPEDIENTE) )
-                                                    {{ $seguimiento->DENU_NO_EXPEDIENTE }}
-                                                @else
-                                                    <span title="La denuncia aún no tiene Nó. de Expediente asignado">_ _ _ _</span>
-                                                @endif
-                                            </span>
-                                        @endif
+                                    <i class="fa fa-fw fa-hashtag"></i>
+                                    <span class="font-w700">{{ $documento->AcuseRecepcion->getNumero() }}</span>
+                                    <span class="badge badge-{{ $seguimiento->SYTD_RIBBON_COLOR }}">
+                                        {{ $documento->TipoDocumento->getNombre() }}
+                                        @if ( $documento->getTipoDocumento() == 1)
+                                            <span @can('DOC.CREAR.NO.EXPE') style="cursor: pointer;" onclick="hPanel.expediente({{ $documento->getKey() }})" @endcan>
+                                            <i class="fa fa-fw fa-legal"></i>
+                                            @if (! empty($seguimiento->DENU_NO_EXPEDIENTE) )
+                                                {{ $seguimiento->DENU_NO_EXPEDIENTE }}
+                                            @else
+                                                <span title="La denuncia aún no tiene Nó. de Expediente asignado">_ _ _ _</span>
+                                            @endif
                                         </span>
-                                        <span class="badge badge-secondary">{{ $documento->getNumero() }}</span>
-                                    </p>
-                                    <p><i class="fa fa-fw fa-calendar"></i> <b>Fecha de Recepción:</b> {{ $seguimiento->DETA_FECHA_RECEPCION }}</p>
-                                    <p><i class="fa fa-fw fa-files-o"></i> <b>Asunto:</b> {{ $seguimiento->DETA_DESCRIPCION }}</p>
+                                    @endif
+                                    </span>
+                                    <span class="badge badge-secondary">{{ $documento->getNumero() }}</span>
+                                    <p><i class="fa fa-fw fa-calendar"></i><span class="font-w700">Fecha de Recepción:</span> {{ $seguimiento->DETA_FECHA_RECEPCION }}</p>
+                                    <p><i class="fa fa-fw fa-file-text-o"></i><span class="font-w700">Asunto:</span> {{ $seguimiento->DETA_DESCRIPCION }}</p>
                                     @if (! empty($seguimiento->DETA_ANEXOS) )
                                     <button type="button" class="btn btn-sm btn-rounded btn-alt-primary" onclick="hPanel.verAnexos({{ $documento->getKey()  }})">
                                         <i class="fa fa-fw fa-clipboard"></i> Anexos

@@ -35,10 +35,19 @@ class PanelController extends BaseController
     public function index(Request $request)
     {
     	// Preparamos las variables para la visualización del listado de documentos
-        $view      = $request->get('view','all'); // Clasificación de documentos para ver
-        $search    = $request->get('search'); // Filtro de búsqueda realizado
-        $intervalo = $request->get('step',10); // Cantidad de documentos por página
-        $pagina    = $request->get('page',1); // Número de página
+        $view         = $request->get('view','all'); // Clasificación de documentos para ver
+        $search_folio = $request->get('search_folio'); // Filtro de búsqueda por folio
+        $search_anio  = date('Y');
+        $search       = $request->get('search'); // Filtro de búsqueda realizado
+        $intervalo    = $request->get('step',10); // Cantidad de documentos por página
+        $pagina       = $request->get('page',1); // Número de página
+
+        $data['search_folio'] = $search_folio;
+
+        if( $search_folio && strpos($search_folio,'-') !== false )
+        {
+            list($search_anio,$search_folio) = explode('-', $search_folio);
+        }
 
         // Recuperar las direcciones asignadas al usuario
         $ids_direcciones = user()->Direcciones->pluck('DIRE_DIRECCION')->toArray();
@@ -62,33 +71,48 @@ class PanelController extends BaseController
                        ->toArray();
 
         // Recuperar el último seguimiento de cada documento
-        $seguimientos = MSeguimiento::with('Documento','DireccionOrigen','DireccionDestino','DepartamentoOrigen','DepartamentoDestino','EstadoDocumento','Escaneos')
-                       ->leftJoin('documentos','SEGU_DOCUMENTO','=','DOCU_DOCUMENTO')
-                       ->leftJoin('system_tipos_documentos','SYTD_TIPO_DOCUMENTO','=','DOCU_SYSTEM_TIPO_DOCTO')
-                       ->leftJoin('detalles','DETA_DETALLE','=','DOCU_DETALLE')
-                       ->leftJoin('usuarios','USUA_USUARIO','=','SEGU_USUARIO')
-                       ->leftJoin('usuarios_detalles','USDE_USUARIO_DETALLE','=','USUA_DETALLE')
-                       ->leftJoin('system_estados_documentos','SYED_ESTADO_DOCUMENTO','=','DOCU_SYSTEM_ESTADO_DOCTO')
-                       ->leftJoin('denuncias','DENU_DOCUMENTO','=','DOCU_DOCUMENTO')
-                       ->whereRaw('SEGU_SEGUIMIENTO in (select max(SEGU_SEGUIMIENTO) from seguimiento group by SEGU_DOCUMENTO order by SEGU_SEGUIMIENTO desc)')
-                       ->where('DOCU_SYSTEM_ESTADO_DOCTO','!=',6) // Recepción no eliminada
-                       ->whereIn('SEGU_DOCUMENTO',$documentos)
-                       ->where(function($query) use ($search) {
-                            if (! is_null($search) && ! empty($search))
-                            {
-                                $search = "%$search%";
-                                $query->where('DOCU_NUMERO_DOCUMENTO','like',$search);
-                                $query->orWhere('DENU_NO_EXPEDIENTE','like',$search);
-                                $query->orWhere('DETA_DESCRIPCION','like',$search);
-                                $query->orWhere('SYTD_NOMBRE','like',$search);
-                            }
-                        })
-                       ->orderBy('SEGU_SEGUIMIENTO','DESC') // Listar desde el seguimiento más reciente
-                       ->get();
+        $seguimientos = MSeguimiento::with(['Documento'=>function($query){
+                            $query->with('AcuseRecepcion');
+                        },'DireccionOrigen','DireccionDestino','DepartamentoOrigen','DepartamentoDestino','EstadoDocumento','Escaneos'])
+                        ->leftJoin('documentos','SEGU_DOCUMENTO','=','DOCU_DOCUMENTO')
+                        ->leftJoin('system_tipos_documentos','SYTD_TIPO_DOCUMENTO','=','DOCU_SYSTEM_TIPO_DOCTO')
+                        ->leftJoin('detalles','DETA_DETALLE','=','DOCU_DETALLE')
+                        ->leftJoin('usuarios','USUA_USUARIO','=','SEGU_USUARIO')
+                        ->leftJoin('usuarios_detalles','USDE_USUARIO_DETALLE','=','USUA_DETALLE')
+                        ->leftJoin('system_estados_documentos','SYED_ESTADO_DOCUMENTO','=','DOCU_SYSTEM_ESTADO_DOCTO')
+                        ->leftJoin('denuncias','DENU_DOCUMENTO','=','DOCU_DOCUMENTO')
+                        ->whereRaw('SEGU_SEGUIMIENTO in (select max(SEGU_SEGUIMIENTO) from seguimiento group by SEGU_DOCUMENTO order by SEGU_SEGUIMIENTO desc)')
+                        ->where('DOCU_SYSTEM_ESTADO_DOCTO','!=',6); // Recepción no eliminada
+
+        if (! is_null($search_folio) && ! empty($search_folio))
+        {
+            $seguimientos->where('DOCU_FOLIO',$search_folio);
+            $seguimientos->where('DETA_ANIO',$search_anio);
+        }
+        else
+        {
+           $seguimientos->whereIn('SEGU_DOCUMENTO',$documentos);
+        }
+
+        // dd($seguimientos->toSql(),$seguimientos->getBindings());
+
+        $seguimientos = $seguimientos->where(function($query) use ($search) {
+                if (! is_null($search) && ! empty($search))
+                {
+                    $search = "%$search%";
+                    $query->orWhere('DOCU_NUMERO_DOCUMENTO','like',$search);
+                    $query->orWhere('DENU_NO_EXPEDIENTE','like',$search);
+                    $query->orWhere('DETA_DESCRIPCION','like',$search);
+                    $query->orWhere('SYTD_NOMBRE','like',$search);
+                }
+            })
+           ->orderBy('SEGU_SEGUIMIENTO','DESC') // Listar desde el seguimiento más reciente
+           ->get();
 
         // Creamos un contenedor donde se almacenarán los seguimientos y documentos de acuerdo a ciertas clasificaciones
         $documentos = [
-            'recientes'   => collect(), // Documentos/seguimientos que el usuario aún no ha leído
+            'pendientes'  => collect(), // Documentos pendientes de turnar
+            'turnados'    => collect(), // Documentos turnados
             'todos'       => collect(), // Todos los documentos encontrados
             'importantes' => collect(), // Los documentos que el usuario ha marcado como importantes
             'archivados'  => collect(), // Los documentos que el usuario ha marcado como archivados
@@ -98,53 +122,69 @@ class PanelController extends BaseController
 
         // Recorremos todos los seguimientos encontrados y vamos guardando en el contenedor anterior
         foreach ($seguimientos as $seguimiento) {
-            
-            // Añadimos el seguimiento a Todos, si no es un documento archivado por el usuario
-            if (! $seguimiento->Documento->archivado())
-                $documentos['todos']->push($seguimiento);
-            
-            // Si el usuario no ha leido el seguimiento, lo añadimos a Recientes
-            if (! $seguimiento->leido() )
-            {
-                $documentos['recientes']->push($seguimiento);
-            }
 
-            // Si el usuario tiene marcado el documento como Importante, lo añadimos a Importantes
-            if ($seguimiento->Documento->importante())
-            {
-                $documentos['importantes']->push($seguimiento);
-            }
+            // echo $seguimiento->getDireccionDestino() . ' - ' . $seguimiento->getDepartamentoDestino() . '<br>';
+
+            $documento = $seguimiento->Documento;
 
             // Si el usuario tiene marcado el documento como Archivado, lo añadimos a Archivados
             if ($seguimiento->Documento->archivado())
             {
                 $documentos['archivados']->push($seguimiento);
-            }
-
-            // Si el documento fue rechazado
-            if ($seguimiento->Documento->rechazado())
-            {
-                $documentos['rechazados']->push($seguimiento);
+                continue;
             }
 
             // Si el documento fue finalizado
             if ($seguimiento->Documento->finalizado())
             {
                 $documentos['finalizados']->push($seguimiento);
+                continue;
             }
 
+            // Si el documento fue rechazado
+            if ($seguimiento->Documento->rechazado())
+            {
+                $documentos['rechazados']->push($seguimiento);
+                continue;
+            }
+
+            // Documentos por turnar
+            if( in_array($seguimiento->getDireccionDestino(), $ids_direcciones) || in_array($seguimiento->getDepartamentoDestino(), $ids_departamentos) )
+            {
+                $documentos['pendientes']->push($seguimiento);
+            }
+            else // Documentos turnados
+            {
+                $documentos['turnados']->push($seguimiento);
+            }
+            
+            // Añadimos el seguimiento a Todos
+            $documentos['todos']->push($seguimiento);
+            
+            // Si el usuario tiene marcado el documento como Importante, lo añadimos a Importantes
+            if ($seguimiento->Documento->importante())
+            {
+                $documentos['importantes']->push($seguimiento);
+            }
+        
         }
         
         // Almacenar el título a mostrar de la vista y almacenar los documentos y seguimientos a mostrar de acuerdo al tipo de $view solicitado
         switch ($view) {
-            case 'recents':
-                $data['title']  = 'Documentos recientes';
-                $data['view']   = 'Recientes';
-                $parametros     = ['view'=>'recents'];
-                $documentos_ver = $documentos['recientes'];
+            case 'pending':
+                $data['title']  = 'Documentos por turnar';
+                $data['view']   = 'Por turnar';
+                $parametros     = ['view'=>'pending'];
+                $documentos_ver = $documentos['pendientes'];
+                break;
+            case 'moved':
+                $data['title']  = 'Documentos turnados';
+                $data['view']   = 'Turnados';
+                $parametros     = ['view'=>'moved'];
+                $documentos_ver = $documentos['turnados'];
                 break;
             case 'all':
-                $data['title']  = 'Documentos recibidos';
+                $data['title']  = 'Todos los documentos';
                 $data['view']   = 'Todos';
                 $parametros     = ['view'=>'all'];
                 $documentos_ver = $documentos['todos'];
@@ -174,24 +214,27 @@ class PanelController extends BaseController
                 $documentos_ver = $documentos['finalizados'];
                 break;
             default:
-                $data['title']  = 'Documentos recibidos';
+                $data['title']  = 'Todos los documentos';
                 $data['view']   = 'Todos';
                 $parametros     = ['view'=>'all'];
                 $documentos_ver = $documentos['todos'];
                 break;
         }
 
-        $data['recientes']   = sizeof($documentos['recientes']);
+        $data['pendientes']  = sizeof($documentos['pendientes']);
+        $data['turnados']    = sizeof($documentos['turnados']);
         $data['todos']       = sizeof($documentos['todos']);
         $data['importantes'] = sizeof($documentos['importantes']);
         $data['archivados']  = sizeof($documentos['archivados']);
         $data['rechazados']  = sizeof($documentos['rechazados']);
         $data['finalizados'] = sizeof($documentos['finalizados']);
 
+        // dd($ids_direcciones, $ids_departamentos, $data);
+
         $data['search'] = $search;
 
         $paginador = new PaginadorDocumentos( $documentos_ver, $intervalo, $pagina );
-        $paginador->addParametros($parametros + compact('search'));
+        $paginador->addParametros($parametros + compact('search_folio','search'));
 
         $data['paginador'] = $paginador;
 
