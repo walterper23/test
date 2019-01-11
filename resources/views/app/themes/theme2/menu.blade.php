@@ -87,7 +87,10 @@ If your sidebar menu includes icons and you would like to hide them, you can add
         <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)"><i class="fa fa-server"></i>Panel de trabajo</a>
         <ul>
             <li>
-                <a href="{{ url('panel/documentos/?view=recents') }}">Recientes</a>
+                <a href="{{ url('panel/documentos/?view=pending') }}">Por turnar</a>
+            </li>
+            <li>
+                <a href="{{ url('panel/documentos/?view=moved') }}">Turnados</a>
             </li>
             <li>
                 <a href="{{ url('panel/documentos/?view=all') }}">Todos</a>
