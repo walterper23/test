@@ -149,6 +149,11 @@ class MUsuario extends Authenticatable
         return $this->belongsToMany('App\Model\System\MSystemPreferencia','usuarios_preferencias','USPR_USUARIO','USPR_PREFERENCIA');
     }
 
+    public function Recepcionista()
+    {
+        return $this->hasOne('App\Model\MRecepcionista','RECE_USUARIO',$this->getKeyName());
+    }
+
 
     /* Notifications */
 

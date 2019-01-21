@@ -10,8 +10,15 @@ class MDocumento extends BaseModel
     /* Methods */
 
     // Método para devolver la columna FOLIO del registro como un código de longitud indicada
-    public function getFolio( $size = 4, $str = '0', $direction = STR_PAD_LEFT )
+    public function getFolio( $size = 3, $str = '0', $direction = STR_PAD_LEFT )
     {
+        $longitud = config_var('Sistema.Longitud.Folio');
+        
+        if( $longitud > 0 )
+        {
+            $size = $longitud;
+        }
+
         return parent::getFolio($size,$str,$direction);
     }
 

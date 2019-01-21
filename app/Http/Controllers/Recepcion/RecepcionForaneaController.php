@@ -288,9 +288,14 @@ class RecepcionForaneaController extends BaseController
                 $documentoDenuncia->save();
             }
 
-            $folio_acuse = sprintf('ARDF/%s/%s/%s/%s/%s',
-                            $fecha_carbon->format('Y'),$fecha_carbon->format('m'),$fecha_carbon->format('d'),
-                            $documento->getFolio(),$tipo_documento->getCodigoAcuse());
+            // Buscamos la configuración del usuario como recepcionista
+            $recepcionista = user()->Recepcionista;
+
+            $folio_estructura = $recepcionista->getFolioEstructura();
+            $buscar     = ['%anio%','%folio%','%codigo%'];
+            $reemplazar = [$fecha_carbon->format('Y'),$documento->getFolio(),$tipo_documento->getCodigoAcuse()];
+
+            $folio_acuse = str_replace($buscar, $reemplazar, $folio_estructura);
 
             // Sustituimos las diagonales por guiones bajos
             $nombre_acuse_pdf = sprintf('%s.pdf',str_replace('/','_', $folio_acuse));
@@ -428,9 +433,13 @@ class RecepcionForaneaController extends BaseController
 
             $fecha_carbon = Carbon::createFromFormat('Y-m-d',$fecha_recepcion);
 
-            $folio_acuse = sprintf('ARDF/%s/%s/%s/%s/%s',
-                            $fecha_carbon->format('Y'),$fecha_carbon->format('m'),$fecha_carbon->format('d'),
-                            $documento->getFolio(),$tipo_documento->getCodigoAcuse());
+            $recepcionista = user()->Recepcionista;
+
+            $folio_estructura = $recepcionista->getFolioEstructura();
+            $buscar     = ['%anio%','%folio%','%codigo%'];
+            $reemplazar = [$fecha_carbon->format('Y'),$documento->getFolio(),$tipo_documento->getCodigoAcuse()];
+
+            $folio_acuse = str_replace($buscar, $reemplazar, $folio_estructura);
 
             // Sustituimos las diagonales por guiones bajos
             $nombre_acuse_pdf = sprintf('%s.pdf',str_replace('/','_', $folio_acuse));
