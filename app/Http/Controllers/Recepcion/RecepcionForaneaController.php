@@ -186,7 +186,6 @@ class RecepcionForaneaController extends BaseController
         $data['form_id']               = 'form-recepcion-foranea';
         $data['url_send_form']         = url('recepcion/documentos-foraneos/manager');
         $data['url_send_form_escaneo'] = url('recepcion/documentos-foraneos/nuevo-escaneo');
-        $data['municipio_default']     = 5; // Benito Juárez
 
         $data['form'] = view('Recepcion.formNuevaRecepcion')->with($data);
 
@@ -365,7 +364,6 @@ class RecepcionForaneaController extends BaseController
         $data['form_id']               = 'form-editar-recepcion-foranea';
         $data['url_send_form']         = url('recepcion/documentos-foraneos/manager');
         $data['url_send_form_escaneo'] = url('recepcion/documentos-foraneos/nuevo-escaneo');
-        $data['municipio_default']     = $documento->Detalle->getMunicipio();
         $data['documento']             = $documento;
         $data['detalle']               = $documento->Detalle;
 

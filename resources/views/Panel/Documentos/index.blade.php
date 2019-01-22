@@ -103,9 +103,9 @@
                                     <div class="btn-group btn-group-sm" role="group">
                                         @include('Panel.Documentos.paginacionDocumentos')
                                     </div>
-                                    <button type="button" class="btn btn-sm btn-secondary js-tooltip-enabled" data-toggle="tooltip" title="" data-original-title="Recargar documentos" @click.prevent="recargarPagina()">
+                                    <a href="#" class="btn btn-sm btn-secondary js-tooltip-enabled" data-toggle="tooltip" title="" data-original-title="Recargar documentos" onclick="location.reload()">
                                         <i class="fa fa-refresh fa-fw"></i>
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                             {{ Form::close() }}
@@ -245,6 +245,29 @@
             </div>
             @endforelse
             <!-- END Message List -->
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-popout" tabindex="-1" role="dialog" aria-labelledby="modal-popout" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-popout" role="document">
+            <div class="modal-content">
+                <div class="block block-themed block-transparent mb-0">
+                    <div class="block-header bg-primary">
+                        <h3 class="block-title"><i class="fa fa-fw fa-sitemap"></i> Direcciones y Departamentos</h3>
+                        <div class="block-options">
+                            <button type="button" class="btn-block-option" data-dismiss="modal-popout" aria-label="Close">
+                                <i class="si si-close"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="block-content">
+                        @include('Panel.Seguimiento.direccionesDepartamentos',[$direcciones])
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-alt-secondary" data-dismiss="modal-popout">Cerrar</button>
+                </div>
+            </div>
         </div>
     </div>
 @endsection

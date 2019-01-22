@@ -166,6 +166,9 @@
                 $(this).closest('.form-group').remove();
                 self.updateConteoEscaneos()
             });
+
+            $('#municipio').val(localStorage.getItem('municipio'))
+
         }
 
         this.updateConteoEscaneos = function(){
@@ -206,6 +209,9 @@
                             type  : form.attr('method'),
                             data  : form.serialize(),
                             success : function(result){
+
+                                localStorage.setItem('municipio',$('#municipio').val());
+
                                 inputEscaneos = $('input[type="file"][name="escaneo"]');
 
                                 if( inputEscaneos.length > 0 )

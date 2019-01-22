@@ -141,6 +141,13 @@ class RecepcionController extends BaseController
     {
         $data = [];
 
+        $recepcionista = user()->Recepcionista()->ExistenteDisponible()->limit(1)->first();
+
+        if(! $recepcionista )
+        {
+            abort(403);
+        }
+
         // Recuperamos los tipos de documentos que se pueden recepcionar
         $tiposDocumentosExistentesDisponibles = cache()->rememberForever('tiposDocumentosExistentesDisponibles',function(){
             return MSystemTipoDocumento::existenteDisponible()->get();
@@ -178,7 +185,6 @@ class RecepcionController extends BaseController
         $data['form_id']               = 'form-recepcion';
         $data['url_send_form']         = url('recepcion/documentos/manager');
         $data['url_send_form_escaneo'] = url('recepcion/documentos/nuevo-escaneo');
-        $data['municipio_default']     = 4; // Othón P. Blanco
 
         $data['form'] = view('Recepcion.formNuevaRecepcion')->with($data);
 
@@ -192,6 +198,9 @@ class RecepcionController extends BaseController
     {
         try {
             DB::beginTransaction();
+
+            // Buscamos la configuración del usuario como recepcionista
+            $recepcionista = user()->Recepcionista()->ExistenteDisponible()->limit(1)->first();
 
             $tipo_documento = MSystemTipoDocumento::find( $request->tipo_documento );
 
@@ -237,7 +246,7 @@ class RecepcionController extends BaseController
             $documento->DOCU_FOLIO               = $ultimo_folio + 1;
             $documento->DOCU_SYSTEM_TIPO_DOCTO   = $tipo_documento->getKey();
             $documento->DOCU_SYSTEM_ESTADO_DOCTO = 2; // Documento recepcionado
-            $documento->DOCU_TIPO_RECEPCION      = 1; // Recepción local
+            $documento->DOCU_TIPO_RECEPCION      = $recepcionista->getTipo(); // Tipo de recepción
             $documento->DOCU_DETALLE             = $detalle->getKey();
             $documento->DOCU_NUMERO_DOCUMENTO    = $request->numero;
 
@@ -293,9 +302,6 @@ class RecepcionController extends BaseController
                 $documentoDenuncia->DODE_SEGUIMIENTO       = $denuncia->Documento->Seguimientos->last()->getKey();
                 $documentoDenuncia->save();
             }
-
-            // Buscamos la configuración del usuario como recepcionista
-            $recepcionista = user()->Recepcionista;
 
             $folio_estructura = $recepcionista->getFolioEstructura();
             $buscar     = ['%anio%','%folio%','%codigo%'];
@@ -426,7 +432,6 @@ class RecepcionController extends BaseController
         $data['form_id']               = 'form-editar-recepcion';
         $data['url_send_form']         = url('recepcion/documentos/manager');
         $data['url_send_form_escaneo'] = url('recepcion/documentos/nuevo-escaneo');
-        $data['municipio_default']     = $documento->Detalle->getMunicipio();
         $data['documento']             = $documento;
         $data['detalle']               = $documento->Detalle;
 
@@ -502,7 +507,7 @@ class RecepcionController extends BaseController
             $fecha_carbon = Carbon::createFromFormat('Y-m-d',$fecha_recepcion);
 
             // Buscamos la configuración del usuario como recepcionista
-            $recepcionista = user()->Recepcionista;
+            $recepcionista = user()->Recepcionista()->ExistenteDisponible()->limit(1)->first();
 
             $folio_estructura = $recepcionista->getFolioEstructura();
             $buscar     = ['%anio%','%folio%','%codigo%'];

@@ -238,6 +238,15 @@ class PanelController extends BaseController
 
         $data['paginador'] = $paginador;
 
+        // Obtener todas las direcciones de destino existentes y disponibles con sus departamentos existentes y disponibles
+        $direcciones = MDireccion::with('DepartamentosExistentesDisponibles')
+                       ->select('DIRE_DIRECCION','DIRE_NOMBRE')
+                       ->existenteDisponible()
+                       ->orderBy('DIRE_NOMBRE')
+                       ->get();
+
+        $data['direcciones'] = $direcciones;
+
         return view('Panel.Documentos.index')->with($data);
     }
 
@@ -302,8 +311,6 @@ class PanelController extends BaseController
                        ->existenteDisponible()
                        ->orderBy('DIRE_NOMBRE')
                        ->get();
-
-        $data['direcciones'] = $direcciones;
 
         $data['direcciones_destino'] = $direcciones->pluck('DIRE_NOMBRE','DIRE_DIRECCION')->toArray();
         

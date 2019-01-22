@@ -143,9 +143,6 @@
             $('#modal-popout').on('shown.bs.modal', function() {
                 $('.modal-backdrop.fade.show').last().css('z-index',1050);
                 $(this).css("z-index", 1051);
-
-                console.log($('#form-cambio-estado-documento').add('#tree-direcciones-departamentos').serialize());
-
             });
 
             $('[data-dismiss="modal-popout"]').on('click',function(){

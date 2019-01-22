@@ -22,6 +22,11 @@ class MRecepcionista extends BaseModel
         return $this->getAttribute('RECE_FOLIO_ESTRUCTURA');
     }
 
+    public function getTipo()
+    {
+        return $this->getAttribute('RECE_TIPO');
+    }
+
     /* Relationships */
 
     public function Usuario()

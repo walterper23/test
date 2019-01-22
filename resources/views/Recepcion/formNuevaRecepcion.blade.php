@@ -27,7 +27,7 @@
             {!! Field::textarea('observaciones','',['label'=>'Observaciones','placeholder'=>'Opcional','size'=>'20x3','noresize']) !!}
         </div>
         <div class="col-md-5">
-            {!! Field::select('municipio',$municipio_default,['label'=>'Municipio','required','popover'=>['Municipio','Seleccione el municipio de procedencia del documento']],$municipios) !!}
+            {!! Field::select('municipio','',['label'=>'Municipio','required','popover'=>['Municipio','Seleccione el municipio de procedencia del documento']],$municipios) !!}
             <div class="form-group row">
                 <label for="anexo" class="col-md-3 col-form-label">Lista de anexos</label>
                 <div class="col-md-9">
