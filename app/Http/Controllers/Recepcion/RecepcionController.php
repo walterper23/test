@@ -199,130 +199,7 @@ class RecepcionController extends BaseController
         try {
             DB::beginTransaction();
 
-            // Buscamos la configuración del usuario como recepcionista
-            $recepcionista = user()->Recepcionista()->ExistenteDisponible()->limit(1)->first();
-
-            $tipo_documento = MSystemTipoDocumento::find( $request->tipo_documento );
-
-            $fecha_recepcion = $request->recepcion;
-
-            $fecha_carbon = Carbon::createFromFormat('Y-m-d',$fecha_recepcion);
-
-            // Guardamos los detalles del documento
-            $detalle = new MDetalle;
-            $detalle->DETA_ANIO                   = $fecha_carbon->year;
-            $detalle->DETA_MUNICIPIO              = $request->municipio;
-            $detalle->DETA_FECHA_RECEPCION        = $fecha_recepcion;
-            $detalle->DETA_DESCRIPCION            = $request->descripcion;
-            $detalle->DETA_RESPONSABLE            = $request->responsable;
-            $detalle->DETA_ANEXOS                 = $request->anexos;
-            $detalle->DETA_OBSERVACIONES          = $request->observaciones;
-            $detalle->DETA_ENTREGO_NOMBRE         = $request->nombre;
-            $detalle->DETA_ENTREGO_EMAIL          = $request->e_mail;
-            $detalle->DETA_ENTREGO_TELEFONO       = $request->telefono;
-            $detalle->DETA_ENTREGO_IDENTIFICACION = $request->identificacion;
-            $detalle->save();
-
-            // Recuperar el folio del último documento recepcionado que sea del año de la fecha de recepción y no eliminado
-            $ultimo_folio = MDocumento::select('DOCU_FOLIO')
-                            ->join('detalles','DOCU_DETALLE','=','DETA_DETALLE')
-                            ->where('DETA_ANIO',$fecha_carbon->year) // Mismo año que el año de la recepción que se está haciendo 
-                            ->existente() // Existente
-                            ->orderBy('DOCU_FOLIO','DESC') // Folio descendente
-                            ->limit(1)
-                            ->first();
-
-            if( $ultimo_folio )
-            {
-                $ultimo_folio = $ultimo_folio->getFolio();
-            }
-            else
-            {
-                $ultimo_folio = 0;
-            }
-
-            // Guardamos el documento
-            $documento = new MDocumento;
-            $documento->DOCU_FOLIO               = $ultimo_folio + 1;
-            $documento->DOCU_SYSTEM_TIPO_DOCTO   = $tipo_documento->getKey();
-            $documento->DOCU_SYSTEM_ESTADO_DOCTO = 2; // Documento recepcionado
-            $documento->DOCU_TIPO_RECEPCION      = $recepcionista->getTipo(); // Tipo de recepción
-            $documento->DOCU_DETALLE             = $detalle->getKey();
-            $documento->DOCU_NUMERO_DOCUMENTO    = $request->numero;
-
-            /**
-             * Los folios se reinician automáticamente cada año.
-             * El siguiente fragmento de código permite reiniciar los folios en cualquier momento del año
-             * pero siempre se reiniciarán cada inicio de año
-             */
-            $fecha_reinicio = config_var('Adicional.Fecha.Reinicio.Folios');
-
-            // Si existe una fecha de reinicio de folios y esa fecha es menor o igual al momento de hoy
-            if (! is_null($fecha_reinicio) && $fecha_reinicio <= date('Y-m-d H:i:s') )
-            {
-                $documento->DOCU_FOLIO = config_var('Adicional.Folio.Reinicio.Folios');
-
-                $fecha_reinicio = MSystemConfig::where('SYCO_VARIABLE','Adicional.Fecha.Reinicio.Folios')->limit(1)->first();
-                $fecha_reinicio->SYCO_VALOR = null; // Vaciamos la fecha de reinicio
-                $fecha_reinicio->save();
-
-                MSystemConfig::setAllVariables(); // Volvemos a cargar la variables de configuración al caché
-            }
-
-            $documento->save();
-            
-            // Guardamos el primer seguimiento del documento
-            $seguimiento = new MSeguimiento;
-            $seguimiento->SEGU_USUARIO              = userKey();
-            $seguimiento->SEGU_DOCUMENTO            = $documento->getKey();
-            $seguimiento->SEGU_DIRECCION_ORIGEN     = config_var('Sistema.Direcc.Origen');  // Dirección de la recepción, por default
-            $seguimiento->SEGU_DEPARTAMENTO_ORIGEN  = config_var('Sistema.Depto.Origen');   // Departamento de la recepción, por default
-            $seguimiento->SEGU_DIRECCION_DESTINO    = config_var('Sistema.Direcc.Destino'); // Dirección del procurador, por default
-            $seguimiento->SEGU_DEPARTAMENTO_DESTINO = config_var('Sistema.Depto.Destino');  // Departamento del procurador, por default
-            $seguimiento->SEGU_ESTADO_DOCUMENTO     = config_var('Sistema.Estado.Recepcion.Seguimiento'); // "Documento recepcionado". Estado de documento inicial para seguimiento por default
-            $seguimiento->SEGU_OBSERVACION          = $detalle->getObservaciones();
-            $seguimiento->save();
-
-            if ($tipo_documento->getKey() == 1) // Si el tipo de documento es denuncia ...
-            {
-                $denuncia = new MDenuncia; // ... crear el registro de la denuncia
-                $denuncia->DENU_DOCUMENTO = $documento->getKey();
-                $denuncia->save();
-            }
-            else if ( $tipo_documento->getKey() == 2 ) // Si el tipo de documento es un documento para denuncia ...
-            {
-                $denuncia = MDenuncia::find( $request->denuncia );
-
-                $documentoDenuncia = new MDocumentoDenuncia; // ... registramos el documento a la denuncia
-                $documentoDenuncia->DODE_DENUNCIA          = $denuncia->getKey();
-                $documentoDenuncia->DODE_DOCUMENTO_ORIGEN  = $denuncia->getDocumento();
-                $documentoDenuncia->DODE_DOCUMENTO_LOCAL   = $documento->getKey();
-                $documentoDenuncia->DODE_DETALLE           = $denuncia->Documento->Detalle->getKey();
-                // Relacionamos la recepción del documento-denuncia al último seguimiento del documento original (denuncia)
-                $documentoDenuncia->DODE_SEGUIMIENTO       = $denuncia->Documento->Seguimientos->last()->getKey();
-                $documentoDenuncia->save();
-            }
-
-            $folio_estructura = $recepcionista->getFolioEstructura();
-            $buscar     = ['%anio%','%folio%','%codigo%'];
-            $reemplazar = [$fecha_carbon->format('Y'),$documento->getFolio(),$tipo_documento->getCodigoAcuse()];
-
-            $folio_acuse = str_replace($buscar, $reemplazar, $folio_estructura);
-
-            // Sustituimos las diagonales por guiones bajos
-            $nombre_acuse_pdf = sprintf('%s.pdf',str_replace('/','_', $folio_acuse));
-
-            // Creamos el registro del acuse de recepción del documento
-            $acuse = new MAcuseRecepcion;
-            $acuse->ACUS_NUMERO    = $folio_acuse;
-            $acuse->ACUS_NOMBRE    = $nombre_acuse_pdf;
-            $acuse->ACUS_DOCUMENTO = $documento->getKey();
-            $acuse->ACUS_CAPTURA   = 1; // Documento localmente
-            $acuse->ACUS_DETALLE   = $detalle->getKey();
-            $acuse->ACUS_USUARIO   = userKey();
-            $acuse->ACUS_ENTREGO   = $request->nombre;
-            $acuse->ACUS_RECIBIO   = user()->UsuarioDetalle->presenter()->getNombreCompleto();
-            $acuse->save();
+            $documento = $this->procesoRecepcionar($request,1); // 1 = Tipo recepción local
 
             DB::commit();
 
@@ -386,6 +263,136 @@ class RecepcionController extends BaseController
         } catch(Exception $error) {
             return $this->responseErrorJSON($error->getMessage());
         }
+    }
+
+    public function procesoRecepcionar($request, $tipo_recepcion)
+    {
+        // Buscamos la configuración del usuario como recepcionista
+        $recepcionista = user()->Recepcionista()->ExistenteDisponible()->limit(1)->first();
+
+        $tipo_documento = MSystemTipoDocumento::find( $request->tipo_documento );
+
+        $fecha_recepcion = $request->recepcion;
+
+        $fecha_carbon = Carbon::createFromFormat('Y-m-d',$fecha_recepcion);
+
+        // Guardamos los detalles del documento
+        $detalle = new MDetalle;
+        $detalle->DETA_ANIO                   = $fecha_carbon->year;
+        $detalle->DETA_MUNICIPIO              = $request->municipio;
+        $detalle->DETA_FECHA_RECEPCION        = $fecha_recepcion;
+        $detalle->DETA_DESCRIPCION            = $request->descripcion;
+        $detalle->DETA_RESPONSABLE            = $request->responsable;
+        $detalle->DETA_ANEXOS                 = $request->anexos;
+        $detalle->DETA_OBSERVACIONES          = $request->observaciones;
+        $detalle->DETA_ENTREGO_NOMBRE         = $request->nombre;
+        $detalle->DETA_ENTREGO_EMAIL          = $request->e_mail;
+        $detalle->DETA_ENTREGO_TELEFONO       = $request->telefono;
+        $detalle->DETA_ENTREGO_IDENTIFICACION = $request->identificacion;
+        $detalle->save();
+
+        // Recuperar el folio del último documento recepcionado que sea del año de la fecha de recepción y no eliminado
+        $ultimo_folio = MDocumento::select('DOCU_FOLIO')
+                        ->join('detalles','DOCU_DETALLE','=','DETA_DETALLE')
+                        ->where('DETA_ANIO',$fecha_carbon->year) // Mismo año que el año de la recepción que se está haciendo 
+                        ->existente() // Existente
+                        ->orderBy('DOCU_FOLIO','DESC') // Folio descendente
+                        ->limit(1)
+                        ->first();
+
+        if( $ultimo_folio )
+        {
+            $ultimo_folio = $ultimo_folio->getFolio();
+        }
+        else
+        {
+            $ultimo_folio = 0;
+        }
+
+        // Guardamos el documento
+        $documento = new MDocumento;
+        $documento->DOCU_FOLIO               = $ultimo_folio + 1;
+        $documento->DOCU_SYSTEM_TIPO_DOCTO   = $tipo_documento->getKey();
+        $documento->DOCU_SYSTEM_ESTADO_DOCTO = 2; // Documento recepcionado
+        $documento->DOCU_TIPO_RECEPCION      = $tipo_recepcion; // Tipo de recepción
+        $documento->DOCU_DETALLE             = $detalle->getKey();
+        $documento->DOCU_NUMERO_DOCUMENTO    = $request->numero;
+
+        /**
+         * Los folios se reinician automáticamente cada año.
+         * El siguiente fragmento de código permite reiniciar los folios en cualquier momento del año
+         * pero siempre se reiniciarán cada inicio de año
+         */
+        $fecha_reinicio = config_var('Adicional.Fecha.Reinicio.Folios');
+
+        // Si existe una fecha de reinicio de folios y esa fecha es menor o igual al momento de hoy
+        if (! is_null($fecha_reinicio) && $fecha_reinicio <= date('Y-m-d H:i:s') )
+        {
+            $documento->DOCU_FOLIO = config_var('Adicional.Folio.Reinicio.Folios');
+
+            $fecha_reinicio = MSystemConfig::where('SYCO_VARIABLE','Adicional.Fecha.Reinicio.Folios')->limit(1)->first();
+            $fecha_reinicio->SYCO_VALOR = null; // Vaciamos la fecha de reinicio
+            $fecha_reinicio->save();
+
+            MSystemConfig::setAllVariables(); // Volvemos a cargar la variables de configuración al caché
+        }
+
+        $documento->save();
+        
+        // Guardamos el primer seguimiento del documento
+        $seguimiento = new MSeguimiento;
+        $seguimiento->SEGU_USUARIO              = userKey();
+        $seguimiento->SEGU_DOCUMENTO            = $documento->getKey();
+        $seguimiento->SEGU_DIRECCION_ORIGEN     = config_var('Sistema.Direcc.Origen');  // Dirección de la recepción, por default
+        $seguimiento->SEGU_DEPARTAMENTO_ORIGEN  = config_var('Sistema.Depto.Origen');   // Departamento de la recepción, por default
+        $seguimiento->SEGU_DIRECCION_DESTINO    = config_var('Sistema.Direcc.Destino'); // Dirección del procurador, por default
+        $seguimiento->SEGU_DEPARTAMENTO_DESTINO = config_var('Sistema.Depto.Destino');  // Departamento del procurador, por default
+        $seguimiento->SEGU_ESTADO_DOCUMENTO     = config_var('Sistema.Estado.Recepcion.Seguimiento'); // "Documento recepcionado". Estado de documento inicial para seguimiento por default
+        $seguimiento->SEGU_OBSERVACION          = $detalle->getObservaciones();
+        $seguimiento->save();
+
+        if ($tipo_documento->getKey() == 1) // Si el tipo de documento es denuncia ...
+        {
+            $denuncia = new MDenuncia; // ... crear el registro de la denuncia
+            $denuncia->DENU_DOCUMENTO = $documento->getKey();
+            $denuncia->save();
+        }
+        else if ( $tipo_documento->getKey() == 2 ) // Si el tipo de documento es un documento para denuncia ...
+        {
+            $denuncia = MDenuncia::find( $request->denuncia );
+
+            $documentoDenuncia = new MDocumentoDenuncia; // ... registramos el documento a la denuncia
+            $documentoDenuncia->DODE_DENUNCIA          = $denuncia->getKey();
+            $documentoDenuncia->DODE_DOCUMENTO_ORIGEN  = $denuncia->getDocumento();
+            $documentoDenuncia->DODE_DOCUMENTO_LOCAL   = $documento->getKey();
+            $documentoDenuncia->DODE_DETALLE           = $denuncia->Documento->Detalle->getKey();
+            // Relacionamos la recepción del documento-denuncia al último seguimiento del documento original (denuncia)
+            $documentoDenuncia->DODE_SEGUIMIENTO       = $denuncia->Documento->Seguimientos->last()->getKey();
+            $documentoDenuncia->save();
+        }
+
+        $folio_estructura = $recepcionista->getFolioEstructura();
+        $buscar     = ['%anio%','%folio%','%codigo%'];
+        $reemplazar = [$fecha_carbon->format('Y'),$documento->getFolio(),$tipo_documento->getCodigoAcuse()];
+
+        $folio_acuse = str_replace($buscar, $reemplazar, $folio_estructura);
+
+        // Sustituimos las diagonales por guiones bajos
+        $nombre_acuse_pdf = sprintf('%s.pdf',str_replace('/','_', $folio_acuse));
+
+        // Creamos el registro del acuse de recepción del documento
+        $acuse = new MAcuseRecepcion;
+        $acuse->ACUS_NUMERO    = $folio_acuse;
+        $acuse->ACUS_NOMBRE    = $nombre_acuse_pdf;
+        $acuse->ACUS_DOCUMENTO = $documento->getKey();
+        $acuse->ACUS_CAPTURA   = 1; // Documento localmente
+        $acuse->ACUS_DETALLE   = $detalle->getKey();
+        $acuse->ACUS_USUARIO   = userKey();
+        $acuse->ACUS_ENTREGO   = $request->nombre;
+        $acuse->ACUS_RECIBIO   = user()->UsuarioDetalle->presenter()->getNombreCompleto();
+        $acuse->save();
+
+        return $documento;
     }
 
     public function formEditarRecepcion(Request $request)

@@ -1,7 +1,7 @@
 <?php
 namespace App\DataTables;
 
-use App\Model\MDocumentoForaneo;
+use App\Model\MDocumento;
 
 class DocumentosForaneosDataTable extends CustomDataTable
 {
@@ -13,20 +13,12 @@ class DocumentosForaneosDataTable extends CustomDataTable
     
     protected function setSourceData()
     {
-        $this->sourceData = MDocumentoForaneo::with(['TipoDocumento','Detalle','Documento'=>function($query){
-            $query->with('AcuseRecepcion');
-        }])->existente()->noGuardado()->whereNotIn('DOFO_SYSTEM_TIPO_DOCTO',[1,2])->get(); // Denuncias, Documentos de denuncias
+        $this->sourceData = MDocumento::with('TipoDocumento','Detalle','AcuseRecepcion','DocumentoForaneo')->wForaneo()->siExistente()->noGuardado()->whereNotIn('DOCU_SYSTEM_TIPO_DOCTO',[1,2])->get(); // Denuncias, Documentos de denuncias
     }
 
     protected function columnsTable()
     {
         return [
-            // [
-            //     'title'  => '#',
-            //     'render' => function($documento){
-            //         return sprintf('<p class="text-center"><b>%s</b></p>',$documento->getFolio());
-            //     }
-            // ],
             [
                 'title'  => 'FOLIO RECEPCIÓN',
                 'render' => function($documento){
@@ -41,7 +33,9 @@ class DocumentosForaneosDataTable extends CustomDataTable
             ],
             [
                 'title'  => 'NÓ. DOCUMENTO',
-                'data'   => 'DOFO_NUMERO_DOCUMENTO'
+                'render' => function($documento){
+                    return $documento->getNumero();
+                }
             ],
             [
                 'title'  => 'ASUNTO',
@@ -58,12 +52,12 @@ class DocumentosForaneosDataTable extends CustomDataTable
             [
                 'title' => 'Tránsito',
                 'render' => function($documento){
-                    if ($documento->enviado())
-                        return '<span class="badge badge-primary">Enviado <i class="fa fa-fw fa-car"></i></span>';
-                    elseif ($documento->recibido())
+                    if ($documento->DocumentoForaneo->enviado())
+                        return sprintf('<span class="badge badge-primary" title="%s">Enviado <i class="fa fa-fw fa-car"></i></span>',$documento->DocumentoForaneo->getFechaEnviado());
+                    elseif ($documento->DocumentoForaneo->recibido())
                         return '<span class="badge badge-primary">Recibido <i class="fa fa-fw fa-folder"></i></span>';
                     elseif (user()->can('REC.DOCUMENTO.FORANEO'))
-                        return sprintf('<button type="button" class="btn btn-sm btn-success" onclick="hRecepcionForanea.enviar(%d)" title="Enviar documento"><i class="fa fa-fw fa-car"></i> Enviar documento</button>', $documento->getKey());
+                        return sprintf('<button type="button" class="btn btn-sm btn-success" onclick="hRecepcionForanea.enviar(%d)" title="Enviar documento"><i class="fa fa-fw fa-car"></i> Enviar documento</button>', $documento->DocumentoForaneo->getKey());
                     else
                         return '<span class="badge badge-warning"><i class="fa fa-fw fa-car"></i> En espera</span>';
                 }
@@ -71,8 +65,8 @@ class DocumentosForaneosDataTable extends CustomDataTable
             [
                 'title' => 'Validado',
                 'render' => function($documento){
-                    if ($documento->validado() )
-                        return '<span class="badge badge-success"><i class="fa fa-fw fa-check"></i> Validado</span>';
+                    if ($documento->DocumentoForaneo->validado() )
+                        return sprintf('<span class="badge badge-success" title="%s"><i class="fa fa-fw fa-check"></i> Validado</span>',$documento->DocumentoForaneo->getFechaValidado());
                     else
                         return '<span class="badge badge-danger"><i class="fa fa-fw fa-hourglass-start"></i> En espera</span>';
                 }
@@ -80,8 +74,8 @@ class DocumentosForaneosDataTable extends CustomDataTable
             [
                 'title' => 'Recepcionado',
                 'render' => function($documento){
-                    if ($documento->recepcionado() )
-                        return '<span class="badge badge-success"><i class="fa fa-fw fa-check"></i> ' . $documento->Documento->AcuseRecepcion->getNumero() . '</span>';
+                    if ($documento->DocumentoForaneo->recepcionado() )
+                        return sprintf('<span class="badge badge-success" title="%s"><i class="fa fa-fw fa-check"></i> Recepcionado</span>',$documento->DocumentoForaneo->getFechaRecepcionado());
                     else
                         return '<span class="badge badge-danger"><i class="fa fa-fw fa-hourglass-start"></i> En espera</span>';
                 }
@@ -105,7 +99,7 @@ class DocumentosForaneosDataTable extends CustomDataTable
                         $url_editar, $documento->getKey(), $url
                     );
 
-                    if( user()->can('REC.ELIMINAR.FORANEO') && ! $documento->recibido() )
+                    if( user()->can('REC.ELIMINAR.FORANEO') && ! $documento->DocumentoForaneo->recibido() )
                     {
                         $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcionForanea.delete_(%d)"><i class="fa fa-trash"></i></button>', $documento->getKey());
                     }

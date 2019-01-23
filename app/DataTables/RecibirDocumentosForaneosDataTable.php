@@ -1,7 +1,7 @@
 <?php
 namespace App\DataTables;
 
-use App\Model\MDocumentoForaneo;
+use App\Model\MDocumento;
 
 class RecibirDocumentosForaneosDataTable extends CustomDataTable
 {
@@ -13,9 +13,7 @@ class RecibirDocumentosForaneosDataTable extends CustomDataTable
     
     protected function setSourceData()
     {
-        $this->sourceData = MDocumentoForaneo::with(['TipoDocumento','Detalle','Documento'=>function($query){
-            $query->with('AcuseRecepcion');
-        }])->existente()->noGuardado()->whereNotIn('DOFO_SYSTEM_TIPO_DOCTO',[1,2])->get(); // Denuncias, Documentos de denuncias
+        $this->sourceData = MDocumento::with('TipoDocumento','Detalle','AcuseRecepcion','DocumentoForaneo')->isForaneo()->siExistente()->noGuardado()->whereNotIn('DOCU_SYSTEM_TIPO_DOCTO',[1,2])->get(); // Denuncias, Documentos de denuncias
     }
 
     protected function columnsTable()
@@ -35,7 +33,9 @@ class RecibirDocumentosForaneosDataTable extends CustomDataTable
             ],
             [
                 'title'  => 'NÓ. DOCUMENTO',
-                'data'   => 'DOFO_NUMERO_DOCUMENTO'
+                'render' => function($documento){
+                    return $documento->getNumero();
+                }
             ],
             [
                 'title'  => 'ASUNTO',
@@ -52,9 +52,9 @@ class RecibirDocumentosForaneosDataTable extends CustomDataTable
             [
                 'title' => 'Tránsito',
                 'render' => function($documento){
-                    if ($documento->enviado())
-                        return sprintf('<button type="button" class="btn btn-sm btn-success" onclick="hRecibirRecepcionForanea.recibir(%d)" title="Recibir documento"><i class="fa fa-fw fa-folder-open"></i> Recibir</button>', $documento->getKey());
-                    elseif( $documento->recibido() )
+                    if ($documento->DocumentoForaneo->enviado() && !$documento->DocumentoForaneo->recibido())
+                        return sprintf('<button type="button" class="btn btn-sm btn-success" onclick="hRecibirRecepcionForanea.recibir(%d)" title="Recibir documento"><i class="fa fa-fw fa-folder-open"></i> Recibir</button>', $documento->DocumentoForaneo->getKey());
+                    elseif( $documento->DocumentoForaneo->recibido() )
                         return '<span class="badge badge-primary"><i class="fa fa-fw fa-folder"></i> Recibido</span>';
                     else
                         return '<span class="badge badge-danger"><i class="fa fa-fw fa-car"></i> Aún no enviado</span>';
@@ -63,23 +63,23 @@ class RecibirDocumentosForaneosDataTable extends CustomDataTable
             [
                 'title' => 'Validado',
                 'render' => function($documento){
-                    if ($documento->validado())
+                    if ($documento->DocumentoForaneo->validado())
                         return '<span class="badge badge-success"><i class="fa fa-fw fa-check"></i> Validado</span>';
-                    elseif ($documento->recibido())
-                        return sprintf('<button type="button" class="btn btn-sm btn-success" onclick="hRecibirRecepcionForanea.validar(%d)" title="Validar documento"><i class="fa fa-fw fa-check"></i> Validar</button>', $documento->getKey());
+                    elseif ($documento->DocumentoForaneo->recibido())
+                        return sprintf('<button type="button" class="btn btn-sm btn-success" onclick="hRecibirRecepcionForanea.validar(%d)" title="Validar documento"><i class="fa fa-fw fa-check"></i> Validar</button>', $documento->DocumentoForaneo->getKey());
                     else
-                        return '<span class="badge badge-danger"><i class="fa fa-fw fa-times"></i> Aún sin validar</span>';
+                        return '<span class="badge badge-danger"><i class="fa fa-fw fa-times"></i> Pendiente</span>';
                 }
             ],
             [
                 'title' => 'Recepcionado',
                 'render' => function($documento){
-                    if ($documento->recepcionado() )
-                        return '<span class="badge badge-success"><i class="fa fa-fw fa-check"></i> ' . $documento->Documento->AcuseRecepcion->getNumero() . '</span>';
-                    elseif ($documento->recibido())
-                        return sprintf('<button type="button" class="btn btn-sm btn-success" onclick="hRecibirRecepcionForanea.recepcionar(%d)" title="Recepcionar documento"><i class="fa fa-fw fa-check"></i> Recepcionar</button>', $documento->getKey());
+                    if ($documento->DocumentoForaneo->recepcionado() )
+                        return '<span class="badge badge-success"><i class="fa fa-fw fa-check"></i> Recepcionado</span>';
+                    elseif ($documento->DocumentoForaneo->validado())
+                        return sprintf('<button type="button" class="btn btn-sm btn-success" onclick="hRecibirRecepcionForanea.recepcionar(%d)" title="Recepcionar documento"><i class="fa fa-fw fa-check"></i> Recepcionar</button>', $documento->DocumentoForaneo->getKey());
                     else
-                        return '<span class="badge badge-danger"><i class="fa fa-fw fa-times"></i> Aún sin validar</span>';
+                        return '<span class="badge badge-danger"><i class="fa fa-fw fa-times"></i> Pendiente</span>';
                 }
             ],
             [
@@ -92,8 +92,6 @@ class RecibirDocumentosForaneosDataTable extends CustomDataTable
                     $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcion.view(%d)" title="Ver anexos del documento"><i class="fa fa-fw fa-clipboard"></i></button>', $documento->getKey());
 
                     $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-success" onclick="hRecepcion.view(%d)" title="Acuse de Recepción"><i class="fa fa-fw fa-file-text"></i></button>', $documento->getKey());
-
-                    //$buttons .= '<button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcion.delete('.$query->DOFO_DOCUMENTO.')"><i class="fa fa-file-pdf-o"></i></button>';
 
                     return $buttons;
                 }

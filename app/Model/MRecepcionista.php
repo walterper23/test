@@ -27,6 +27,16 @@ class MRecepcionista extends BaseModel
         return $this->getAttribute('RECE_TIPO');
     }
 
+    public function scopeIsLocal($query)
+    {
+        return $query->where('RECE_TIPO',1);
+    }
+
+    public function scopeIsForaneo($query)
+    {
+        return $query->where('RECE_TIPO',2);
+    }
+
     /* Relationships */
 
     public function Usuario()

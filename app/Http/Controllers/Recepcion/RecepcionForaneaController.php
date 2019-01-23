@@ -16,6 +16,7 @@ use App\Model\MAcuseRecepcion;
 use App\Model\MArchivo;
 use App\Model\MDenuncia;
 use App\Model\MDetalle;
+use App\Model\MDocumento;
 use App\Model\MDocumentoForaneo;
 use App\Model\MDocumentoDenuncia;
 use App\Model\MEscaneo;
@@ -198,119 +199,27 @@ class RecepcionForaneaController extends BaseController
     public function nuevaRecepcion( $request )
     {
         try {
+            $recepcion = new RecepcionController;
+            
             DB::beginTransaction();
 
-            $tipo_documento = MSystemTipoDocumento::find( $request->tipo_documento );
+            // Mandamos a recepcionar el documento
+            $documento = $recepcion->procesoRecepcionar($request,2); // 2 = Tipo recepción foránea
 
-            $fecha_recepcion = $request->recepcion;
-
-            $fecha_carbon = Carbon::createFromFormat('Y-m-d',$fecha_recepcion);
-
-            // Guardamos los detalles del documento
-            $detalle = new MDetalle;
-            $detalle->DETA_ANIO                   = $fecha_carbon->year;
-            $detalle->DETA_MUNICIPIO              = $request->municipio;
-            $detalle->DETA_FECHA_RECEPCION        = $fecha_recepcion;
-            $detalle->DETA_DESCRIPCION            = $request->descripcion;
-            $detalle->DETA_RESPONSABLE            = $request->responsable;
-            $detalle->DETA_ANEXOS                 = $request->anexos;
-            $detalle->DETA_OBSERVACIONES          = $request->observaciones;
-            $detalle->DETA_ENTREGO_NOMBRE         = $request->nombre;
-            $detalle->DETA_ENTREGO_EMAIL          = $request->e_mail;
-            $detalle->DETA_ENTREGO_TELEFONO       = $request->telefono;
-            $detalle->DETA_ENTREGO_IDENTIFICACION = $request->identificacion;
-            $detalle->save();
-            
-            // Recuperar el folio del último documento recepcionado que sea del año de la fecha de recepción y no eliminado
-            $ultimo_folio = MDocumentoForaneo::select('DOFO_FOLIO')
-                            ->join('detalles','DOFO_DETALLE','=','DETA_DETALLE')
-                            ->where('DETA_ANIO',$fecha_carbon->year) // Mismo año que el año de la recepción que se está haciendo 
-                            ->existente() // Existente
-                            ->orderBy('DOFO_FOLIO','DESC') // Folio descendente
-                            ->limit(1)
-                            ->first();
-
-            if( $ultimo_folio )
+            // Si el documento es foráneo, guardamos el registro foráneo
+            if( $documento->isForaneo() )
             {
-                $ultimo_folio = $ultimo_folio->getFolio();
+                $documentoForaneo = new MDocumentoForaneo;
+                $documentoForaneo->DOFO_SYSTEM_TIPO_DOCTO   = $documento->getTipoDocumento();
+                $documentoForaneo->DOFO_DETALLE             = $documento->getDetalle();
+                $documentoForaneo->DOFO_ENVIADO             = 0; // Documento foráneo aún no Enviado a Oficialía de partes
+                $documentoForaneo->DOFO_RECIBIDO            = 0; // Documento foráneo aún no Recibido por Oficialía de partes
+                $documentoForaneo->DOFO_VALIDADO            = 0; // Documento foráneo aún no Validado por Oficialía de partes
+                $documentoForaneo->DOFO_RECEPCIONADO        = 0; // Documento foráneo aún no Recepcionado por Oficialía de partes
+                $documentoForaneo->DOFO_DOCUMENTO_LOCAL     = $documento->getKey();
+                $documentoForaneo->save();
             }
-            else
-            {
-                $ultimo_folio = 0;
-            }
-
-
-            // Guardamos el documento foráneo
-            $documento = new MDocumentoForaneo;
-            $documento->DOFO_FOLIO               = $ultimo_folio + 1;
-            $documento->DOFO_SYSTEM_TIPO_DOCTO   = $request->tipo_documento;
-            $documento->DOFO_DETALLE             = $detalle->getKey();
-            $documento->DOFO_NUMERO_DOCUMENTO    = $request->numero;
-            $documento->DOFO_SYSTEM_TRANSITO     = 0; // Documento foráneo aún No enviado a Oficialía de partes
-            $documento->DOFO_VALIDADO            = 0; // Documento foráneo aún no Validado por Oficialía de partes
-            $documento->DOFO_RECEPCIONADO        = 0; // Documento foráneo aún no Recepcionado por Oficialía de partes
-
-            /**
-             * Los folios se reinician automáticamente cada año.
-             * El siguiente fragmento de código permite reiniciar los folios en cualquier momento del año
-             * pero siempre se reiniciarán cada inicio de año
-             */
-            $fecha_reinicio = config_var('Adicional.Fecha.Reinicio.Folios.Foraneo');
-
-            // Si existe una fecha de reinicio de folios y esa fecha es menor o igual al momento de hoy
-            if (! is_null($fecha_reinicio) && $fecha_reinicio <= date('Y-m-d H:i:s') )
-            {
-                $documento->DOFO_FOLIO = config_var('Adicional.Folio.Reinicio.Folios.Foraneo');
-
-                $fecha_reinicio = MSystemConfig::where('SYCO_VARIABLE','Adicional.Fecha.Reinicio.Folios.Foraneo')->limit(1)->first();
-                $fecha_reinicio->SYCO_VALOR = null; // Vaciamos la fecha de reinicio
-                $fecha_reinicio->save();
-
-                MSystemConfig::setAllVariables(); // Volvemos a cargar la variables de configuración al caché
-            }
-
-            $documento->save();
             
-            /* !!! El documento foráneo no debe crear ningún primer seguimiento !!! */
-            
-            if ($tipo_documento->getKey() == 2 ) // Si el tipo de documento es un documento para denuncia ...
-            {
-                $denuncia = MDenuncia::with('Documento')->find( $request->denuncia );
-
-                $documentoDenuncia = new MDocumentoDenuncia; // ... registramos el documento a la denuncia
-                $documentoDenuncia->DODE_DENUNCIA          = $denuncia->getKey();
-                $documentoDenuncia->DODE_DOCUMENTO_ORIGEN  = $denuncia->Documento->getKey();
-                $documentoDenuncia->DODE_DOCUMENTO_FORANEO = $documento->getKey();
-                $documentoDenuncia->DODE_DETALLE           = $denuncia->Documento->Detalle->getKey();
-                // Relacionamos la recepción del documento-denuncia al último seguimiento del documento original (denuncia)
-                $documentoDenuncia->DODE_SEGUIMIENTO       = $denuncia->Documento->Seguimientos->last()->getKey();
-                $documentoDenuncia->save();
-            }
-
-            // Buscamos la configuración del usuario como recepcionista
-            $recepcionista = user()->Recepcionista;
-
-            $folio_estructura = $recepcionista->getFolioEstructura();
-            $buscar     = ['%anio%','%folio%','%codigo%'];
-            $reemplazar = [$fecha_carbon->format('Y'),$documento->getFolio(),$tipo_documento->getCodigoAcuse()];
-
-            $folio_acuse = str_replace($buscar, $reemplazar, $folio_estructura);
-
-            // Sustituimos las diagonales por guiones bajos
-            $nombre_acuse_pdf = sprintf('%s.pdf',str_replace('/','_', $folio_acuse));
-            
-            // Creamos el registro del acuse de recepción del documento
-            $acuse = new MAcuseRecepcion;
-            $acuse->ACUS_NUMERO    = $folio_acuse;
-            $acuse->ACUS_NOMBRE    = $nombre_acuse_pdf;
-            $acuse->ACUS_DOCUMENTO = $documento->getKey();
-            $acuse->ACUS_CAPTURA   = 2; // Documento foráneo
-            $acuse->ACUS_DETALLE   = $detalle->getKey();
-            $acuse->ACUS_USUARIO   = userKey();
-            $acuse->ACUS_ENTREGO   = $request->nombre;
-            $acuse->ACUS_RECIBIO   = user()->UsuarioDetalle->presenter()->getNombreCompleto();
-            $acuse->save();
-
             DB::commit();
 
             return $this->responseSuccessJSON(['documento'=>$documento->getKey(),'tipo'=>'foraneo']);
@@ -462,7 +371,7 @@ class RecepcionForaneaController extends BaseController
     {
         try{
             $id_documento = $request->get('id');
-            $documento = MDocumentoForaneo::findOrFail($id_documento);
+            $documento = MDocumento::findOrFail($id_documento);
 
             $acuse = $documento->AcuseRecepcion;
 
@@ -544,11 +453,11 @@ class RecepcionForaneaController extends BaseController
     public function enviarDocumento( $request )
     {
         $documento = MDocumentoForaneo::findOrFail( $request->id );
-        $documento->DOFO_SYSTEM_TRANSITO = 1;
-        $documento->DOFO_FECHA_ENVIADO   = Carbon::now();
+        $documento->DOFO_ENVIADO       = 1;
+        $documento->DOFO_FECHA_ENVIADO = Carbon::now();
         $documento->save();
 
-        $message = sprintf('Documento #<b>%s</b> enviado <i class="fa fa-fw fa-car"></i>',$documento->getFolio());
+        $message = sprintf('Documento #<b>%s</b> enviado <i class="fa fa-fw fa-car"></i>',$documento->Documento->getFolio());
 
         if ($documento->getTipoDocumento() == 1)
         {
@@ -568,7 +477,7 @@ class RecepcionForaneaController extends BaseController
 
         // Crear la notificación para usuarios del sistema
         $data = [
-            'contenido'  => sprintf('Documento foráneo #%s <b>%s</b> ha sido puesto en tránsito. Recuerde recibir el documento.', $documento->getFolio(), $documento->TipoDocumento->getNombre()),
+            'contenido'  => sprintf('Documento foráneo #%s <b>%s</b> ha sido puesto en tránsito. Recuerde recibir el documento.', $documento->Documento->getFolio(), $documento->TipoDocumento->getNombre()),
             'url'        => 'recepcion/documentos/foraneos' . $redirect,
         ];
             

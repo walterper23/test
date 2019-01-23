@@ -30,21 +30,6 @@ class MDocumentoForaneo extends BaseModel
         return $this->getAttribute('DOFO_SYSTEM_TIPO_DOCTO');
     }
 
-    public function getTipoRecepcion()
-    {
-        return 2;
-    }
-
-    public function isLocal()
-    {
-        return $this->getTipoRecepcion() == 1;
-    }
-
-    public function isForaneo()
-    {
-        return $this->getTipoRecepcion() == 2;
-    }
-
     public function noEnviado()
     {
         return $this->getAttribute('DOFO_SYSTEM_TRANSITO') == 0;
@@ -52,12 +37,22 @@ class MDocumentoForaneo extends BaseModel
 
     public function enviado()
     {
-        return $this->getAttribute('DOFO_SYSTEM_TRANSITO') == 1;
+        return $this->getAttribute('DOFO_ENVIADO') == 1;
+    }
+
+    public function getFechaEnviado()
+    {
+        return $this->getAttribute('DOFO_FECHA_ENVIADO');
     }
 
     public function recibido()
     {
-        return $this->getAttribute('DOFO_SYSTEM_TRANSITO') == 2;
+        return $this->getAttribute('DOFO_RECIBIDO') == 1;
+    }
+
+    public function getFechaRecibido()
+    {
+        return $this->getAttribute('DOFO_FECHA_RECIBIDO');
     }
 
     public function validado()
@@ -65,9 +60,19 @@ class MDocumentoForaneo extends BaseModel
         return $this->getAttribute('DOFO_VALIDADO') == 1;
     }
 
+    public function getFechaValidado()
+    {
+        return $this->getAttribute('DOFO_FECHA_VALIDADO');
+    }
+
     public function recepcionado()
     {
         return $this->getAttribute('DOFO_RECEPCIONADO') == 1;
+    }
+
+    public function getFechaRecepcionado()
+    {
+        return $this->getAttribute('DOFO_FECHA_RECEPCIONADO');
     }
 
     /* Local Scopes */

@@ -22,6 +22,11 @@ class MDocumento extends BaseModel
         return parent::getFolio($size,$str,$direction);
     }
 
+    public function getDetalle()
+    {
+        return $this->getAttribute('DOCU_DETALLE');
+    }
+
     public function getNumero()
     {
         return $this->getAttribute('DOCU_NUMERO_DOCUMENTO');
@@ -135,6 +140,16 @@ class MDocumento extends BaseModel
     public function scopeNoGuardado($query)
     {
         return $query->where('DOCU_GUARDADO',0);
+    }
+
+    public function scopeIsLocal($query)
+    {
+        return $query->where('DOCU_TIPO_RECEPCION',1);
+    }
+
+    public function scopeIsForaneo($query)
+    {
+        return $query->where('DOCU_TIPO_RECEPCION',2);
     }
 
 
