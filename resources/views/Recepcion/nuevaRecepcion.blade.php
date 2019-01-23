@@ -216,7 +216,7 @@
 
                                 if( inputEscaneos.length > 0 )
                                 {
-                                    formRecepcion.subirEscaneo(resolve, reject, form, result.tipo, result.documento, 0);
+                                    formRecepcion.subirEscaneo(resolve, reject, form, result.documento, 0);
                                 }
                                 else
                                 {
@@ -251,7 +251,7 @@
             });
         };
 
-        this.subirEscaneo = function(resolve, reject, form, tipo, documento, indexFile){
+        this.subirEscaneo = function(resolve, reject, form, documento, indexFile){
 
             if( typeof inputEscaneos[indexFile] !== 'undefined' && typeof inputEscaneos[indexFile].files[0] !== 'undefined' )
             {
@@ -262,7 +262,6 @@
                 var inputFile = inputEscaneos[indexFile].files[0];
 
                 var form_data = new FormData();
-                form_data.append('tipo',tipo);
                 form_data.append('documento',documento);
                 form_data.append('escaneo', inputFile)
 
@@ -301,7 +300,7 @@
                         }
 
                         xhr.addEventListener('load',function(event){
-                            setTimeout(formRecepcion.subirEscaneo(resolve, reject, form, tipo, documento, indexFile + 1),2000)
+                            setTimeout(formRecepcion.subirEscaneo(resolve, reject, form, documento, indexFile + 1),2000)
                         },false)
 
                         xhr.addEventListener('error',function(event){
@@ -318,9 +317,12 @@
         }
 
         this.finalizarRecepcion = function(resolve, reject, documento){
+
+            let acuse = $('#acuse').is(':checked') ? 1 : 0;
+            
             App.ajaxRequest({
                 url   : formRecepcion.form.attr('action'),
-                data  : { action : 5 , acuse : 1, id : documento },
+                data  : { action : 5 , acuse : acuse, id : documento },
                 beforeSend : function(){
                     $('#span-message').html('Finalizando recepción...');
                 },

@@ -22,7 +22,7 @@ class DocumentoController extends BaseController
     }
 
 
-    public function local()
+    public function local(Request $request)
     {
 
     }
@@ -33,7 +33,6 @@ class DocumentoController extends BaseController
         $data['title']           = sprintf('Anexos del documento #%s', $documento->getFolio() );
         $data['anexos']          = $this->getAnexos( $documento );
         $data['folio_recepcion'] = $documento->AcuseRecepcion->getNumero();
-
 
         return view('Documento.modalAnexosEscaneos')->with($data);
     }
@@ -77,31 +76,24 @@ class DocumentoController extends BaseController
         return view('Documento.modalAnexosEscaneos')->with($data);
     }
 
-    public function foraneo()
+    public function foraneo(Request $request)
     {
-
+        return $this->local();
     }
 
     public function foraneoAnexos(Request $request)
     {
-
+        return $this->localAnexos($request);
     }
 
     public function foraneoEscaneos(Request $request)
     {
-
+        return $this->localEscaneos($request);
     }
 
     public function foraneoAnexosEscaneos(Request $request)
     {
-        $documento = MDocumentoForaneo::find( $request->id );
-
-        $data['title']           = sprintf('Anexos y escaneos: %s #%s', $documento->TipoDocumento->getNombre(), $documento->getFolio());
-        $data['anexos']          = $this->getAnexos( $documento, 'col-md-6' );
-        $data['escaneos']        = $this->getEscaneos( $documento, 'col-md-6' );
-        $data['folio_recepcion'] = $documento->AcuseRecepcion->getNumero();
-
-        return view('Documento.modalAnexosEscaneos')->with($data);
+        return $this->localAnexosEscaneos($request);
     }
 
     private function getAnexos( $documento, $size = '' )

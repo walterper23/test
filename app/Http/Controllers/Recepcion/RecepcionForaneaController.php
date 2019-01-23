@@ -222,7 +222,7 @@ class RecepcionForaneaController extends BaseController
             
             DB::commit();
 
-            return $this->responseSuccessJSON(['documento'=>$documento->getKey(),'tipo'=>'foraneo']);
+            return $this->responseSuccessJSON(['documento'=>$documento->getKey()]);
         } catch(Exception $error) {
             DB::rollback();
             return $this->responseErrorJSON( $error->getMessage() );
@@ -231,8 +231,8 @@ class RecepcionForaneaController extends BaseController
 
     public function formEditarRecepcion(Request $request)
     {
-        $documento = $request->get('search');
-        $documento = MDocumentoForaneo::findOrFail($documento);
+        $documentoForaneo = $request->get('search');
+        $documentoForaneo = MDocumentoForaneo::findOrFail($documentoForaneo);
 
         $data = [];
 
@@ -273,8 +273,8 @@ class RecepcionForaneaController extends BaseController
         $data['form_id']               = 'form-editar-recepcion-foranea';
         $data['url_send_form']         = url('recepcion/documentos-foraneos/manager');
         $data['url_send_form_escaneo'] = url('recepcion/documentos-foraneos/nuevo-escaneo');
-        $data['documento']             = $documento;
-        $data['detalle']               = $documento->Detalle;
+        $data['documento']             = $documentoForaneo->Documento;
+        $data['detalle']               = $documentoForaneo->Detalle;
 
         $data['form'] = view('Recepcion.formEditarRecepcion')->with($data);
 
@@ -287,80 +287,15 @@ class RecepcionForaneaController extends BaseController
     public function editarRecepcion( $request )
     {
         try {
-            $tipo_documento = MSystemTipoDocumento::find( $request->tipo_documento );
-
-            $fecha_recepcion = $request->recepcion;
+            $recepcion = new RecepcionController;
 
             DB::beginTransaction();
 
-            // Buscamos el documento
-            $documento = MDocumentoForaneo::findOrFail($request->id);
-            $documento->DOFO_SYSTEM_TIPO_DOCTO   = $tipo_documento->getKey();
-            $documento->DOFO_NUMERO_DOCUMENTO    = $request->numero;
-            $documento->save();
-
-            // Guardamos los detalles del documento
-            $detalle = $documento->Detalle;
-            $detalle->DETA_MUNICIPIO              = $request->municipio;
-            $detalle->DETA_FECHA_RECEPCION        = $fecha_recepcion;
-            $detalle->DETA_DESCRIPCION            = $request->descripcion;
-            $detalle->DETA_RESPONSABLE            = $request->responsable;
-            $detalle->DETA_ANEXOS                 = $request->anexos;
-            $detalle->DETA_OBSERVACIONES          = $request->observaciones;
-            $detalle->DETA_ENTREGO_NOMBRE         = $request->nombre;
-            $detalle->DETA_ENTREGO_EMAIL          = $request->e_mail;
-            $detalle->DETA_ENTREGO_TELEFONO       = $request->telefono;
-            $detalle->DETA_ENTREGO_IDENTIFICACION = $request->identificacion;
-            $detalle->save();
-
-            if ($tipo_documento->getKey() == 1) // Si el tipo de documento es denuncia ...
-            {
-                $documento->DOFO_NUMERO_DOCUMENTO = null;
-                $documento->save();
-            }
-            else if ($tipo_documento->getKey() == 2) // Si el tipo de documento es un documento para denuncia ...
-            {
-                $denuncia = MDenuncia::findOrFail( $request->denuncia );
-
-                $documentoDenuncia = $documento->DocumentoDenuncia;
-
-                if(! $documentoDenuncia ) // Si el documento aún no se encuentra ligado a una denuncia, ligamos el documento a la denuncia
-                {
-                    $documentoDenuncia = new MDocumentoDenuncia; // ... registramos el documento a la denuncia
-                    $documentoDenuncia->DODE_DOCUMENTO_FORANEO = $documento->getKey();
-                    $documentoDenuncia->DODE_DETALLE           = $denuncia->Documento->Detalle->getKey();
-                    // Relacionamos la recepción del documento-denuncia al último seguimiento del documento original (denuncia)
-                    $documentoDenuncia->DODE_SEGUIMIENTO       = $denuncia->Documento->Seguimientos->last()->getKey();
-                }
-
-                $documentoDenuncia->DODE_DENUNCIA         = $denuncia->getKey();
-                $documentoDenuncia->DODE_DOCUMENTO_ORIGEN = $denuncia->getDocumento();
-                $documentoDenuncia->save();
-            }
-
-            $fecha_carbon = Carbon::createFromFormat('Y-m-d',$fecha_recepcion);
-
-            $recepcionista = user()->Recepcionista;
-
-            $folio_estructura = $recepcionista->getFolioEstructura();
-            $buscar     = ['%anio%','%folio%','%codigo%'];
-            $reemplazar = [$fecha_carbon->format('Y'),$documento->getFolio(),$tipo_documento->getCodigoAcuse()];
-
-            $folio_acuse = str_replace($buscar, $reemplazar, $folio_estructura);
-
-            // Sustituimos las diagonales por guiones bajos
-            $nombre_acuse_pdf = sprintf('%s.pdf',str_replace('/','_', $folio_acuse));
-            
-            // Modificamos el registro del acuse de recepción del documento
-            $acuse = $documento->AcuseRecepcion;
-            $acuse->ACUS_NUMERO    = $folio_acuse;
-            $acuse->ACUS_NOMBRE    = $nombre_acuse_pdf;
-            $acuse->ACUS_ENTREGO   = $detalle->getEntregoNombre();
-            $acuse->save();
+            $documento = $recepcion->procesoEditarRecepcion($request,2); // 1 = Tipo recepción foránea
 
             DB::commit();
 
-            return $this->responseSuccessJSON(['documento'=>$documento->getKey(),'tipo'=>'foraneo']);
+            return $this->responseSuccessJSON(['documento'=>$documento->getKey()]);
         } catch(Exception $error) {
             DB::rollback();
             return $this->responseErrorJSON( $error->getMessage() );
@@ -382,7 +317,6 @@ class RecepcionForaneaController extends BaseController
             }
             
             $tipo_documento = $documento->TipoDocumento;
-
 
             if ($tipo_documento->getKey() == 1) // Si el tipo de documento es denuncia ...
             {
@@ -426,7 +360,11 @@ class RecepcionForaneaController extends BaseController
     public function eliminarRecepcion( $request )
     {
         try {
-            $documento = MDocumentoForaneo::findOrFail( $request->id );
+            $documentoForaneo = MDocumentoForaneo::findOrFail( $request->id );
+            $documentoForaneo->eliminar()->save();
+
+            $documento = $documentoForaneo->Documento;
+            $documento->DOCU_SYSTEM_ESTADO_DOCTO = 6; // Estado de Documento Eliminado
             $documento->eliminar()->save();
 
             // Lista de tablas que se van a recargar automáticamente
@@ -442,7 +380,7 @@ class RecepcionForaneaController extends BaseController
                     break;
             }
 
-            $message = sprintf('<i class="fa fa-fw fa-warning"></i> Recepción foránea <b>%s</b> eliminada',$documento->getFolio());
+            $message = sprintf('<i class="fa fa-fw fa-warning"></i> Documento <b>%s</b> eliminada',$documento->getFolio());
 
             return $this->responseWarningJSON($message,'danger',$tables);
         } catch(Exception $error) {

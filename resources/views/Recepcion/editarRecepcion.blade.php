@@ -210,7 +210,7 @@
 
                                 if( inputEscaneos.length > 0 )
                                 {
-                                    formRecepcion.subirEscaneo(resolve, reject, form, result.tipo, result.documento, 0, result);
+                                    formRecepcion.subirEscaneo(resolve, reject, form, result.documento, 0, result);
                                 }
                                 else
                                 {
@@ -245,7 +245,7 @@
             });
         };
 
-        this.subirEscaneo = function(resolve, reject, form, tipo, documento, indexFile, result){
+        this.subirEscaneo = function(resolve, reject, form, documento, indexFile, result){
 
             if( typeof inputEscaneos[indexFile] !== 'undefined' && typeof inputEscaneos[indexFile].files[0] !== 'undefined' )
             {
@@ -256,7 +256,6 @@
                 var inputFile = inputEscaneos[indexFile].files[0];
 
                 var form_data = new FormData();
-                form_data.append('tipo',tipo);
                 form_data.append('documento',documento);
                 form_data.append('escaneo', inputFile)
 
@@ -295,7 +294,7 @@
                         }
 
                         xhr.addEventListener('load',function(event){
-                            setTimeout(formRecepcion.subirEscaneo(resolve, reject, form, tipo, documento, indexFile + 1, result),2000)
+                            setTimeout(formRecepcion.subirEscaneo(resolve, reject, form, documento, indexFile + 1, result),2000)
                         },false)
 
                         xhr.addEventListener('error',function(event){

@@ -59,6 +59,7 @@ class MailNuevoDocumentoForaneoRecepcionado extends Mailable
         $mail->subject($subject);
         $mail->attachData($pdf->Output(), $acuseRecepcion->getNombre(), ['mime' => 'application/pdf']);
 
+        // Mandamos por correo máximo 2 archivos
         $escaneos = $this->documento->Escaneos()->with('Archivo')->limit(2)->get();
 
         foreach ($escaneos as $escaneo) {

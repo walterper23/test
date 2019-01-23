@@ -47,12 +47,9 @@ class AcuseRecepcionController extends BaseController
             'acuse'        => $acuseRecepcion,
             'detalle'      => $acuseRecepcion->Detalle,
             'usuario'      => $acuseRecepcion->Usuario,
+            'documento']   => $acuseRecepcion->Documento
         ];
 
-        if ($acuseRecepcion->getCaptura() == 1) // Acuse de documento local
-            $data['documento'] = $acuseRecepcion->DocumentoLocal;
-        else                                      // Acuse de documento foráneo 
-            $data['documento'] = $acuseRecepcion->DocumentoForaneo;
         
         $pdf = PDF::loadView('Recepcion.Acuses.acuseRecepcion', $data, [], [
             'margin_top' => 28, 'margin_bottom' => 20

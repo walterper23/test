@@ -18,15 +18,7 @@
             <h3 class="block-title">
                 <i class="fa fa-fw fa-history"></i>
                 Historial de Cambios de Estados del Documento <b>#{{ $documento->getFolio() }}</b>
-                @if( $seguimiento->Documento->recepcionado() )
-                <span class="badge badge-primary">Recepcionado</span>
-                @elseif( $seguimiento->Documento->enSeguimiento() )
-                <span class="badge badge-danger">En seguimiento</span>
-                @elseif( $seguimiento->Documento->finalizado() )
-                <span class="badge badge-success">Finalizado</span>
-                @elseif( $seguimiento->Documento->rechazado() )
-                <span class="badge badge-warning">Rechazado</span>
-                @endif
+                {!! $seguimiento->Documento->EstadoDocumento->presenter()->getBadge() !!}
             </h3>
             <div class="block-options">
                 @can('SIS.ADMIN.ESTA.DOC')

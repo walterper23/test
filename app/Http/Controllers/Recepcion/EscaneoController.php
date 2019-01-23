@@ -20,7 +20,6 @@ class EscaneoController extends BaseController
     public function nuevoEscaneo(EscaneoRequest $request)
     {
         try{
-            $tipo_documento = $request->get('tipo');
             $id_documento   = $request->get('documento');
             $escaneo_file   = $request->file('escaneo',null);
 
@@ -29,17 +28,15 @@ class EscaneoController extends BaseController
                 return $this->responseErrorJSON('Archivo no válido');
             }
 
-            if( $tipo_documento == 'local' ) // Buscamos el documento local
+            $documento = MDocumento::findOrFail($id_documento);
+            
+            if( $documento->isLocal() ) // Documento local
             {
-                $documento       = MDocumento::findOrFail($id_documento);
                 $filename        = 'docto_%d_scan_%d_arch_%d_%s.pdf';
-                $columna_escaneo = 'ESCA_DOCUMENTO_LOCAL';
             }
-            else // Buscamos el documento foráneo
+            else
             {
-                $documento       = MDocumentoForaneo::findOrFail($id_documento);
-                $filename        = 'docto_foraneo_%d_scan_%d_arch_%d_%s.pdf';
-                $columna_escaneo = 'ESCA_DOCUMENTO_FORANEO';
+                $filename        = 'docto_%d_scan_%d_arch_%d_foraneo_%s.pdf';
             }
 
             if( $nombre_request = $request->get('nombre_escaneo',false) )
@@ -63,9 +60,9 @@ class EscaneoController extends BaseController
             $archivo->save();
 
             $escaneo = new MEscaneo;
-            $escaneo->ESCA_ARCHIVO       = $archivo->getKey(); 
-            $escaneo->{$columna_escaneo} = $documento->getKey(); 
-            $escaneo->ESCA_NOMBRE        = $nombre_escaneo; 
+            $escaneo->ESCA_ARCHIVO         = $archivo->getKey(); 
+            $escaneo->ESCA_DOCUMENTO_LOCAL = $documento->getKey(); 
+            $escaneo->ESCA_NOMBRE          = $nombre_escaneo; 
             $escaneo->save();
 
             $filename = sprintf($filename,$documento->getKey(), $escaneo->getKey(), $archivo->getKey(), time());

@@ -13,18 +13,12 @@ class DocumentosDataTable extends CustomDataTable
     
     protected function setSourceData()
     {
-        $this->sourceData = MDocumento::with('TipoDocumento','Detalle','AcuseRecepcion')->existente()->noGuardado()->whereNotIn('DOCU_SYSTEM_TIPO_DOCTO',[1,2])->get(); // Denuncias, Documentos de denuncias
+        $this->sourceData = MDocumento::with('TipoDocumento','Detalle','AcuseRecepcion')->siExistente()->noGuardado()->whereNotIn('DOCU_SYSTEM_TIPO_DOCTO',[1,2])->get(); // Denuncias, Documentos de denuncias
     }
 
     protected function columnsTable()
     {
         return [
-            // [
-            //     'title'  => '#',
-            //     'render' => function($documento){
-            //         return sprintf('<p class="text-center"><b>%s</b></p>',$documento->getFolio());
-            //     }
-            // ],
             [
                 'title'  => 'FOLIO RECEPCIÓN',
                 'render' => function($documento){
@@ -39,7 +33,9 @@ class DocumentosDataTable extends CustomDataTable
             ],
             [
                 'title'  => 'NÓ. DOCUMENTO',
-                'data'   => 'DOCU_NUMERO_DOCUMENTO'
+                'render' => function($documento){
+                    return $documento->getNumero();
+                }
             ],
             [
                 'title'  => 'ASUNTO',
@@ -56,20 +52,16 @@ class DocumentosDataTable extends CustomDataTable
             [
                 'title'  => 'Opciones',
                 'render' => function($documento){
-                    $url = url( sprintf('recepcion/acuse/documento/%s',$documento->AcuseRecepcion->getNombre()) );
-                    
                     $url_editar = url( sprintf('recepcion/documentos/editar-recepcion?search=%d',$documento->getKey()) );
 
-                    //$buttons .= sprintf('<button type="button" class="btn btn-sm btn-circle btn-alt-primary" onclick="hRecepcion.view(%d)" title="Ver documento"><i class="fa fa-fw fa-eye"></i></button>', $documento->getKey());
-                    
-                    $buttons = sprintf('
-                        <a class="btn btn-sm btn-circle btn-alt-success" href="%s" title="Editar recepción"><i class="fa fa-fw fa-pencil"></i></a>
-                        <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcion.anexos(%d)" title="Anexos del documento">
-                            <i class="fa fa-fw fa-clipboard"></i>
-                        </button>
-                        <a class="btn btn-sm btn-circle btn-alt-primary" href="%s" target="_blank" title="Acuse de Recepción"><i class="fa fa-fw fa-file-text"></i></a>',
-                        $url_editar, $documento->getKey(), $url
-                    );
+                    $buttons = '';
+
+                    $buttons .= sprintf('<a class="btn btn-sm btn-circle btn-alt-success" href="%s" title="Editar recepción"><i class="fa fa-fw fa-pencil"></i></a>', $url_editar);
+
+                    $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcion.anexos(%d)" title="Ver anexos del documento"><i class="fa fa-fw fa-clipboard"></i></button>', $documento->getKey());
+
+                    $url = url( sprintf('recepcion/acuse/documento/%s',$documento->AcuseRecepcion->getNombre()) );
+                    $buttons .= sprintf(' <a class="btn btn-sm btn-circle btn-alt-primary" href="%s" target="_blank" title="Acuse de Recepción"><i class="fa fa-fw fa-file-text"></i></a>', $url);
 
                     if( user()->can('REC.ELIMINAR.LOCAL') && $documento->recepcionado() )
                     {

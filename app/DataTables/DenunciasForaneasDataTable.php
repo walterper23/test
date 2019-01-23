@@ -20,8 +20,8 @@ class DenunciasForaneasDataTable extends CustomDataTable
         return [
             [
                 'title'  => 'FOLIO RECEPCIÓN',
-                'render' => function($denuncia){
-                    return $denuncia->AcuseRecepcion->getNumero();
+                'render' => function($documento){
+                    return $documento->AcuseRecepcion->getNumero();
                 }
             ],
             [
@@ -38,56 +38,50 @@ class DenunciasForaneasDataTable extends CustomDataTable
             ],
             [
                 'title' => 'Tránsito',
-                'render' => function($denuncia){
-                    if ($denuncia->DocumentoForaneo->enviado())
-                        return '<span class="badge badge-primary">Enviado <i class="fa fa-fw fa-car"></i></span>';
-                    elseif ($denuncia->DocumentoForaneo->recibido())
-                        return '<span class="badge badge-primary">Recibido <i class="fa fa-fw fa-folder"></i></span>';
+                'render' => function($documento){
+                    if ($documento->DocumentoForaneo->enviado() && !$documento->DocumentoForaneo->recibido())
+                        return $documento->DocumentoForaneo->presenter()->getBadgeEnviado();
+                    elseif ($documento->DocumentoForaneo->recibido())
+                        return $documento->DocumentoForaneo->presenter()->getBadgeRecibido();
                     elseif (user()->can('REC.DOCUMENTO.FORANEO'))
-                        return sprintf('<button type="button" class="btn btn-sm btn-success" onclick="hRecepcionForanea.enviar(%d)" title="Enviar documento"><i class="fa fa-fw fa-car"></i> Enviar documento</button>', $denuncia->getKey());
-                    else
-                        return '<span class="badge badge-warning"><i class="fa fa-fw fa-car"></i> Aún no enviado</span>';
-                        
+                        return sprintf('<button type="button" class="btn btn-sm btn-success" onclick="hRecepcionForanea.enviar(%d)" title="Enviar documento"><i class="fa fa-fw fa-car"></i> Enviar documento</button>', $documento->getKey());
                 }
             ],
             [
                 'title' => 'Validado',
-                'render' => function($denuncia){
-                    if ($denuncia->DocumentoForaneo->validado() )
-                        return '<span class="badge badge-success"><i class="fa fa-fw fa-check"></i> Validado</span>';
+                'render' => function($documento){
+                    if ($documento->DocumentoForaneo->validado() )
+                        return $documento->DocumentoForaneo->presenter()->getBadgeValidado();
                     else
-                        return '<span class="badge badge-danger"><i class="fa fa-fw fa-times"></i> Aún no validado</span>';
+                        return $documento->DocumentoForaneo->presenter()->getBadgeEnEspera();
                 }
             ],
             [
                 'title' => 'Recepcionado',
-                'render' => function($denuncia){
-                    if ($denuncia->DocumentoForaneo->recepcionado() )
-                        return '<span class="badge badge-success"><i class="fa fa-fw fa-check"></i> ' . $denuncia->AcuseRecepcion->getNumero() . '</span>';
+                'render' => function($documento){
+                    if ($documento->DocumentoForaneo->recepcionado() )
+                        return $documento->DocumentoForaneo->presenter()->getBadgeRecepcionado();
                     else
-                        return '<span class="badge badge-danger"><i class="fa fa-fw fa-times"></i> Aún no recepcionado</span>';
+                        return $documento->DocumentoForaneo->presenter()->getBadgeEnEspera();
                 }
             ],
             [
                 'title'  => 'Opciones',
-                'render' => function($denuncia){
-
-                    $url_editar = url( sprintf('recepcion/documentos-foraneos/editar-recepcion?search=%d',$denuncia->getKey()) );
+                'render' => function($documento){
+                    $url_editar = url( sprintf('recepcion/documentos-foraneos/editar-recepcion?search=%d',$documento->DocumentoForaneo->getKey()) );
 
                     $buttons = '';
 
-                    //$buttons .= sprintf('<button type="button" class="btn btn-sm btn-circle btn-alt-primary" onclick="hRecepcionForanea.view(%d)" title="Ver documento"><i class="fa fa-fw fa-eye"></i></button>', $denuncia->getKey());
-
                     $buttons .= sprintf('<a class="btn btn-sm btn-circle btn-alt-success" href="%s" title="Editar recepción"><i class="fa fa-fw fa-pencil"></i></a>', $url_editar);
                     
-                    $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcionForanea.anexos(%d)" title="Ver anexos del documento"><i class="fa fa-fw fa-clipboard"></i></button>', $denuncia->getKey());
+                    $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcionForanea.anexos(%d)" title="Ver anexos del documento"><i class="fa fa-fw fa-clipboard"></i></button>', $documento->getKey());
 
-                    $url = url( sprintf('recepcion/acuse/documento/%s',$denuncia->AcuseRecepcion->getNombre()) );
+                    $url = url( sprintf('recepcion/acuse/documento/%s',$documento->AcuseRecepcion->getNombre()) );
                     $buttons .= sprintf(' <a class="btn btn-sm btn-circle btn-alt-primary" href="%s" target="_blank" title="Acuse de Recepción"><i class="fa fa-fw fa-file-text"></i></a>', $url);
 
-                    if( user()->can('REC.ELIMINAR.FORANEO') && ! $denuncia->DocumentoForaneo->recibido() )
+                    if( user()->can('REC.ELIMINAR.FORANEO') && $documento->recepcionado() )
                     {
-                        $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcionForanea.delete_(%d)"><i class="fa fa-trash"></i></button>', $denuncia->getKey());
+                        $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcionForanea.delete_(%d)"><i class="fa fa-trash"></i></button>', $documento->DocumentoForaneo->getKey());
                     }
 
                     return $buttons;
@@ -96,7 +90,8 @@ class DenunciasForaneasDataTable extends CustomDataTable
         ];
     }
 
-    protected function getUrlAjax(){
+    protected function getUrlAjax()
+    {
         return url('recepcion/documentos-foraneos/post-data?type=denuncias');
     }
 

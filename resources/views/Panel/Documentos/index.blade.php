@@ -160,7 +160,6 @@
                                 <div class="col-md-12">
                                     <a class="text-dark" href="{{ url_ver_seguimiento( $seguimiento ) }}">
                                         <span class="badge badge-success" title="Fecha y hora del cambio de estado"><i class="fa fa-fw fa-calendar"></i> {{ $seguimiento->presenter()->getFechaSeguimiento() }}</span>
-                                        <span class="badge badge-danger" title="Seguimiento #{{ $seguimiento->getCodigo() }}"><i class="fa fa-fw fa-flash"></i> #{{ $seguimiento->getCodigo() }}</span>
                                         <b>{{ $seguimiento->EstadoDocumento->getNombre() }}</b>
                                     </a>
                                 </div>
@@ -229,7 +228,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <br>{{ $seguimiento->SYED_NOMBRE }}
+                                <br>
+                                {!! $seguimiento->Documento->EstadoDocumento->presenter()->getBadge() !!}
                             </div>
                         </div>
                     </div>

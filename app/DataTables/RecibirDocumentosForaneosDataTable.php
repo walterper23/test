@@ -55,31 +55,31 @@ class RecibirDocumentosForaneosDataTable extends CustomDataTable
                     if ($documento->DocumentoForaneo->enviado() && !$documento->DocumentoForaneo->recibido())
                         return sprintf('<button type="button" class="btn btn-sm btn-success" onclick="hRecibirRecepcionForanea.recibir(%d)" title="Recibir documento"><i class="fa fa-fw fa-folder-open"></i> Recibir</button>', $documento->DocumentoForaneo->getKey());
                     elseif( $documento->DocumentoForaneo->recibido() )
-                        return '<span class="badge badge-primary"><i class="fa fa-fw fa-folder"></i> Recibido</span>';
+                        return $documento->DocumentoForaneo->presenter()->getBadgeRecibido();
                     else
-                        return '<span class="badge badge-danger"><i class="fa fa-fw fa-car"></i> Aún no enviado</span>';
+                        return $documento->DocumentoForaneo->presenter()->getBadgeNoEnviado();
                 }
             ],
             [
                 'title' => 'Validado',
                 'render' => function($documento){
                     if ($documento->DocumentoForaneo->validado())
-                        return '<span class="badge badge-success"><i class="fa fa-fw fa-check"></i> Validado</span>';
+                        return $documento->DocumentoForaneo->presenter()->getBadgeValidado();
                     elseif ($documento->DocumentoForaneo->recibido())
                         return sprintf('<button type="button" class="btn btn-sm btn-success" onclick="hRecibirRecepcionForanea.validar(%d)" title="Validar documento"><i class="fa fa-fw fa-check"></i> Validar</button>', $documento->DocumentoForaneo->getKey());
                     else
-                        return '<span class="badge badge-danger"><i class="fa fa-fw fa-times"></i> Pendiente</span>';
+                        return $documento->DocumentoForaneo->presenter()->getBadgePendiente();
                 }
             ],
             [
                 'title' => 'Recepcionado',
                 'render' => function($documento){
                     if ($documento->DocumentoForaneo->recepcionado() )
-                        return '<span class="badge badge-success"><i class="fa fa-fw fa-check"></i> Recepcionado</span>';
+                        return $documento->DocumentoForaneo->presenter()->getBadgeRecepcionado();
                     elseif ($documento->DocumentoForaneo->validado())
                         return sprintf('<button type="button" class="btn btn-sm btn-success" onclick="hRecibirRecepcionForanea.recepcionar(%d)" title="Recepcionar documento"><i class="fa fa-fw fa-check"></i> Recepcionar</button>', $documento->DocumentoForaneo->getKey());
                     else
-                        return '<span class="badge badge-danger"><i class="fa fa-fw fa-times"></i> Pendiente</span>';
+                        return $documento->DocumentoForaneo->presenter()->getBadgePendiente();
                 }
             ],
             [
@@ -87,11 +87,10 @@ class RecibirDocumentosForaneosDataTable extends CustomDataTable
                 'render' => function($documento){
                     $buttons = '';
 
-                    //$buttons .= sprintf('<button type="button" class="btn btn-sm btn-circle btn-alt-primary" onclick="hRecepcion.view(%d)" title="Ver documento"><i class="fa fa-fw fa-eye"></i></button>', $documento->getKey());
-                    
-                    $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcion.view(%d)" title="Ver anexos del documento"><i class="fa fa-fw fa-clipboard"></i></button>', $documento->getKey());
+                    $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecibirRecepcionForanea.anexos(%d)" title="Ver anexos del documento"><i class="fa fa-fw fa-clipboard"></i></button>', $documento->getKey());
 
-                    $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-success" onclick="hRecepcion.view(%d)" title="Acuse de Recepción"><i class="fa fa-fw fa-file-text"></i></button>', $documento->getKey());
+                    $url = url( sprintf('recepcion/acuse/documento/%s',$documento->AcuseRecepcion->getNombre()) );
+                    $buttons .= sprintf(' <a class="btn btn-sm btn-circle btn-alt-primary" href="%s" target="_blank" title="Acuse de Recepción"><i class="fa fa-fw fa-file-text"></i></a>', $url);
 
                     return $buttons;
                 }

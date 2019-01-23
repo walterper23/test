@@ -23,7 +23,6 @@ class EscaneoRequest extends FormRequest
     public function rules()
     {
         return [
-            'tipo'      => 'required|in:local,foraneo',
             'documento' => 'required',
             'escaneo'   => 'required|max:3072|mimes:pdf',
         ];
@@ -31,8 +30,6 @@ class EscaneoRequest extends FormRequest
 
     public function messages(){
         return [
-            'tipo.required'      => 'Tipo de documento no especificado',
-            'tipo.in'            => 'El tipo de documento no es válido',
             'documento.required' => 'El documento no ha sido especificado',
             'escaneo.required'   => 'El archivo no ha sido especificado',
             'escaneo.max'        => 'El tamaño del archivo excede de :max kb (3 Mb)',

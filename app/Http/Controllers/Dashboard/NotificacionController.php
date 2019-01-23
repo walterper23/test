@@ -105,7 +105,7 @@ class NotificacionController extends BaseController
             // Si se encontraron correos, procedemos a hacer el envío de la notificación
             if( sizeof($correos) > 0 )
             {
-                if ($documento->getTipoRecepcion() == 1) // Recepción local
+                if ($documento->isLocal() == 1) // Recepción local
                 {
                     event(new NuevoDocumentoLocalRecepcionado($documento, $correos));
                 }

@@ -141,7 +141,7 @@ class RecepcionController extends BaseController
     {
         $data = [];
 
-        $recepcionista = user()->Recepcionista()->ExistenteDisponible()->limit(1)->first();
+        $recepcionista = user()->Recepcionista()->siExistenteDisponible()->limit(1)->first();
 
         if(! $recepcionista )
         {
@@ -150,7 +150,7 @@ class RecepcionController extends BaseController
 
         // Recuperamos los tipos de documentos que se pueden recepcionar
         $tiposDocumentosExistentesDisponibles = cache()->rememberForever('tiposDocumentosExistentesDisponibles',function(){
-            return MSystemTipoDocumento::existenteDisponible()->get();
+            return MSystemTipoDocumento::siexistenteDisponible()->get();
         });
 
         $data['tipos_documentos'] = $tiposDocumentosExistentesDisponibles;
@@ -167,7 +167,7 @@ class RecepcionController extends BaseController
 
         // Recuperamos los anexos almacenados en el sistema
         $anexosExistentesDisponibles = cache()->rememberForever('anexosExistentesDisponibles',function(){
-            return MAnexo::existenteDisponible()->get();
+            return MAnexo::siexistenteDisponible()->get();
         });
 
         $data['anexos'] = $anexosExistentesDisponibles->sortBy('ANEX_NOMBRE')->pluck('ANEX_NOMBRE','ANEX_ANEXO')->toArray();
@@ -203,7 +203,7 @@ class RecepcionController extends BaseController
 
             DB::commit();
 
-            return $this->responseSuccessJSON(['documento'=>$documento->getKey(),'tipo'=>'local']);
+            return $this->responseSuccessJSON(['documento'=>$documento->getKey()]);
         } catch(Exception $error) {
             DB::rollback();
             return $this->responseErrorJSON( $error->getMessage() );
@@ -268,7 +268,7 @@ class RecepcionController extends BaseController
     public function procesoRecepcionar($request, $tipo_recepcion)
     {
         // Buscamos la configuración del usuario como recepcionista
-        $recepcionista = user()->Recepcionista()->ExistenteDisponible()->limit(1)->first();
+        $recepcionista = user()->Recepcionista()->siExistenteDisponible()->limit(1)->first();
 
         $tipo_documento = MSystemTipoDocumento::find( $request->tipo_documento );
 
@@ -404,7 +404,7 @@ class RecepcionController extends BaseController
 
         // Recuperamos los tipos de documentos que se pueden recepcionar
         $tiposDocumentosExistentesDisponibles = cache()->rememberForever('tiposDocumentosExistentesDisponibles',function(){
-            return MSystemTipoDocumento::existenteDisponible()->get();
+            return MSystemTipoDocumento::siexistenteDisponible()->get();
         });
 
         $data['tipos_documentos'] = $tiposDocumentosExistentesDisponibles;
@@ -421,7 +421,7 @@ class RecepcionController extends BaseController
 
         // Recuperamos los anexos almacenados en el sistema
         $anexosExistentesDisponibles = cache()->rememberForever('anexosExistentesDisponibles',function(){
-            return MAnexo::existenteDisponible()->get();
+            return MAnexo::siexistenteDisponible()->get();
         });
 
         $data['anexos'] = $anexosExistentesDisponibles->sortBy('ANEX_NOMBRE')->pluck('ANEX_NOMBRE','ANEX_ANEXO')->toArray();
@@ -453,92 +453,99 @@ class RecepcionController extends BaseController
     public function editarRecepcion( $request )
     {
         try {
-            $tipo_documento = MSystemTipoDocumento::find( $request->tipo_documento );
-            
-            $fecha_recepcion = $request->recepcion;
-            
             DB::beginTransaction();
-
-            // Buscamos el documento
-            $documento = MDocumento::findOrFail($request->id);
-            $documento->DOCU_SYSTEM_TIPO_DOCTO   = $tipo_documento->getKey();
-            $documento->DOCU_NUMERO_DOCUMENTO    = $request->numero;
-            $documento->save();
             
-            // Guardamos los detalles del documento
-            $detalle = $documento->Detalle;
-            $detalle->DETA_MUNICIPIO              = $request->municipio;
-            $detalle->DETA_FECHA_RECEPCION        = $fecha_recepcion;
-            $detalle->DETA_DESCRIPCION            = $request->descripcion;
-            $detalle->DETA_RESPONSABLE            = $request->responsable;
-            $detalle->DETA_ANEXOS                 = $request->anexos;
-            $detalle->DETA_OBSERVACIONES          = $request->observaciones;
-            $detalle->DETA_ENTREGO_NOMBRE         = $request->nombre;
-            $detalle->DETA_ENTREGO_EMAIL          = $request->e_mail;
-            $detalle->DETA_ENTREGO_TELEFONO       = $request->telefono;
-            $detalle->DETA_ENTREGO_IDENTIFICACION = $request->identificacion;
-            $detalle->save();
-
-            if ($tipo_documento->getKey() == 1) // Si el tipo de documento es denuncia ...
-            {
-                $documento->DOCU_NUMERO_DOCUMENTO = null;
-                $documento->save();
-
-                if(! $documento->Denuncia)
-                {
-                    $denuncia = new MDenuncia; // Creamos el registro de la denuncia
-                    $denuncia->DENU_DOCUMENTO = $documento->getKey();
-                    $denuncia->save();
-                }
-            }
-            else if ( $tipo_documento->getKey() == 2 ) // Si el tipo de documento es un documento para denuncia ...
-            {
-                $denuncia = MDenuncia::findOrFail( $request->denuncia );
-                
-                $documentoDenuncia = $documento->DocumentoDenuncia;
-                
-                if(! $documentoDenuncia ) // Si el documento aún no se encuentra ligado a una denuncia, ligamos el documento a la denuncia
-                {
-                    $documentoDenuncia = new MDocumentoDenuncia;
-                    $documentoDenuncia->DODE_DOCUMENTO_LOCAL   = $documento->getKey();
-                    $documentoDenuncia->DODE_DETALLE           = $denuncia->Documento->Detalle->getKey(); // Detalle del documento original (la denuncia)
-                    // Relacionamos la recepción del documento-denuncia al último seguimiento del documento original (la denuncia)
-                    $documentoDenuncia->DODE_SEGUIMIENTO       = $denuncia->Documento->Seguimientos->last()->getKey();
-                }
-                
-                $documentoDenuncia->DODE_DENUNCIA         = $denuncia->getKey();
-                $documentoDenuncia->DODE_DOCUMENTO_ORIGEN = $denuncia->getDocumento();
-                $documentoDenuncia->save();
-            }
-
-            $fecha_carbon = Carbon::createFromFormat('Y-m-d',$fecha_recepcion);
-
-            // Buscamos la configuración del usuario como recepcionista
-            $recepcionista = user()->Recepcionista()->ExistenteDisponible()->limit(1)->first();
-
-            $folio_estructura = $recepcionista->getFolioEstructura();
-            $buscar     = ['%anio%','%folio%','%codigo%'];
-            $reemplazar = [$fecha_carbon->format('Y'),$documento->getFolio(),$tipo_documento->getCodigoAcuse()];
-
-            $folio_acuse = str_replace($buscar, $reemplazar, $folio_estructura);
-
-            // Sustituimos las diagonales por guiones bajos
-            $nombre_acuse_pdf = sprintf('%s.pdf',str_replace('/','_', $folio_acuse));
-
-            // Modificamos el registro del acuse de recepción del documento
-            $acuse = $documento->AcuseRecepcion;
-            $acuse->ACUS_NUMERO    = $folio_acuse;
-            $acuse->ACUS_NOMBRE    = $nombre_acuse_pdf;
-            $acuse->ACUS_ENTREGO   = $detalle->getEntregoNombre();
-            $acuse->save();
+            $documento = $this->procesoEditarRecepcion($request,1); // 1 = Tipo recepción local
 
             DB::commit();
 
-            return $this->responseSuccessJSON(['documento'=>$documento->getKey(),'tipo'=>'local']);
+            return $this->responseSuccessJSON(['documento'=>$documento->getKey()]);
         } catch(Exception $error) {
             DB::rollback();
             return $this->responseErrorJSON( $error->getMessage() );
         }
+    }
+
+    public function procesoEditarRecepcion($request, $tipo_recepcion)
+    {
+        $tipo_documento = MSystemTipoDocumento::find( $request->tipo_documento );
+            
+        $fecha_recepcion = $request->recepcion;
+
+        // Buscamos el documento
+        $documento = MDocumento::findOrFail($request->id);
+        $documento->DOCU_SYSTEM_TIPO_DOCTO   = $tipo_documento->getKey();
+        $documento->DOCU_NUMERO_DOCUMENTO    = $request->numero;
+        $documento->save();
+        
+        // Guardamos los detalles del documento
+        $detalle = $documento->Detalle;
+        $detalle->DETA_MUNICIPIO              = $request->municipio;
+        $detalle->DETA_FECHA_RECEPCION        = $fecha_recepcion;
+        $detalle->DETA_DESCRIPCION            = $request->descripcion;
+        $detalle->DETA_RESPONSABLE            = $request->responsable;
+        $detalle->DETA_ANEXOS                 = $request->anexos;
+        $detalle->DETA_OBSERVACIONES          = $request->observaciones;
+        $detalle->DETA_ENTREGO_NOMBRE         = $request->nombre;
+        $detalle->DETA_ENTREGO_EMAIL          = $request->e_mail;
+        $detalle->DETA_ENTREGO_TELEFONO       = $request->telefono;
+        $detalle->DETA_ENTREGO_IDENTIFICACION = $request->identificacion;
+        $detalle->save();
+
+        if ($tipo_documento->getKey() == 1) // Si el tipo de documento es denuncia ...
+        {
+            $documento->DOCU_NUMERO_DOCUMENTO = null;
+            $documento->save();
+
+            if(! $documento->Denuncia) // Si no habia creado el registro de denuncia...
+            {
+                $denuncia = new MDenuncia; // ...creamos el registro de la denuncia
+                $denuncia->DENU_DOCUMENTO = $documento->getKey();
+                $denuncia->save();
+            }
+        }
+        else if ( $tipo_documento->getKey() == 2 ) // Si el tipo de documento es un documento para denuncia ...
+        {
+            $denuncia = MDenuncia::findOrFail( $request->denuncia );
+            
+            $documentoDenuncia = $documento->DocumentoDenuncia;
+            
+            if(! $documentoDenuncia ) // Si el documento aún no se encuentra ligado a una denuncia, ligamos el documento a la denuncia
+            {
+                $documentoDenuncia = new MDocumentoDenuncia;
+                $documentoDenuncia->DODE_DOCUMENTO_LOCAL   = $documento->getKey();
+                $documentoDenuncia->DODE_DETALLE           = $denuncia->Documento->Detalle->getKey(); // Detalle del documento original (la denuncia)
+                // Relacionamos la recepción del documento-denuncia al último seguimiento del documento original (la denuncia)
+                $documentoDenuncia->DODE_SEGUIMIENTO       = $denuncia->Documento->Seguimientos->last()->getKey();
+            }
+            
+            $documentoDenuncia->DODE_DENUNCIA         = $denuncia->getKey();
+            $documentoDenuncia->DODE_DOCUMENTO_ORIGEN = $denuncia->getDocumento();
+            $documentoDenuncia->save();
+        }
+
+        $fecha_carbon = Carbon::createFromFormat('Y-m-d',$fecha_recepcion);
+
+        // Buscamos la configuración del usuario como recepcionista
+        $recepcionista = user()->Recepcionista()->siExistenteDisponible()->limit(1)->first();
+
+        $folio_estructura = $recepcionista->getFolioEstructura();
+        $buscar     = ['%anio%','%folio%','%codigo%'];
+        $reemplazar = [$fecha_carbon->format('Y'),$documento->getFolio(),$tipo_documento->getCodigoAcuse()];
+
+        $folio_acuse = str_replace($buscar, $reemplazar, $folio_estructura);
+
+        // Sustituimos las diagonales por guiones bajos
+        $nombre_acuse_pdf = sprintf('%s.pdf',str_replace('/','_', $folio_acuse));
+
+        // Modificamos el registro del acuse de recepción del documento
+        $acuse = $documento->AcuseRecepcion;
+        $acuse->ACUS_NUMERO    = $folio_acuse;
+        $acuse->ACUS_NOMBRE    = $nombre_acuse_pdf;
+        $acuse->ACUS_ENTREGO   = $detalle->getEntregoNombre();
+        $acuse->save();
+
+        return $documento;
     }
 
     public function verRecepcion( $request )
@@ -553,6 +560,11 @@ class RecepcionController extends BaseController
             $documento->DOCU_SYSTEM_ESTADO_DOCTO = 6; // Estado de Documento Eliminado
             $documento->eliminar()->save();
 
+            if( $documento->isForaneo() )
+            {
+                $documento->DocumentoForaneo->eliminar()->save();
+            }
+
             // Lista de tablas que se van a recargar automáticamente
             switch ($documento->getTipoDocumento()) {
                 case 1:
@@ -566,7 +578,7 @@ class RecepcionController extends BaseController
                     break;
             }
 
-            $message = sprintf('<i class="fa fa-fw fa-warning"></i> Recepción <b>%s</b> eliminada',$documento->getFolio());
+            $message = sprintf('<i class="fa fa-fw fa-warning"></i> Documento <b>%s</b> eliminado',$documento->getFolio());
 
             return $this->responseWarningJSON($message,'danger',$tables);
         } catch(Exception $error) {

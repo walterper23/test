@@ -1,6 +1,9 @@
 <?php
 namespace App\Model;
 
+/* Presenter */
+use App\Presenters\MDocumentoForaneoPresenter;
+
 class MDocumentoForaneo extends BaseModel
 {
     protected $table        = 'documentos_foraneos';
@@ -8,12 +11,6 @@ class MDocumentoForaneo extends BaseModel
     protected $prefix       = 'DOFO';
 
     /* Methods */
-
-    // Método para devolver la columna FOLIO del registro como un código de longitud indicada
-    public function getFolio( $size = 4, $str = '0', $direction = STR_PAD_LEFT )
-    {
-        return parent::getFolio($size,$str,$direction);
-    }
 
     public function getDetalle()
     {
@@ -30,14 +27,14 @@ class MDocumentoForaneo extends BaseModel
         return $this->getAttribute('DOFO_SYSTEM_TIPO_DOCTO');
     }
 
-    public function noEnviado()
-    {
-        return $this->getAttribute('DOFO_SYSTEM_TRANSITO') == 0;
-    }
-
     public function enviado()
     {
         return $this->getAttribute('DOFO_ENVIADO') == 1;
+    }
+
+    public function noEnviado()
+    {
+        return !$this->enviado();
     }
 
     public function getFechaEnviado()
@@ -122,6 +119,12 @@ class MDocumentoForaneo extends BaseModel
     public function TipoDocumento()
     {
         return $this->hasOne('App\Model\System\MSystemTipoDocumento','SYTD_TIPO_DOCUMENTO','DOFO_SYSTEM_TIPO_DOCTO');
+    }
+
+    /* Presenter */
+    public function presenter()
+    {
+        return new MDocumentoForaneoPresenter($this);
     }
 
 }
