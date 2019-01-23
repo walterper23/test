@@ -30,18 +30,7 @@ class DashboardController extends BaseController
 
     public function index(Request $request)
     {
-        if( user()->can('REC.DOCUMENTO.LOCAL') ) // Recepcionista local
-        {
-            return redirect('recepcion/documentos');
-        }
-        else if( user()->can('REC.DOCUMENTO.FORANEO') ) // Recepcionista foráneo
-        {
-            return redirect('recepcion/documentos-foraneos');
-        }
-        else if( user()->can('SEG.PANEL.TRABAJO') ) // Dirección y/o departamento
-        {
-            return redirect('panel/documentos');
-        }else if( user()->canAtLeast('REPO.VER.GRA.DIA.SEM','REPO.VER.GRA.MEN.ANUAL') ){
+        if( user()->canAtLeast('REPO.VER.GRA.DIA.SEM','REPO.VER.GRA.MEN.ANUAL') ){
 
             $fecha_documentos_recibidos_hoy = Carbon::now()->format('d \d\e xm \d\e Y');
             $fecha_documentos_recibidos_hoy = nombreFecha($fecha_documentos_recibidos_hoy);
@@ -56,7 +45,18 @@ class DashboardController extends BaseController
             return view('Dashboard.indexDashboard', compact('fecha_documentos_recibidos_hoy','fecha_documentos_semana','mes_actual'));
 
         }
-        else if( user()->canAtLeast('SIS.ADMIN.CATALOGOS','SIS.ADMIN.CONFIG') ) // Administrador del sistema
+        else if( user()->can('REC.DOCUMENTO.LOCAL') ) // Recepcionista local
+        {
+            return redirect('recepcion/documentos');
+        }
+        else if( user()->can('REC.DOCUMENTO.FORANEO') ) // Recepcionista foráneo
+        {
+            return redirect('recepcion/documentos-foraneos');
+        }
+        else if( user()->can('SEG.PANEL.TRABAJO') ) // Dirección y/o departamento
+        {
+            return redirect('panel/documentos');
+        }else  if( user()->canAtLeast('SIS.ADMIN.CATALOGOS','SIS.ADMIN.CONFIG') ) // Administrador del sistema
         {
             return redirect('configuracion/catalogos');
         }

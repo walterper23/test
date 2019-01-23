@@ -72,9 +72,6 @@
 
 @push('js-script')
 {{ Html::script('js/plugins/chartjs/Chart.bundle.min.js') }}
-
-@if(user()->canAtLeast('REPO.VER.GRA.DIA.SEM','REPO.VER.GRA.MEN.ANUAL'))
 {{ Html::script('js/pages/be_comp_charts_dashboard.js') }}
 {{ Html::script('js/helpers/dashboard.helper.js') }}
-@endif
 @endpush

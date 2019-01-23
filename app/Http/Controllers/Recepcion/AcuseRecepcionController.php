@@ -47,7 +47,7 @@ class AcuseRecepcionController extends BaseController
             'acuse'        => $acuseRecepcion,
             'detalle'      => $acuseRecepcion->Detalle,
             'usuario'      => $acuseRecepcion->Usuario,
-            'documento']   => $acuseRecepcion->Documento
+            'documento'    => $acuseRecepcion->Documento
         ];
 
         
