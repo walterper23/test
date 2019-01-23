@@ -160,6 +160,9 @@
         </div>
     </div>
     <!-- END Timeline Activity -->
+
+    @include('Panel.Seguimiento.direccionesDepartamentos',[$direcciones])                
+
 @endsection
 
 @push('js-script')
