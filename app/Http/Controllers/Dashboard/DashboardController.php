@@ -96,7 +96,8 @@ class DashboardController extends BaseController
                 $query->where('DETA_ANIO',$anio_actual);
             })->get();
 
-        $documentos_locales = $documentos_foraneos = collect();
+        $documentos_locales  = collect();
+        $documentos_foraneos = collect();
 
         foreach ($documentos as $documento) {
             if( $documento->isLocal() )
@@ -132,17 +133,17 @@ class DashboardController extends BaseController
         };
 
         $hoy = Carbon::now()->format('Y-m-d');
-        $documentos_locales = $documentos_locales->where('DETA_FECHA_RECEPCION',$hoy); // Sólo los documentos de hoy
-        $documentos_foraneos = $documentos_foraneos->where('DETA_FECHA_RECEPCION',$hoy); // Sólo los documentos de hoy
+        $documentos_locales = $documentos_locales->where('DOCU_DELETED',0)->where('DETA_FECHA_RECEPCION',$hoy); // Sólo los documentos de hoy
+        $documentos_foraneos = $documentos_foraneos->where('DOCU_DELETED',0)->where('DETA_FECHA_RECEPCION',$hoy); // Sólo los documentos de hoy
         
         // Recorremos todos los documentos locales para guardar el conteo
-        foreach ($documentos_locales as $docto) {
-            $locales[ $docto->getTipoDocumento() ]++;
+        foreach ($documentos_locales as $documento) {
+            $locales[ $documento->getTipoDocumento() ]++;
         }
 
         // Recorremos todos los documentos foraneos para guardar el conteo
-        foreach ($documentos_foraneos as $docto) {
-            $foraneos[ $docto->getTipoDocumento() ]++;
+        foreach ($documentos_foraneos as $documento) {
+            $foraneos[ $documento->getTipoDocumento() ]++;
         }
 
         ksort($locales); // Ordenamos los índices ascendentemente
@@ -189,7 +190,7 @@ class DashboardController extends BaseController
         $inicio_semana = Carbon::now()->startOfWeek()->format('Y-m-d');
 
         $documentos_locales = $documentos_locales->filter(function($docto) use($inicio_semana, $fin_semana){
-            return ($docto->Detalle->getFechaRecepcion() >= $inicio_semana && $docto->Detalle->getFechaRecepcion() <= $fin_semana);
+            return (!$docto->eliminado() &&  $docto->Detalle->getFechaRecepcion() >= $inicio_semana && $docto->Detalle->getFechaRecepcion() <= $fin_semana);
         }); // Sólo los documentos de la semana actual
         
         foreach ($documentos_locales as $docto) {
@@ -204,7 +205,7 @@ class DashboardController extends BaseController
         }
 
         $documentos_foraneos = $documentos_foraneos->filter(function($docto) use($inicio_semana, $fin_semana){
-            return ($docto->Detalle->getFechaRecepcion() >= $inicio_semana && $docto->Detalle->getFechaRecepcion() <= $fin_semana);
+            return (!$docto->eliminado() &&  $docto->Detalle->getFechaRecepcion() >= $inicio_semana && $docto->Detalle->getFechaRecepcion() <= $fin_semana);
         }); // Sólo los documentos de la semana actual
 
         foreach ($documentos_foraneos as $docto) {
@@ -253,6 +254,10 @@ class DashboardController extends BaseController
             $data[ $documento->getEstadoDocumento() ]++;
         }
 
+        foreach ($documentos_foraneos as $documento) {
+            $data[ $documento->getEstadoDocumento() ]++;
+        }
+
         $data = array_values($data);
 
         return $data;
@@ -269,6 +274,10 @@ class DashboardController extends BaseController
         ];
 
         foreach ($documentos_locales as $documento) {
+            $data[ $documento->getEstadoDocumento() ]++;
+        }
+
+        foreach ($documentos_foraneos as $documento) {
             $data[ $documento->getEstadoDocumento() ]++;
         }
 
