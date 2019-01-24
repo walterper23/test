@@ -10,8 +10,6 @@ use App\Http\Controllers\BaseController;
 
 /* Models */
 use App\Model\MDocumento;
-use App\Model\MDocumentoForaneo;
-use App\Model\MNotificacion;
 use App\Model\MUsuario;
 use App\Model\System\MSystemTipoDocumento;
 
@@ -92,21 +90,24 @@ class DashboardController extends BaseController
         $anio_actual = Carbon::now()->year;
 
         // Buscar todos los documentos existentes. No eliminados
-        $documentos_locales = MDocumento::
-                     leftJoin('system_tipos_documentos','SYTD_TIPO_DOCUMENTO','=','DOCU_SYSTEM_TIPO_DOCTO')
-                    //-> leftJoin('system_estados_documentos','SYED_ESTADO_DOCUMENTO','=','DOCU_SYSTEM_ESTADO_DOCTO')
-                   ->leftJoin('detalles','DETA_DETALLE','=','DOCU_DETALLE')
-                    //-> existente()
-                   ->whereYear('DETA_FECHA_RECEPCION',$anio_actual)
-                   ->where('DOCU_TIPO_RECEPCION',1) // Captura local
-                   ->get();
+        $documentos = MDocumento::with('TipoDocumento','Detalle')
+            ->join('detalles',function($query) use ($anio_actual){
+                $query->on('DOCU_DETALLE','=','DETA_DETALLE');
+                $query->where('DETA_ANIO',$anio_actual);
+            })->get();
 
-        $documentos_foraneos = MDocumentoForaneo::
-                     leftJoin('system_tipos_documentos','SYTD_TIPO_DOCUMENTO','=','DOFO_SYSTEM_TIPO_DOCTO')
-                   ->leftJoin('detalles','DETA_DETALLE','=','DOFO_DETALLE')
-                    //-> existente()
-                   ->whereYear('DETA_FECHA_RECEPCION',$anio_actual)
-                   ->get();
+        $documentos_locales = $documentos_foraneos = collect();
+
+        foreach ($documentos as $documento) {
+            if( $documento->isLocal() )
+            {
+                $documentos_locales[] = $documento;
+            }
+            else
+            {
+                $documentos_foraneos[] = $documento;
+            }
+        }
 
         $data = [
             'hoy'    => $this->documentosHoy( $documentos_locales, $documentos_foraneos ),
@@ -125,10 +126,10 @@ class DashboardController extends BaseController
 
         $tipos_documentos = MSystemTipoDocumento::orderBy('SYTD_TIPO_DOCUMENTO')->get(); // Recuperamos todos los tipos de documentos existentes
         // Recorremos todos los tipos de documentos existentes para iniciar los contadores en 0
-        $tipos_documentos->map(function($tipo) use(&$locales, &$foraneos){
-            $locales[ $tipo->getKey()  ] = 0;
-            $foraneos[ $tipo->getKey()  ] = 0;
-        });
+        foreach ($tipos_documentos as $tipo) {
+            $locales[ $tipo->getKey() ] = 0;
+            $foraneos[ $tipo->getKey() ] = 0;
+        };
 
         $hoy = Carbon::now()->format('Y-m-d');
         $documentos_locales = $documentos_locales->where('DETA_FECHA_RECEPCION',$hoy); // Sólo los documentos de hoy
@@ -188,11 +189,11 @@ class DashboardController extends BaseController
         $inicio_semana = Carbon::now()->startOfWeek()->format('Y-m-d');
 
         $documentos_locales = $documentos_locales->filter(function($docto) use($inicio_semana, $fin_semana){
-            return ($docto->DETA_FECHA_RECEPCION >= $inicio_semana && $docto->DETA_FECHA_RECEPCION <= $fin_semana);
+            return ($docto->Detalle->getFechaRecepcion() >= $inicio_semana && $docto->Detalle->getFechaRecepcion() <= $fin_semana);
         }); // Sólo los documentos de la semana actual
         
         foreach ($documentos_locales as $docto) {
-            $dia_documento = substr($docto->DETA_FECHA_RECEPCION,-2); // capturamos el día de recepción
+            $dia_documento = substr($docto->Detalle->getFechaRecepcion(),-2); // capturamos el día de recepción
 
             if( $docto->getTipoDocumento() == 1 ) // Denuncia
                 $conteos['denuncias'][ $dia_documento ]++;
@@ -203,11 +204,11 @@ class DashboardController extends BaseController
         }
 
         $documentos_foraneos = $documentos_foraneos->filter(function($docto) use($inicio_semana, $fin_semana){
-            return ($docto->DETA_FECHA_RECEPCION >= $inicio_semana && $docto->DETA_FECHA_RECEPCION <= $fin_semana);
+            return ($docto->Detalle->getFechaRecepcion() >= $inicio_semana && $docto->Detalle->getFechaRecepcion() <= $fin_semana);
         }); // Sólo los documentos de la semana actual
 
         foreach ($documentos_foraneos as $docto) {
-            $dia_documento = substr($docto->DETA_FECHA_RECEPCION,-2); // capturamos el día de recepción
+            $dia_documento = substr($docto->Detalle->getFechaRecepcion(),-2); // capturamos el día de recepción
 
             if( $docto->getTipoDocumento() == 1 ) // Denuncia
                 $conteos['denuncias'][ $dia_documento ]++;
@@ -233,11 +234,11 @@ class DashboardController extends BaseController
         $fin_mes    = $hoy->endOfMonth()->format('Y-m-d');
 
         $documentos_locales = $documentos_locales->filter(function($docto) use($inicio_mes, $fin_mes){
-            return ($docto->DETA_FECHA_RECEPCION >= $inicio_mes && $docto->DETA_FECHA_RECEPCION <= $fin_mes);
+            return ($docto->Detalle->getFechaRecepcion() >= $inicio_mes && $docto->Detalle->getFechaRecepcion() <= $fin_mes);
         }); // Sólo los documentos locales del mes actual
 
         $documentos_foraneos = $documentos_foraneos->filter(function($docto) use($inicio_mes, $fin_mes){
-            return ($docto->DETA_FECHA_RECEPCION >= $inicio_mes && $docto->DETA_FECHA_RECEPCION <= $fin_mes);
+            return ($docto->Detalle->getFechaRecepcion() >= $inicio_mes && $docto->Detalle->getFechaRecepcion() <= $fin_mes);
         }); // Sólo los documentos foraneos del mes actual
         
         $data = [
@@ -248,11 +249,9 @@ class DashboardController extends BaseController
             6 => 0, // Eliminados
         ];
 
-        foreach ($documentos_locales as $doc) {
-            $data[ $doc->getEstadoDocumento() ]++;
+        foreach ($documentos_locales as $documento) {
+            $data[ $documento->getEstadoDocumento() ]++;
         }
-
-        $data[2] += $documentos_foraneos->count(); // Le sumamos todos los documentos foráneos como recepcionados
 
         $data = array_values($data);
 
@@ -269,11 +268,9 @@ class DashboardController extends BaseController
             6 => 0, // Eliminados
         ];
 
-        foreach ($documentos_locales as $doc) {
-            $data[ $doc->getEstadoDocumento() ]++;
+        foreach ($documentos_locales as $documento) {
+            $data[ $documento->getEstadoDocumento() ]++;
         }
-
-        $data[2] += $documentos_foraneos->count(); // Le sumamos todos los documentos foráneos como recepcionados
 
         $data = array_values($data);
 
