@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-md-7">
             <div class="form-group row">
-                <label for="tipo_documento" class="col-md-3 col-form-label" required>Tipo de documento <i class="fa fa-fw fa-question-circle text-info" data-toggle="popover" title="Tipo de documento" data-placement="right" data-content="Introduzca el nó. de oficio, nó. de circular, etc. que contenga el documento que está recepcionando"></i></label>
+                <label for="tipo_documento" class="col-md-3 col-form-label" required>Tipo de documento <i class="fa fa-fw fa-question-circle text-info" data-toggle="popover" title="Tipo de documento" data-placement="right" data-content="Seleccione el tipo de documento que está recepcionando"></i></label>
                 <div class="col-md-9">
                     <select required id="tipo_documento" class="form-control" name="tipo_documento">
                         @foreach( $tipos_documentos as $tipo )

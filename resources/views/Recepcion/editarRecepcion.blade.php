@@ -165,6 +165,8 @@
                 $(this).closest('.form-group').remove();
                 self.updateConteoEscaneos()
             });
+
+            selectTipoDocumento.change();
         }
 
         this.updateConteoEscaneos = function(){
