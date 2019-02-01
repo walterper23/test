@@ -44,7 +44,7 @@ class DenunciasForaneasDataTable extends CustomDataTable
                     elseif ($documento->DocumentoForaneo->recibido())
                         return $documento->DocumentoForaneo->presenter()->getBadgeRecibido();
                     elseif (user()->can('REC.DOCUMENTO.FORANEO'))
-                        return sprintf('<button type="button" class="btn btn-sm btn-success" onclick="hRecepcionForanea.enviar(%d)" title="Enviar documento"><i class="fa fa-fw fa-car"></i> Enviar documento</button>', $documento->getKey());
+                        return sprintf('<button type="button" class="btn btn-sm btn-success" onclick="hRecepcionForanea.enviar(%d)" title="Enviar documento"><i class="fa fa-fw fa-car"></i> Enviar documento</button>', $documento->DocumentoForaneo->getKey());
                 }
             ],
             [
