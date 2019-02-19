@@ -398,7 +398,9 @@ class RecepcionController extends BaseController
     public function formEditarRecepcion(Request $request)
     {
         $documento = $request->get('search');
-        $documento = MDocumento::with('Escaneos')->findOrFail($documento);
+        $documento = MDocumento::with(['Escaneos'=>function($query){
+            $query->existente()->get();
+        }])->findOrFail($documento);
 
         $data = [];
 
