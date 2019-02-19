@@ -54,7 +54,7 @@
         <div class="col-md-7">
             <div class="form-group row">
                 <div class="col-md-9 ml-auto">
-                    <button type="button" class="btn btn-danger btn-rounded btn-sm" data-toggle="modal" data-target="#modal-escaneos"><i class="fa fa-fw fa-clipboard"></i> Escaneos <span class="badge badge-pill badge-secondary" id="conteo-escaneos"></span></button>
+                    <button type="button" class="btn btn-danger btn-rounded btn-sm" data-toggle="modal" data-target="#modal-escaneos"><i class="fa fa-fw fa-clipboard"></i> Escaneos <span class="badge badge-pill badge-secondary" id="conteo-escaneos">{{ $documento->Escaneos->count() }}</span></button>
                     <button type="button" class="btn btn-success btn-rounded btn-sm" data-toggle="modal" data-target="#modal-entrega"><i class="fa fa-fw fa-vcard-o"></i> Entrega<span class="badge badge-pill badge-secondary d-none" id="entrega"><i class="fa fa-check"></i></span></button>
                 </div>
             </div>
@@ -79,8 +79,31 @@
                             <li>Introduzca un nombre para cada archivo</li>
                             <li>Cada archivo no debe ser mayor a <span class="badge badge-danger">3 Mb</span></li>
                         </ul>
+                        <div class="col-12">
+                            @if( $escaneos->count() > 0 )        
+                            <p class="font-size-sm"><b>Escaneos subidos:</b></p>
+                            <table class="table table-vcenter">
+                                <tbody>
+                                @foreach( $escaneos as $escaneo )
+                                    <tr>
+                                        <td class="font-size-sm">
+                                            <i class="fa fa-fw fa-file-pdf-o text-danger"></i>
+                                            <a class="text-primary" href="{{ url( sprintf('documento/local/escaneos?scan=%d', $escaneo->getKey()) ) }}" target="_blank" title="Click para ver">{{ $escaneo->getNombre() }}</a>
+                                        </td>
+                                        <td width="25%" class="text-right">
+                                            <div class="custom-control custom-checkbox mb-5">
+                                                <input class="custom-control-input" type="checkbox" name="eliminar_escaneo[]" id="eliminar_escaneo{{ $escaneo->getKey() }}" value="{{ $escaneo->getKey() }}">
+                                                <label class="custom-control-label" for="eliminar_escaneo{{ $escaneo->getKey() }}">Eliminar</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                            @endif
+                        </div>
                         <div id="escaneo_group">
-                            <div class="form-group row">
+                            <div class="form-group">
                                 <div class="col-lg-12">
                                     <div class="input-group">
                                         <div class="input-group-prepend">

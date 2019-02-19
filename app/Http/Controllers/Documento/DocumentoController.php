@@ -108,7 +108,7 @@ class DocumentoController extends BaseController
 
     private function getEscaneos( $documento, $size = '' )
     {
-        $data['escaneos'] = $documento->Escaneos()->with('Archivo')->get();
+        $data['escaneos'] = $documento->Escaneos()->existente()->with('Archivo')->get();
 
         if (! empty($size))
             $data['size'] = $size;

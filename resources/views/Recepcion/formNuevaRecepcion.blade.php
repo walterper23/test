@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-md-7">
             <div class="form-group row">
-                <label for="tipo_documento" class="col-md-3 col-form-label" required>Tipo de documento <i class="fa fa-fw fa-question-circle text-info" data-toggle="popover" title="Nó. documento" data-placement="right" data-content="Seleccione el tipo de documento que está recepcionando"></i></label>
+                <label for="tipo_documento" class="col-md-3 col-form-label" required>Tipo de documento <i class="fa fa-fw fa-question-circle text-info" data-toggle="popover" title="Tipo de documento" data-placement="right" data-content="Seleccione el tipo de documento que está recepcionando"></i></label>
                 <div class="col-md-9">
                     <select required id="tipo_documento" class="form-control" name="tipo_documento">
                         <option selected="selected" value="" data-label="Nó. documento">Seleccione una opción</option>
@@ -16,13 +16,13 @@
             </div>
         </div>
         <div class="col-md-5">
-            {!! Field::datepicker('recepcion',date('Y-m-d'),['label'=>'Recepción','required','placeholder'=>date('Y-12-31'),'popover'=>['Recepción','Introduzca la fecha en la que recepcionó el documento']]) !!}
+            {!! Field::datepicker('recepcion',date('Y-m-d'),['label'=>'Recepción','required','placeholder'=>date('Y-12-31'),'popover'=>['Fecha de recepción','Introduzca la fecha en la que recepcionó el documento']]) !!}
         </div>
     </div>
     <div class="row">
         <div class="col-md-7">
             {!! Field::text('numero','',['label'=>'Nó. documento','popover'=>['Nó. documento','Introduzca el nó. de oficio, nó. de circular, etc. que contenga el documento que está recepcionando'],'required']) !!}
-            {!! Field::select('denuncia','',['label'=>'Expediente / Denuncia','addLabelClass'=>'text-danger','placeholder'=>'Seleccione un nó. de expediente','popover'=>['Seleccione un número de expediente','A continuación seleccione el nó. de expediente al que va relacionado al documento que está recepcionando en este momento.'],'required'],$denuncias) !!}
+            {!! Field::select('denuncia','',['label'=>'Expediente / Denuncia','addLabelClass'=>'text-danger','placeholder'=>'Seleccione un nó. de expediente','popover'=>['Expediente / Denuncia','A continuación seleccione el nó. de expediente al que va relacionado al documento que está recepcionando en este momento.'],'required'],$denuncias) !!}
             {!! Field::textarea('descripcion','',['label'=>'Asunto / Descripción','placeholder'=>'Introduzca una descripción del documento','size'=>'20x3','required','noresize']) !!}
             {!! Field::text('responsable','',['label'=>'Responsable','required']) !!}
             {!! Field::textarea('observaciones','',['label'=>'Observaciones','placeholder'=>'Opcional','size'=>'20x3','noresize']) !!}

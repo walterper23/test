@@ -398,7 +398,7 @@ class RecepcionController extends BaseController
     public function formEditarRecepcion(Request $request)
     {
         $documento = $request->get('search');
-        $documento = MDocumento::findOrFail($documento);
+        $documento = MDocumento::with('Escaneos')->findOrFail($documento);
 
         $data = [];
 
@@ -441,6 +441,7 @@ class RecepcionController extends BaseController
         $data['url_send_form_escaneo'] = url('recepcion/documentos/nuevo-escaneo');
         $data['documento']             = $documento;
         $data['detalle']               = $documento->Detalle;
+        $data['escaneos']              = $documento->Escaneos;
 
         $data['form'] = view('Recepcion.formEditarRecepcion')->with($data);
 
@@ -544,6 +545,17 @@ class RecepcionController extends BaseController
         $acuse->ACUS_NOMBRE    = $nombre_acuse_pdf;
         $acuse->ACUS_ENTREGO   = $detalle->getEntregoNombre();
         $acuse->save();
+
+        // Eliminar escaneos indicados
+        $escaneos = $request->get('eliminar_escaneo');
+
+        if( $escaneos && sizeof($escaneos) > 0 )
+        {
+            $escaneos = MEscaneo::find($escaneos);
+            foreach ($escaneos as $escaneo) {
+                $escaneo->eliminar()->save();
+            }
+        }
 
         return $documento;
     }

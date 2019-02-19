@@ -170,7 +170,7 @@
         }
 
         this.updateConteoEscaneos = function(){
-            let conteo = '';
+            let conteo = {{ $escaneos->count() }};
 
             let inputs = $('#modal-escaneos').find('input[type="file"][name="escaneo"]');
 
