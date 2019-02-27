@@ -40,9 +40,9 @@ class RecepcionController extends BaseController
 
     public function index(Request $request)
     {
-        $tabla1 = new DenunciasDataTable();
-        $tabla2 = new DocumentosDenunciasDataTable();
-        $tabla3 = new DocumentosDataTable();
+        $tabla1 = new DenunciasDataTable;
+        $tabla2 = new DocumentosDenunciasDataTable;
+        $tabla3 = new DocumentosDataTable;
 
         $data['table1'] = $tabla1;
         $data['table2'] = $tabla2;
@@ -105,21 +105,20 @@ class RecepcionController extends BaseController
 
     public function postDataTable(Request $request)
     {
-
         $type = $request->get('type');
 
         switch ($type) {
             case 'denuncias' :
-                $dataTables = new DenunciasDataTable;
+                $dataTables = new DenunciasDataTable(true);
                 break;
             case 'documentos-denuncias':
-                $dataTables = new DocumentosDenunciasDataTable;
+                $dataTables = new DocumentosDenunciasDataTable(true);
                 break;
             case 'documentos':
-                $dataTables  = new DocumentosDataTable;
+                $dataTables  = new DocumentosDataTable(true);
                 break;
             default:
-                $dataTables  = new DocumentosDataTable;
+                $dataTables  = new DocumentosDataTable(true);
                 break;
         }
 
@@ -210,61 +209,6 @@ class RecepcionController extends BaseController
         }
     }
 
-    public function finalizarRecepcion($request)
-    {
-        try{
-            $id_documento = $request->get('id');
-            $documento = MDocumento::findOrFail($id_documento);
-
-            $acuse = $documento->AcuseRecepcion;
-
-            if ($request->has('acuse') && $request->get('acuse') == 1) // Si el usuario ha indicado que quiere abrir inmediatamente el acuse de recepción
-            {
-                $url = url( sprintf('recepcion/acuse/documento/%s?d=0',$acuse->getNombre()) );
-                $request->session()->flash('urlAcuseAutomatico', $url);
-            }
-            
-            // Primer seguimiento
-            $seguimiento = $documento->Seguimientos->first();
-
-            $tipo_documento = $documento->TipoDocumento;
-
-            // Crear la notificación sobre la recepción de un nuevo documento local
-            $data = [
-                'contenido'    => sprintf('Se ha recepcionado un nuevo documento #%s de tipo <b>%s</b>', $documento->getFolio(),$tipo_documento->getNombre()),
-                'direccion'    => $seguimiento->getDireccionDestino(),
-                'departamento' => $seguimiento->getDepartamentoDestino(),
-                'url'          => sprintf('panel/documentos/seguimiento?search=%d&read=1',$seguimiento->getKey()),
-            ];
-
-            // Creamos la nueva notificación para el Panel de Trabajo sobre nuevo documento recibido
-            NotificacionController::nuevaNotificacion('PAN.TRA.NUE.DOC.REC',$data);
-
-            if ($tipo_documento->getKey() == 1) // Si el tipo de documento es denuncia ...
-            {
-                $redirect = '?view=denuncias';
-                $codigo_preferencia = 'NUE.REC.DEN';
-            }
-            else if ( $tipo_documento->getKey() == 2 ) // Si el tipo de documento es un documento para denuncia ...
-            {
-                $redirect = '?view=documentos-denuncias';
-                $codigo_preferencia = 'NUE.REC.DODE';
-            }
-            else
-            {
-                $redirect = '?view=documentos';
-                $codigo_preferencia = 'NUE.REC.DOC';
-            }
-
-            // Mandamos el correo de notificación a los usuarios que tengan la preferencia asignada
-            NotificacionController::enviarCorreoSobreNuevaRecepcion($codigo_preferencia, $documento);
-
-            return $this->responseSuccessJSON(url('recepcion/documentos/recepcionados' . $redirect));
-        } catch(Exception $error) {
-            return $this->responseErrorJSON($error->getMessage());
-        }
-    }
-
     public function procesoRecepcionar($request, $tipo_recepcion)
     {
         // Buscamos la configuración del usuario como recepcionista
@@ -317,6 +261,8 @@ class RecepcionController extends BaseController
         $documento->DOCU_TIPO_RECEPCION      = $tipo_recepcion; // Tipo de recepción
         $documento->DOCU_DETALLE             = $detalle->getKey();
         $documento->DOCU_NUMERO_DOCUMENTO    = $request->numero;
+        $documento->DOCU_DIRECCION_ORIGEN    = $recepcionista->getDireccionOrigen();
+        $documento->DOCU_DEPARTAMENTO_ORIGEN = $recepcionista->getDepartamentoOrigen();
 
         /**
          * Los folios se reinician automáticamente cada año.
@@ -393,6 +339,61 @@ class RecepcionController extends BaseController
         $acuse->save();
 
         return $documento;
+    }
+
+    public function finalizarRecepcion($request)
+    {
+        try{
+            $id_documento = $request->get('id');
+            $documento = MDocumento::findOrFail($id_documento);
+
+            $acuse = $documento->AcuseRecepcion;
+
+            if ($request->has('acuse') && $request->get('acuse') == 1) // Si el usuario ha indicado que quiere abrir inmediatamente el acuse de recepción
+            {
+                $url = url( sprintf('recepcion/acuse/documento/%s?d=0',$acuse->getNombre()) );
+                $request->session()->flash('urlAcuseAutomatico', $url);
+            }
+            
+            // Primer seguimiento
+            $seguimiento = $documento->Seguimientos->first();
+
+            $tipo_documento = $documento->TipoDocumento;
+
+            // Crear la notificación sobre la recepción de un nuevo documento local
+            $data = [
+                'contenido'    => sprintf('Se ha recepcionado un nuevo documento #%s de tipo <b>%s</b>', $documento->getFolio(),$tipo_documento->getNombre()),
+                'direccion'    => $seguimiento->getDireccionDestino(),
+                'departamento' => $seguimiento->getDepartamentoDestino(),
+                'url'          => sprintf('panel/documentos/seguimiento?search=%d&read=1',$seguimiento->getKey()),
+            ];
+
+            // Creamos la nueva notificación para el Panel de Trabajo sobre nuevo documento recibido
+            NotificacionController::nuevaNotificacion('PAN.TRA.NUE.DOC.REC',$data);
+
+            if ($tipo_documento->getKey() == 1) // Si el tipo de documento es denuncia ...
+            {
+                $redirect = '?view=denuncias';
+                $codigo_preferencia = 'NUE.REC.DEN';
+            }
+            else if ( $tipo_documento->getKey() == 2 ) // Si el tipo de documento es un documento para denuncia ...
+            {
+                $redirect = '?view=documentos-denuncias';
+                $codigo_preferencia = 'NUE.REC.DODE';
+            }
+            else
+            {
+                $redirect = '?view=documentos';
+                $codigo_preferencia = 'NUE.REC.DOC';
+            }
+
+            // Mandamos el correo de notificación a los usuarios que tengan la preferencia asignada
+            NotificacionController::enviarCorreoSobreNuevaRecepcion($codigo_preferencia, $documento);
+
+            return $this->responseSuccessJSON(url('recepcion/documentos/recepcionados' . $redirect));
+        } catch(Exception $error) {
+            return $this->responseErrorJSON($error->getMessage());
+        }
     }
 
     public function formEditarRecepcion(Request $request)

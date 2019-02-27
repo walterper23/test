@@ -54,17 +54,17 @@
     <div class="block-content tab-content">
         <div class="tab-pane{{ $tab_1 }}" id="btabswo-static-one" role="tabpanel">
             <div class="table-responsive">
-                {{ $table1 -> html() }}
+                {{ $table1->html() }}
             </div>
         </div>
         <div class="tab-pane{{ $tab_2 }}" id="btabswo-static-two" role="tabpanel">
             <div class="table-responsive">
-                {{ $table2 -> html() }}
+                {{ $table2->html() }}
             </div>
         </div>
         <div class="tab-pane{{ $tab_3 }}" id="btabswo-static-three" role="tabpanel">
             <div class="table-responsive">
-                {{ $table3 -> html() }}
+                {{ $table3->html() }}
             </div>
         </div>
     </div>
@@ -77,15 +77,15 @@
 @endpush
 
 @push('js-custom')
-    @if (request() -> session() -> has('urlAcuseAutomatico'))
+    @if (request()->session()->has('urlAcuseAutomatico'))
     <script type="text/javascript">
         setTimeout(function(){
-            window.open('{{ request() -> session() -> get('urlAcuseAutomatico') }}', '_blank');
+            window.open('{{ request()->session()->get('urlAcuseAutomatico') }}', '_blank');
         },1000);
     </script>
     @endif
 
-    {{ $table1 -> javascript() }}
-    {{ $table2 -> javascript() }}
-    {{ $table3 -> javascript() }}
+    {{ $table1->javascript() }}
+    {{ $table2->javascript() }}
+    {{ $table3->javascript() }}
 @endpush

@@ -37,6 +37,16 @@ class MRecepcionista extends BaseModel
         return $query->where('RECE_TIPO',2);
     }
 
+    public function getDireccionOrigen()
+    {
+        return $this->getAttribute('RECE_DIRECCION_ORIGEN');
+    }
+
+    public function getDepartamentoOrigen()
+    {
+        return $this->getAttribute('RECE_DEPARTAMENTO_ORIGEN');
+    }
+
     /* Relationships */
 
     public function Usuario()

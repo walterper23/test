@@ -3,8 +3,8 @@ namespace App\DataTables;
 
 use App\Model\Catalogo\MPuesto;
 
-class PuestosDataTable extends CustomDataTable{
-    
+class PuestosDataTable extends CustomDataTable
+{
     protected function setSourceData(){
         $this -> sourceData = MPuesto::with('Direccion','Departamento') -> select(['PUES_PUESTO','PUES_DIRECCION','PUES_DEPARTAMENTO','PUES_NOMBRE','PUES_CREATED_AT','PUES_ENABLED']) -> existente() -> get();
     }

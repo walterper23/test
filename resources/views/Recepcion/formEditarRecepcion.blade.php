@@ -80,7 +80,7 @@
                             <li>Cada archivo no debe ser mayor a <span class="badge badge-danger">3 Mb</span></li>
                         </ul>
                         <div class="col-12">
-                            @if( $escaneos->count() > 0 )        
+                            @if( $escaneos->count() > 0 )
                             <p class="font-size-sm"><b>Escaneos subidos:</b></p>
                             <table class="table table-vcenter">
                                 <tbody>

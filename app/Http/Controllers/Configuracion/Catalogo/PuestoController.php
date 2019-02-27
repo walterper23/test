@@ -27,7 +27,7 @@ class PuestoController extends BaseController
     public function __construct()
     {
         parent::__construct();
-        $this -> setLog('PuestoController.log');
+        $this->setLog('PuestoController.log');
     }
 
 	/**
@@ -37,7 +37,7 @@ class PuestoController extends BaseController
 
 		$data = [
 			'table'    => $dataTables,
-			'form_id'  => $this -> form_id,
+			'form_id'  => $this->form_id,
 			'form_url' => url('configuracion/catalogos/puestos/nuevo'),
 		];
 
@@ -51,21 +51,21 @@ class PuestoController extends BaseController
 
 		$action = Input::get('action');
 
-		switch ($request -> action) {
+		switch ($request->action) {
 			case 1: // Nuevo
-				$response = $this -> nuevoPuesto( $request );
+				$response = $this->nuevoPuesto( $request );
 				break;
 			case 2: // Editar
-				$response = $this -> editarPuesto( $request );
+				$response = $this->editarPuesto( $request );
 				break;
 			case 3: // Visualizar puesto
-                $response = $this -> verPuesto( $request );
+                $response = $this->verPuesto( $request );
                 break;
 			case 4: // Activar / Desactivar
-				$response = $this -> activarPuesto( $request );
+				$response = $this->activarPuesto( $request );
 				break;
 			case 5: // Eliminar
-				$response = $this -> eliminarPuesto( $request );
+				$response = $this->eliminarPuesto( $request );
 				break;
 			default:
 				return response()->json(['message'=>'Petición no válida'],404);
@@ -77,20 +77,23 @@ class PuestoController extends BaseController
 	/**
      * Método para devolver los registros que llenarán la tabla de la página principal
      */
-	public function postDataTable(PuestosDataTable $dataTables){
+	public function postDataTable()
+	{
+		$dataTables = new PuestosDataTable(true);
 		return $dataTables->getData();
 	}
 
 	/**
 	 * Método para retornar el formulario para crear un nuevo puesto
 	 */
-	public function formNuevoPuesto(){
+	public function formNuevoPuesto()
+	{
 		try {
 
 			$data = [
 				'title'         => 'Nuevo puesto',
 				'url_send_form' => url('configuracion/catalogos/puestos/manager'),
-				'form_id'       => $this -> form_id,
+				'form_id'       => $this->form_id,
 				'modelo'        => null,
 				'action'        => 1,
 				'id'            => null
@@ -102,19 +105,19 @@ class PuestoController extends BaseController
 									-> orderBy('DIRE_NOMBRE')
 									-> get();
 
-			$data['direcciones'] = $direcciones -> pluck('DIRE_NOMBRE','DIRE_DIRECCION') -> toArray();
+			$data['direcciones'] = $direcciones->pluck('DIRE_NOMBRE','DIRE_DIRECCION')->toArray();
 
 			$data['departamentos'] = [];
 
 			foreach ($direcciones as $direccion)
 			{
-				$departamentos = $direccion -> Departamentos() -> where('DEPA_ENABLED',1) -> get();
+				$departamentos = $direccion->Departamentos()->where('DEPA_ENABLED',1)->get();
 				foreach ($departamentos as $departamento)
 				{
 					$data['departamentos'][] = [
-						$direccion -> getKey(),
-						$departamento -> getKey(),
-						$departamento -> getNombre()
+						$direccion->getKey(),
+						$departamento->getKey(),
+						$departamento->getNombre()
 					];
 				}
 			}
@@ -129,25 +132,26 @@ class PuestoController extends BaseController
 	/**
 	 * Método para guardar un nuevo puesto
 	 */
-	public function nuevoPuesto( $request ){
+	public function nuevoPuesto( $request )
+	{
 		try {
 			
-			$departamento = $request -> departamento;
+			$departamento = $request->departamento;
 
 			if( $departamento == 0 )
 				$departamento = null;
 
 			$puesto = new MPuesto;
-			$puesto -> PUES_NOMBRE       = $request -> nombre;
-			$puesto -> PUES_DIRECCION    = $request -> direccion;
-			$puesto -> PUES_DEPARTAMENTO = $departamento;
-			$puesto -> save();
+			$puesto->PUES_NOMBRE       = $request->nombre;
+			$puesto->PUES_DIRECCION    = $request->direccion;
+			$puesto->PUES_DEPARTAMENTO = $departamento;
+			$puesto->save();
 
 			$tables = ['dataTableBuilder',null,true];
 
-			$message = sprintf('<i class="fa fa-fw fa-user-secret"></i> Puesto <b>%s</b> creado',$puesto -> getCodigo());
+			$message = sprintf('<i class="fa fa-fw fa-user-secret"></i> Puesto <b>%s</b> creado',$puesto->getCodigo());
 
-            return $this -> responseSuccessJSON($message,$tables);
+            return $this->responseSuccessJSON($message,$tables);
 		} catch(Exception $error) {
 
 		}
@@ -162,10 +166,10 @@ class PuestoController extends BaseController
 			$data = [
 				'title'         => 'Editar puesto',
 				'url_send_form' => url('configuracion/catalogos/puestos/manager'),
-				'form_id'       => $this -> form_id,
-				'modelo'        => MPuesto::findOrFail( $request -> id ),
+				'form_id'       => $this->form_id,
+				'modelo'        => MPuesto::findOrFail( $request->id ),
 				'action'        => 2,
-				'id'            => $request -> id
+				'id'            => $request->id
 			];
 
 			$direcciones = MDireccion::with('departamentos')
@@ -174,17 +178,17 @@ class PuestoController extends BaseController
 									->orderBy('DIRE_NOMBRE')
 									->get();
 
-			$data['direcciones'] = $direcciones -> pluck('DIRE_NOMBRE','DIRE_DIRECCION') -> toArray();
+			$data['direcciones'] = $direcciones->pluck('DIRE_NOMBRE','DIRE_DIRECCION')->toArray();
 
 			$data['departamentos'] = [];
 
 			foreach ($direcciones as $direccion) {
-				$departamentos = $direccion -> Departamentos() -> where('DEPA_ENABLED',1) -> get();
+				$departamentos = $direccion->Departamentos()->where('DEPA_ENABLED',1)->get();
 				foreach($departamentos as $departamento){
 					$data['departamentos'][] = [
-						$direccion -> getKey(),
-						$departamento -> getKey(),
-						$departamento -> getNombre()
+						$direccion->getKey(),
+						$departamento->getKey(),
+						$departamento->getNombre()
 					];
 				}
 
@@ -202,22 +206,22 @@ class PuestoController extends BaseController
 	 */
 	public function editarPuesto( $request ){
 		try {
-			$departamento = $request -> get('departamento');
+			$departamento = $request->get('departamento');
 
 			if( $departamento == 0 )
 				$departamento = null;
 
-			$puesto = MPuesto::findOrFail( $request -> id );
-			$puesto -> PUES_NOMBRE       = $request -> nombre;
-			$puesto -> PUES_DIRECCION    = $request -> direccion;
-			$puesto -> PUES_DEPARTAMENTO = $departamento;
-			$puesto -> save();
+			$puesto = MPuesto::findOrFail( $request->id );
+			$puesto->PUES_NOMBRE       = $request->nombre;
+			$puesto->PUES_DIRECCION    = $request->direccion;
+			$puesto->PUES_DEPARTAMENTO = $departamento;
+			$puesto->save();
 
-			$message = sprintf('<i class="fa fa-fw fa-check"></i> Puesto <b>%s</b> modificado',$puesto -> getCodigo());
+			$message = sprintf('<i class="fa fa-fw fa-check"></i> Puesto <b>%s</b> modificado',$puesto->getCodigo());
 
 			$tables = 'dataTableBuilder';
 
-			return $this -> responseSuccessJSON($message,$tables);
+			return $this->responseSuccessJSON($message,$tables);
 		} catch(Exception $error) {
 
 		}
@@ -229,18 +233,18 @@ class PuestoController extends BaseController
 	public function verPuesto( $request )
     {
         try {
-            $puesto = MPuesto::findOrFail( $request -> id );
-            $data['title'] = sprintf('Puesto #%s', $puesto -> getCodigo() );
+            $puesto = MPuesto::findOrFail( $request->id );
+            $data['title'] = sprintf('Puesto #%s', $puesto->getCodigo() );
 
             $data['detalles'] = [
-                ['Código', $puesto -> getCodigo()],
-                ['Dirección', $puesto -> Direccion -> getNombre()],
-                ['Departamento', $puesto -> Departamento ? $puesto -> Departamento -> getNombre() : ''],
-                ['Nombre', $puesto -> getNombre()],
-                ['Fecha',  $puesto -> presenter() -> getFechaCreacion()]
+                ['Código', $puesto->getCodigo()],
+                ['Dirección', $puesto->Direccion->getNombre()],
+                ['Departamento', $puesto->Departamento ? $puesto->Departamento->getNombre() : ''],
+                ['Nombre', $puesto->getNombre()],
+                ['Fecha',  $puesto->presenter()->getFechaCreacion()]
             ];
 
-            return view('Configuracion.Catalogo.Puesto.verPuesto') -> with($data);
+            return view('Configuracion.Catalogo.Puesto.verPuesto')->with($data);
         } catch(Exception $error) {
 
         }
@@ -251,19 +255,19 @@ class PuestoController extends BaseController
 	 */
 	public function activarPuesto( $request ){
 		try {
-			$puesto = MPuesto::findOrFail( $request -> id );
+			$puesto = MPuesto::findOrFail( $request->id );
 
-			$puesto -> cambiarDisponibilidad() -> save();
+			$puesto->cambiarDisponibilidad()->save();
 
-			if( $puesto -> disponible() )
+			if( $puesto->disponible() )
 			{
-				$message = sprintf('<i class="fa fa-fw fa-check"></i> Puesto <b>%s</b> activado',$puesto -> getCodigo());
-				return $this -> responseInfoJSON($message);
+				$message = sprintf('<i class="fa fa-fw fa-check"></i> Puesto <b>%s</b> activado',$puesto->getCodigo());
+				return $this->responseInfoJSON($message);
 			}
 			else
 			{
-				$message = sprintf('<i class="fa fa-fw fa-warning"></i> Puesto <b>%s</b> desactivado',$puesto -> getCodigo());
-				return $this -> responseWarningJSON($message);
+				$message = sprintf('<i class="fa fa-fw fa-warning"></i> Puesto <b>%s</b> desactivado',$puesto->getCodigo());
+				return $this->responseWarningJSON($message);
 			}
 
 		} catch(Exception $error) {
@@ -276,16 +280,16 @@ class PuestoController extends BaseController
 	 */
 	public function eliminarPuesto( $request ){
 		try {
-			$puesto = MPuesto::findOrFail( $request -> id );
+			$puesto = MPuesto::findOrFail( $request->id );
 			
-			$puesto -> eliminar() -> save();
+			$puesto->eliminar()->save();
 
-			$message = sprintf('<i class="fa fa-fw fa-warning"></i> Puesto <b>%s</b> eliminado',$puesto -> getCodigo());
+			$message = sprintf('<i class="fa fa-fw fa-warning"></i> Puesto <b>%s</b> eliminado',$puesto->getCodigo());
 			
 			// Lista de tablas que se van a recargar automáticamente
 			$tables = 'dataTableBuilder';
 
-			return $this -> responseInfoJSON($message,'danger',$tables);
+			return $this->responseInfoJSON($message,'danger',$tables);
 		} catch(Exception $error) {
 			return response()->json(['status'=>false,'message'=>'Ocurrió un error al eliminar el puesto. Error ' . $error->getMessage() ]);
 		}

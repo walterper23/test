@@ -94,8 +94,7 @@
             });
 
             var labelNumero    = $('label[for=numero]');
-            var iconNumero     = labelNumero.find('i').wrapAll('<div>').parent().html();
-            console.log(iconNumero)
+            var iconNumero     = labelNumero.find('i').get(0).outerHTML;
             var selectDenuncia = $('#denuncia');
             var txtAnexo       = this.form.find('#anexos');
             var escaneoNuevo   = $('#escaneo_nuevo');
@@ -111,8 +110,9 @@
                 selectDenuncia.closest('div.form-group.row').hide();
 
                 if( label && label.length ){
-                    labelNumero.text( label + iconNumero );
+                    labelNumero.text(label).append(iconNumero)
                     labelNumero.closest('div.form-group.row').show();
+                    Codebase.helper('core-popover');
                 }else{
                     labelNumero.closest('div.form-group.row').hide();
                 }

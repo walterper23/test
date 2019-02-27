@@ -7,20 +7,22 @@ use Yajra\DataTables\Html\Builder;
 
 use Exception;
 
-class CustomDataTable {
-
+class CustomDataTable
+{
     private $instanceTable;
     protected $builderHtml;
 
     protected $sourceData;
     private $columns;
 
-    public function __construct()
+    private $loadSource;
+
+    public function __construct( $loadSource = false )
     {
         $datatables = new DataTables();
+        $this->loadSource    = $loadSource;
         $this->instanceTable = $datatables;
         $this->builderHtml   = $datatables->getHtmlBuilder();
-        $this->setSourceData();
         $this->initInstance()->initConfig();
     }
 
@@ -31,21 +33,22 @@ class CustomDataTable {
 
     protected function getSourceData()
     {
+        $this->setSourceData();
+
         return $this->sourceData;
     }
     
     private function initInstance()
     {
-        $this->instanceTable = $this->instanceTable->of( $this->getSourceData() );
+        $this->instanceTable = $this->instanceTable->of($this->loadSource ? $this->getSourceData() : []);
+
         return $this;
     }
 
     private function initConfig()
     {
         $this->columns = [];
-        $this->readColumsTable()
-                ->setRawColumns();
-
+        $this->readColumsTable()->setRawColumns();
     }
 
     private function readColumsTable()
@@ -64,9 +67,12 @@ class CustomDataTable {
             $config['orderable'] = isset($column['orderable']) ? $column['orderable'] : true;
             
             // Config *render* attribute. Using value *data* if it's not set.
-            if( isset($column['render']) ){
+            if( isset($column['render']) )
+            {
                 $config['render'] = $column['render'];
-            }else{
+            }
+            else
+            {
                 $config['render'] = '{{$'.$column['data'].'}}';
             }
 
@@ -87,47 +93,58 @@ class CustomDataTable {
         ];
     }
 
-    private function addColumn( $config ){
+    private function addColumn( $config )
+    {
         $this->instanceTable = $this->instanceTable->addColumn($config['name'],$config['render']);
+
         return $this;
     }
 
-    private function pushColumn( $config ){
+    private function pushColumn( $config )
+    {
         $this->columns[] = $this->array_only(['data','name','title','searchable','orderable'], $config);
+
         return $this;
     }
 
-    private function array_only($keys, $array){
+    private function array_only($keys, $array)
+    {
         $result = [];
         foreach ($keys as $key) {
-            if( isset($array[ $key ]) ){
+            if( isset($array[ $key ]) )
+            {
                 $result[ $key ] = $array[ $key ];
             }
         }
+
         return $result;
     }
 
-    private function pushRawColumn( $column ){
+    private function pushRawColumn( $column )
+    {
         $this->rawColumns[] = $column;
+
         return $this;
     }
 
     protected function setRawColumns()
     {
         $this->instanceTable = $this->instanceTable->rawColumns( $this->rawColumns );
+
         return $this;
     }
 
     protected function removeColumns()
     {
         $this->instanceTable = $this->instanceTable->removeColumn( $this->removeColumns() );
+
         return $this;
     }
 
-    private function setRemoveColumns(Array $columns){
+    private function setRemoveColumns(Array $columns)
+    {
         return ['*'];
     }
-
 
 
     /********************* B U I L D E R ***************************/
@@ -183,7 +200,8 @@ class CustomDataTable {
         return '/';
     }
 
-    public function html( $attributes = [] ){
+    public function html( $attributes = [] )
+    {
         return $this->buildOptionsParameters()
                     ->buildAjaxParameters()
                     ->buildTable()
@@ -198,7 +216,8 @@ class CustomDataTable {
 
     /**************************************************************/
 
-    public function getData( $type = true ){
+    public function getData( $type = true )
+    {
         return $this->instanceTable->make( $type );
     }
 

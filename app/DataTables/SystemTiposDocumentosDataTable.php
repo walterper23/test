@@ -5,11 +5,9 @@ use App\Model\System\MSystemTipoDocumento;
 
 class SystemTiposDocumentosDataTable extends CustomDataTable
 {
-
     protected function setSourceData()
     {
-        $this->sourceData = MSystemTipoDocumento::select('SYTD_TIPO_DOCUMENTO','SYTD_NOMBRE','SYTD_ETIQUETA_NUMERO','SYTD_RIBBON_COLOR','SYTD_CREATED_AT','SYTD_ENABLED')
-                               ->existente()->orderBy('SYTD_TIPO_DOCUMENTO','ASC')->get();
+        $this->sourceData = MSystemTipoDocumento::select('SYTD_TIPO_DOCUMENTO','SYTD_NOMBRE','SYTD_ETIQUETA_NUMERO','SYTD_RIBBON_COLOR','SYTD_CREATED_AT','SYTD_ENABLED')->existente()->orderBy('SYTD_TIPO_DOCUMENTO','ASC')->get();
     }
 
     protected function columnsTable()

@@ -288,7 +288,6 @@ class DashboardController extends BaseController
 
     public function getNotificaciones( $request )
     {
-
         $data_notificaciones = [];
 
         $permisos_usuario = user()->Permisos->pluck('SYPE_PERMISO')->toArray();

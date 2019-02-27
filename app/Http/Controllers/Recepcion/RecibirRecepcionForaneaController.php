@@ -11,8 +11,6 @@ use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Dashboard\NotificacionController;
 
 /* Models */
-use App\Model\MAcuseRecepcion;
-use App\Model\MDenuncia;
 use App\Model\MDocumento;
 use App\Model\MDocumentoForaneo;
 use App\Model\MSeguimiento;
@@ -32,9 +30,9 @@ class RecibirRecepcionForaneaController extends BaseController
 
     public function index(Request $request){
 
-        $tabla1 = new RecibirDenunciasForaneasDataTable();
-        $tabla2 = new RecibirDocumentosDenunciasForaneasDataTable();
-        $tabla3 = new RecibirDocumentosForaneosDataTable();
+        $tabla1 = new RecibirDenunciasForaneasDataTable;
+        $tabla2 = new RecibirDocumentosDenunciasForaneasDataTable;
+        $tabla3 = new RecibirDocumentosForaneosDataTable;
 
         $data['table1'] = $tabla1;
         $data['table2'] = $tabla2;
@@ -97,16 +95,16 @@ class RecibirRecepcionForaneaController extends BaseController
 
         switch ($type) {
             case 'denuncias' :
-                $dataTables = new RecibirDenunciasForaneasDataTable;
+                $dataTables = new RecibirDenunciasForaneasDataTable(true);
                 break;
             case 'documentos-denuncias':
-                $dataTables = new RecibirDocumentosDenunciasForaneasDataTable;
+                $dataTables = new RecibirDocumentosDenunciasForaneasDataTable(true);
                 break;
             case 'documentos':
-                $dataTables  = new RecibirDocumentosForaneosDataTable;
+                $dataTables  = new RecibirDocumentosForaneosDataTable(true);
                 break;
             default:
-                $dataTables  = new RecibirDocumentosForaneosDataTable;
+                $dataTables  = new RecibirDocumentosForaneosDataTable(true);
                 break;
         }
 

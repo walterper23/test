@@ -93,6 +93,7 @@
             });
 
             var labelNumero    = $('label[for=numero]');
+            var iconNumero     = labelNumero.find('i').get(0).outerHTML;
             var selectDenuncia = $('#denuncia');
             var txtAnexo       = this.form.find('#anexos');
             var escaneoNuevo   = $('#escaneo_nuevo');
@@ -108,7 +109,7 @@
                 selectDenuncia.closest('div.form-group.row').hide();
 
                 if( label && label.length ){
-                    labelNumero.text( label );
+                    labelNumero.text(label).append(iconNumero)
                     labelNumero.closest('div.form-group.row').show();
                 }else{
                     labelNumero.closest('div.form-group.row').hide();

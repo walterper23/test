@@ -73,8 +73,9 @@ class AnexoController extends BaseController
     /**
      * Método para devolver los registros que llenarán la tabla de la página principal
      */
-    public function postDataTable(AnexosDataTable $dataTables)
+    public function postDataTable()
     {
+        $dataTables = new AnexosDataTable(true);
         return $dataTables->getData();
     }
 

@@ -12,19 +12,12 @@ use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Dashboard\NotificacionController;
 
 /* Models */
-use App\Model\MAcuseRecepcion;
-use App\Model\MArchivo;
 use App\Model\MDenuncia;
-use App\Model\MDetalle;
 use App\Model\MDocumento;
 use App\Model\MDocumentoForaneo;
-use App\Model\MDocumentoDenuncia;
-use App\Model\MEscaneo;
 use App\Model\MMunicipio;
-use App\Model\MSeguimiento;
 use App\Model\Catalogo\MAnexo;
 use App\Model\System\MSystemTipoDocumento;
-use App\Model\System\MSystemConfig;
 
 /* DataTables */
 use App\DataTables\DenunciasForaneasDataTable;
@@ -43,9 +36,9 @@ class RecepcionForaneaController extends BaseController
 
     public function index(Request $request)
     {
-        $tabla1 = new DenunciasForaneasDataTable();
-        $tabla2 = new DocumentosDenunciasForaneasDataTable();
-        $tabla3 = new DocumentosForaneosDataTable();
+        $tabla1 = new DenunciasForaneasDataTable;
+        $tabla2 = new DocumentosDenunciasForaneasDataTable;
+        $tabla3 = new DocumentosForaneosDataTable;
 
         $data['table1'] = $tabla1;
         $data['table2'] = $tabla2;
@@ -119,16 +112,16 @@ class RecepcionForaneaController extends BaseController
 
         switch ($type) {
             case 'denuncias' :
-                $dataTables = new DenunciasForaneasDataTable;
+                $dataTables = new DenunciasForaneasDataTable(true);
                 break;
             case 'documentos-denuncias':
-                $dataTables = new DocumentosDenunciasForaneasDataTable;
+                $dataTables = new DocumentosDenunciasForaneasDataTable(true);
                 break;
             case 'documentos':
-                $dataTables  = new DocumentosForaneosDataTable;
+                $dataTables  = new DocumentosForaneosDataTable(true);
                 break;
             default:
-                $dataTables  = new DocumentosForaneosDataTable;
+                $dataTables  = new DocumentosForaneosDataTable(true);
                 break;
         }
 
@@ -275,6 +268,7 @@ class RecepcionForaneaController extends BaseController
         $data['url_send_form_escaneo'] = url('recepcion/documentos-foraneos/nuevo-escaneo');
         $data['documento']             = $documentoForaneo->Documento;
         $data['detalle']               = $documentoForaneo->Detalle;
+        $data['escaneos']              = $documentoForaneo->Escaneos;
 
         $data['form'] = view('Recepcion.formEditarRecepcion')->with($data);
 

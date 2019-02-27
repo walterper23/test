@@ -5,15 +5,25 @@ use App\Model\MDocumento;
 
 class DenunciasForaneasDataTable extends CustomDataTable
 {
-    public function __construct()
+    public function __construct( $loadSource = false )
     {
-        parent::__construct();
+        parent::__construct($loadSource);
         $this->builderHtml->setTableId('denuncias-datatable');
     }
 
     protected function setSourceData()
     {
-        $this->sourceData = MDocumento::with('Detalle','DocumentoForaneo','AcuseRecepcion')->isForaneo()->siExistente()->noGuardado()->where('DOCU_SYSTEM_TIPO_DOCTO',1)->get(); // Denuncia
+        // Recuperar las direcciones actualmente asignadas al usuario
+        $direccionesUsuario = user()->Direcciones()->pluck('DIRE_DIRECCION')->toArray();
+
+        // Recuperar los departamentos actualmente asignados al usuario
+        $departamentosUsuario = user()->Departamentos()->pluck('DEPA_DEPARTAMENTO')->toArray();
+
+        $this->sourceData = MDocumento::with('Detalle','DocumentoForaneo','AcuseRecepcion')
+            ->where(function($query) use($direccionesUsuario,$departamentosUsuario){
+                $query->whereIn('DOCU_DIRECCION_ORIGEN',$direccionesUsuario);
+                $query->orWhereIn('DOCU_DEPARTAMENTO_ORIGEN',$departamentosUsuario);
+            })->isForaneo()->siExistente()->noGuardado()->where('DOCU_SYSTEM_TIPO_DOCTO',1)->get(); // Denuncia
     }
 
     protected function columnsTable(){

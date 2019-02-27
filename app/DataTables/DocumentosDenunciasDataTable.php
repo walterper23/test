@@ -5,9 +5,9 @@ use App\Model\MDocumento;
 
 class DocumentosDenunciasDataTable extends CustomDataTable
 {
-    public function __construct()
+    public function __construct( $loadSource = false )
     {
-        parent::__construct();
+        parent::__construct($loadSource);
         $this->builderHtml->setTableId('documentos-denuncias-datatable');
     }
 

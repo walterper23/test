@@ -2,8 +2,6 @@
 
 Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
 
-    // Route::get('documentacion', 'DocumentacionController@index');
-
     Route::get('login',  'Auth\LoginController@showLoginForm')->name('login');
     Route::post('login', 'Auth\LoginController@login');
     Route::get('logout', 'Auth\LoginController@logout')->name('logout');
@@ -92,7 +90,7 @@ Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
 
             // Recepción de documentos foráneos
             Route::prefix('documentos-foraneos')->middleware('canAtLeast:REC.VER.FORANEO,REC.DOCUMENTO.FORANEO')->group(function(){
-                Route::redirect('/',           '/recepcion/documentos-foraneos/recepcionados');
+                Route::redirect('/',               '/recepcion/documentos-foraneos/recepcionados');
                 Route::get('recepcionados',        'RecepcionForaneaController@index');
                 Route::get('en-captura',           'RecepcionForaneaController@documentosEnCaptura');
                 Route::post('post-data',           'RecepcionForaneaController@postDataTable');

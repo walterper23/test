@@ -72,8 +72,9 @@ class DepartamentoController extends BaseController
     /**
      * Método para devolver los registros que llenarán la tabla de la página principal
      */
-    public function postDataTable(DepartamentosDataTable $dataTables)
+    public function postDataTable()
     {
+        $dataTables = new DepartamentosDataTable(true);
         return $dataTables->getData();
     }
 

@@ -25,7 +25,7 @@ class SystemEstadoDocumentoController extends BaseController
     public function __construct()
     {
         parent::__construct();
-        $this -> setLog('SystemEstadoDocumentoController.log');
+        $this->setLog('SystemEstadoDocumentoController.log');
     }
 
     /**
@@ -34,10 +34,10 @@ class SystemEstadoDocumentoController extends BaseController
     public function index(SystemEstadosDocumentosDataTable $dataTables)
     {
         $data['table']    = $dataTables;
-        $data['form_id']  = $this -> form_id;
+        $data['form_id']  = $this->form_id;
         $data['form_url'] = url('configuracion/sistema/estados-documentos/nuevo');
 
-        return view('Configuracion.Sistema.EstadoDocumento.indexEstadoDocumento') -> with($data);
+        return view('Configuracion.Sistema.EstadoDocumento.indexEstadoDocumento')->with($data);
     }
 
     /**
@@ -45,12 +45,12 @@ class SystemEstadoDocumentoController extends BaseController
      */
     public function manager(SystemEstadoDocumentoRequest $request)
     {
-        switch ($request -> action) {
+        switch ($request->action) {
             case 2: // Editar
-                $response = $this -> editarEstadoDocumento( $request );
+                $response = $this->editarEstadoDocumento( $request );
                 break;
             case 3: // Visualizar estado de documento
-                $response = $this -> verEstadoDocumento( $request );
+                $response = $this->verEstadoDocumento( $request );
                 break;
             default:
                 return response()->json(['message'=>'Petición no válida'],404);
@@ -63,8 +63,9 @@ class SystemEstadoDocumentoController extends BaseController
     /**
      * Método para devolver los registros que llenarán la tabla de la página principal
      */
-    public function postDataTable(SystemEstadosDocumentosDataTable $dataTables)
+    public function postDataTable()
     {
+        $dataTables = new SystemEstadosDocumentosDataTable(true);
         return $dataTables->getData();
     }
 
@@ -75,13 +76,13 @@ class SystemEstadoDocumentoController extends BaseController
     {
         try {
             $data['title']         = 'Editar estado de documento';
-            $data['form_id']       = $this -> form_id;
+            $data['form_id']       = $this->form_id;
             $data['url_send_form'] = url('configuracion/sistema/estados-documentos/manager');
             $data['action']        = 2;
-            $data['model']         = MSystemEstadoDocumento::findOrFail( $request -> id );
-            $data['id']            = $request -> id;
+            $data['model']         = MSystemEstadoDocumento::findOrFail( $request->id );
+            $data['id']            = $request->id;
 
-            return view('Configuracion.Sistema.EstadoDocumento.formEstadoDocumento') -> with($data);
+            return view('Configuracion.Sistema.EstadoDocumento.formEstadoDocumento')->with($data);
         } catch(Exception $error) {
 
         }
@@ -93,16 +94,16 @@ class SystemEstadoDocumentoController extends BaseController
     public function editarEstadoDocumento( $request )
     {
         try {
-            $estadoDocumento = MSystemEstadoDocumento::findOrFail( $request -> id );
-            $estadoDocumento -> SYED_NOMBRE = $request -> nombre;
-            $estadoDocumento -> save();
+            $estadoDocumento = MSystemEstadoDocumento::findOrFail( $request->id );
+            $estadoDocumento->SYED_NOMBRE = $request->nombre;
+            $estadoDocumento->save();
 
             // Lista de tablas que se van a recargar automáticamente
             $tables = 'dataTableBuilder';
 
-            $message = sprintf('<i class="fa fa-fw fa-check"></i> Estado de documento <b>%s</b> modificado',$estadoDocumento -> getCodigo());
+            $message = sprintf('<i class="fa fa-fw fa-check"></i> Estado de documento <b>%s</b> modificado',$estadoDocumento->getCodigo());
 
-            return $this -> responseSuccessJSON($message,$tables);
+            return $this->responseSuccessJSON($message,$tables);
         } catch(Exception $error) {
             return response()->json(['status'=>false,'message'=>'Ocurrió un error al editar el Estado de Documento. Error ' . $error->getMessage() ]);
         }
@@ -114,18 +115,18 @@ class SystemEstadoDocumentoController extends BaseController
     public function verEstadoDocumento( $request )
     {
         try {
-            $estadoDocumento = MSystemEstadoDocumento::findOrFail( $request -> id );
-            $data['title'] = sprintf('Estado de Documento #%s', $estadoDocumento -> getKey() );
+            $estadoDocumento = MSystemEstadoDocumento::findOrFail( $request->id );
+            $data['title'] = sprintf('Estado de Documento #%s', $estadoDocumento->getKey() );
 
             $data['detalles'] = [
-                ['Código', $estadoDocumento -> getKey()],
-                ['Nombre', $estadoDocumento -> SYED_NOMBRE],
-                //['Fecha',  $estadoDocumento -> presenter() -> getFechaCreacion()]
+                ['Código', $estadoDocumento->getKey()],
+                ['Nombre', $estadoDocumento->SYED_NOMBRE],
+                //['Fecha',  $estadoDocumento->presenter()->getFechaCreacion()]
             ];
 
-            return view('Configuracion.Sistema.EstadoDocumento.verEstadoDocumento') -> with($data);
+            return view('Configuracion.Sistema.EstadoDocumento.verEstadoDocumento')->with($data);
         } catch(Exception $error) {
-            return $error -> getMessage();
+            return $error->getMessage();
         }
 
     }
