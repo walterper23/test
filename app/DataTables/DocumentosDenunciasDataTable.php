@@ -13,7 +13,7 @@ class DocumentosDenunciasDataTable extends CustomDataTable
 
     public function setSourceData()
     {
-        $this->sourceData = MDocumento::with('Detalle','AcuseRecepcion')->where('DOCU_SYSTEM_TIPO_DOCTO',2)->siExistente()->noGuardado(); // Documentos de denuncias
+        $this->sourceData = MDocumento::with('Detalle','AcuseRecepcion')->isDocumentoDenuncia()->siExistente()->noGuardado()->orderBy('DOCU_CREATED_AT','DESC');; // Documentos de denuncias
     }
 
     public function columnsTable(){

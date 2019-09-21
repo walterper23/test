@@ -142,6 +142,21 @@ class MDocumento extends BaseModel
         return $query->where('DOCU_GUARDADO',0);
     }
 
+    public function scopeIsDenuncia($query)
+    {
+        return $query->where('DOCU_SYSTEM_TIPO_DOCTO',1);
+    }
+
+    public function scopeIsDocumentoDenuncia($query)
+    {
+        return $query->where('DOCU_SYSTEM_TIPO_DOCTO',2);
+    }
+
+    public function scopeIsDocumentoGeneral($query)
+    {
+        return $query->whereNotIn('DOCU_SYSTEM_TIPO_DOCTO',[1,2]);
+    }
+
     public function scopeIsLocal($query)
     {
         return $query->where('DOCU_TIPO_RECEPCION',1);

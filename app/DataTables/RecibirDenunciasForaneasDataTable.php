@@ -13,7 +13,7 @@ class RecibirDenunciasForaneasDataTable extends CustomDataTable
 
     public function setSourceData()
     {
-        $this->sourceData = MDocumento::with('Detalle','AcuseRecepcion','DocumentoForaneo')->isForaneo()->siExistente()->noGuardado()->where('DOCU_SYSTEM_TIPO_DOCTO',1); // Denuncia
+        $this->sourceData = MDocumento::with('Detalle','AcuseRecepcion','DocumentoForaneo')->isForaneo()->siExistente()->noGuardado()->isDenuncia()->orderBy('DOCU_CREATED_AT','DESC');
     }
 
     public function columnsTable()

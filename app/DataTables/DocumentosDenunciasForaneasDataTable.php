@@ -19,11 +19,12 @@ class DocumentosDenunciasForaneasDataTable extends CustomDataTable
         // Recuperar los departamentos actualmente asignados al usuario
         $departamentosUsuario = user()->Departamentos()->pluck('DEPA_DEPARTAMENTO')->toArray();
         
-        $this->sourceData = MDocumento::with('Detalle','DocumentoForaneo','AcuseRecepcion')->where('DOCU_SYSTEM_TIPO_DOCTO',2)
+        $this->sourceData = MDocumento::with('Detalle','DocumentoForaneo','AcuseRecepcion')
             ->where(function($query) use($direccionesUsuario,$departamentosUsuario){
                 $query->whereIn('DOCU_DIRECCION_ORIGEN',$direccionesUsuario);
                 $query->orWhereIn('DOCU_DEPARTAMENTO_ORIGEN',$departamentosUsuario);
-            })->isForaneo()->siExistente()->noGuardado(); // Documentos de denuncias
+            })->isForaneo()->siExistente()->noGuardado()->isDocumentoDenuncia()
+            ->orderBy('DOCU_CREATED_AT','DESC');; // Documentos de denuncias
     }
 
     public function columnsTable()

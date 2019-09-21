@@ -23,7 +23,8 @@ class DocumentosForaneosDataTable extends CustomDataTable
             ->where(function($query) use($direccionesUsuario,$departamentosUsuario){
                 $query->whereIn('DOCU_DIRECCION_ORIGEN',$direccionesUsuario);
                 $query->orWhereIn('DOCU_DEPARTAMENTO_ORIGEN',$departamentosUsuario);
-            })->isForaneo()->siExistente()->noGuardado()->whereNotIn('DOCU_SYSTEM_TIPO_DOCTO',[1,2]); // Denuncias, Documentos de denuncias
+            })->isForaneo()->siExistente()->noGuardado()->isDocumentoGeneral()
+            ->orderBy('DOCU_CREATED_AT','DESC');; // Denuncias, Documentos de denuncias
     }
 
     public function columnsTable()
