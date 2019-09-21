@@ -11,12 +11,12 @@ class DocumentosDenunciasDataTable extends CustomDataTable
         return 'documentos-denuncias-datatable';
     }
 
-    publc function setSourceData()
+    public function setSourceData()
     {
         $this->sourceData = MDocumento::with('Detalle','AcuseRecepcion')->where('DOCU_SYSTEM_TIPO_DOCTO',2)->siExistente()->noGuardado(); // Documentos de denuncias
     }
 
-    publc function columnsTable(){
+    public function columnsTable(){
         return [
             [
                 'title'  => 'FOLIO RECEPCIÓN',

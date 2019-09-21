@@ -57,11 +57,6 @@ abstract class CustomDataTable implements DataTableInterface
         return $this;
     }
 
-    public function setSourceData()
-    {
-        $this->sourceData = collect([]);
-    }
-
     private function getSourceData()
     {
         $this->setSourceData();
@@ -95,19 +90,19 @@ abstract class CustomDataTable implements DataTableInterface
 
     private function setRemoveColumns()
     {
-        $row = $this->instanceTable->results()->first();
+        // $row = $this->instanceTable->results()->first();
 
-        if ($row) {
-            $removeColumns = array_keys($row->getAttributes());
+        // if ($row) {
+        //     $removeColumns = array_keys($row->getAttributes());
 
-            $relationsColumns = array_keys($row->relationsToArray());
+        //     $relationsColumns = array_keys($row->relationsToArray());
 
-            $removeColumns = array_merge($removeColumns,$relationsColumns);
+        //     $removeColumns = array_merge($removeColumns,$relationsColumns);
 
-            foreach ($removeColumns as $column) {
-                $this->instanceTable = $this->instanceTable->removeColumn( $column );
-            }
-        }
+        //     foreach ($removeColumns as $column) {
+        //         $this->instanceTable = $this->instanceTable->removeColumn( $column );
+        //     }
+        // }
 
         return $this;
     }
