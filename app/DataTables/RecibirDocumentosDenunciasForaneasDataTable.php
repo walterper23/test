@@ -1,22 +1,22 @@
 <?php
+
 namespace App\DataTables;
 
 use App\Model\MDocumento;
 
 class RecibirDocumentosDenunciasForaneasDataTable extends CustomDataTable
 {
-    public function __construct( $loadSource = false )
+    public function setTableId()
     {
-        parent::__construct($loadSource);
-        $this->builderHtml->setTableId('recibir-documentos-denuncias-datatable');
+        return 'recibir-documentos-denuncias-datatable';
     }
 
-    protected function setSourceData()
+    public function setSourceData()
     {
-        $this->sourceData = MDocumento::with('Detalle','AcuseRecepcion','DocumentoForaneo')->where('DOCU_SYSTEM_TIPO_DOCTO',2)->isForaneo()->siExistente()->noGuardado()->get(); // Documentos de denuncias
+        $this->sourceData = MDocumento::with('Detalle','AcuseRecepcion','DocumentoForaneo')->where('DOCU_SYSTEM_TIPO_DOCTO',2)->isForaneo()->siExistente()->noGuardado(); // Documentos de denuncias
     }
 
-    protected function columnsTable(){
+    public function columnsTable(){
         return [
             [
                 'title'  => 'FOLIO RECEPCIÓN',
@@ -85,12 +85,12 @@ class RecibirDocumentosDenunciasForaneasDataTable extends CustomDataTable
         ];
     }
 
-    protected function getUrlAjax()
+    public function getUrlAjax()
     {
         return url('recepcion/documentos/foraneos/post-data?type=documentos-denuncias');
     }
 
-    protected function getCustomOptionsParameters()
+    public function getCustomOptionsParameters()
     {
         return [
             'pageLength' => 10,

@@ -1,18 +1,19 @@
 <?php
+
 namespace App\DataTables;
 
 use App\Model\MDocumentoSemaforizado;
 
 class DocumentosSemaforizadosDataTable extends CustomDataTable
 {
-    protected function setSourceData()
+    public function setSourceData()
     {
         $this->sourceData = MDocumentoSemaforizado::with(['Documento'=>function($documento){
             $documento->with('Detalle','AcuseRecepcion');
-        },'SeguimientoA','SeguimientoB'])->existente()->orderBy('DOSE_SEMAFORO','DESC')->get();
+        },'SeguimientoA','SeguimientoB'])->siExistente()->orderBy('DOSE_SEMAFORO','DESC');
     }
 
-    protected function columnsTable()
+    public function columnsTable()
     {
         return [
             [
@@ -85,7 +86,7 @@ class DocumentosSemaforizadosDataTable extends CustomDataTable
         ];
     }
 
-    protected function getUrlAjax()
+    public function getUrlAjax()
     {
         return url('panel/documentos/semaforizados/post-data');
     }

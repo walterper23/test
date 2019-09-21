@@ -109,16 +109,16 @@ class RecepcionController extends BaseController
 
         switch ($type) {
             case 'denuncias' :
-                $dataTables = new DenunciasDataTable(true);
+                $dataTables = new DenunciasDataTable;
                 break;
             case 'documentos-denuncias':
-                $dataTables = new DocumentosDenunciasDataTable(true);
+                $dataTables = new DocumentosDenunciasDataTable;
                 break;
             case 'documentos':
-                $dataTables  = new DocumentosDataTable(true);
+                $dataTables  = new DocumentosDataTable;
                 break;
             default:
-                $dataTables  = new DocumentosDataTable(true);
+                $dataTables  = new DocumentosDataTable;
                 break;
         }
 

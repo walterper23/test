@@ -1,15 +1,18 @@
 <?php
+
 namespace App\DataTables;
 
 use App\Model\Catalogo\MDepartamento;
 
 class DepartamentosDataTable extends CustomDataTable
 {
-    protected function setSourceData(){
-        $this->sourceData = MDepartamento::with('direccion')->select(['DEPA_DEPARTAMENTO','DEPA_DIRECCION','DEPA_NOMBRE','DEPA_CREATED_AT','DEPA_ENABLED'])->existente()->get();
+    public function setSourceData()
+    {
+        $this->sourceData = MDepartamento::with('Direccion')->siExistente();
     }
 
-    protected function columnsTable(){
+    public function columnsTable()
+    {
         return [
             [
                 'title' => '#',
@@ -56,7 +59,8 @@ class DepartamentosDataTable extends CustomDataTable
         ];
     }
 
-    protected function getUrlAjax(){
+    public function getUrlAjax()
+    {
         return url('configuracion/catalogos/departamentos/post-data');
     }
 }

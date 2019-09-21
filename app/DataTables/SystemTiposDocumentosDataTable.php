@@ -1,16 +1,17 @@
 <?php
+
 namespace App\DataTables;
 
 use App\Model\System\MSystemTipoDocumento;
 
 class SystemTiposDocumentosDataTable extends CustomDataTable
 {
-    protected function setSourceData()
+    public function setSourceData()
     {
-        $this->sourceData = MSystemTipoDocumento::select('SYTD_TIPO_DOCUMENTO','SYTD_NOMBRE','SYTD_ETIQUETA_NUMERO','SYTD_RIBBON_COLOR','SYTD_CREATED_AT','SYTD_ENABLED')->existente()->orderBy('SYTD_TIPO_DOCUMENTO','ASC')->get();
+        $this->sourceData = MSystemTipoDocumento::select('SYTD_TIPO_DOCUMENTO','SYTD_NOMBRE','SYTD_ETIQUETA_NUMERO','SYTD_RIBBON_COLOR','SYTD_CREATED_AT','SYTD_ENABLED')->existente()->orderBy('SYTD_TIPO_DOCUMENTO','ASC');
     }
 
-    protected function columnsTable()
+    public function columnsTable()
     {
         return [
             [
@@ -66,7 +67,7 @@ class SystemTiposDocumentosDataTable extends CustomDataTable
         ];
     }
 
-    protected function getUrlAjax()
+    public function getUrlAjax()
     {
         return url('configuracion/sistema/tipos-documentos/post-data');
     }

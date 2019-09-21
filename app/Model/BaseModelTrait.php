@@ -208,7 +208,7 @@ trait BaseModelTrait
     public function scopeSiExistenteDisponible($query)
     {
         return $query->where(function($q){
-            $q->existente()->disponible();
+            $q->siExistente()->siDisponible();
         });
     }
 

@@ -1,15 +1,18 @@
 <?php
+
 namespace App\DataTables;
 
 use App\Model\Catalogo\MDireccion;
 
 class DireccionesDataTable extends CustomDataTable
 {
-    protected function setSourceData(){
-        $this->sourceData = MDireccion::with('DepartamentosExistentes')->select(['DIRE_DIRECCION','DIRE_NOMBRE','DIRE_CREATED_AT','DIRE_ENABLED'])->existente()->get();
+    public function setSourceData()
+    {
+        $this->sourceData = MDireccion::with('DepartamentosExistentes')->siExistente();
     }
 
-    protected function columnsTable(){
+    public function columnsTable()
+    {
         return [
             [
                 'title'  => '#',
@@ -57,7 +60,8 @@ class DireccionesDataTable extends CustomDataTable
         ];
     }
 
-    protected function getUrlAjax(){
+    public function getUrlAjax()
+    {
         return url('configuracion/catalogos/direcciones/post-data');
     }
 }

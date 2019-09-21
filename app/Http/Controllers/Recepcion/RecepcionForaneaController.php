@@ -112,16 +112,16 @@ class RecepcionForaneaController extends BaseController
 
         switch ($type) {
             case 'denuncias' :
-                $dataTables = new DenunciasForaneasDataTable(true);
+                $dataTables = new DenunciasForaneasDataTable;
                 break;
             case 'documentos-denuncias':
-                $dataTables = new DocumentosDenunciasForaneasDataTable(true);
+                $dataTables = new DocumentosDenunciasForaneasDataTable;
                 break;
             case 'documentos':
-                $dataTables  = new DocumentosForaneosDataTable(true);
+                $dataTables  = new DocumentosForaneosDataTable;
                 break;
             default:
-                $dataTables  = new DocumentosForaneosDataTable(true);
+                $dataTables  = new DocumentosForaneosDataTable;
                 break;
         }
 

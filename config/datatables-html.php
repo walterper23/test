@@ -17,7 +17,8 @@ return [
     'options' => [
     	'dom'       => '<"row"<"col-4"l><"col-4"r><"col-4"f>><"row"<"col-12"t>><"row"<"col-6"i><"col-6"p>>',
     	'pagingType' => 'full_numbers',
-    	//'processing' => true,
+    	'processing' => true,
+        'serverSide' => true,
 		'saveState' => true,
 		'pageLength' => '100',
         //'scrollY'=> '300',

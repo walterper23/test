@@ -63,9 +63,8 @@ class SystemEstadoDocumentoController extends BaseController
     /**
      * Método para devolver los registros que llenarán la tabla de la página principal
      */
-    public function postDataTable()
+    public function postDataTable(SystemEstadosDocumentosDataTable $dataTables)
     {
-        $dataTables = new SystemEstadosDocumentosDataTable(true);
         return $dataTables->getData();
     }
 

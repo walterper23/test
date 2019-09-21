@@ -1,17 +1,17 @@
 <?php
+
 namespace App\DataTables;
 
 use App\Model\MDocumento;
 
 class DenunciasForaneasDataTable extends CustomDataTable
 {
-    public function __construct( $loadSource = false )
+    public function setTableId()
     {
-        parent::__construct($loadSource);
-        $this->builderHtml->setTableId('denuncias-datatable');
+        return 'denuncias-datatable';
     }
 
-    protected function setSourceData()
+    public function setSourceData()
     {
         // Recuperar las direcciones actualmente asignadas al usuario
         $direccionesUsuario = user()->Direcciones()->pluck('DIRE_DIRECCION')->toArray();
@@ -23,10 +23,11 @@ class DenunciasForaneasDataTable extends CustomDataTable
             ->where(function($query) use($direccionesUsuario,$departamentosUsuario){
                 $query->whereIn('DOCU_DIRECCION_ORIGEN',$direccionesUsuario);
                 $query->orWhereIn('DOCU_DEPARTAMENTO_ORIGEN',$departamentosUsuario);
-            })->isForaneo()->siExistente()->noGuardado()->where('DOCU_SYSTEM_TIPO_DOCTO',1)->get(); // Denuncia
+            })->isForaneo()->siExistente()->noGuardado()->where('DOCU_SYSTEM_TIPO_DOCTO',1); // Denuncia
     }
 
-    protected function columnsTable(){
+    public function columnsTable()
+    {
         return [
             [
                 'title'  => 'FOLIO RECEPCIÓN',
@@ -60,10 +61,11 @@ class DenunciasForaneasDataTable extends CustomDataTable
             [
                 'title' => 'Validado',
                 'render' => function($documento){
-                    if ($documento->DocumentoForaneo->validado() )
+                    if ($documento->DocumentoForaneo->validado() ) {
                         return $documento->DocumentoForaneo->presenter()->getBadgeValidado();
-                    else
+                    } else {
                         return $documento->DocumentoForaneo->presenter()->getBadgeEnEspera();
+                    }
                 }
             ],
             [
@@ -100,12 +102,12 @@ class DenunciasForaneasDataTable extends CustomDataTable
         ];
     }
 
-    protected function getUrlAjax()
+    public function getUrlAjax()
     {
         return url('recepcion/documentos-foraneos/post-data?type=denuncias');
     }
 
-    protected function getCustomOptionsParameters()
+    public function getCustomOptionsParameters()
     {
         return [
             'pageLength' => 10,

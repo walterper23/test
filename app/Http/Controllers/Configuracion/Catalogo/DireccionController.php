@@ -72,9 +72,8 @@ class DireccionController extends BaseController {
 	/**
      * Método para devolver los registros que llenarán la tabla de la página principal
      */
-	public function postDataTable()
+	public function postDataTable(DireccionesDataTable $dataTables)
 	{
-		$dataTables = new DireccionesDataTable(true);
 		return $dataTables->getData();
 	}
 

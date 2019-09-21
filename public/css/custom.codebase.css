@@ -157,3 +157,7 @@ span.select2-container--default .select2-selection--single {
     overflow-y: auto;
     max-height: 60vh;
 }
+
+.text-lower {
+    text-transform: lowercase;
+}

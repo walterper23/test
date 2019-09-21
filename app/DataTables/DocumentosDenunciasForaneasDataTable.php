@@ -1,17 +1,17 @@
 <?php
+
 namespace App\DataTables;
 
 use App\Model\MDocumento;
 
 class DocumentosDenunciasForaneasDataTable extends CustomDataTable
 {
-    public function __construct( $loadSource = false )
+    public function setTableId()
     {
-        parent::__construct($loadSource);
-        $this->builderHtml->setTableId('documentos-denuncias-datatable');
+        return 'documentos-denuncias-datatable';
     }
 
-    protected function setSourceData()
+    public function setSourceData()
     {
         // Recuperar las direcciones actualmente asignadas al usuario
         $direccionesUsuario = user()->Direcciones()->pluck('DIRE_DIRECCION')->toArray();
@@ -23,10 +23,11 @@ class DocumentosDenunciasForaneasDataTable extends CustomDataTable
             ->where(function($query) use($direccionesUsuario,$departamentosUsuario){
                 $query->whereIn('DOCU_DIRECCION_ORIGEN',$direccionesUsuario);
                 $query->orWhereIn('DOCU_DEPARTAMENTO_ORIGEN',$departamentosUsuario);
-            })->isForaneo()->siExistente()->noGuardado()->get(); // Documentos de denuncias
+            })->isForaneo()->siExistente()->noGuardado(); // Documentos de denuncias
     }
 
-    protected function columnsTable(){
+    public function columnsTable()
+    {
         return [
             [
                 'title'  => 'FOLIO RECEPCIÓN',
@@ -95,8 +96,7 @@ class DocumentosDenunciasForaneasDataTable extends CustomDataTable
                     $url = url( sprintf('recepcion/acuse/documento/%s',$documento->AcuseRecepcion->getNombre()) );
                     $buttons .= sprintf(' <a class="btn btn-sm btn-circle btn-alt-primary" href="%s" target="_blank" title="Acuse de Recepción"><i class="fa fa-fw fa-file-text"></i></a>', $url);
 
-                    if( user()->can('REC.ELIMINAR.FORANEO') && $documento->recepcionado() )
-                    {
+                    if ( user()->can('REC.ELIMINAR.FORANEO') && $documento->recepcionado() ) {
                         $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcionForanea.delete_(%d)"><i class="fa fa-trash"></i></button>', $documento->DocumentoForaneo->getKey());
                     }
                     
@@ -106,12 +106,12 @@ class DocumentosDenunciasForaneasDataTable extends CustomDataTable
         ];
     }
 
-    protected function getUrlAjax()
+    public function getUrlAjax()
     {
         return url('recepcion/documentos-foraneos/post-data?type=documentos-denuncias');
     }
 
-    protected function getCustomOptionsParameters()
+    public function getCustomOptionsParameters()
     {
         return [
             'pageLength' => 10,

@@ -1,15 +1,18 @@
 <?php
+
 namespace App\DataTables;
 
 use App\Model\MUsuario;
 
-class UsuariosDataTable extends CustomDataTable {
-    
-    protected function setSourceData(){
-        $this->sourceData = MUsuario::with('UsuarioDetalle')->existente()->get();
+class UsuariosDataTable extends CustomDataTable
+{    
+    public function setSourceData()
+    {
+        $this->sourceData = MUsuario::with('UsuarioDetalle')->siExistente();
     }
 
-    protected function columnsTable(){
+    public function columnsTable()
+    {
         return [
             [
                 'title' => '<i class="fa fa-user"></i>',
@@ -83,7 +86,8 @@ class UsuariosDataTable extends CustomDataTable {
         ];
     }
 
-    protected function getUrlAjax(){
+    public function getUrlAjax()
+    {
         return url('configuracion/usuarios/post-data');
     }
 

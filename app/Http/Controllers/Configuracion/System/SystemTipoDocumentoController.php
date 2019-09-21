@@ -75,9 +75,8 @@ class SystemTipoDocumentoController extends BaseController
     /**
      * Método para devolver los registros que llenarán la tabla de la página principal
      */
-    public function postDataTable()
+    public function postDataTable(SystemTiposDocumentosDataTable $dataTables)
     {
-        $dataTables = new SystemTiposDocumentosDataTable(true);
         return $dataTables->getData();
     }
 

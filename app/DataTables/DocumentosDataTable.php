@@ -1,22 +1,22 @@
 <?php
+
 namespace App\DataTables;
 
 use App\Model\MDocumento;
 
 class DocumentosDataTable extends CustomDataTable
 {
-    public function __construct( $loadSource = false )
+    public function setTableId()
     {
-        parent::__construct($loadSource);
-        $this->builderHtml->setTableId('documentos-datatable');
+        return 'documentos-datatable';
     }
     
-    protected function setSourceData()
+    public function setSourceData()
     {
-        $this->sourceData = MDocumento::with('TipoDocumento','Detalle','AcuseRecepcion')->siExistente()->noGuardado()->whereNotIn('DOCU_SYSTEM_TIPO_DOCTO',[1,2])->get(); // Denuncias, Documentos de denuncias
+        $this->sourceData = MDocumento::with('TipoDocumento','Detalle','AcuseRecepcion')->siExistente()->noGuardado()->whereNotIn('DOCU_SYSTEM_TIPO_DOCTO',[1,2]); // Denuncias, Documentos de denuncias
     }
 
-    protected function columnsTable()
+    public function columnsTable()
     {
         return [
             [
@@ -74,12 +74,12 @@ class DocumentosDataTable extends CustomDataTable
         ];
     }
 
-    protected function getUrlAjax()
+    public function getUrlAjax()
     {
         return url('recepcion/documentos/post-data?type=documentos');
     }
 
-    protected function getCustomOptionsParameters()
+    public function getCustomOptionsParameters()
     {
         return [
             'pageLength' => 10,

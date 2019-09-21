@@ -8,7 +8,6 @@ class MSystemConfig extends BaseModel
     protected $table          = 'system_config';
     protected $primaryKey     = 'SYCO_SYSTEM_CONFIG';
 
-    
     /* Methods */
     public function getNombre()
     {
@@ -37,16 +36,16 @@ class MSystemConfig extends BaseModel
 
     public static function setAllVariables()
     {
-        cache()->forget('System.Config.Variables');
+        //cache()->forget('System.Config.Variables');
 
-        cache()->rememberForever('System.Config.Variables',function(){
+        $all = cache()->rememberForever('System.Config.Variables',function(){
             return self::all();
         });
 
-        cache()->forget('System.Config.Variables.Array');
+        //cache()->forget('System.Config.Variables.Array');
 
-        cache()->rememberForever('System.Config.Variables.Array',function(){
-            return cache('System.Config.Variables')->pluck('SYCO_VALOR','SYCO_VARIABLE')->toArray();
+        cache()->rememberForever('System.Config.Variables.Array',function($all){
+            return $all->pluck('SYCO_VALOR','SYCO_VARIABLE')->toArray();
         });
     }
 

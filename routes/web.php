@@ -21,11 +21,6 @@ Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
             Route::get('/',        'DashboardController@index');
             Route::post('manager', 'DashboardController@manager');
 
-            // Peticiones extras
-            Route::prefix('extra-request')->group(function(){
-                
-            });
-
             Route::prefix('usuario')->group(function(){
                 Route::prefix('perfil')->group(function(){
                     Route::get('/',        'PerfilController@index');

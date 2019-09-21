@@ -73,9 +73,8 @@ class EstadoDocumentoController extends BaseController
     /**
      * Método para devolver los registros que llenarán la tabla de la página principal
      */
-    public function postDataTable()
+    public function postDataTable(EstadosDocumentosDataTable $dataTables)
     {
-        $dataTables = new EstadosDocumentosDataTable(true);
         return $dataTables->getData();
     }
 

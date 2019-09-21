@@ -1,17 +1,18 @@
 <?php
+
 namespace App\DataTables;
 
 use App\Model\Catalogo\MEstadoDocumento;
 
 class EstadosDocumentosDataTable extends CustomDataTable
 {
-    protected function setSourceData(){
-        $this->sourceData = MEstadoDocumento::with('Direccion','Departamento')
-                       ->select('ESDO_ESTADO_DOCUMENTO','ESDO_DIRECCION','ESDO_DEPARTAMENTO','ESDO_NOMBRE','ESDO_CREATED_AT','ESDO_ENABLED')
-                       ->existenteDisponible()->orderBy('ESDO_CREATED_AT','DESC')->get();
+    public function setSourceData()
+    {
+        $this->sourceData = MEstadoDocumento::with('Direccion','Departamento')->siExistenteDisponible();
     }
 
-    protected function columnsTable(){
+    public function columnsTable()
+    {
         return [
             [
                 'title'  => '#',
@@ -72,7 +73,8 @@ class EstadosDocumentosDataTable extends CustomDataTable
         ];
     }
 
-    protected function getUrlAjax(){
+    public function getUrlAjax()
+    {
         return url('configuracion/catalogos/estados-documentos/post-data');
     }
     
