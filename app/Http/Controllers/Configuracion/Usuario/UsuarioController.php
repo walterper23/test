@@ -112,7 +112,7 @@ class UsuarioController extends BaseController
             $usuario->USUA_AVATAR_FULL  = $usuario->getAvatarSmall();
 
             $detalle = new MUsuarioDetalle;
-            $detalle->USDE_NO_TRABAJADOR = $request->no_trabajador;
+            $detalle->USDE_NO_TRABAJADOR = $request->notrabajador;
             $detalle->USDE_NOMBRES       = $request->nombres;
             $detalle->USDE_APELLIDOS     = $request->apellidos;
             $detalle->USDE_GENERO        = $request->genero;
@@ -143,8 +143,7 @@ class UsuarioController extends BaseController
      */
     public function formEditarUsuario(Request $request)
     {
-        if ( $request->id == 1 )
-        {
+        if ( $request->id == 1 ) {
             abort(403);
         }
         
@@ -173,13 +172,12 @@ class UsuarioController extends BaseController
             $usuario = MUsuario::find( $request->id );
             $usuario->USUA_DESCRIPCION = $request->descripcion;
             
-            if ($request->password)
-            {
+            if ($request->password) {
                 $usuario->USUA_PASSWORD = bcrypt($request->password);
             }
 
             $detalle = $usuario->UsuarioDetalle;
-            $detalle->USDE_NO_TRABAJADOR = $request->no_trabajador;
+            $detalle->USDE_NO_TRABAJADOR = $request->notrabajador;
             $detalle->USDE_NOMBRES       = $request->nombres;
             $detalle->USDE_APELLIDOS     = $request->apellidos;
             $detalle->USDE_GENERO        = $request->genero;

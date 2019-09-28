@@ -45,7 +45,6 @@ class DireccionController extends BaseController {
      */
 	public function manager(DireccionRequest $request)
 	{
-
 		switch ($request->action) {
 			case 1: // Nuevo
 				$response = $this->nuevaDireccion( $request );
@@ -66,6 +65,7 @@ class DireccionController extends BaseController {
 				return response()->json(['message'=>'Petición no válida'],404);
 				break;
 		}
+		
 		return $response;
 	}
 

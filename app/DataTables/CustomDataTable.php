@@ -45,7 +45,7 @@ abstract class CustomDataTable implements DataTableInterface
 
     public function setTableId()
     {
-        return 'table-id-datatable';
+        return 'dataTableBuilder';
     }
 
     private function initTableId()
