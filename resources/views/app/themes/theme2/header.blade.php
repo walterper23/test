@@ -27,7 +27,7 @@
     <div class="content-header-section">
 
         <!-- Notifications -->
-        <div class="btn-group" role="group" id="header-notifications">
+        <!--div class="btn-group" role="group" id="header-notifications">
             <button type="button" class="btn btn-rounded btn-dual-secondary" id="page-header-notifications" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fa fa-fw fa-bell"></i><span id="icon-bell-notification" class="badge badge-primary badge-pill d-none"></span>
             </button>
@@ -59,7 +59,7 @@
                     </li>
                 </ul>
             </div>
-        </div>
+        </div-->
         <!-- END Notifications -->
 
         <!-- User Dropdown -->

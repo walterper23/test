@@ -10,7 +10,7 @@ var AppNotificacion = new Vue({
     mounted : function(){
         this.icon_bell = $('#icon-bell-notification').addClass('d-none');
         
-        //this._getNotificaciones();
+        this._getNotificaciones();
     },
     watch : {
         notificaciones : function(new_value, old_value){

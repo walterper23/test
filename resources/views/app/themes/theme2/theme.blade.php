@@ -151,13 +151,13 @@
         {{ Html::script('js/core/jquery-scrollLock.min.js') }}
         {{ Html::script('js/core/jquery.appear.min.js') }}
         {{ Html::script('js/core/js.cookie.min.js') }}
-        {{ Html::script('js/plugins/vue/vue.js') }}
+        {{ Html::script('js/plugins/vue/vue.min.js') }}
         {{ Html::script('js/plugins/vue/axios.min.js') }}
         {{ Html::script('js/codebase.js') }}
         {{ Html::script('js/app.js') }}
 
         {{ Html::script('js/plugins/jquery-validation/jquery.validate.min.js') }}
-        {{ Html::script('js/app-notifications.js') }}
+        {{-- Html::script('js/app-notifications.js') --}}
         {{ Html::script('js/app-alert.js') }}
 
         @stack('js-script')

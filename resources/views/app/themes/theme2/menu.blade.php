@@ -6,44 +6,44 @@ If your sidebar menu includes headings, they won't be visible in your header nav
 If your sidebar menu includes icons and you would like to hide them, you can add the class 'nav-main-header-no-icons'
 -->
     <li>
-        <a href="{{ url('/') }}" @if(request() -> is('/')) class="active" @endif><i class="si si-home"></i>Inicio</a>
+        <a href="/" @if(request()->is('/')) class="active" @endif><i class="si si-home"></i>Inicio</a>
     </li>
     @can('REC.DOCUMENTO.LOCAL')
     <li>
         <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)"><i class="fa fa-fw fa-files-o"></i>Recepción</a>
         <ul>
             <li>
-                <a href="{{ url('recepcion/documentos/nueva-recepcion') }}">Nueva recepci&oacute;n</a>
+                <a href="/recepcion/documentos/nueva-recepcion">Nueva recepci&oacute;n</a>
             </li>
             <!--li>
-                <a href="{{ url('recepcion/documentos/en-captura') }}">En captura</a>
+                <a href="/recepcion/documentos/en-captura">En captura</a>
             </li-->
             <li>
-                <a class="nav-submenu" data-toggle="nav-submenu" href="{{ url('recepcion/documentos/recepcionados?view=denuncias') }}">Recepcionados</a>
+                <a class="nav-submenu" data-toggle="nav-submenu" href="/recepcion/documentos/recepcionados?view=denuncias">Recepcionados</a>
                 <ul>
                     <li>
-                        <a href="{{ url('recepcion/documentos/recepcionados?view=denuncias') }}">Denuncias</a>
+                        <a href="/recepcion/documentos/recepcionados?view=denuncias">Denuncias</a>
                     </li>
                     <li>
-                        <a href="{{ url('recepcion/documentos/recepcionados?view=documentos-denuncias') }}">Documentos de denuncias</a>
+                        <a href="/recepcion/documentos/recepcionados?view=documentos-denuncias">Documentos de denuncias</a>
                     </li>
                     <li>
-                        <a href="{{ url('recepcion/documentos/recepcionados?view=documentos') }}">Documentos</a>
+                        <a href="/recepcion/documentos/recepcionados?view=documentos">Documentos</a>
                     </li>
                 </ul>
             </li>
             @can('REC.RECIBIR.FORANEO')
             <li>
-                <a class="nav-submenu" data-toggle="nav-submenu" href="{{ url('recepcion/documentos/foraneos?view=denuncias') }}">Recibir recepciones foráneas</a>
+                <a class="nav-submenu" data-toggle="nav-submenu" href="/recepcion/documentos/foraneos?view=denuncias">Recibir recepciones foráneas</a>
                 <ul>
                     <li>
-                        <a href="{{ url('recepcion/documentos/foraneos?view=denuncias') }}">Denuncias</a>
+                        <a href="/recepcion/documentos/foraneos?view=denuncias">Denuncias</a>
                     </li>
                     <li>
-                        <a href="{{ url('recepcion/documentos/foraneos?view=documentos-denuncias') }}">Documentos de denuncias</a>
+                        <a href="/recepcion/documentos/foraneos?view=documentos-denuncias">Documentos de denuncias</a>
                     </li>
                     <li>
-                        <a href="{{ url('recepcion/documentos/foraneos?view=documentos') }}">Documentos</a>
+                        <a href="/recepcion/documentos/foraneos?view=documentos">Documentos</a>
                     </li>
                 </ul>
             </li>
@@ -51,30 +51,30 @@ If your sidebar menu includes icons and you would like to hide them, you can add
         </ul>
     </li>
     @endcan
-    @if (user() -> canAtLeast('REC.DOCUMENTO.FORANEO','REC.VER.FORANEO') )
+    @if (user()->canAtLeast('REC.DOCUMENTO.FORANEO','REC.VER.FORANEO') )
     <li>
         <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)"><i class="fa fa-fw fa-files-o"></i>Recepción foránea</a>
         <ul>
             @can('REC.DOCUMENTO.FORANEO')
             <li>
-                <a href="{{ url('recepcion/documentos-foraneos/nueva-recepcion') }}">Nueva recepci&oacute;n</a>
+                <a href="/recepcion/documentos-foraneos/nueva-recepcion">Nueva recepci&oacute;n</a>
             </li>
             @endcan
             <!--li>
-                <a href="{{ url('recepcion/documentos-foraneos/en-captura') }}">En captura</a>
+                <a href="/recepcion/documentos-foraneos/en-captura">En captura</a>
             </li-->
             @if( user()->canAtLeast('REC.DOCUMENTO.FORANEO','REC.VER.FORANEO') )
             <li>
-                <a class="nav-submenu" data-toggle="nav-submenu" href="{{ url('recepcion/documentos-foraneos/recepcionados') }}">Recepcionados</a>
+                <a class="nav-submenu" data-toggle="nav-submenu" href="/recepcion/documentos-foraneos/recepcionados">Recepcionados</a>
                 <ul>
                     <li>
-                        <a href="{{ url('recepcion/documentos-foraneos/recepcionados?view=denuncias') }}">Denuncias</a>
+                        <a href="/recepcion/documentos-foraneos/recepcionados?view=denuncias">Denuncias</a>
                     </li>
                     <li>
-                        <a href="{{ url('recepcion/documentos-foraneos/recepcionados?view=documentos-denuncias') }}">Documentos de denuncias</a>
+                        <a href="/recepcion/documentos-foraneos/recepcionados?view=documentos-denuncias">Documentos de denuncias</a>
                     </li>
                     <li>
-                        <a href="{{ url('recepcion/documentos-foraneos/recepcionados?view=documentos') }}">Documentos</a>
+                        <a href="/recepcion/documentos-foraneos/recepcionados?view=documentos">Documentos</a>
                     </li>
                 </ul>
             </li>
@@ -87,29 +87,29 @@ If your sidebar menu includes icons and you would like to hide them, you can add
         <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)"><i class="fa fa-server"></i>Panel de trabajo</a>
         <ul>
             <li>
-                <a href="{{ url('panel/documentos/?view=pending') }}">Por turnar</a>
+                <a href="/panel/documentos/?view=pending">Por turnar</a>
             </li>
             <li>
-                <a href="{{ url('panel/documentos/?view=moved') }}">Turnados</a>
+                <a href="/panel/documentos/?view=moved">Turnados</a>
             </li>
             <li>
-                <a href="{{ url('panel/documentos/?view=all') }}">Todos</a>
+                <a href="/panel/documentos/?view=all">Todos</a>
             </li>
             <li>
-                <a href="{{ url('panel/documentos/?view=important') }}">Importantes</a>
+                <a href="/panel/documentos/?view=important">Importantes</a>
             </li>
             <li>
-                <a href="{{ url('panel/documentos/?view=archived') }}">Archivados</a>
+                <a href="/panel/documentos/?view=archived">Archivados</a>
             </li>
             <li>
-                <a href="{{ url('panel/documentos/?view=rejected') }}">Rechazados</a>
+                <a href="/panel/documentos/?view=rejected">Rechazados</a>
             </li>
             <li>
-                <a href="{{ url('panel/documentos/?view=finished') }}">Finalizados</a>
+                <a href="/panel/documentos/?view=finished">Finalizados</a>
             </li>
             @can('SEG.ADMIN.SEMAFORO')
             <li>
-                <a href="{{ url('panel/documentos/semaforizados') }}">Semaforizados</a>
+                <a href="/panel/documentos/semaforizados">Semaforizados</a>
             </li>
             @endcan
         </ul>
@@ -121,65 +121,65 @@ If your sidebar menu includes icons and you would like to hide them, you can add
         <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)"><i class="fa fa-file-pdf-o"></i>Reportes</a>
         <ul>
             <li>
-                <a href="{{ url('panel/reportes/generar') }}">Generar reporte</a>
+                <a href="/panel/reportes/generar">Generar reporte</a>
             </li>
             <li>
-                <a href="{{ url('panel/reportes/configurados') }}">Reportes configurados</a>
+                <a href="/panel/reportes/configurados">Reportes configurados</a>
             </li>
         </ul>
     </li>
     @endcan
     --}}
-    @if( user() -> canAtLeast('SIS.ADMIN.CATALOGOS','SIS.ADMIN.CONFIG','SIS.ADMIN.ANEXOS','SIS.ADMIN.DIRECC','SIS.ADMIN.DEPTOS','SIS.ADMIN.PUESTOS',
+    @if( user()->canAtLeast('SIS.ADMIN.CATALOGOS','SIS.ADMIN.CONFIG','SIS.ADMIN.ANEXOS','SIS.ADMIN.DIRECC','SIS.ADMIN.DEPTOS','SIS.ADMIN.PUESTOS',
                     'SIS.ADMIN.ESTA.DOC','USU.ADMIN.USUARIOS','USU.ADMIN.PERMISOS.ASIG') )
     <li>
         <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)"><i class="fa fa-fw fa-cogs"></i>Configuración</a>
         <ul>
-            @if( user() -> canAtLeast('SIS.ADMIN.CATALOGOS','SIS.ADMIN.ANEXOS','SIS.ADMIN.DIRECC','SIS.ADMIN.DEPTOS','SIS.ADMIN.PUESTOS','SIS.ADMIN.ESTA.DOC') )
+            @if( user()->canAtLeast('SIS.ADMIN.CATALOGOS','SIS.ADMIN.ANEXOS','SIS.ADMIN.DIRECC','SIS.ADMIN.DEPTOS','SIS.ADMIN.PUESTOS','SIS.ADMIN.ESTA.DOC') )
             <li>
                 <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)">Catálogos</a>
                 <ul>
-                    @if( user() -> canAtLeast('SIS.ADMIN.CATALOGOS','SIS.ADMIN.ANEXOS') )
+                    @if( user()->canAtLeast('SIS.ADMIN.CATALOGOS','SIS.ADMIN.ANEXOS') )
                     <li>
-                        <a href="{{ url('configuracion/catalogos/anexos') }}">Anexos</a>
+                        <a href="/configuracion/catalogos/anexos">Anexos</a>
                     </li>
                     @endif
-                    @if( user() -> canAtLeast('SIS.ADMIN.CATALOGOS','SIS.ADMIN.DIRECC') )
+                    @if( user()->canAtLeast('SIS.ADMIN.CATALOGOS','SIS.ADMIN.DIRECC') )
                     <li>
-                        <a href="{{ url('configuracion/catalogos/direcciones') }}">Direcciones</a>
+                        <a href="/configuracion/catalogos/direcciones">Direcciones</a>
                     </li>
                     @endif
-                    @if( user() -> canAtLeast('SIS.ADMIN.CATALOGOS','SIS.ADMIN.DEPTOS') )
+                    @if( user()->canAtLeast('SIS.ADMIN.CATALOGOS','SIS.ADMIN.DEPTOS') )
                     <li>
-                        <a href="{{ url('configuracion/catalogos/departamentos') }}">Departamentos</a>
+                        <a href="/configuracion/catalogos/departamentos">Departamentos</a>
                     </li>
                     @endif
-                    @if( user() -> canAtLeast('SIS.ADMIN.CATALOGOS','SIS.ADMIN.PUESTOS') )
+                    @if( user()->canAtLeast('SIS.ADMIN.CATALOGOS','SIS.ADMIN.PUESTOS') )
                     <li>
-                        <a href="{{ url('configuracion/catalogos/puestos') }}">Puestos</a>
+                        <a href="/configuracion/catalogos/puestos">Puestos</a>
                     </li>
                     @endif
-                    @if( user() -> canAtLeast('SIS.ADMIN.CATALOGOS','SIS.ADMIN.ESTA.DOC' ))
+                    @if( user()->canAtLeast('SIS.ADMIN.CATALOGOS','SIS.ADMIN.ESTA.DOC' ))
                     <li>
-                        <a href="{{ url('configuracion/catalogos/estados-documentos') }}">Estados de documentos</a>
+                        <a href="/configuracion/catalogos/estados-documentos">Estados de documentos</a>
                     </li>
                     @endif
                 </ul>
             </li>
             @endcan
 
-            @if( user() -> canAtLeast('USU.ADMIN.USUARIOS','USU.ADMIN.PERMISOS.ASIG') )
+            @if( user()->canAtLeast('USU.ADMIN.USUARIOS','USU.ADMIN.PERMISOS.ASIG') )
             <li>
                 <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)">Usuarios</a>
                 <ul>
                     @can('USU.ADMIN.USUARIOS')
                     <li>
-                        <a href="{{ url('configuracion/usuarios') }}">Ver usuarios</a>
+                        <a href="/configuracion/usuarios">Ver usuarios</a>
                     </li>
                     @endcan
                     @can('USU.ADMIN.PERMISOS.ASIG')
                     <li>
-                        <a href="{{ url('configuracion/usuarios/permisos-asignaciones') }}">Permisos y Asignaciones</a>
+                        <a href="/configuracion/usuarios/permisos-asignaciones">Permisos y Asignaciones</a>
                     </li>
                     @endcan
                 </ul>
@@ -191,16 +191,16 @@ If your sidebar menu includes icons and you would like to hide them, you can add
                 <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)">Sistema</a>
                 <ul>
                     <li>
-                        <a href="{{ url('configuracion/sistema/tipos-documentos') }}">Tipos de documentos</a>
+                        <a href="/configuracion/sistema/tipos-documentos">Tipos de documentos</a>
                     </li>
                     <li>
-                        <a href="{{ url('configuracion/sistema/estados-documentos') }}">Estados de documentos</a>
+                        <a href="/configuracion/sistema/estados-documentos">Estados de documentos</a>
                     </li>
                     <li>
-                        <a href="{{ url('configuracion/sistema/variables') }}">Variables</a>
+                        <a href="/configuracion/sistema/variables">Variables</a>
                     </li>
                     {{--<li>
-                        <a href="{{ url('configuracion/sistema/bitacora') }}">Bitácora</a>
+                        <a href="/configuracion/sistema/bitacora">Bitácora</a>
                     </li>--}}
                 </ul>
             </li>
@@ -209,5 +209,5 @@ If your sidebar menu includes icons and you would like to hide them, you can add
     </li>
     @endif
     <li>
-        <a href="{{ url() -> previous() }}"><i class="si si-action-undo"></i>Regresar</a>
+        <a href="{{ url()->previous() }}"><i class="si si-action-undo"></i>Regresar</a>
     </li>
