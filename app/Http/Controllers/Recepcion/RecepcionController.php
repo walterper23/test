@@ -244,12 +244,9 @@ class RecepcionController extends BaseController
                         ->limit(1)
                         ->first();
 
-        if( $ultimo_folio )
-        {
+        if ( $ultimo_folio ) {
             $ultimo_folio = $ultimo_folio->getFolio();
-        }
-        else
-        {
+        } else {
             $ultimo_folio = 0;
         }
 
@@ -261,6 +258,8 @@ class RecepcionController extends BaseController
         $documento->DOCU_TIPO_RECEPCION      = $tipo_recepcion; // Tipo de recepción
         $documento->DOCU_DETALLE             = $detalle->getKey();
         $documento->DOCU_NUMERO_DOCUMENTO    = $request->numero;
+        $documento->DOCU_IMPORTANTE          = array();
+        $documento->DOCU_ARCHIVADO           = array();
         $documento->DOCU_DIRECCION_ORIGEN    = $recepcionista->getDireccionOrigen();
         $documento->DOCU_DEPARTAMENTO_ORIGEN = $recepcionista->getDepartamentoOrigen();
 
@@ -294,6 +293,7 @@ class RecepcionController extends BaseController
         $seguimiento->SEGU_DIRECCION_DESTINO    = config_var('Sistema.Direcc.Destino'); // Dirección del procurador, por default
         $seguimiento->SEGU_DEPARTAMENTO_DESTINO = config_var('Sistema.Depto.Destino');  // Departamento del procurador, por default
         $seguimiento->SEGU_ESTADO_DOCUMENTO     = config_var('Sistema.Estado.Recepcion.Seguimiento'); // "Documento recepcionado". Estado de documento inicial para seguimiento por default
+        $seguimiento->SEGU_LEIDO                = array();
         $seguimiento->SEGU_OBSERVACION          = $detalle->getObservaciones();
         $seguimiento->save();
 

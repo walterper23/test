@@ -200,8 +200,7 @@ class RecepcionForaneaController extends BaseController
             $documento = $recepcion->procesoRecepcionar($request,2); // 2 = Tipo recepción foránea
 
             // Si el documento es foráneo, guardamos el registro foráneo
-            if( $documento->isForaneo() )
-            {
+            if ( $documento->isForaneo() ) {
                 $documentoForaneo = new MDocumentoForaneo;
                 $documentoForaneo->DOFO_SYSTEM_TIPO_DOCTO   = $documento->getTipoDocumento();
                 $documentoForaneo->DOFO_DETALLE             = $documento->getDetalle();
