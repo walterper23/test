@@ -158,6 +158,32 @@ span.select2-container--default .select2-selection--single {
     max-height: 60vh;
 }
 
+.text-upper {
+    text-transform: uppercase;
+}
+
 .text-lower {
     text-transform: lowercase;
+}
+
+.badge-purple {
+    color: #fff;
+    background-color: #760077;
+}
+
+.badge-purple[href]:focus, .badge-purple[href]:hover {
+    color:#fff;
+    text-decoration:none;
+    background-color: #760077;
+}
+
+.badge-brown {
+    color: #fff;
+    background-color: #C0440D;
+}
+
+.badge-brown[href]:focus, .badge-brown[href]:hover {
+    color:#fff;
+    text-decoration:none;
+    background-color: #C0440D;
 }

@@ -17,21 +17,24 @@ class PuestosDataTable extends CustomDataTable
             [
                 'title'  => '#',
                 'render' => function($query){
-                    return $query->getCodigo();
+                    return sprintf('<b>%s</b>',$query->getCodigo());
                 }
             ],
             [
                 'title' => 'Nombre',
-                'data' => 'PUES_NOMBRE'
+                'width' => '26%',
+                'data'  => 'PUES_NOMBRE'
             ],
             [
-                'title' => 'Dirección',
+                'title'  => 'Dirección',
+                'width'  => '26%',
                 'render' => function($query){
                     return $query->Direccion->getNombre();
                 }
             ],
             [
-                'title' => 'Departamento',
+                'title'  => 'Departamento',
+                'width'  => '26%',
                 'render' => function($query){
                     if( $query->Departamento != null ){
                         return $query->Departamento->getNombre();
@@ -41,6 +44,7 @@ class PuestosDataTable extends CustomDataTable
             ],
             [
                 'title' => 'Activo',
+                'config' => 'options',
                 'render' => function($query){
                     $checked = $query->disponible() ? ' checked=""' : '';
                     
@@ -50,6 +54,7 @@ class PuestosDataTable extends CustomDataTable
             ],
             [
                 'title' => 'Opciones',
+                'config' => 'options',
                 'render' => function($query){
                     
                     $buttons = sprintf('

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Configuracion\System;
 
 use Illuminate\Http\Request;
@@ -100,7 +101,7 @@ class SystemEstadoDocumentoController extends BaseController
             // Lista de tablas que se van a recargar automáticamente
             $tables = 'dataTableBuilder';
 
-            $message = sprintf('<i class="fa fa-fw fa-check"></i> Estado de documento <b>%s</b> modificado',$estadoDocumento->getCodigo());
+            $message = sprintf('<i class="fa fa-fw fa-check"></i> Estado de documento <b>%s</b> modificado',$estadoDocumento->getKey());
 
             return $this->responseSuccessJSON($message,$tables);
         } catch(Exception $error) {

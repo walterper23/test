@@ -99,10 +99,10 @@ class PuestoController extends BaseController
             ];
 
             $direcciones = MDireccion::with('departamentos')
-                                    -> select('DIRE_DIRECCION','DIRE_NOMBRE')
-                                    -> existenteDisponible()
-                                    -> orderBy('DIRE_NOMBRE')
-                                    -> get();
+                                    ->select('DIRE_DIRECCION','DIRE_NOMBRE')
+                                    ->siExistenteDisponible()
+                                    ->orderBy('DIRE_NOMBRE')
+                                    ->get();
 
             $data['direcciones'] = $direcciones->pluck('DIRE_NOMBRE','DIRE_DIRECCION')->toArray();
 

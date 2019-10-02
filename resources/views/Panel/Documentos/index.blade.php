@@ -20,17 +20,28 @@
 
     function url_ver_seguimiento( $seguimiento )
     {
-        $url = sprintf('panel/documentos/seguimiento?search=%d',$seguimiento->getKey());
+        $url = sprintf('/panel/documentos/seguimiento?search=%d',$seguimiento->getKey());
 
         if (! $seguimiento->leido())
             $url = sprintf('%s&read=1',$url);
 
-        return url( $url );
+        return $url;
     }
 
     function filter_view($type, $count)
     {
         return sprintf('%s %s',$type,badge($count));
+    }
+
+    $seccion1 = 'col-xs-12 col-md-6 col-lg-3';
+    $seccion2 = 'col-xs-12 col-md-6 col-lg-3';
+    $seccion3 = 'col-xs-12 col-md-6 col-lg-3';
+    $seccion4 = 'col-xs-12 col-md-6 col-lg-3';
+
+    if (request('view','all') == 'finished') {
+        $seccion1 = 'col-xs-12 col-md-6 col-lg-5';
+        $seccion2 = 'col-xs-12 col-md-6 col-lg-4';
+        $seccion3 = false;
     }
 
 @endphp
@@ -55,26 +66,26 @@
                                             <button type="button" class="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                                             <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(80px, 34px, 0px);">
                                                 <a class="dropdown-item" href="{{ url('panel/documentos') . '?'. http_build_query(['search'=>$search,'view'=>'pending'])  }}">
-                                                    <i class="fa fa-fw fa-folder mr-5"></i> Por turnar {!! badge($pendientes) !!}
+                                                    <i class="fa fa-fw fa-folder"></i> Por turnar
                                                 </a>
                                                 <a class="dropdown-item" href="{{ url('panel/documentos') . '?'. http_build_query(['search'=>$search,'view'=>'moved'])  }}">
-                                                    <i class="fa fa-fw fa-mail-forward mr-5"></i> Turnados {!! badge($turnados) !!}
+                                                    <i class="fa fa-fw fa-mail-forward text-danger"></i> Turnados
                                                 </a>
                                                 <a class="dropdown-item" href="{{ url('panel/documentos') . '?'. http_build_query(['search'=>$search,'view'=>'all']) }}">
-                                                    <i class="fa fa-fw fa-files-o mr-5"></i> Todos {!! badge($todos) !!}
+                                                    <i class="fa fa-fw fa-files-o text-primary"></i> Todos
                                                 </a>
                                                 <a class="dropdown-item" href="{{ url('panel/documentos') . '?'. http_build_query(['search'=>$search,'view'=>'important']) }}">
-                                                    <i class="fa fa-fw fa-star mr-5"></i> Importantes {!! badge($importantes) !!}
+                                                    <i class="fa fa-fw fa-star text-warning"></i> Importantes
                                                 </a>
                                                 <a class="dropdown-item" href="{{ url('panel/documentos') . '?'. http_build_query(['search'=>$search,'view'=>'rejected']) }}">
-                                                    <i class="fa fa-fw fa-thumbs-down mr-5"></i> Rechazados {!! badge($rechazados) !!}
+                                                    <i class="fa fa-fw fa-thumbs-down text-danger"></i> Rechazados
                                                 </a>
                                                 <a class="dropdown-item" href="{{ url('panel/documentos') . '?'. http_build_query(['search'=>$search,'view'=>'finished']) }}">
-                                                    <i class="fa fa-fw fa-flag-checkered mr-5"></i> Finalizados {!! badge($finalizados) !!}
+                                                    <i class="fa fa-fw fa-flag-checkered text-success"></i> Concluidos
                                                 </a>
                                                 <div class="dropdown-divider"></div>
                                                 <a class="dropdown-item" href="{{ url('panel/documentos') . '?'. http_build_query(['search'=>$search,'view'=>'archived']) }}">
-                                                    <i class="fa fa-fw fa-archive mr-5"></i> Archivados {!! badge($archivados) !!}
+                                                    <i class="fa fa-fw fa-archive text-primary"></i> Archivados
                                                 </a>
                                             </div>
                                         </div>
@@ -118,17 +129,18 @@
             @php
                 $documento = $seguimiento->Documento;
             @endphp
-            <div class="block {{ (! $seguimiento->leido()) ? 'bg-info-light' : '' }}">
+            {{-- <div class="block {{ (! $seguimiento->leido()) ? 'bg-info-light' : '' }}"> --}}
+            <div class="block">
                 <div class="block-content block-content-full">
                     <div class="row">
-                        <div class="col-md-5">
+                        <div class="{{ $seccion1 }}">
                             <div class="row">
                                 <div class="col-12">
                                     <i class="fa fa-fw fa-hashtag"></i>
                                     <span class="font-w700">{{ $documento->AcuseRecepcion->getNumero() }}</span>
                                     <span class="badge badge-{{ $seguimiento->SYTD_RIBBON_COLOR }}">
                                         {{ $documento->TipoDocumento->getNombre() }}
-                                        @if ( $documento->getTipoDocumento() == 1)
+                                        @if ( $documento->getTipoDocumento() == 1 /* Denuncia */)
                                             <span @can('DOC.CREAR.NO.EXPE') style="cursor: pointer;" onclick="hPanel.expediente({{ $documento->getKey() }})" @endcan>
                                             <i class="fa fa-fw fa-legal"></i>
                                             @if (! empty($seguimiento->DENU_NO_EXPEDIENTE) )
@@ -137,9 +149,9 @@
                                                 <span title="La denuncia aún no tiene Nó. de Expediente asignado">_ _ _ _</span>
                                             @endif
                                         </span>
-                                    @endif
+                                        @endif
                                     </span>
-                                    <span class="badge badge-secondary">{{ $documento->getNumero() }}</span>
+                                    <p><i class="fa fa-fw fa-file-text-o"></i><span class="font-w700">Nó. documento:</span> {{ $documento->getNumero() }}</p>
                                     <p><i class="fa fa-fw fa-calendar"></i><span class="font-w700">Fecha de Recepción:</span> {{ $seguimiento->DETA_FECHA_RECEPCION }}</p>
                                     <p><i class="fa fa-fw fa-file-text-o"></i><span class="font-w700">Asunto:</span> {{ $seguimiento->DETA_DESCRIPCION }}</p>
                                     @if (! empty($seguimiento->DETA_ANEXOS) )
@@ -155,82 +167,86 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-5">
+                        <div class="{{ $seccion2 }}">
                             <div class="row">
                                 <div class="col-md-12">
                                     <a class="text-dark" href="{{ url_ver_seguimiento( $seguimiento ) }}">
+                                        <p class="font-w700"><i class="fa fa-fw fa-flash text-danger"></i> {{ $seguimiento->EstadoDocumento->getNombre() }}</p>
                                         <span class="badge badge-success" title="Fecha y hora del cambio de estado"><i class="fa fa-fw fa-calendar"></i> {{ $seguimiento->presenter()->getFechaSeguimiento() }}</span>
-                                        <b>{{ $seguimiento->EstadoDocumento->getNombre() }}</b>
                                     </a>
                                 </div>
                                 <div class="col-md-12">
-                                    @if (is_null($seguimiento->DepartamentoOrigen))
-                                    <a href="javascript:void(0)" class="font-size-xs">
-                                        <span class="badge badge-secondary" title="Dirección que hizo la recepción"><i class="fa fa-fw fa-legal"></i> {{ $seguimiento->DireccionOrigen->getNombre() }}</span>
-                                    </a>
-                                    @else
-                                    <a href="javascript:void(0)" class="font-size-xs">
-                                        <span class="badge badge-warning" title="Departamento que hizo la recepción"><i class="fa fa-fw fa-sitemap"></i> {{ $seguimiento->DepartamentoOrigen->getNombre() }}</span>
-                                    </a>
+                                    <span class="badge badge-secondary" title="Dirección origen"><i class="fa fa-fw fa-sitemap"></i> {{ $seguimiento->DireccionOrigen->getNombre() }}</span>
+                                    @if ($seguimiento->DepartamentoOrigen)
+                                    <span class="badge badge-warning" title="Departamento origen"><i class="fa fa-fw fa-sitemap"></i> {{ $seguimiento->DepartamentoOrigen->getNombre() }}</span>
                                     @endif
-                                    <a href="javascript:void(0)" class="font-size-xs">
-                                        <span class="badge badge-primary"><i class="fa fa-fw fa-user"></i>
-                                            {{ trim(sprintf('%s :: %s %s',$seguimiento->USDE_NO_TRABAJADOR, $seguimiento->USDE_NOMBRES,$seguimiento->USDE_APELLIDOS)) }}
-                                        </span>
-                                    </a>
+                                    <span class="badge badge-primary"><i class="fa fa-fw fa-user"></i>
+                                        {{ trim(sprintf('%s :: %s %s',$seguimiento->USDE_NO_TRABAJADOR, $seguimiento->USDE_NOMBRES,$seguimiento->USDE_APELLIDOS)) }}
+                                    </span>
+                                    <p><span class="font-w600"><i class="fa fa-fw fa-comment-o"></i> Observaciones:</span> {{ $seguimiento->getObservacion() }}</p>
                                 </div>
                             </div>
-                            <p><span class="font-w600"><i class="fa fa-fw fa-comment-o"></i> Observaciones:</span> {{ $seguimiento->getObservacion() }}</p>
-                            @if($documento->enSeguimiento())
-                            <p><span class="font-w600"><i class="fa fa-fw fa-street-view"></i> Instrucción al destino:</span> {{ $seguimiento->getInstruccion() }}</p>
-                            @endif
                         </div>
-                        <div class="col-md-2 text-right section-options">
-                            <div class="font-size-sm text-muted text-right" title="Documento #{{ $documento->getCodigo() }}">
-                                <a href="javascript:void(0)" onclick="hPanel.marcarImportante(this, {{ $documento->getKey() }})">
-                                    @if ($documento->importante())
-                                        <i class="fa fa-fw fa-star text-warning star" title="Marcar como importante"></i>
-                                    @else
-                                        <i class="fa fa-fw fa-star-o star" title="Marcar como importante"></i>
+                        @if($seccion3)
+                        <div class="{{ $seccion3 }}">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    @if($seguimiento->DireccionDestino)
+                                    <span class="badge badge-secondary" title="Dirección destino"><i class="fa fa-fw fa-sitemap"></i> {{ $seguimiento->DireccionDestino->getNombre() }}</span>
                                     @endif
-                                </a>
-                                <div class="btn-group" role="group" aria-label="Opciones">
-                                    <div class="btn-group show" role="group">
-                                        <button type="button" class="btn btn-sm btn-alt-secondary dropdown-toggle" id="btnGroupDrop2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Opciones</button>
-                                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop2" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 94px, 0px); top: 0px; left: 40px; will-change: transform;">
-                                            @if (! $documento->finalizado() && ! $documento->rechazado() && user()->can('SEG.CAMBIAR.ESTADO') )
-                                            <a class="dropdown-item" href="#" onclick="hPanel.cambiarEstado({{ $documento->getKey() }})">
-                                                <i class="fa fa-fw fa-history text-danger"></i> Cambiar estado
-                                            </a>
-                                            @endif
-                                            <a class="dropdown-item" href="{{ url_ver_seguimiento( $seguimiento ) }}">
-                                                <i class="fa fa-fw fa-paper-plane text-success"></i> Ver seguimiento
-                                            </a>
-                                            @if ( user()->can('DOC.CREAR.NO.EXPE') && $documento->getTipoDocumento() == 1)
-                                            <a class="dropdown-item" href="#" onclick="hPanel.expediente({{ $documento->getKey() }})">
-                                                <i class="fa fa-fw fa-legal text-danger"></i> Número de Expediente
-                                            </a>
-                                            @endif
-                                            <a class="dropdown-item" href="javascript:void(0)" onclick="hPanel.marcarImportante(this, {{ $documento->getKey() }})">
-                                            @if ($documento->importante())
-                                                <i class="fa fa-fw fa-star text-warning star"></i> Importante
-                                            @else
-                                                <i class="fa fa-fw fa-star-o star"></i> Importante
-                                            @endif
-                                            </a>
-                                            <a class="dropdown-item" href="javascript:void(0)" onclick="hPanel.marcarArchivado(this, {{ $documento->getKey() }})">
-                                            @if (! $documento->archivado() )
-                                                <i class="fa fa-fw fa-archive archive"></i> <span id="arch">Archivar</span>
-                                            @else
-                                                <i class="fa fa-fw fa-archive archive text-primary"></i> <span id="arch">Desarchivar</span>
-                                            @endif
-                                            </a>
-                                        </div>
-                                    </div>
+                                    @if ($seguimiento->DepartamentoDestino)
+                                    <span class="badge badge-warning" title="Departamento destino"><i class="fa fa-fw fa-sitemap"></i> {{ $seguimiento->DepartamentoDestino->getNombre() }}</span>
+                                    @endif
+                                    @if($documento->enSeguimiento())
+                                    <p><span class="font-w600"><i class="fa fa-fw fa-street-view"></i> Instrucción recibida:</span>
+                                        @if( $seguimiento->getInstruccion() )
+                                            {{ $seguimiento->getInstruccion() }}
+                                        @else
+                                            <span class="font-size-xs text-muted">- Ninguna -</span>
+                                        @endif
+                                    </p>
+                                    @endif
                                 </div>
-                                <br>
-                                {!! $seguimiento->Documento->EstadoDocumento->presenter()->getBadge() !!}
                             </div>
+                        </div>
+                        @endif
+                        <div class="{{ $seccion4 }} text-center section-options">
+                            <div class="mb-10">
+                                @if (!$documento->finalizado() && !$documento->rechazado()
+                                    && user()->can('SEG.CAMBIAR.ESTADO') && in_array($seguimiento->getDireccionDestino(), session('DireccionesKeys')) )
+                                <button type="button" class="btn btn-sm btn-rounded btn-alt-danger" onclick="hPanel.cambiarEstado({{ $documento->getKey()  }})">
+                                    <i class="fa fa-fw fa-history"></i> Cambiar estado</span>
+                                </button>
+                                @endif
+                                <a class="btn btn-sm btn-rounded btn-alt-success" href="{{ url_ver_seguimiento( $seguimiento ) }}">
+                                    <i class="fa fa-fw fa-paper-plane"></i> Ver seguimiento</span>
+                                </a>
+                            </div>
+
+                            @if ( user()->can('DOC.CREAR.NO.EXPE') && $documento->getTipoDocumento() == 1)
+                            <div class="mb-10">
+                                <button type="button" class="btn btn-sm btn-rounded btn-alt-danger" onclick="hPanel.expediente({{ $documento->getKey() }})">
+                                    <i class="fa fa-fw fa-legal"></i> Asignar Nó. de expediente</span>
+                                </button>
+                            @endif
+
+                            <div class="mb-10">
+                                <button type="button" class="btn btn-sm btn-rounded btn-alt-warning" onclick="hPanel.marcarImportante(this, {{ $documento->getKey() }})">
+                                    @if ($documento->importante())
+                                        <i class="fa fa-fw fa-star text-warning star"></i> Importante
+                                    @else
+                                        <i class="fa fa-fw fa-star-o star"></i> Importante
+                                    @endif
+                                </button>
+                                <button type="button" class="btn btn-sm btn-rounded btn-alt-secondary" onclick="hPanel.marcarArchivado(this, {{ $documento->getKey() }})">
+                                    @if (! $documento->archivado() )
+                                        <i class="fa fa-fw fa-archive archive"></i> <span id="arch">Archivar</span>
+                                    @else
+                                        <i class="fa fa-fw fa-archive archive text-primary"></i> <span id="arch">Desarchivar</span>
+                                    @endif
+                                </button>
+                            </div>
+                            {!! $seguimiento->Documento->EstadoDocumento->presenter()->getBadge() !!}
                         </div>
                     </div>
                 </div>
@@ -255,8 +271,4 @@
 @push('js-script')
     {{ Html::script('js/helpers/panel.helper.js') }}
     {{ Html::script('js/app-form.js') }}
-@endpush
-
-@push('js-custom')
-	
 @endpush

@@ -21,18 +21,21 @@ class DocumentosDataTable extends CustomDataTable
         return [
             [
                 'title'  => 'FOLIO RECEPCIÓN',
+                'width'  => '18%',
                 'render' => function($documento){
                     return $documento->AcuseRecepcion->getNumero();
                 }
             ],
             [
                 'title'  => 'TIPO DOCUMENTO',
+                'width'  => '12%',
                 'render' => function($documento){
                     return $documento->TipoDocumento->presenter()->getBadge();
                 }
             ],
             [
                 'title'  => 'NÓ. DOCUMENTO',
+                'width'  => '15%',
                 'render' => function($documento){
                     return $documento->getNumero();
                 }
@@ -40,17 +43,19 @@ class DocumentosDataTable extends CustomDataTable
             [
                 'title'  => 'ASUNTO',
                 'render' => function($documento){
-                    return $documento->Detalle->getDescripcion();
+                    return $documento->Detalle->presenter()->getDescripcion(260);
                 }
             ],
             [
                 'title' => 'Recepción',
+                'class' => 'text-center',
                 'render' => function($documento){
                     return $documento->Detalle->getFechaRecepcion();
                 }
             ],
             [
                 'title'  => 'Opciones',
+                'config' => 'options',
                 'render' => function($documento){
                     $url_editar = url( sprintf('recepcion/documentos/editar-recepcion?search=%d',$documento->getKey()) );
 

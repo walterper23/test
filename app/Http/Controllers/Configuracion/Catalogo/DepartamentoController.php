@@ -92,10 +92,10 @@ class DepartamentoController extends BaseController
             $data['id']            = $request->id;
 
             $data['direcciones'] = MDireccion::select('DIRE_DIRECCION','DIRE_NOMBRE')
-                                    -> existenteDisponible()
-                                    -> orderBy('DIRE_NOMBRE')
-                                    -> pluck('DIRE_NOMBRE','DIRE_DIRECCION')
-                                    -> toArray();
+                                    ->siExistenteDisponible()
+                                    ->orderBy('DIRE_NOMBRE')
+                                    ->pluck('DIRE_NOMBRE','DIRE_DIRECCION')
+                                    ->toArray();
 
             return view('Configuracion.Catalogo.Departamento.formDepartamento')->with($data);
 
@@ -142,11 +142,11 @@ class DepartamentoController extends BaseController
             $data['id']            = $request->id;
 
             $data['direcciones'] = MDireccion::select('DIRE_DIRECCION','DIRE_NOMBRE')
-                                    -> existenteDisponible()
-                                    -> orWhere('DIRE_DIRECCION',$departamento->getKey())
-                                    -> orderBy('DIRE_NOMBRE')
-                                    -> pluck('DIRE_NOMBRE','DIRE_DIRECCION')
-                                    -> toArray();
+                                    ->siExistenteDisponible()
+                                    ->orWhere('DIRE_DIRECCION',$departamento->getKey())
+                                    ->orderBy('DIRE_NOMBRE')
+                                    ->pluck('DIRE_NOMBRE','DIRE_DIRECCION')
+                                    ->toArray();
 
             return view('Configuracion.Catalogo.Departamento.formDepartamento')->with($data);
 

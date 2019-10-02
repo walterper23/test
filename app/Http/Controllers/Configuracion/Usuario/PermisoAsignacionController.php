@@ -190,7 +190,7 @@ class PermisoAsignacionController extends BaseController
         $departamentosNuevos =  MDepartamento::find($request->get('departamentos',[]) )->pluck('DEPA_DEPARTAMENTO')->toArray();
 
         // Recuperamos las direcciones a eliminar al usuario
-        $direccionesExistentes = MDireccion::existenteDisponible()->pluck('DIRE_DIRECCION')->toArray();
+        $direccionesExistentes = MDireccion::siExistenteDisponible()->pluck('DIRE_DIRECCION')->toArray();
         $direccionesEliminar   = array_diff($direccionesExistentes, $direccionesNuevas);
         $usuario->UsuarioAsignaciones()->whereIn('USAS_DIRECCION',$direccionesEliminar)->whereNull('USAS_DEPARTAMENTO')->delete();
 

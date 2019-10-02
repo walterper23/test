@@ -14,10 +14,10 @@ class DenunciasForaneasDataTable extends CustomDataTable
     public function setSourceData()
     {
         // Recuperar las direcciones actualmente asignadas al usuario
-        $direccionesUsuario = user()->Direcciones()->pluck('DIRE_DIRECCION')->toArray();
+        $direccionesUsuario = session('DireccionesKeys');
 
         // Recuperar los departamentos actualmente asignados al usuario
-        $departamentosUsuario = user()->Departamentos()->pluck('DEPA_DEPARTAMENTO')->toArray();
+        $departamentosUsuario = session('DepartamentosKeys');
 
         $this->sourceData = MDocumento::with('Detalle','DocumentoForaneo','AcuseRecepcion')
             ->where(function($query) use($direccionesUsuario,$departamentosUsuario){
@@ -32,18 +32,21 @@ class DenunciasForaneasDataTable extends CustomDataTable
         return [
             [
                 'title'  => 'FOLIO RECEPCIÓN',
+                'width'   => '18%',
                 'render' => function($documento){
                     return $documento->AcuseRecepcion->getNumero();
                 }
             ],
             [
                 'title'  => 'ASUNTO',
+                'width'  => '60%',
                 'render' => function($query){
-                    return $query->Detalle->getDescripcion();
+                    return $query->Detalle->presenter()->getDescripcion(260);
                 }
             ],
             [
                 'title' => 'Recepción',
+                'class' => 'text-center',
                 'render' => function($query){
                     return $query->Detalle->getFechaRecepcion();
                 }
@@ -80,6 +83,7 @@ class DenunciasForaneasDataTable extends CustomDataTable
             ],
             [
                 'title'  => 'Opciones',
+                'config' => 'options', 
                 'render' => function($documento){
                     $url_editar = url( sprintf('recepcion/documentos-foraneos/editar-recepcion?search=%d',$documento->DocumentoForaneo->getKey()) );
 

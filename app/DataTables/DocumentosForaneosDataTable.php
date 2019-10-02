@@ -14,10 +14,10 @@ class DocumentosForaneosDataTable extends CustomDataTable
     public function setSourceData()
     {
         // Recuperar las direcciones actualmente asignadas al usuario
-        $direccionesUsuario = user()->Direcciones()->pluck('DIRE_DIRECCION')->toArray();
+        $direccionesUsuario = session('DireccionesKeys');
 
         // Recuperar los departamentos actualmente asignados al usuario
-        $departamentosUsuario = user()->Departamentos()->pluck('DEPA_DEPARTAMENTO')->toArray();
+        $departamentosUsuario = session('DepartamentosKeys');
 
         $this->sourceData = MDocumento::with('TipoDocumento','Detalle','AcuseRecepcion','DocumentoForaneo')
             ->where(function($query) use($direccionesUsuario,$departamentosUsuario){
@@ -32,6 +32,7 @@ class DocumentosForaneosDataTable extends CustomDataTable
         return [
             [
                 'title'  => 'FOLIO RECEPCIÓN',
+                'width'   => '18%',
                 'render' => function($documento){
                     return $documento->AcuseRecepcion->getNumero();
                 }
@@ -51,11 +52,12 @@ class DocumentosForaneosDataTable extends CustomDataTable
             [
                 'title'  => 'ASUNTO',
                 'render' => function($documento){
-                    return $documento->Detalle->getDescripcion();
+                    return $documento->Detalle->presenter()->getDescripcion(260);
                 }
             ],
             [
                 'title' => 'Recepción',
+                'class' => 'text-center',
                 'render' => function($documento){
                     return $documento->Detalle->getFechaRecepcion();
                 }
@@ -91,6 +93,7 @@ class DocumentosForaneosDataTable extends CustomDataTable
             ],
             [
                 'title'  => 'Opciones',
+                'config' => 'options', 
                 'render' => function($documento){
                     $url_editar = url( sprintf('recepcion/documentos-foraneos/editar-recepcion?search=%d',$documento->DocumentoForaneo->getKey()) );
 

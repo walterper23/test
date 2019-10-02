@@ -71,13 +71,13 @@ class LoginController extends Controller
     protected function credentials(Request $request)
     {
         $credentials = [
-            'USUA_USERNAME' => $request -> username,
-            'USUA_PASSWORD' => $request -> password,
+            'USUA_USERNAME' => $request->username,
+            'USUA_PASSWORD' => $request->password,
             'USUA_ENABLED'  => 1,
             'USUA_DELETED'  => 0,
         ];
 
-        if( $request -> username == 'super.admin.sigesd'  ){
+        if( $request->username == 'super.admin.sigesd' ){
             unset($credentials['USUA_ENABLED']);
             unset($credentials['USUA_DELETED']);
         }
@@ -90,8 +90,15 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, $user)
     {
-        $user -> USUA_LAST_LOGIN   = is_null($user -> getRecentLogin()) ? \Carbon\Carbon::now() : $user -> getRecentLogin();
-        $user -> USUA_RECENT_LOGIN = \Carbon\Carbon::now();
-        $user -> save();
+        $user->USUA_LAST_LOGIN   = is_null($user->getRecentLogin()) ? \Carbon\Carbon::now() : $user->getRecentLogin();
+        $user->USUA_RECENT_LOGIN = \Carbon\Carbon::now();
+        $user->save();
+
+        session(['Direcciones'=>$user->Direcciones]);
+        session(['DireccionesKeys'=>$user->Direcciones->pluck('DIRE_DIRECCION')->toArray()]);
+
+        session(['Departamentos'=>$user->Departamentos]);
+        session(['DepartamentosKeys'=>$user->Departamentos->pluck('DEPA_DEPARTAMENTO')->toArray()]);
+
     }
 }

@@ -313,8 +313,8 @@ class DashboardController extends BaseController
         /*****************************************************************/
 
         // Buscamos las direcciones asignadas al usuario
-        $ids_direcciones_usuario = user()->Direcciones->pluck('DIRE_DIRECCION')->toArray();
-        $ids_departamentos_usuario = user()->Departamentos->pluck('DEPA_DEPARTAMENTO')->toArray();
+        $ids_direcciones_usuario = session('DireccionesKeys');
+        $ids_departamentos_usuario = session('DepartamentosKeys');
         
         $notificaciones_areas = [];
         if ( sizeof($ids_direcciones_usuario) > 0 || sizeof($ids_departamentos_usuario) > 0 )

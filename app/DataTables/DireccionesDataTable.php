@@ -17,7 +17,7 @@ class DireccionesDataTable extends CustomDataTable
             [
                 'title'  => '#',
                 'render' => function($query){
-                    return $query->getCodigo();
+                    return sprintf('<b>%s</b>',$query->getCodigo());
                 }
             ],
             [
@@ -25,17 +25,20 @@ class DireccionesDataTable extends CustomDataTable
                 'data'  => 'DIRE_NOMBRE'
             ],
             [
-                'title' => 'Departamentos',
+                'title'  => 'Departamentos',
+                'class'  => 'text-center',
                 'render' => function($query){
                     return $query->DepartamentosExistentes->count();
                 }
             ],
             [
                 'title' => 'Fecha',
+                'class' => 'text-center',
                 'data'  => 'DIRE_CREATED_AT'
             ],
             [
-                'title' => 'Activo',
+                'title'  => 'Activo',
+                'config' => 'options', 
                 'render' => function($query){
                     $checked = $query->disponible() ? ' checked=""' : '';
                     
@@ -45,6 +48,7 @@ class DireccionesDataTable extends CustomDataTable
             ],
             [
                 'title'  => 'Opciones',
+                'config' => 'options', 
                 'render' => function($query){
                     $buttons = sprintf('
                         <button type="button" class="btn btn-sm btn-circle btn-alt-primary" onclick="hDireccion.view(%d)"><i class="fa fa-eye"></i></button>

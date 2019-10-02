@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Configuracion\Catalogo;
 
 use Illuminate\Http\Request;
@@ -94,18 +95,13 @@ class EstadoDocumentoController extends BaseController
             $data['id']            = null;
 
             /* Consultar las direcciones asignadas directa o indirectamente al usuario */
-            if (! user()->isSuperAdmin() )
-            {
-                $direcciones_asignadas   = user()->Direcciones;
-                $departamentos_asignados = user()->Departamentos;
+            if (! user()->isSuperAdmin() ) {
+                $direcciones_asignadas   = session('DireccionesKeys');
+                $departamentos_asignados = session('Departamentos');
+            } else {
+                $direcciones_asignadas   = MDireccion::siExistenteDisponible()->pluck('DIRE_DIRECCION')->toArray();
+                $departamentos_asignados = MDepartamento::siExistenteDisponible()->get();
             }
-            else
-            {
-                $direcciones_asignadas   = MDireccion::existenteDisponible()->get();
-                $departamentos_asignados = MDepartamento::existenteDisponible()->get();
-            }
-
-            $direcciones_asignadas   = $direcciones_asignadas->pluck('DIRE_DIRECCION')->toArray();
 
             $data['departamentos'] = [];
 
@@ -177,21 +173,19 @@ class EstadoDocumentoController extends BaseController
                 // Agregamos el ID del departamento del Estado de Documento a la lista
                 $ids_departamentos[] = $modelo->getDepartamento();
                 // Si el usuario no puede administrar todos los departamentos, buscamos solos los departamentos que tenga asignados     
-                if (! (user()->can('SIS.ADMIN.DEPTOS')) )
-                {
-                    $ids_departamentos += user()->Departamentos->pluck('DEPA_DEPARTAMENTO')->toArray();
+                if (! (user()->can('SIS.ADMIN.DEPTOS')) ) {
+                    $ids_departamentos += session('DepartamentosKeys');
                 }
                 
                 $query->orWhere('DEPA_DEPARTAMENTO',$ids_departamentos);
                 
                 return $query;
 
-            }])->select('DIRE_DIRECCION','DIRE_NOMBRE')->existenteDisponible();
+            }])->select('DIRE_DIRECCION','DIRE_NOMBRE')->siExistenteDisponible();
 
             // Si el usuario no puede administrar todas las direcciones, agregamos la condición de buscar solos las direcciones que tenga asignadas     
-            if (! (user()->can('SIS.ADMIN.DIRECC')) )
-            {
-                $ids_direcciones = user()->Direcciones->pluck('DIRE_DIRECCION')->toArray();
+            if (! (user()->can('SIS.ADMIN.DIRECC')) ) {
+                $ids_direcciones = session('DireccionesKeys');
                 $direcciones->whereIn('DIRE_DIRECCION',$ids_direcciones);
             }
 

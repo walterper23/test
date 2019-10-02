@@ -8,7 +8,7 @@ class SystemTiposDocumentosDataTable extends CustomDataTable
 {
     public function setSourceData()
     {
-        $this->sourceData = MSystemTipoDocumento::select('SYTD_TIPO_DOCUMENTO','SYTD_NOMBRE','SYTD_ETIQUETA_NUMERO','SYTD_RIBBON_COLOR','SYTD_CREATED_AT','SYTD_ENABLED')->existente()->orderBy('SYTD_TIPO_DOCUMENTO','ASC');
+        $this->sourceData = MSystemTipoDocumento::siExistente();
     }
 
     public function columnsTable()
@@ -17,29 +17,41 @@ class SystemTiposDocumentosDataTable extends CustomDataTable
             [
                 'title'  => '#',
                 'render' => function($tipoDocumento){
-                    return $tipoDocumento->getCodigo();
+                    return sprintf('<b>%s</b>',$tipoDocumento->getCodigo());
                 }
             ],
             [
                 'title' => 'Nombre',
+                'width' => '20%',
                 'data'  => 'SYTD_NOMBRE'
             ],
             [
                 'title' => 'Solicitar',
+                'width' => '16%',
                 'data'  => 'SYTD_ETIQUETA_NUMERO'
             ],
             [
+                'title' => 'Código Folio',
+                'class'  => 'text-center',
+                'width' => '12%',
+                'data'  => 'SYTD_CODIGO_ACUSE'
+            ],
+            [
                 'title'  => 'Color',
+                'width'  => '16%',
+                'class'  => 'text-center',
                 'render' => function($tipoDocumento){
                     return $tipoDocumento->presenter()->getBadge();
                 } 
             ],
             [
                 'title' => 'Fecha',
+                'class' => 'text-center',
                 'data'  => 'SYTD_CREATED_AT'
             ],
             [
-                'title' => 'Activo',
+                'title'  => 'Activo',
+                'config' => 'options', 
                 'render' => function($tipoDocumento){
                     $checked = $tipoDocumento->disponible() ? 'checked=""' : '';
                     
@@ -50,6 +62,7 @@ class SystemTiposDocumentosDataTable extends CustomDataTable
             ],
             [
                 'title'  => 'Opciones',
+                'config' => 'options', 
                 'render' => function($tipoDocumento){
 
                     $buttons = sprintf('

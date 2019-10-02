@@ -15,39 +15,46 @@ class UsuariosDataTable extends CustomDataTable
     {
         return [
             [
-                'title' => '<i class="fa fa-user"></i>',
+                'title' => '',
+                'config' => 'options',
                 'render' => function($usuario){
                     return $usuario->presenter()->imgAvatarSmall('img-avatar img-avatar48');
                 }
             ],
             [
-                'title' => '#',
+                'title' => 'NO.',
                 'render' => function($usuario){
-                    return $usuario->getCodigo();
+                    return $usuario->UsuarioDetalle->getNoTrabajador();
                 }
             ],
             [
-                'title' => 'Usuario',
+                'title'  => 'Usuario',
+                'width'  => '18%',
                 'render' => function($usuario){
                     return sprintf('<span class="text-primary">%s</span>',$usuario->getAuthUsername());
                 },
             ],
             [
                 'title' => 'Nombre',
+                'width'  => '20%',
                 'render' => function($usuario){
                     return $usuario->UsuarioDetalle->presenter()->getNombreCompleto();
                 },
             ],
             [
                 'title' => 'Descripción',
-                'data' => 'USUA_DESCRIPCION'
+                'width' => '20%',
+                'data'  => 'USUA_DESCRIPCION'
             ],
             [
                 'title' => 'Último acceso',
-                'data' => 'USUA_RECENT_LOGIN'
+                'class' => 'text-center',
+                'width' => '12%',
+                'data'  => 'USUA_RECENT_LOGIN'
             ],
             [
-                'title' => 'Activo',
+                'title'  => 'Activo',
+                'config' => 'options',
                 'render' => function($usuario){
                     $checked = ($usuario->disponible()) ? ' checked=""' : '';
                     $enabled = $usuario->getKey() != userKey() ? '' : ' disabled' ;
@@ -58,7 +65,8 @@ class UsuariosDataTable extends CustomDataTable
                 }
             ],
             [
-                'title' => 'Opciones',
+                'title'  => 'Opciones',
+                'config' => 'options',
                 'render' => function($usuario){
 
                     $buttons = '';
@@ -89,6 +97,14 @@ class UsuariosDataTable extends CustomDataTable
     public function getUrlAjax()
     {
         return url('configuracion/usuarios/post-data');
+    }
+
+    public function getCustomOptionsParameters()
+    {
+        return [
+            'pageLength' => 50,
+            'order' => [[ 1, 'asc' ]]
+        ];
     }
 
 }

@@ -21,7 +21,8 @@ class EstadosDocumentosDataTable extends CustomDataTable
                 }
             ],
             [
-                'title' => 'Dirección',
+                'title'  => 'Dirección',
+                'width'  => '24%',
                 'render' => function($estado){
                     if (! is_null($estado->Direccion) )
                         return $estado->Direccion->getNombre();
@@ -29,6 +30,7 @@ class EstadosDocumentosDataTable extends CustomDataTable
             ],
             [
                 'title' => 'Departamento',
+                'width'  => '24%',
                 'render' => function($estado){
                     if (! is_null($estado->Departamento) )
                         return $estado->Departamento->getNombre();
@@ -37,14 +39,17 @@ class EstadosDocumentosDataTable extends CustomDataTable
             ],
             [
                 'title' => 'Nombre',
+                'width'  => '24%',
                 'data'  => 'ESDO_NOMBRE'
             ],
             [
                 'title' => 'Fecha',
+                'class' => 'text-center',
                 'data'  => 'ESDO_CREATED_AT'
             ],
             [
-                'title' => 'Activo',
+                'title'  => 'Activo',
+                'config' => 'options', 
                 'render' => function($estado){
                     $checked = $estado->disponible() ? ' checked=""' : '';
                     
@@ -54,15 +59,15 @@ class EstadosDocumentosDataTable extends CustomDataTable
             ],
             [
                 'title'  => 'Opciones',
+                'config' => 'options', 
                 'render' => function($estado){
                     $buttons = sprintf('
                         <button type="button" class="btn btn-sm btn-circle btn-alt-primary" onclick="hEstadoDocumento.view(%d)"><i class="fa fa-eye"></i></button>
-                        <button type="button" class="btn btn-sm btn-circle btn-alt-success" onclick="hEstadoDocumento.edit_(%d)"><i class="fa fa-pencil"></i></button>',
+                        <button type="button" class="btn btn-sm btn-circle btn-alt-success" <onclic></onclic>k="hEstadoDocumento.edit_(%d)"><i class="fa fa-pencil"></i></button>',
                         $estado->getKey(), $estado->getKey()
                     );
 
-                    if (config_var('Sistema.Estado.Recepcion.Seguimiento') != $estado->getKey())
-                    {    
+                    if (config_var('Sistema.Estado.Recepcion.Seguimiento') != $estado->getKey()) {    
                         $buttons .= sprintf('<button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hEstadoDocumento.delete_(%d)"><i class="fa fa-trash"></i></button>', $estado->getKey());
                     }
 

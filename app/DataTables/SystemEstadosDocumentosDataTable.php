@@ -16,20 +16,24 @@ class SystemEstadosDocumentosDataTable extends CustomDataTable
         return [
             [
                 'title'  => '#',
+                'class' => 'text-center',
                 'render' => function($estado){
-                    return $estado->getKey();
+                    return sprintf('<b>%s</b>',$estado->getKey());
                 }
             ],
             [
                 'title' => 'Nombre',
+                'width' => '70%',
                 'data'  => 'SYED_NOMBRE'
             ],
             [
                 'title' => 'Fecha',
+                'class' => 'text-center',
                 'data'  => 'SYED_CREATED_AT'
             ],
             [
                 'title'  => 'Opciones',
+                'config' => 'options', 
                 'render' => function($estado){
                     return sprintf('
                         <button type="button" class="btn btn-sm btn-circle btn-alt-primary" onclick="hSistemaEstadoDocumento.view(%d)"><i class="fa fa-eye"></i></button>

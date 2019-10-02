@@ -267,12 +267,9 @@
                 form_data.append('documento',documento);
                 form_data.append('escaneo', inputFile)
 
-                if( nombreEscaneo.length )
-                {
+                if( nombreEscaneo.length ) {
                     form_data.append('nombre_escaneo',nombreEscaneo);
-                }
-                else
-                {
+                } else {
                     nombreEscaneo = indexFile + 1;
                 }
 

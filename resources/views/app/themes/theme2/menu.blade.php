@@ -105,16 +105,16 @@ If your sidebar menu includes icons and you would like to hide them, you can add
                 <a href="/panel/documentos/?view=rejected">Rechazados</a>
             </li>
             <li>
-                <a href="/panel/documentos/?view=finished">Finalizados</a>
+                <a href="/panel/documentos/?view=finished">Concluidos</a>
             </li>
-            @can('SEG.ADMIN.SEMAFORO')
-            <li>
-                <a href="/panel/documentos/semaforizados">Semaforizados</a>
-            </li>
-            @endcan
         </ul>
     </li>
     @endcan
+    @if( user()->canAtLeast('SEG.PANEL.TRABAJO','SEG.ADMIN.SEMAFORO'))
+        <li>
+            <a href="/panel/documentos/semaforizados"><i class="fa fa-warning"></i>Semaforización</a>
+        </li>
+    @endif
     {{--
     @can('REPO.GENERAR.REPORTE')
     <li>

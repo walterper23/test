@@ -17,7 +17,7 @@ class DepartamentosDataTable extends CustomDataTable
             [
                 'title' => '#',
                 'render' => function($departamento){
-                    return $departamento->getCodigo();
+                    return sprintf('<b>%s</b>',$departamento->getCodigo());
                 }
             ],
             [
@@ -32,10 +32,12 @@ class DepartamentosDataTable extends CustomDataTable
             ],
             [
                 'title' => 'Fecha',
+                'class' => 'text-center',
                 'data'  => 'DEPA_CREATED_AT'
             ],
             [
-                'title' => 'Activo',
+                'title'  => 'Activo',
+                'config' => 'options',
                 'render' => function($departamento){
                     $checked = ($departamento->disponible()) ? ' checked=""' : '';
                     
@@ -44,7 +46,8 @@ class DepartamentosDataTable extends CustomDataTable
                 }
             ],
             [
-                'title' => 'Opciones',
+                'title'  => 'Opciones',
+                'config' => 'options',
                 'render' => function($departamento){
                     $buttons = sprintf('
                         <button type="button" class="btn btn-sm btn-circle btn-alt-primary" onclick="hDepartamento.view(%d)"><i class="fa fa-eye"></i></button>

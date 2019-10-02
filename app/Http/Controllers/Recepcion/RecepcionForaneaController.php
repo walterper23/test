@@ -145,7 +145,7 @@ class RecepcionForaneaController extends BaseController
 
         // Recuperamos los tipos de documento->Detalle que se pueden recepcionar
         $tiposDocumentosExistentesDisponibles = cache()->rememberForever('tiposDocumentosExistentesDisponibles',function(){
-            return MSystemTipoDocumento::existenteDisponible()->get();
+            return MSystemTipoDocumento::siExistenteDisponible()->get();
         });
 
         $data['tipos_documentos'] = $tiposDocumentosExistentesDisponibles;
@@ -162,7 +162,7 @@ class RecepcionForaneaController extends BaseController
 
         // Recuperamos los anexos almacenados en el sistema
         $anexosExistentesDisponibles = cache()->rememberForever('anexosExistentesDisponibles',function(){
-            return MAnexo::existenteDisponible()->get();
+            return MAnexo::siExistenteDisponible()->get();
         });
 
         $data['anexos'] = $anexosExistentesDisponibles->sortBy('ANEX_NOMBRE')->pluck('ANEX_NOMBRE','ANEX_ANEXO')->toArray();
@@ -231,7 +231,7 @@ class RecepcionForaneaController extends BaseController
 
         // Recuperamos los tipos de documento->Detalle que se pueden recepcionar
         $tiposDocumentosExistentesDisponibles = cache()->rememberForever('tiposDocumentosExistentesDisponibles',function(){
-            return MSystemTipoDocumento::existenteDisponible()->get();
+            return MSystemTipoDocumento::siExistenteDisponible()->get();
         });
 
         $data['tipos_documentos'] = $tiposDocumentosExistentesDisponibles;
@@ -248,7 +248,7 @@ class RecepcionForaneaController extends BaseController
 
         // Recuperamos los anexos almacenados en el sistema
         $anexosExistentesDisponibles = cache()->rememberForever('anexosExistentesDisponibles',function(){
-            return MAnexo::existenteDisponible()->get();
+            return MAnexo::siExistenteDisponible()->get();
         });
 
         $data['anexos'] = $anexosExistentesDisponibles->sortBy('ANEX_NOMBRE')->pluck('ANEX_NOMBRE','ANEX_ANEXO')->toArray();

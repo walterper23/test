@@ -111,9 +111,11 @@ abstract class CustomDataTable implements DataTableInterface
 
     private function readColumsTableForBuilder()
     {
+        $configs = config('datatables-html.configs');
+
         foreach ($this->columnsTable() as $key => $column) {
             
-            $config = [];
+            $config = $configs['default'];
 
             $config['title'] = $column['title'];
             
@@ -121,15 +123,33 @@ abstract class CustomDataTable implements DataTableInterface
 
             $config['data'] = $config['name'];
 
-            $config['searchable'] = isset($column['searchable']) ? $column['searchable'] : true;
+            if (isset($column['config'])) {
+                $config = array_merge($config, $configs[$column['config']]);
+            }
 
-            $config['orderable'] = isset($column['orderable']) ? $column['orderable'] : true;
+            if (isset($column['class'])) {
+                $config['className'] = $column['class'];
+            }
+
+            if (isset($column['searchable'])) {
+                $config['searchable'] = $column['searchable'];
+            }
+
+            if (isset($column['orderable'])) {
+                $config['orderable'] = $column['orderable'];
+            }
+
+            if (isset($column['width'])) {
+                $config['style'] = sprintf('width: %s;', $column['width']);
+            }
             
             $this->columns[] = $config;
         }
 
         return $this;
     }
+
+    /********************* B U I L D E R ***************************/
 
     public function getCustomOptionsParameters()
     {
@@ -182,7 +202,7 @@ abstract class CustomDataTable implements DataTableInterface
         return '/';
     }
 
-    public function html( $attributes = [] )
+    public function html( $attributes = array() )
     {
         return $this->buildOptionsParameters()
                     ->buildAjaxParameters()

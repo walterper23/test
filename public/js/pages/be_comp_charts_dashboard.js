@@ -98,7 +98,7 @@ var BeCompCharts = function() {
             labels: [
                 'En recepción',
                 'En seguimiento',
-                'Resueltos',
+                'Concluidos',
                 'Rechazados',
                 'Eliminados',
             ],
@@ -125,7 +125,7 @@ var BeCompCharts = function() {
             labels: [
                 'En recepción',
                 'En seguimiento',
-                'Resueltos',
+                'Concluidos',
                 'Rechazados',
                 'Eliminados',
             ],

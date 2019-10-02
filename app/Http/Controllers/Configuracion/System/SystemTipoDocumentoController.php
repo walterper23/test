@@ -1,10 +1,8 @@
 <?php
+
 namespace App\Http\Controllers\Configuracion\System;
 
-use Illuminate\Http\Request;
 use App\Http\Requests\SystemTipoDocumentoRequest;
-use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\Cache;
 use Exception;
 
 /* Controllers */
@@ -109,10 +107,11 @@ class SystemTipoDocumentoController extends BaseController
             $tipoDocumento = new MSystemTipoDocumento;
             $tipoDocumento->SYTD_NOMBRE          = $request->nombre;
             $tipoDocumento->SYTD_ETIQUETA_NUMERO = $request->etiqueta;
+            $tipoDocumento->SYTD_CODIGO_ACUSE    = $request->codigo;
             $tipoDocumento->SYTD_RIBBON_COLOR    = $request->color;
             $tipoDocumento->save();
 
-            Cache::forget('tiposDocumentosExistentesDisponibles');
+            cache()->forget('tiposDocumentosExistentesDisponibles');
 
             // Crear la notificación para usuarios del sistema
             $data = [
@@ -162,10 +161,11 @@ class SystemTipoDocumentoController extends BaseController
             $tipoDocumento = MSystemTipoDocumento::findOrFail( $request->id );
             $tipoDocumento->SYTD_NOMBRE          = $request->nombre;
             $tipoDocumento->SYTD_ETIQUETA_NUMERO = $request->etiqueta;
+            $tipoDocumento->SYTD_CODIGO_ACUSE    = $request->codigo;
             $tipoDocumento->SYTD_RIBBON_COLOR    = $request->color;
             $tipoDocumento->save();
 
-            Cache::forget('tiposDocumentosExistentesDisponibles');
+            cache()->forget('tiposDocumentosExistentesDisponibles');
 
             // Lista de tablas que se van a recargar automáticamente
             $tables = 'dataTableBuilder';
@@ -209,7 +209,7 @@ class SystemTipoDocumentoController extends BaseController
             $tipoDocumento = MSystemTipoDocumento::findOrFail( $request->id );
             $tipoDocumento->cambiarDisponibilidad()->save();
 
-            Cache::forget('tiposDocumentosExistentesDisponibles');
+            cache()->forget('tiposDocumentosExistentesDisponibles');
 
             if( $tipoDocumento->disponible() ){
                 $message = sprintf('<i class="fa fa-fw fa-check"></i> Tipo de documento <b>%s</b> activado',$tipoDocumento->getCodigo());
@@ -247,7 +247,7 @@ class SystemTipoDocumentoController extends BaseController
             $tipoDocumento = MSystemTipoDocumento::findOrFail( $request->id );
             $tipoDocumento->eliminar()->save();
 
-            Cache::forget('tiposDocumentosExistentesDisponibles');
+            cache()->forget('tiposDocumentosExistentesDisponibles');
 
             // Crear la notificación para usuarios del sistema
             $data = [

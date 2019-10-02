@@ -27,12 +27,12 @@ class CatalogoManagerController extends BaseController
 	public function index(){
 
 		$data = [
-			'anexos'                  => MAnexo::existenteDisponible()->count(),
-			'departamentos'           => MDepartamento::existenteDisponible()->count(),
-			'direcciones'             => MDireccion::existenteDisponible()->count(),
-			'puestos'                 => MPuesto::existenteDisponible()->count(),
-			'estadosDocumentos'       => MEstadoDocumento::existenteDisponible()->count(),
-			'usuarios'                => MUsuario::existenteDisponible()->count(),
+			'anexos'                  => MAnexo::siExistenteDisponible()->count(),
+			'departamentos'           => MDepartamento::siExistenteDisponible()->count(),
+			'direcciones'             => MDireccion::siExistenteDisponible()->count(),
+			'puestos'                 => MPuesto::siExistenteDisponible()->count(),
+			'estadosDocumentos'       => MEstadoDocumento::siExistenteDisponible()->count(),
+			'usuarios'                => MUsuario::siExistenteDisponible()->count(),
 			
 			'systemTiposDocumentos'   => MSystemTipoDocumento::getAllTiposDocumentos()->count(),
 			'systemEstadosDocumentos' => MSystemEstadoDocumento::getAllEstadosDocumentos()->count(),

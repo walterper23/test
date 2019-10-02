@@ -71,6 +71,7 @@ class RecibirDocumentosDenunciasForaneasDataTable extends CustomDataTable
             ],
             [
                 'title'  => 'Opciones',
+                'config' => 'options', 
                 'render' => function($documento){
                     $buttons = '';
 

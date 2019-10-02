@@ -1,7 +1,7 @@
 <?php
 namespace App\Panel;
 
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Collection;
 
 class PaginadorDocumentos
 {
@@ -18,13 +18,11 @@ class PaginadorDocumentos
 
     public function __construct(Collection $documentos, $intervalo = 10, $pagina = 1)
     {
-        if( $intervalo < 1 )
-        {
+        if ( $intervalo < 1 ) {
             $intervalo = 10;
         }
 
-        if( $pagina < 1 )
-        {
+        if ( $pagina < 1 ) {
             $pagina = 1;
         }
 
@@ -59,26 +57,20 @@ class PaginadorDocumentos
 
         $this->total_paginas = $documentos_paginados->count();
 
-        if( $this->total_paginas > 0 )
-        {
-
-
-            if( $this->pagina > $this->total_paginas )
-            {
+        if ( $this->total_paginas > 0 ) {
+            if ( $this->pagina > $this->total_paginas ) {
                 $this->pagina = 1;
             }
 
             $this->documentos = $documentos_paginados->get($this->pagina - 1);
 
-            if( $this->pagina > 1 )
-            {
+            $this->documentos->load('Documento.AcuseRecepcion','Documento.TipoDocumento','Documento.EstadoDocumento','DireccionOrigen','DireccionDestino','DepartamentoOrigen', 'DepartamentoDestino','EstadoDocumento','Escaneos');
+
+            if ( $this->pagina > 1 ) {
                 $this->pagina_anterior = true;
             }
 
-            // dd($this->pagina, $this->total_paginas, $this->pagina_anterior);
-
-            if( $this->pagina < $this->total_paginas )
-            {
+            if ( $this->pagina < $this->total_paginas ) {
                 $this->pagina_siguiente = true;
             }
 
@@ -109,16 +101,14 @@ class PaginadorDocumentos
         $parametros = $this->parametros;
         $step = $this->intervalo;
 
-        if( $this->pagina_anterior )
-        {
+        if ( $this->pagina_anterior ) {
             $page = $this->pagina - 1;
             $this->pagina_anterior_url  = $this->url . http_build_query( $parametros + compact('step','page'));
         }
 
         unset($page);
 
-        if( $this->pagina_siguiente )
-        {
+        if ( $this->pagina_siguiente ) {
             $page = $this->pagina + 1;
             $this->pagina_siguiente_url = $this->url . http_build_query( $parametros + compact('step','page'));
         }
@@ -128,6 +118,5 @@ class PaginadorDocumentos
     {
         return $this->documentos;
     }
-
 
 }

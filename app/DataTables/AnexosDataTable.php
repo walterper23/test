@@ -17,7 +17,7 @@ class AnexosDataTable extends CustomDataTable
             [
                 'title' => '#',
                 'render' => function($anexo){
-                    return $anexo->getCodigo();
+                    return sprintf('<b>%s</b>',$anexo->getCodigo());
                 }
             ],
             [
@@ -26,10 +26,12 @@ class AnexosDataTable extends CustomDataTable
             ],
             [
                 'title' => 'Fecha',
+                'class' => 'text-center',
                 'data'  => 'ANEX_CREATED_AT'
             ],
             [
-                'title' => 'Activo',
+                'title'  => 'Activo',
+                'config' => 'options', 
                 'render' => function($anexo){
                     $checked = $anexo->disponible() ? ' checked=""' : '';
                     
@@ -39,6 +41,7 @@ class AnexosDataTable extends CustomDataTable
             ],
             [
                 'title'  => 'Opciones',
+                'config' => 'options', 
                 'render' => function($anexo){
                     $buttons = sprintf('
                         <button type="button" class="btn btn-sm btn-circle btn-alt-primary" onclick="hAnexo.view(%d)"><i class="fa fa-eye"></i></button>

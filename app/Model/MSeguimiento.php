@@ -9,6 +9,10 @@ class MSeguimiento extends BaseModel
     protected $primaryKey  = 'SEGU_SEGUIMIENTO';
     protected $prefix      = 'SEGU';
 
+    protected $casts = [
+        'SEGU_LEIDO' => 'array'
+    ];
+
     /* Methods */
 
     public function getCodigo( $size = 5, $str = '0', $direction = STR_PAD_LEFT )
@@ -56,19 +60,13 @@ class MSeguimiento extends BaseModel
     {
         $usuarios = $this->getAttribute('SEGU_LEIDO'); // Recuperamos la lista de usuarios que han leido el seguimiento
         
-        $lista = [];
+        $usuario = array_search(userKey(), $usuarios);
 
-        if (! empty(trim($usuarios)))
-            $lista = explode(',', $usuarios);
+        if ($usuario === false) { // Si el usuario no está en la lista, lo añadimos
+            $usuarios[] = userKey();
+        }
 
-        $usuario = array_search(userKey(), $lista);
-
-        if ($usuario === false) // Si el usuario no está en la lista, lo añadimos
-            $lista[] = userKey();
-
-        $lista = implode(',', $lista);
-
-        $this->attributes['SEGU_LEIDO'] = $lista; // ... añadimos al usuario a la lista
+        $this->setAttribute('SEGU_LEIDO',$usuarios); // ... añadimos al usuario a la lista
         
         return $this;
     }
@@ -77,9 +75,7 @@ class MSeguimiento extends BaseModel
     {
         $usuarios = $this->getAttribute('SEGU_LEIDO'); // Recuperamos la lista de usuarios que han leido el seguimiento
 
-        $lista = explode(',', $usuarios);
-
-        $usuario = array_search(userKey(), $lista);
+        $usuario = array_search(userKey(), $usuarios);
 
         return $usuario !== false; // Devolver si el usuario está en la lista
     }
@@ -89,27 +85,27 @@ class MSeguimiento extends BaseModel
 
     public function DireccionOrigen()
     {
-        return $this->belongsTo('App\Model\Catalogo\MDireccion','SEGU_DIRECCION_ORIGEN','DIRE_DIRECCION');
+        return $this->belongsTo('App\Model\Catalogo\MDireccion','SEGU_DIRECCION_ORIGEN');
     }
 
     public function DepartamentoOrigen()
     {
-        return $this->belongsTo('App\Model\Catalogo\MDepartamento','SEGU_DEPARTAMENTO_ORIGEN','DEPA_DEPARTAMENTO');
+        return $this->belongsTo('App\Model\Catalogo\MDepartamento','SEGU_DEPARTAMENTO_ORIGEN');
     }
 
     public function DireccionDestino()
     {
-        return $this->belongsTo('App\Model\Catalogo\MDireccion','SEGU_DIRECCION_DESTINO','DIRE_DIRECCION');
+        return $this->belongsTo('App\Model\Catalogo\MDireccion','SEGU_DIRECCION_DESTINO');
     }
 
     public function DepartamentoDestino()
     {
-        return $this->belongsTo('App\Model\Catalogo\MDepartamento','SEGU_DEPARTAMENTO_DESTINO','DEPA_DEPARTAMENTO');
+        return $this->belongsTo('App\Model\Catalogo\MDepartamento','SEGU_DEPARTAMENTO_DESTINO');
     }
 
     public function Documento()
     {
-        return $this->belongsTo('App\Model\MDocumento','SEGU_DOCUMENTO','DOCU_DOCUMENTO');
+        return $this->belongsTo('App\Model\MDocumento','SEGU_DOCUMENTO');
     }
 
     public function Escaneos()
@@ -119,24 +115,23 @@ class MSeguimiento extends BaseModel
 
     public function EstadoDocumento()
     {
-        return $this->belongsTo('App\Model\Catalogo\MEstadoDocumento','SEGU_ESTADO_DOCUMENTO','ESDO_ESTADO_DOCUMENTO');
+        return $this->belongsTo('App\Model\Catalogo\MEstadoDocumento','SEGU_ESTADO_DOCUMENTO');
     }
 
     public function Seguimientos()
     {
-        return $this->hasMany('App\Model\MSeguimiento','SEGU_DOCUMENTO','SEGU_DOCUMENTO');
+        return $this->hasMany('App\Model\MSeguimiento');
     }
 
     public function Dispersiones()
     {
-        return $this->hasMany('App\Model\MSeguimientoDispersion','SEDI_SEGUIMIENTO',$this->getKeyName());
+        return $this->hasMany('App\Model\MSeguimientoDispersion','SEDI_SEGUIMIENTO');
     }
     
     public function Usuario()
     {
-        return $this->belongsTo('App\Model\MUsuario','SEGU_USUARIO','USUA_USUARIO');
+        return $this->belongsTo('App\Model\MUsuario','SEGU_USUARIO');
     }
-
 
     /* Presenter */
 

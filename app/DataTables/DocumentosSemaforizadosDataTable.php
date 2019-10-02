@@ -8,9 +8,7 @@ class DocumentosSemaforizadosDataTable extends CustomDataTable
 {
     public function setSourceData()
     {
-        $this->sourceData = MDocumentoSemaforizado::with(['Documento'=>function($documento){
-            $documento->with('Detalle','AcuseRecepcion');
-        },'SeguimientoA','SeguimientoB'])->siExistente()->orderBy('DOSE_SEMAFORO','DESC');
+        $this->sourceData = MDocumentoSemaforizado::with(['Documento.Detalle','Documento.AcuseRecepcion','SeguimientoA','SeguimientoB.DireccionDestino','SeguimientoB.DepartamentoDestino'])->existente()->orderBy('DOSE_SEMAFORO','DESC');
     }
 
     public function columnsTable()
@@ -18,59 +16,59 @@ class DocumentosSemaforizadosDataTable extends CustomDataTable
         return [
             [
                 'title'  => '#',
+                'class'  => 'text-center',
+                'width'  => '5%',
                 'render' => function($semaforo){
                     return $semaforo->getCodigo();
                 }
             ],
             [
-                'title'  => 'NÓ. DOCUMENTO',
+                'title'  => 'DETALLES DOCUMENTO',
+                'width'  => '15%',
                 'render' => function($semaforo){
-                    return $semaforo->Documento->getNumero();
+                    return sprintf('<b>%s</b><br>%s',$semaforo->Documento->getNumero(),$semaforo->Documento->Detalle->getDescripcion());
                 }
             ],
             [
-                'title'  => 'ASUNTO',
+                'title'  => 'ÁREA TURNADA',
+                'width'  => '31%',
                 'render' => function($semaforo){
-                    return $semaforo->Documento->Detalle->getDescripcion();
+                    $departamento = is_null($semaforo->SeguimientoA->DepartamentoDestino) ? '' : $semaforo->SeguimientoA->DepartamentoDestino->getNombre();
+
+                    return sprintf('<b>%s</b><br>%s',$semaforo->SeguimientoA->DireccionDestino->getNombre(),$departamento);
                 }
             ],
             [
                 'title'  => 'SOLICITUD',
+                'width'  => '22%',
                 'render' => function($semaforo){
                     $seguimiento = sprintf('<a class="text-danger" href="#" onclick="hSemaforo.verSeguimiento(1,%d)"><i class="fa fa-fw fa-flash"></i> <b>#%s</b></a>',
                         $semaforo->getKey(), $semaforo->SeguimientoA->getCodigo() );
 
                     return sprintf('%s<br><div class="font-size-xs text-muted">
-                                    <i class="fa fa-calendar"></i> %s %s</div>',$semaforo->getSolicitud(),$semaforo->DOSE_CREATED_AT, $seguimiento);
-                }
-            ],
-            [
-                'title'  => 'SEMÁFORO',
-                'render' => function($semaforo){
-
-                    if ($semaforo->enEspera())
-                        return '<span class="badge badge-primary"><i class="fa fa-hourglass-start"></i> En espera</span>';
-                    elseif ($semaforo->respondido())
-                        return '<span class="badge badge-success"><i class="fa fa-check"></i> Solicitud respondida</span>';
-                    else
-                        return '<span class="badge badge-danger"><i class="fa fa-times"></i> No atendido</span>';
+                                    <i class="fa fa-calendar"></i> %s<br>%s</div>',$semaforo->getSolicitud(),$semaforo->DOSE_CREATED_AT, $seguimiento);
                 }
             ],
             [
                 'title'  => 'RESPUESTA',
+                'width'  => '22%',
                 'render' => function($semaforo){
-                    if ($semaforo->respondido())
-                    {
+                    if ($semaforo->enEspera()) {
+                        return '<span class="badge badge-primary"><i class="fa fa-hourglass-start"></i> En espera</span>';
+                    } else if ($semaforo->respondido()) {
                         $seguimiento = sprintf('<a class="text-danger" href="#" onclick="hSemaforo.verSeguimiento(2,%d)"><i class="fa fa-fw fa-flash"></i> <b>#%s</b></a>',
                         $semaforo->getKey(), $semaforo->SeguimientoB->getCodigo() );
 
                         return sprintf('%s<br><div class="font-size-xs text-muted">
-                                    <i class="fa fa-calendar"></i> %s %s</div>',$semaforo->getRespuesta(),$semaforo->getRespuestaFecha(), $seguimiento);
+                                    <i class="fa fa-calendar"></i> %s<br>%s</div>',$semaforo->getRespuesta(),$semaforo->getRespuestaFecha(), $seguimiento);
+                    } else {
+                        return '<span class="badge badge-danger"><i class="fa fa-times"></i> No atendido</span>';
                     }
                 }
             ],
             [
                 'title'  => 'Opciones',
+                'config' => 'options',
                 'render' => function($semaforo){
                     $buttons = '';
 

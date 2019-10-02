@@ -44,6 +44,8 @@ class MSystemTipoDocumento extends BaseModel
             'warning'   => 'Amarillo',
             'secondary' => 'Gris',
             'dark'      => 'Negro',
+            'purple'    => 'Morado',
+            'brown'     => 'Café',
         ];
     }
 

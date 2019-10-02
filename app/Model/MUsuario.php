@@ -45,11 +45,6 @@ class MUsuario extends Authenticatable
         return $this->getAttribute('USUA_USERNAME');
     }
 
-    // public function setUsuaPasswordAttribute( $password )
-    // {
-    //     $this->setAttribute('USUA_PASSWORD',bcrypt($password));
-    // }
-
     public function getAuthPassword()
     {
         return $this->getAttribute('USUA_PASSWORD');
@@ -72,8 +67,7 @@ class MUsuario extends Authenticatable
 
     public function getAvatarDefault( $genero = 'HOMBRE' )
     {
-        if($genero == 'HOMBRE')
-        {
+        if ($genero == 'HOMBRE') {
             return 'no-profile-male.png';
         }
 
@@ -136,7 +130,7 @@ class MUsuario extends Authenticatable
 
     public function UsuarioDetalle()
     {
-        return $this->hasOne('App\Model\MUsuarioDetalle','USDE_USUARIO_DETALLE','USUA_DETALLE');
+        return $this->belongsTo('App\Model\MUsuarioDetalle','USUA_DETALLE');
     }
 
     public function Permisos()

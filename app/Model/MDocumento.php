@@ -7,6 +7,11 @@ class MDocumento extends BaseModel
     protected $primaryKey   = 'DOCU_DOCUMENTO';
     protected $prefix       = 'DOCU';
 
+    protected $casts = [
+        'DOCU_IMPORTANTE' => 'array',
+        'DOCU_ARCHIVADO'  => 'array',
+    ];
+
     /* Methods */
 
     // Método para devolver la columna FOLIO del registro como un código de longitud indicada
@@ -14,8 +19,7 @@ class MDocumento extends BaseModel
     {
         $longitud = config_var('Sistema.Longitud.Folio');
         
-        if( $longitud > 0 )
-        {
+        if( $longitud > 0 ) {
             $size = $longitud;
         }
 
@@ -59,55 +63,45 @@ class MDocumento extends BaseModel
 
     public function marcarImportante()
     {
-        $lista_usuarios = $this->attributes['DOCU_IMPORTANTE']; // Recuperamos la lista de usuarios que han marcado el documento como importante
+        $lista_usuarios = $this->getAttribute('DOCU_IMPORTANTE'); // Recuperamos la lista de usuarios que han marcado el documento como importante
         $lista_usuarios = $this->marcarDocumento($lista_usuarios); // Procesamos la lista de usuarios
-        $this->attributes['DOCU_IMPORTANTE'] = $lista_usuarios; // Guardamos la nueva lista de usuarios
+        $this->setAttribute('DOCU_IMPORTANTE',$lista_usuarios); // Guardamos la nueva lista de usuarios
     }
 
     public function importante()
     {
-        $usuarios = $this->attributes['DOCU_IMPORTANTE']; // Recuperamos la lista de usuarios que han marcado como importante el documento
-        $lista = explode(',', $usuarios);
-        $usuario = array_search(userKey(), $lista);
+        $usuarios = $this->getAttribute('DOCU_IMPORTANTE'); // Recuperamos la lista de usuarios que han marcado como importante el documento
+        $usuario = array_search(userKey(), $usuarios);
+        
         return $usuario !== false; // Devolver si el usuario está en la lista
     }
 
     public function marcarArchivado()
     {
-        $lista_usuarios = $this->attributes['DOCU_ARCHIVADO']; // Recuperamos la lista de usuarios que han marcado el documento como archivado
+        $lista_usuarios = $this->getAttribute('DOCU_ARCHIVADO'); // Recuperamos la lista de usuarios que han marcado el documento como archivado
         $lista_usuarios = $this->marcarDocumento($lista_usuarios); // Procesamos la lista de usuarios
-        $this->attributes['DOCU_ARCHIVADO'] = $lista_usuarios; // Guardamos la nueva lista de usuarios
+        $this->setAttribute('DOCU_ARCHIVADO',$lista_usuarios); // Guardamos la nueva lista de usuarios
     }
 
     public function archivado()
     {
-        $usuarios = $this->attributes['DOCU_ARCHIVADO']; // Recuperamos la lista de usuarios que han archivado el documento
-        $lista = explode(',', $usuarios);
-        $usuario = array_search(userKey(), $lista);
+        $usuarios = $this->getAttribute('DOCU_ARCHIVADO'); // Recuperamos la lista de usuarios que han archivado el documento
+        $usuario = array_search(userKey(), $usuarios);
+
         return $usuario !== false; // Devolver si el usuario está en la lista
     }
 
     private function marcarDocumento( $usuarios )
     {
-        $lista = [];
+        $usuario = array_search(userKey(), $usuarios); // Índice
 
-        if (! empty(trim($usuarios)))
-            $lista = explode(',', $usuarios);
-
-        $usuario = array_search(userKey(), $lista);
-
-        if ($usuario === false) // Si el usuario no está en la lista, lo añadimos
-        {
-            $lista[] = userKey();
-        }
-        else // Si ya está en la lista, lo quitamos
-        {
-            unset($lista[ $usuario ]);
+        if ($usuario === false){ // Si el usuario no está en la lista, lo añadimos
+            $usuarios[] = userKey();
+        } else { // Si ya está en la lista, lo quitamos
+            unset($usuarios[ $usuario ]);
         }
 
-        $lista = implode(',', $lista);
-
-        return $lista;
+        return $usuarios;
     }
 
     public function recepcionado()
@@ -172,12 +166,12 @@ class MDocumento extends BaseModel
 
     public function AcuseRecepcion()
     {
-        return $this->hasOne('App\Model\MAcuseRecepcion','ACUS_DOCUMENTO',$this->getKeyName())->where('ACUS_CAPTURA',1);
+        return $this->hasOne('App\Model\MAcuseRecepcion','ACUS_DOCUMENTO')->where('ACUS_CAPTURA',1);
     }
 
     public function Denuncia()
     {
-        return $this->hasOne('App\Model\MDenuncia','DENU_DOCUMENTO',$this->getKeyName());
+        return $this->hasOne('App\Model\MDenuncia','DENU_DOCUMENTO');
     }
 
     public function Detalle()
@@ -187,32 +181,32 @@ class MDocumento extends BaseModel
 
     public function DocumentoDenuncia()
     {
-        return $this->belongsTo('App\Model\MDocumentoDenuncia',$this->getKeyName(),'DODE_DOCUMENTO_LOCAL');
+        return $this->hasOne('App\Model\MDocumentoDenuncia','DODE_DOCUMENTO_LOCAL');
     }
 
     public function DocumentoForaneo()
     {
-        return $this->hasOne('App\Model\MDocumentoForaneo','DOFO_DOCUMENTO_LOCAL',$this->getKeyName());
+        return $this->hasOne('App\Model\MDocumentoForaneo','DOFO_DOCUMENTO_LOCAL');
     }
 
     public function Escaneos()
     {
-        return $this->hasMany('App\Model\MEscaneo','ESCA_DOCUMENTO_LOCAL',$this->getKeyName());
+        return $this->hasMany('App\Model\MEscaneo','ESCA_DOCUMENTO_LOCAL');
     }
 
     public function EstadoDocumento()
     {
-        return $this->hasOne('App\Model\System\MSystemEstadoDocumento','SYED_ESTADO_DOCUMENTO','DOCU_SYSTEM_ESTADO_DOCTO');
+        return $this->belongsTo('App\Model\System\MSystemEstadoDocumento','DOCU_SYSTEM_ESTADO_DOCTO');
     }
 
     public function Seguimientos()
     {
-        return $this->hasMany('App\Model\MSeguimiento','SEGU_DOCUMENTO',$this->getKeyName());
+        return $this->hasMany('App\Model\MSeguimiento','SEGU_DOCUMENTO');
     }
 
     public function TipoDocumento()
     {
-        return $this->hasOne('App\Model\System\MSystemTipoDocumento','SYTD_TIPO_DOCUMENTO','DOCU_SYSTEM_TIPO_DOCTO');
+        return $this->belongsTo('App\Model\System\MSystemTipoDocumento','DOCU_SYSTEM_TIPO_DOCTO');
     }
 
 }
