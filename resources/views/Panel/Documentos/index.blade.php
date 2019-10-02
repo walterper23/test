@@ -198,7 +198,14 @@
                                     <span class="badge badge-warning" title="Departamento destino"><i class="fa fa-fw fa-sitemap"></i> {{ $seguimiento->DepartamentoDestino->getNombre() }}</span>
                                     @endif
                                     @if($documento->enSeguimiento())
-                                    <p><span class="font-w600"><i class="fa fa-fw fa-street-view"></i> Instrucción recibida:</span>
+                                    <p>
+                                        <span class="font-w600"><i class="fa fa-fw fa-street-view"></i>
+                                            @if (request('view','all') != 'moved')
+                                            Instrucción recibida:
+                                            @else
+                                            Instrucción indicada:
+                                            @endif
+                                        </span>
                                         @if( $seguimiento->getInstruccion() )
                                             {{ $seguimiento->getInstruccion() }}
                                         @else
