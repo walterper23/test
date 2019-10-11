@@ -63,7 +63,7 @@ class PermisoAsignacionController extends BaseController
             $usuarios->orWhere('USUA_USUARIO',1);
         }
 
-        $data['usuarios'] = $usuarios->with('UsuarioDetalle')->ExistenteDisponible()->get()->mapWithKeys(function($item){
+        $data['usuarios'] = $usuarios->with('UsuarioDetalle')->siExistenteDisponible()->get()->mapWithKeys(function($item){
             return [ $item->getKey() => sprintf('%s :: %s (%s)', $item->getCodigo(), $item->getAuthUsername(),
                                         $item->UsuarioDetalle->presenter()->getNombreCompleto())];
         });
