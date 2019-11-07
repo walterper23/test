@@ -13,6 +13,8 @@ use App\Http\Controllers\Dashboard\NotificacionController;
 use App\Model\System\MSystemTipoDocumento;
 use App\DataTables\SystemTiposDocumentosDataTable;
 
+use Illuminate\Http\Request;
+
 /**
  * Controlador para gestionar los tipos de documentos del sistema
  */
