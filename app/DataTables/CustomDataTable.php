@@ -3,7 +3,6 @@
 namespace App\DataTables;
 
 use Yajra\DataTables\DataTables;
-
 use Exception;
 
 abstract class CustomDataTable implements DataTableInterface
@@ -61,7 +60,21 @@ abstract class CustomDataTable implements DataTableInterface
     {
         $this->setSourceData();
 
+        if (is_array($search = request('search')) && !empty($search['value'])) {
+            $this->applyGlobalFilter($search['value']);
+        }
+
         return $this->sourceData;
+    }
+
+    private function applyGlobalFilter($search)
+    {
+        $columns = $this->columnsTable();
+        $this->sourceData->where(function($query) use ($columns, $search){
+            foreach ($columns as $key => $column) {
+                if ($column['data'] != false) $query->orWhere($column['data'],'like',"%$search%");
+            }
+        });
     }
     
     private function readColumsTable()
@@ -70,7 +83,6 @@ abstract class CustomDataTable implements DataTableInterface
             
             $name = 'column_' . $key;
 
-            // Config *render* attribute. Using value *data* if it's not set.
             $render = isset($column['render']) ? $column['render'] : '{{$'.$column['data'].'}}';
 
             $this->instanceTable->addColumn($name,$render);
@@ -107,7 +119,7 @@ abstract class CustomDataTable implements DataTableInterface
         return $this;
     }
 
-    /********************* B U I L D E R ***************************/
+    /*----------------------- B U I L D E R ------------------------*/
 
     private function readColumsTableForBuilder()
     {
@@ -149,7 +161,7 @@ abstract class CustomDataTable implements DataTableInterface
         return $this;
     }
 
-    /********************* B U I L D E R ***************************/
+    /*-----------------------------------------------------------*/
 
     public function getCustomOptionsParameters()
     {

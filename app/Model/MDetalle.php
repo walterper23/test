@@ -19,17 +19,17 @@ class MDetalle extends BaseModel
 
     public function getAnexos()
     {
-        return $this -> getAttribute('DETA_ANEXOS');
+        return $this->getAttribute('DETA_ANEXOS');
     }
     
     public function getDescripcion()
     {
-        return $this -> getAttribute('DETA_DESCRIPCION');
+        return $this->getAttribute('DETA_DESCRIPCION');
     }
     
     public function getFechaRecepcion()
     {
-        return $this -> getAttribute('DETA_FECHA_RECEPCION');
+        return $this->getAttribute('DETA_FECHA_RECEPCION');
     }
 
     public function getMunicipio()
@@ -39,43 +39,44 @@ class MDetalle extends BaseModel
 
     public function getObservaciones()
     {
-        return $this -> getAttribute('DETA_OBSERVACIONES');
+        return $this->getAttribute('DETA_OBSERVACIONES');
     }
 
     public function getResponsable()
     {
-        return $this -> getAttribute('DETA_RESPONSABLE');
+        return $this->getAttribute('DETA_RESPONSABLE');
     }
 
     public function getEntregoNombre()
     {
-        return $this -> getAttribute('DETA_ENTREGO_NOMBRE');
+        return $this->getAttribute('DETA_ENTREGO_NOMBRE');
     }
 
     public function getEntregoEmail()
     {
-        return $this -> getAttribute('DETA_ENTREGO_EMAIL');
+        return $this->getAttribute('DETA_ENTREGO_EMAIL');
     }
 
     public function getEntregoTelefono()
     {
-        return $this -> getAttribute('DETA_ENTREGO_TELEFONO');
+        return $this->getAttribute('DETA_ENTREGO_TELEFONO');
     }
 
     public function getEntregoIdentificacion()
     {
-        return $this -> getAttribute('DETA_ENTREGO_IDENTIFICACION');
+        return $this->getAttribute('DETA_ENTREGO_IDENTIFICACION');
     }
 
     /* Relationships */
 
 	public function Municipio()
     {
-        return $this -> hasOne('App\Model\MMunicipio', 'MUNI_MUNICIPIO', 'DETA_MUNICIPIO');
+        return $this->hasOne('App\Model\MMunicipio', 'MUNI_MUNICIPIO', 'DETA_MUNICIPIO');
     }
 
     /* Presenter */    
-    public function presenter(){
+    public function presenter()
+    {
         return new MDetallePresenter($this);
     }
 

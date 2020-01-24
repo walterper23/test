@@ -1,11 +1,15 @@
 <?php
+
 namespace App\Model;
+
+/* Presenter */
+use App\Presenters\MDocumentoPresenter;
 
 class MDocumento extends BaseModel
 {
-    protected $table        = 'documentos';
-    protected $primaryKey   = 'DOCU_DOCUMENTO';
-    protected $prefix       = 'DOCU';
+    protected $table      = 'documentos';
+    protected $primaryKey = 'DOCU_DOCUMENTO';
+    protected $prefix     = 'DOCU';
 
     protected $casts = [
         'DOCU_IMPORTANTE' => 'array',
@@ -207,6 +211,13 @@ class MDocumento extends BaseModel
     public function TipoDocumento()
     {
         return $this->belongsTo('App\Model\System\MSystemTipoDocumento','DOCU_SYSTEM_TIPO_DOCTO');
+    }
+
+    /* Presenter */
+
+    public function presenter()
+    {
+        return new MDocumentoPresenter($this);
     }
 
 }
