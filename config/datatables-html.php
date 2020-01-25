@@ -67,6 +67,11 @@ return [
             'orderable'  => false,
             'searchable' => false,
             'class'      => 'text-center',
+        ],
+        'badges' => [
+            'orderable'  => false,
+            'searchable' => false,
+            'class'      => 'text-center',
         ]
     ]
 

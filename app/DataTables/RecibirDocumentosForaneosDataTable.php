@@ -13,7 +13,13 @@ class RecibirDocumentosForaneosDataTable extends CustomDataTable
     
     public function setSourceData()
     {
-        $this->sourceData = MDocumento::with('TipoDocumento','Detalle','AcuseRecepcion','DocumentoForaneo')->isForaneo()->siExistente()->noGuardado()->isDocumentoGeneral()->orderBy('DOCU_CREATED_AT','DESC');
+        $this->sourceData = MDocumento::with('DocumentoForaneo','AcuseRecepcion')
+                            ->join('system_tipos_documentos','DOCU_SYSTEM_TIPO_DOCTO','=','SYTD_TIPO_DOCUMENTO')
+                            ->join('detalles','DOCU_DETALLE','=','DETA_DETALLE')
+                            ->join('acuses_recepcion','DOCU_DOCUMENTO','=','ACUS_DOCUMENTO')
+                            ->join('documentos_foraneos','DOCU_DOCUMENTO','=','DOFO_DOCUMENTO_LOCAL')
+                            ->isForaneo()->siExistente()->noGuardado()->isDocumentoGeneral()
+                            ->orderBy('DOCU_DOCUMENTO','DESC');
     }
 
     public function columnsTable()
@@ -21,36 +27,38 @@ class RecibirDocumentosForaneosDataTable extends CustomDataTable
         return [
             [
                 'title'  => 'FOLIO RECEPCIÓN',
-                'render' => function($documento){
-                    return $documento->AcuseRecepcion->getNumero();
-                }
+                'data'   => 'ACUS_NUMERO',
+                'width'  => '18%',
             ],
             [
                 'title'  => 'TIPO DOCUMENTO',
+                'data'   => 'SYTD_NOMBRE',
+                'width'  => '12%',
                 'render' => function($documento){
-                    return $documento->TipoDocumento->presenter()->getBadge();
+                    return $documento->presenter()->getBadgeTipoDocumento();
                 }
             ],
             [
                 'title'  => 'NÓ. DOCUMENTO',
-                'render' => function($documento){
-                    return $documento->getNumero();
-                }
+                'data'   => 'DOCU_NUMERO_DOCUMENTO',
+                'width'  => '15%',
             ],
             [
                 'title'  => 'ASUNTO',
+                'data'   => 'DETA_DESCRIPCION',
                 'render' => function($documento){
-                    return $documento->Detalle->getDescripcion();
+                    return ellipsis($documento->DETA_DESCRIPCION,260);
                 }
             ],
             [
-                'title' => 'Recepción',
-                'render' => function($documento){
-                    return $documento->Detalle->getFechaRecepcion();
-                }
+                'title' => 'RECEPCIÓN',
+                'data'  => 'DETA_FECHA_RECEPCION',
+                'class' => 'text-center',
             ],
             [
-                'title' => 'Tránsito',
+                'title'  => 'Tránsito',
+                'config' => 'badges',
+                'data'   => false,
                 'render' => function($documento){
                     if ($documento->DocumentoForaneo->enviado() && !$documento->DocumentoForaneo->recibido())
                         return sprintf('<button type="button" class="btn btn-sm btn-success" onclick="hRecibirRecepcionForanea.recibir(%d)" title="Recibir documento"><i class="fa fa-fw fa-folder-open"></i> Recibir</button>', $documento->DocumentoForaneo->getKey());
@@ -61,7 +69,9 @@ class RecibirDocumentosForaneosDataTable extends CustomDataTable
                 }
             ],
             [
-                'title' => 'Validado',
+                'title'  => 'Validado',
+                'config' => 'badges',
+                'data'   => false,
                 'render' => function($documento){
                     if ($documento->DocumentoForaneo->validado())
                         return $documento->DocumentoForaneo->presenter()->getBadgeValidado();
@@ -72,7 +82,9 @@ class RecibirDocumentosForaneosDataTable extends CustomDataTable
                 }
             ],
             [
-                'title' => 'Recepcionado',
+                'title'  => 'Recepcionado',
+                'config' => 'badges',
+                'data'   => false,
                 'render' => function($documento){
                     if ($documento->DocumentoForaneo->recepcionado() )
                         return $documento->DocumentoForaneo->presenter()->getBadgeRecepcionado();
@@ -85,6 +97,7 @@ class RecibirDocumentosForaneosDataTable extends CustomDataTable
             [
                 'title'  => 'Opciones',
                 'config' => 'options', 
+                'data'   => false,
                 'render' => function($documento){
                     $buttons = '';
 
@@ -101,7 +114,7 @@ class RecibirDocumentosForaneosDataTable extends CustomDataTable
 
     public function getUrlAjax()
     {
-        return url('recepcion/documentos/foraneos/post-data?type=documentos');
+        return '/recepcion/documentos/foraneos/post-data?type=documentos';
     }
 
     public function getCustomOptionsParameters()

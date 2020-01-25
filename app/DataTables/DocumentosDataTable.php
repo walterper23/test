@@ -13,10 +13,12 @@ class DocumentosDataTable extends CustomDataTable
     
     public function setSourceData()
     {
-        $this->sourceData = MDocumento::join('system_tipos_documentos','DOCU_SYSTEM_TIPO_DOCTO','=','SYTD_TIPO_DOCUMENTO')
+        $this->sourceData = MDocumento::with('TipoDocumento')
+                            ->join('system_tipos_documentos','DOCU_SYSTEM_TIPO_DOCTO','=','SYTD_TIPO_DOCUMENTO')
                             ->join('detalles','DOCU_DETALLE','=','DETA_DETALLE')
-                            ->join('acuses_recepcion','ACUS_DOCUMENTO','=','DOCU_DOCUMENTO')
-                            ->isDocumentoGeneral()->siExistente()->noGuardado()->orderBy('DOCU_CREATED_AT','DESC'); // Denuncias, Documentos de denuncias
+                            ->join('acuses_recepcion','DOCU_DOCUMENTO','=','ACUS_DOCUMENTO')
+                            ->isDocumentoGeneral()->siExistente()->noGuardado()
+                            ->orderBy('DOCU_DOCUMENTO','DESC'); // Denuncias, Documentos de denuncias
     }
 
     public function columnsTable()
@@ -32,7 +34,7 @@ class DocumentosDataTable extends CustomDataTable
                 'data'   => 'SYTD_NOMBRE',
                 'width'  => '12%',
                 'render' => function($documento){
-                    return $documento->presenter()->getBadgeTipoDocumento();
+                    return $documento->TipoDocumento->presenter()->getBadge();
                 }
             ],
             [
@@ -48,15 +50,12 @@ class DocumentosDataTable extends CustomDataTable
                 }
             ],
             [
-                'title' => 'Recepción',
+                'title' => 'RECEPCIÓN',
                 'data'  => 'DETA_FECHA_RECEPCION',
                 'class' => 'text-center',
-                'render' => function($documento){
-                    return $documento->Detalle->getFechaRecepcion();
-                }
             ],
             [
-                'title'  => 'Opciones',
+                'title'  => 'OPCIONES',
                 'config' => 'options',
                 'data'   => false,
                 'render' => function($documento){
@@ -83,14 +82,14 @@ class DocumentosDataTable extends CustomDataTable
 
     public function getUrlAjax()
     {
-        return url('recepcion/documentos/post-data?type=documentos');
+        return '/recepcion/documentos/post-data?type=documentos';
     }
 
     public function getCustomOptionsParameters()
     {
         return [
             'pageLength' => 10,
-            'order' => [[ 3, 'desc' ]]
+            'order' => [[ 0, 'desc' ]]
         ];
     }
 

@@ -36,13 +36,13 @@
                         
                         <div class="row text-center px-5">
                             <div class="col-md-3 col-sm-12">
-                                {{ Html::image(config_var('Institucion.Login.Logo.Izquierdo'),'',['width'=>'65']) }}
+                                {{ Html::image(config_var('Institucion.Login.Logo.Izquierdo'),'',['width'=>'200']) }}
                             </div>
                             <div class="col-md-6 col-sm-12">
                                 <h2 class="h2 text-primary"><strong>{{ config_var('Institucion.Nombre') }}</strong></h2>
                             </div>
                             <div class="col-md-3 col-sm-12">
-                                {{ Html::image(config_var('Institucion.Login.Logo.Derecho'),'',['width'=>'245']) }}
+                                {{ Html::image(config_var('Institucion.Login.Logo.Derecho'),'',['width'=>'150']) }}
                             </div>
                         </div>
 

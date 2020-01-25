@@ -13,35 +13,38 @@ class DenunciasDataTable extends CustomDataTable
 
     public function setSourceData()
     {
-        $this->sourceData = MDocumento::with('Detalle','Denuncia','AcuseRecepcion')->isDenuncia()->siExistente()->noGuardado()->orderBy('DOCU_CREATED_AT','DESC');
+        $this->sourceData = MDocumento::join('system_tipos_documentos','DOCU_SYSTEM_TIPO_DOCTO','=','SYTD_TIPO_DOCUMENTO')
+                            ->join('detalles','DOCU_DETALLE','=','DETA_DETALLE')
+                            ->join('acuses_recepcion','ACUS_DOCUMENTO','=','DOCU_DOCUMENTO')
+                            ->isDenuncia()->siExistente()->noGuardado()
+                            ->orderBy('ACUS_NUMERO','DESC');
     }
 
-    public function columnsTable(){
+    public function columnsTable()
+    {
         return [
             [
                 'title'  => 'FOLIO RECEPCIÓN',
-                'width'   => '18%',
-                'render' => function($documento){
-                    return $documento->AcuseRecepcion->getNumero();
-                }
+                'data'   => 'ACUS_NUMERO',
+                'width'  => '18%',
             ],
             [
                 'title'  => 'ASUNTO',
+                'data'   => 'DETA_DESCRIPCION',
                 'width'  => '60%',
                 'render' => function($documento){
-                    return $documento->Detalle->presenter()->getDescripcion(260);
+                    return ellipsis($documento->DETA_DESCRIPCION,260);
                 }
             ],
             [
                 'title' => 'RECEPCIÓN',
+                'data'  => 'DETA_FECHA_RECEPCION',
                 'class' => 'text-center',
-                'render' => function($documento){
-                    return $documento->Detalle->getFechaRecepcion();
-                }
             ],
             [
-                'title'  => 'Opciones',
+                'title'  => 'OPCIONES',
                 'config' => 'options', 
+                'data'   => false,
                 'render' => function($documento){
                     $url_editar = url( sprintf('recepcion/documentos/editar-recepcion?search=%d',$documento->getKey()) );
 
@@ -51,7 +54,7 @@ class DenunciasDataTable extends CustomDataTable
 
                     $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hRecepcion.anexos(%d)" title="Ver anexos del documento"><i class="fa fa-fw fa-clipboard"></i></button>', $documento->getKey());
 
-                    $url = url( sprintf('recepcion/acuse/documento/%s',$documento->AcuseRecepcion->getNombre()) );
+                    $url = url( sprintf('recepcion/acuse/documento/%s',$documento->ACUS_NOMBRE) );
                     $buttons .= sprintf(' <a class="btn btn-sm btn-circle btn-alt-primary" href="%s" target="_blank" title="Acuse de Recepción"><i class="fa fa-fw fa-file-text"></i></a>', $url);
 
                     if( user()->can('REC.ELIMINAR.LOCAL') && $documento->recepcionado() ) {
@@ -66,7 +69,7 @@ class DenunciasDataTable extends CustomDataTable
 
     public function getUrlAjax()
     {
-        return url('recepcion/documentos/post-data?type=denuncias');
+        return '/recepcion/documentos/post-data?type=denuncias';
     }
 
     public function getCustomOptionsParameters()
