@@ -33,8 +33,35 @@ Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
 
         });
 
+        /*************************** IMJUVE ROUTES *************************************************/
+        Route::prefix('imjuve')->group(function(){
+            Route::prefix('afiliacion')->namespace('imjuve\Afiliacion')->group(function(){
+                Route::get('/',        'AfiliacionController@index');
+                Route::prefix('local')->group(function(){
+                    Route::get('/',                 'DocumentoController@local');
+                    Route::post('anexos',           'DocumentoController@localAnexos');
+                    Route::post('escaneos',         'DocumentoController@localEscaneos');
+                    Route::get('escaneos',          'DocumentoController@localArchivoEscaneo');
+                    Route::post('anexos-escaneos',  'DocumentoController@localAnexosEscaneos');
+                });
+            });
+            Route::prefix('catalogos')->namespace('imjuve\Afiliacion')->group(function(){
+                Route::get('/',        'AfiliacionController@index');
+                Route::prefix('local')->group(function(){
+                    Route::get('/',                 'DocumentoController@local');
+                    Route::post('anexos',           'DocumentoController@localAnexos');
+                    Route::post('escaneos',         'DocumentoController@localEscaneos');
+                    Route::get('escaneos',          'DocumentoController@localArchivoEscaneo');
+                    Route::post('anexos-escaneos',  'DocumentoController@localAnexosEscaneos');
+                });
+            });
+        });
+        /*************************** END IMJUVE ROUTES *********************************************/
+
+
         // Rutas libres de permiso para visualizar los documentos, sus anexos y sus escaneos
         Route::prefix('documento')->namespace('Documento')->group(function(){
+
 
             Route::prefix('local')->group(function(){
                 Route::get('/',                 'DocumentoController@local');
@@ -63,7 +90,7 @@ Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
             Route::redirect('documentos', '/recepcion/documentos/recepcionados');
             
             // Recepción de documentos locales
-            Route::prefix('documentos')->middleware('can:REC.DOCUMENTO.LOCAL')->group(function(){
+            Route::prefix('documentos')->group(function(){
 
                 Route::get('recepcionados',        'RecepcionController@index');
                 Route::get('en-captura',           'RecepcionController@documentosEnCaptura');
@@ -84,7 +111,7 @@ Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
             });
 
             // Recepción de documentos foráneos
-            Route::prefix('documentos-foraneos')->middleware('canAtLeast:REC.VER.FORANEO,REC.DOCUMENTO.FORANEO')->group(function(){
+            Route::prefix('documentos-foraneos')->group(function(){
                 Route::redirect('/',               '/recepcion/documentos-foraneos/recepcionados');
                 Route::get('recepcionados',        'RecepcionForaneaController@index');
                 Route::get('en-captura',           'RecepcionForaneaController@documentosEnCaptura');
@@ -100,7 +127,7 @@ Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
         // Panel de trabajo del personal de las direcciones y departamentos
         Route::redirect('panel', 'panel/documentos?view=all');
 
-        Route::prefix('panel')->namespace('Panel')->middleware('can:SEG.PANEL.TRABAJO')->group(function(){
+        Route::prefix('panel')->namespace('Panel')->group(function(){
             
             Route::prefix('documentos')->group(function(){
 
@@ -118,7 +145,7 @@ Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
                 });
 
                 // Documentos semaforizados
-                Route::prefix('semaforizados')->middleware('can:SEG.ADMIN.SEMAFORO')->group(function(){
+                Route::prefix('semaforizados')->group(function(){
                     Route::get('/',                'DocumentoSemaforizadoController@index');
                     Route::post('post-data',       'DocumentoSemaforizadoController@postDataTable');
                     Route::post('seguimiento',     'DocumentoSemaforizadoController@verSeguimiento');
@@ -137,7 +164,7 @@ Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
                 Route::get('/', 'CatalogoManagerController@index');
 
                 // Catálogo de anexos
-                Route::prefix('anexos')->middleware('canAtLeast:SIS.ADMIN.CATALOGOS,SIS.ADMIN.ANEXOS')->group(function(){
+                Route::prefix('anexos')->group(function(){
                     Route::get('/',                'AnexoController@index');
                     Route::post('post-data',       'AnexoController@postDataTable');
                     Route::post('nuevo',           'AnexoController@formNuevoAnexo');
@@ -146,7 +173,7 @@ Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
                 });
                 
                 // Catálogo de departamentos
-                Route::prefix('departamentos')->middleware('canAtLeast:SIS.ADMIN.CATALOGOS,SIS.ADMIN.DEPTOS')->group(function(){
+                Route::prefix('departamentos')->group(function(){
                     Route::get('/',          'DepartamentoController@index');
                     Route::post('post-data', 'DepartamentoController@postDataTable');
                     Route::post('nuevo',     'DepartamentoController@formNuevoDepartamento');
@@ -155,7 +182,7 @@ Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
                 });
                 
                 // Catálogo de direcciones
-                Route::prefix('direcciones')->middleware('canAtLeast:SIS.ADMIN.CATALOGOS,SIS.ADMIN.DIRECC')->group(function(){
+                Route::prefix('direcciones')->group(function(){
                     Route::get('/',          'DireccionController@index');
                     Route::post('post-data', 'DireccionController@postDataTable');
                     Route::post('nuevo',     'DireccionController@formNuevaDireccion');
@@ -164,7 +191,7 @@ Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
                 });
 
                 // Catálogo de puestos
-                Route::prefix('puestos')->middleware('canAtLeast:SIS.ADMIN.CATALOGOS,SIS.ADMIN.PUESTOS')->group(function(){
+                Route::prefix('puestos')->group(function(){
                     Route::get('/',          'PuestoController@index');
                     Route::post('post-data', 'PuestoController@postDataTable');
                     Route::post('nuevo',     'PuestoController@formNuevoPuesto');
@@ -185,7 +212,7 @@ Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
             });
 
             // Administración de usuarios, sus permisos y asignaciones
-            Route::prefix('usuarios')->middleware('canAtLeast:USU.ADMIN.USUARIOS,USU.ADMIN.PERMISOS.ASIG')->namespace('Usuario')->group(function(){
+            Route::prefix('usuarios')->namespace('Usuario')->group(function(){
                 Route::get('/',           'UsuarioController@index');
                 Route::post('post-data',  'UsuarioController@postDataTable');
                 Route::post('nuevo',      'UsuarioController@formNuevoUsuario');
@@ -205,7 +232,7 @@ Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
 
 
             // Administración de las configuraciones del sistema
-            Route::prefix('sistema')->middleware('can:SIS.ADMIN.CONFIG')->namespace('System')->group(function(){
+            Route::prefix('sistema')->namespace('System')->group(function(){
                 
                 // Administración del catálogo de los tipos de documentos del sistema
                 Route::prefix('tipos-documentos')->group(function(){

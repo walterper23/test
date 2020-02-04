@@ -8,7 +8,163 @@ If your sidebar menu includes icons and you would like to hide them, you can add
     <li>
         <a href="/" @if(request()->is('/')) class="active" @endif><i class="si si-home"></i>Inicio</a>
     </li>
-    @can('REC.DOCUMENTO.LOCAL')
+
+    <li>
+        <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)"><i class="fa fa-fw fa-files-o"></i>Afiliación</a>
+        <ul>
+            <li>
+                <a href="imjuve/afiliacion/">Afiliados</a>
+            </li>
+            <!--li>
+                <a href="/recepcion/documentos/en-captura">En captura</a>
+            </li-->
+            <li>
+                <a class="nav-submenu" data-toggle="nav-submenu" href="/recepcion/documentos/recepcionados?view=denuncias">Recepcionados</a>
+                <ul>
+                    <li>
+                        <a href="/recepcion/documentos/recepcionados?view=denuncias">Denuncias</a>
+                    </li>
+                    <li>
+                        <a href="/recepcion/documentos/recepcionados?view=documentos-denuncias">Documentos de denuncias</a>
+                    </li>
+                    <li>
+                        <a href="/recepcion/documentos/recepcionados?view=documentos">Documentos</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a class="nav-submenu" data-toggle="nav-submenu" href="/recepcion/documentos/foraneos?view=denuncias">Recibir recepciones foráneas</a>
+                <ul>
+                    <li>
+                        <a href="/recepcion/documentos/foraneos?view=denuncias">Denuncias</a>
+                    </li>
+                    <li>
+                        <a href="/recepcion/documentos/foraneos?view=documentos-denuncias">Documentos de denuncias</a>
+                    </li>
+                    <li>
+                        <a href="/recepcion/documentos/foraneos?view=documentos">Documentos</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </li>    
+    <li>
+        <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)"><i class="fa fa-fw fa-files-o"></i>Eventos</a>
+        <ul>
+            <li>
+                <a href="imjuve/afiliacion/">Listado de eventos</a>
+            </li>
+            <!--li>
+                <a href="/recepcion/documentos/en-captura">En captura</a>
+            </li-->
+            <li>
+                <a class="nav-submenu" data-toggle="nav-submenu" href="/recepcion/documentos/recepcionados?view=denuncias">Recepcionados</a>
+                <ul>
+                    <li>
+                        <a href="/recepcion/documentos/recepcionados?view=denuncias">Denuncias</a>
+                    </li>
+                    <li>
+                        <a href="/recepcion/documentos/recepcionados?view=documentos-denuncias">Documentos de denuncias</a>
+                    </li>
+                    <li>
+                        <a href="/recepcion/documentos/recepcionados?view=documentos">Documentos</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a class="nav-submenu" data-toggle="nav-submenu" href="/recepcion/documentos/foraneos?view=denuncias">Recibir recepciones foráneas</a>
+                <ul>
+                    <li>
+                        <a href="/recepcion/documentos/foraneos?view=denuncias">Denuncias</a>
+                    </li>
+                    <li>
+                        <a href="/recepcion/documentos/foraneos?view=documentos-denuncias">Documentos de denuncias</a>
+                    </li>
+                    <li>
+                        <a href="/recepcion/documentos/foraneos?view=documentos">Documentos</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li>
+        <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)"><i class="fa fa-fw fa-files-o"></i>Instituciones</a>
+        <ul>
+            <li>
+                <a href="imjuve/afiliacion/">Afiliados</a>
+            </li>
+            <!--li>
+                <a href="/recepcion/documentos/en-captura">En captura</a>
+            </li-->
+            <li>
+                <a class="nav-submenu" data-toggle="nav-submenu" href="/recepcion/documentos/recepcionados?view=denuncias">Recepcionados</a>
+                <ul>
+                    <li>
+                        <a href="/recepcion/documentos/recepcionados?view=denuncias">Denuncias</a>
+                    </li>
+                    <li>
+                        <a href="/recepcion/documentos/recepcionados?view=documentos-denuncias">Documentos de denuncias</a>
+                    </li>
+                    <li>
+                        <a href="/recepcion/documentos/recepcionados?view=documentos">Documentos</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a class="nav-submenu" data-toggle="nav-submenu" href="/recepcion/documentos/foraneos?view=denuncias">Recibir recepciones foráneas</a>
+                <ul>
+                    <li>
+                        <a href="/recepcion/documentos/foraneos?view=denuncias">Denuncias</a>
+                    </li>
+                    <li>
+                        <a href="/recepcion/documentos/foraneos?view=documentos-denuncias">Documentos de denuncias</a>
+                    </li>
+                    <li>
+                        <a href="/recepcion/documentos/foraneos?view=documentos">Documentos</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li>
+        <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)"><i class="fa fa-fw fa-files-o"></i>Catalogos</a>
+        <ul>
+            <li>
+                <a href="/afiliacion/">Actividades</a>
+            </li>
+            <!--li>
+                <a href="/recepcion/documentos/en-captura">En captura</a>
+            </li-->
+            <li>
+                <a class="nav-submenu" data-toggle="nav-submenu" href="/recepcion/documentos/recepcionados?view=denuncias">Recepcionados</a>
+                <ul>
+                    <li>
+                        <a href="/recepcion/documentos/recepcionados?view=denuncias">Denuncias</a>
+                    </li>
+                    <li>
+                        <a href="/recepcion/documentos/recepcionados?view=documentos-denuncias">Documentos de denuncias</a>
+                    </li>
+                    <li>
+                        <a href="/recepcion/documentos/recepcionados?view=documentos">Documentos</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a class="nav-submenu" data-toggle="nav-submenu" href="/recepcion/documentos/foraneos?view=denuncias">Recibir recepciones foráneas</a>
+                <ul>
+                    <li>
+                        <a href="/recepcion/documentos/foraneos?view=denuncias">Denuncias</a>
+                    </li>
+                    <li>
+                        <a href="/recepcion/documentos/foraneos?view=documentos-denuncias">Documentos de denuncias</a>
+                    </li>
+                    <li>
+                        <a href="/recepcion/documentos/foraneos?view=documentos">Documentos</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </li>
     <li>
         <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)"><i class="fa fa-fw fa-files-o"></i>Recepción</a>
         <ul>
@@ -32,7 +188,6 @@ If your sidebar menu includes icons and you would like to hide them, you can add
                     </li>
                 </ul>
             </li>
-            @can('REC.RECIBIR.FORANEO')
             <li>
                 <a class="nav-submenu" data-toggle="nav-submenu" href="/recepcion/documentos/foraneos?view=denuncias">Recibir recepciones foráneas</a>
                 <ul>
@@ -47,23 +202,17 @@ If your sidebar menu includes icons and you would like to hide them, you can add
                     </li>
                 </ul>
             </li>
-            @endcan
         </ul>
     </li>
-    @endcan
-    @if (user()->canAtLeast('REC.DOCUMENTO.FORANEO','REC.VER.FORANEO') )
-    <li>
+    <!--li>
         <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)"><i class="fa fa-fw fa-files-o"></i>Recepción foránea</a>
         <ul>
-            @can('REC.DOCUMENTO.FORANEO')
             <li>
                 <a href="/recepcion/documentos-foraneos/nueva-recepcion">Nueva recepci&oacute;n</a>
             </li>
-            @endcan
             <!--li>
                 <a href="/recepcion/documentos-foraneos/en-captura">En captura</a>
-            </li-->
-            @if( user()->canAtLeast('REC.DOCUMENTO.FORANEO','REC.VER.FORANEO') )
+            </li>
             <li>
                 <a class="nav-submenu" data-toggle="nav-submenu" href="/recepcion/documentos-foraneos/recepcionados">Recepcionados</a>
                 <ul>
@@ -78,12 +227,9 @@ If your sidebar menu includes icons and you would like to hide them, you can add
                     </li>
                 </ul>
             </li>
-            @endif
         </ul>
-    </li>
-    @endcan
-    @can('SEG.PANEL.TRABAJO')
-    <li>
+    </li-->
+    <!--li>
         <a class="nav-submenu" data-toggle="nav-submenu" href="javascript:void(0)"><i class="fa fa-server"></i>Panel de trabajo</a>
         <ul>
             <li>
@@ -109,12 +255,9 @@ If your sidebar menu includes icons and you would like to hide them, you can add
             </li>
         </ul>
     </li>
-    @endcan
-    @if( user()->canAtLeast('SEG.PANEL.TRABAJO','SEG.ADMIN.SEMAFORO'))
         <li>
             <a href="/panel/documentos/semaforizados"><i class="fa fa-warning"></i>Semaforización</a>
-        </li>
-    @endif
+        </li-->
     {{--
     @can('REPO.GENERAR.REPORTE')
     <li>
@@ -208,6 +351,3 @@ If your sidebar menu includes icons and you would like to hide them, you can add
         </ul>
     </li>
     @endif
-    <li>
-        <a href="{{ url()->previous() }}"><i class="si si-action-undo"></i>Regresar</a>
-    </li>
