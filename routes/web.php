@@ -27,7 +27,7 @@ Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
                     Route::post('manager', 'PerfilController@manager');
                 });
                 /*Route::prefix('preferencias')->group(function(){
-                    Route::get('/', 'PreferenciasController@index');
+                     aaaa Route::get('/', 'PreferenciasController@index');
                 });*/
             });
 
