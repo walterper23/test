@@ -45,6 +45,18 @@ Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
                     Route::post('anexos-escaneos',  'DocumentoController@localAnexosEscaneos');
                 });
             });
+                Route::prefix('actividades')->namespace('imjuve\Actividades')->group(function(){
+                    Route::get('/',        'actividadController@index');
+                    Route::post('/crear', 'actividadController@nuevoUsuario');
+                    Route::prefix('local')->group(function(){
+                        Route::get('/',                 'DocumentoController@local');
+                        Route::post('anexos',           'DocumentoController@localAnexos');
+                        Route::post('escaneos',         'DocumentoController@localEscaneos');
+                        Route::get('escaneos',          'DocumentoController@localArchivoEscaneo');
+                        Route::post('anexos-escaneos',  'DocumentoController@localAnexosEscaneos');
+                    });   
+                });     
+
             Route::prefix('catalogos')->namespace('imjuve\Afiliacion')->group(function(){
                 Route::get('/',        'AfiliacionController@index');
                 Route::prefix('local')->group(function(){
