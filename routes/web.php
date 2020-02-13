@@ -40,7 +40,6 @@ Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
                 Route::post('nuevo',    'AfiliacionController@formNuevaAfiliacion');
                 Route::post('manager',  'AfiliacionController@manager');
 
-             
             });
             Route::prefix('catalogos')->namespace('imjuve\Afiliacion')->group(function(){
                 Route::get('/',        'AfiliacionController@index');

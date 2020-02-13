@@ -9,9 +9,11 @@ use DB;
 use App\Http\Controllers\BaseController;
 
 /* Models */
+
 //use App\Model\MDocumento;
 use App\Model\MUsuario;
 //use App\Model\System\MSystemTipoDocumento;
+
 
 /**
  * Controlador para la página principal del usuario

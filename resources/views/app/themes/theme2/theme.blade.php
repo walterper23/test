@@ -126,7 +126,7 @@
                                 <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-badge"></i><span class="sidebar-mini-hide">Afiliaciones</span></a>
                                 <ul>
                                     <li>
-                                        <a href="imjuve/afiliacion/">Afiliados</a>
+                                        <a href="/imjuve/afiliacion/">Afiliados</a>
                                     
                                     </li>
                                     
@@ -629,6 +629,7 @@
                                 <button type="button" class="btn btn-circle btn-dual-secondary d-lg-none align-v-r" data-toggle="layout" data-action="sidebar_close">
                                     <i class="fa fa-times text-danger"></i>
                                 </button>
+
                                 <div class="content-header-item">
                                     <a class="link-effect font-w700" href="/">
                                         <span class="font-size-xl text-dual-primary-dark">

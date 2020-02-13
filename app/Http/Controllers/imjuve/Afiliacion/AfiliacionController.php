@@ -47,6 +47,7 @@ class AfiliacionController extends BaseController
         $data['form_url'] = url('imjuve/afiliacion/nuevo');
 
         return view('imjuve.Afiliacion.IndexAfiliacion')->with($data);
+
     }
 
     /**
