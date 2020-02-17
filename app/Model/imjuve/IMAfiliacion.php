@@ -9,7 +9,7 @@ use App\Model\BaseModel;
 
 class IMAfiliacion extends BaseModel
 {
-    protected $table        = 'imjuve_afiliados';
+    protected $table        = 'm_afiliados';
     protected $primaryKey   = 'AFIL_ID';
     protected $prefix       = 'AFIL';
 

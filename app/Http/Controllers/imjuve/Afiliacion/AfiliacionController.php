@@ -14,12 +14,19 @@ use App\DataTables\imjuve\AfiliacionDataTable;
 use App\Model\imjuve\IMAfiliacion;
 use App\Model\MUsuarioDetalle;
 
+/* Catalogos */
+use App\Model\imjuve\IMGenero;
+use App\Model\imjuve\IMEscolaridad;
+use App\Model\imjuve\IMEstadoCivil;
+use App\Model\imjuve\IMOcupacion;
+use App\Model\imjuve\IMNacionalidad;
+use App\Model\imjuve\IMEntidad;
 /**
  * Controlador para la gestión de los usuarios del sistema
  */
 class AfiliacionController extends BaseController
 {
-    private $form_id = 'form-usuario';
+    private $form_id = 'form-afiliacion';
     
     /**
      * Crear nueva instancia del controlador
@@ -37,9 +44,10 @@ class AfiliacionController extends BaseController
     {
         $data['table']    = $dataTables;
         $data['form_id']  = $this->form_id;
-        $data['form_url'] = url('configuracion/usuarios/nuevo');
+        $data['form_url'] = url('imjuve/afiliacion/nuevo');
 
-        return view('imjuve.indexAfiliacion')->with($data);
+        return view('imjuve.Afiliacion.IndexAfiliacion')->with($data);
+
     }
 
     /**
@@ -83,16 +91,22 @@ class AfiliacionController extends BaseController
     }
 
     /**
-     * Método para retornar el formulario para la creación de un nuevo usuario
+     * Método para retornar el formulario para la creación de un nuevo afiliado
      */
-    public function formNuevoUsuario()
+    public function formNuevaAfiliacion()
     {
-        $data['title']         = 'Nuevo usuario';
+        $data['title']         = 'Nueva afiliación';
         $data['form_id']       = $this->form_id;
-        $data['url_send_form'] = url('configuracion/usuarios/manager');
+        $data['url_send_form'] = url('imjuve/afiliacion/manager');
         $data['action']        = 1;
-        
-        return view('Configuracion.Usuario.formNuevoUsuario')->with($data);
+        $data['generos']            = IMGenero::getSelect();
+        $data['escolaridades']      = IMEscolaridad::getSelect();
+        $data['estados_civiles']    = IMEstadoCivil::getSelect();
+        $data['ocupaciones']        = IMOcupacion::getSelect();
+        $data['nacionalidades']     = IMNacionalidad::getSelect();
+        $data['entidades']          = IMEntidad::getSelect();
+
+        return view('imjuve.Afiliacion.formNuevaAfiliacion')->with($data);
     }
 
     /**

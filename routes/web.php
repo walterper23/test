@@ -37,13 +37,9 @@ Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
         Route::prefix('imjuve')->group(function(){
             Route::prefix('afiliacion')->namespace('imjuve\Afiliacion')->group(function(){
                 Route::get('/',        'AfiliacionController@index');
-                Route::prefix('local')->group(function(){
-                    Route::get('/',                 'DocumentoController@local');
-                    Route::post('anexos',           'DocumentoController@localAnexos');
-                    Route::post('escaneos',         'DocumentoController@localEscaneos');
-                    Route::get('escaneos',          'DocumentoController@localArchivoEscaneo');
-                    Route::post('anexos-escaneos',  'DocumentoController@localAnexosEscaneos');
-                });
+                Route::post('nuevo',    'AfiliacionController@formNuevaAfiliacion');
+                Route::post('manager',  'AfiliacionController@manager');
+
             });
                 Route::prefix('actividades')->namespace('imjuve\Actividades')->group(function(){
                     Route::get('/',        'actividadController@index');
