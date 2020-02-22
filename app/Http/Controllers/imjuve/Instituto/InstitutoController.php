@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\imjuve\Afiliacion;
+namespace App\Http\Controllers\imjuve\Instituto;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\ManagerUsuarioRequest;
@@ -8,25 +8,18 @@ use Exception;
 
 /* Controllers */
 use App\Http\Controllers\BaseController;
-use App\DataTables\imjuve\AfiliacionDataTable;
+use App\DataTables\imjuve\InstitutoDataTable;
 
 /* Models */
-use App\Model\imjuve\IMAfiliacion;
-use App\Model\MUsuarioDetalle;
+use App\Model\imjuve\IMInstituto;
 
-/* Catalogos */
-use App\Model\imjuve\IMGenero;
-use App\Model\imjuve\IMEscolaridad;
-use App\Model\imjuve\IMEstadoCivil;
-use App\Model\imjuve\IMOcupacion;
-use App\Model\imjuve\IMNacionalidad;
-use App\Model\imjuve\IMEntidad;
+
 /**
  * Controlador para la gestión de los usuarios del sistema
  */
-class AfiliacionController extends BaseController
+class InstitutoController extends BaseController
 {
-    private $form_id = 'form-afiliacion';
+    private $form_id = 'form-instituto';
     
     /**
      * Crear nueva instancia del controlador
@@ -34,20 +27,19 @@ class AfiliacionController extends BaseController
     public function __construct()
     {
         parent::__construct();
-        $this->setLog('AfiliacionController.log');
+        $this->setLog('InstitutoController.log');
     }
 
     /**
      * Método para retornar la página principal de la administración de usuarios
      */
-    public function index(AfiliacionDataTable $dataTables)
+    public function index(InstitutoDataTable $dataTables)
     {
         $data['table']    = $dataTables;
         $data['form_id']  = $this->form_id;
-        $data['form_url'] = url('imjuve/afiliacion/nuevo');
+        $data['form_url'] = url('imjuve/instituto/nuevo');
 
-        return view('imjuve.Afiliacion.IndexAfiliacion')->with($data);
-
+        return view('imjuve.Instituto.indexinstituto')->with($data);
     }
 
     /**
@@ -85,31 +77,22 @@ class AfiliacionController extends BaseController
     /**
      * Método para devolver los registros que llenarán la tabla de la página principal
      */
-    public function postDataTable(AfiliacionDataTable $dataTables)
+    public function postDataTable(InstitutoDataTable $dataTables)
     {
         return $dataTables->getData();
     }
 
     /**
-     * Método para retornar el formulario para la creación de un nuevo afiliado
+     * Método para retornar el formulario para la creación de un nuevo usuario
      */
-    public function formNuevaAfiliacion()
+    public function formNuevoInstituto()
     {
-        $data['title']         = 'Nueva afiliación';
+        $data['title']         = 'Nuevo Instituto';
         $data['form_id']       = $this->form_id;
-        $data['url_send_form'] = url('imjuve/afiliacion/manager');/*
-        esta madre da error, por eso no te permitia mostrar tu metodo, nunca llegaba a tu metodo porque mi clase
-        interceptaba el try catch interno de lara
-
+        $data['url_send_form'] = url('imjuve/instituto/manager');
         $data['action']        = 1;
-        $data['generos']            = IMGenero::getSelect();
-        $data['escolaridades']      = IMEscolaridad::getSelect();
-        $data['estados_civiles']    = IMEstadoCivil::getSelect();
-        $data['ocupaciones']        = IMOcupacion::getSelect();
-        $data['nacionalidades']     = IMNacionalidad::getSelect();
-        $data['entidades']          = IMEntidad::getSelect();*/
-
-        return view('imjuve.Afiliacion.formNuevaAfiliacion')->with($data);
+        
+        return view('imjuve.Instituto.formNuevoInstituto')->with($data);
     }
 
     /**
@@ -129,9 +112,6 @@ class AfiliacionController extends BaseController
             $usuario->USUA_AVATAR_FULL  = $usuario->getAvatarSmall();
 
             $detalle = new MUsuarioDetalle;
-            /* esta clase llama MusaruiDetalle esa en un tercer nivel, cuando tengas un error en el modelo 
-            probablemente laravel te diga que ese modelo no lo encuentra, pero no es que no lo encuentre
-            es que si lo hace pero no puede llegar hasta el tercer nivel y te arroja el primer error* */
             $detalle->USDE_NO_TRABAJADOR = $request->notrabajador;
             $detalle->USDE_NOMBRES       = $request->nombres;
             $detalle->USDE_APELLIDOS     = $request->apellidos;

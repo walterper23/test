@@ -35,12 +35,25 @@ Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
 
         /*************************** IMJUVE ROUTES *************************************************/
         Route::prefix('imjuve')->group(function(){
+
+            Route::prefix('instituto')->namespace('imjuve\Instituto')->group(function(){
+                Route::get('/',        'InstitutoController@index');
+                Route::post('nuevo',    'InstitutoController@formNuevoInstituto');
+                Route::post('manager',  'InstitutoController@manager');
+
+            });
+
+
             Route::prefix('afiliacion')->namespace('imjuve\Afiliacion')->group(function(){
                 Route::get('/',        'AfiliacionController@index');
                 Route::post('nuevo',    'AfiliacionController@formNuevaAfiliacion');
                 Route::post('manager',  'AfiliacionController@manager');
 
             });
+
+
+            
+
             Route::prefix('catalogos')->namespace('imjuve\Afiliacion')->group(function(){
                 Route::get('/',        'AfiliacionController@index');
                 Route::prefix('local')->group(function(){
@@ -53,6 +66,82 @@ Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
             });
         });
         /*************************** END IMJUVE ROUTES *********************************************/
+
+        Route::prefix('configuracion')->namespace('Configuracion')->group(function(){
+            
+            Route::prefix('catalogos')->namespace('Catalogo')->group(function(){
+                
+                Route::get('/', 'CatalogoManagerController@index');
+
+                // Catálogo de anexos
+                Route::prefix('anexos')->group(function(){
+                    Route::get('/',                'AnexoController@index');
+                    Route::post('post-data',       'AnexoController@postDataTable');
+                    Route::post('nuevo',           'AnexoController@formNuevoAnexo');
+                    Route::post('editar',          'AnexoController@formEditarAnexo');
+                    Route::post('manager',         'AnexoController@manager');
+                });
+                
+                // Catálogo de departamentos
+                Route::prefix('departamentos')->group(function(){
+                    Route::get('/',          'DepartamentoController@index');
+                    Route::post('post-data', 'DepartamentoController@postDataTable');
+                    Route::post('nuevo',     'DepartamentoController@formNuevoDepartamento');
+                    Route::post('editar',    'DepartamentoController@formEditarDepartamento');
+                    Route::post('manager',   'DepartamentoController@manager');
+                });
+                
+                // Catálogo de direcciones
+                Route::prefix('direcciones')->group(function(){
+                    Route::get('/',          'DireccionController@index');
+                    Route::post('post-data', 'DireccionController@postDataTable');
+                    Route::post('nuevo',     'DireccionController@formNuevaDireccion');
+                    Route::post('editar',    'DireccionController@formEditarDireccion');
+                    Route::post('manager',   'DireccionController@manager');
+                });
+
+                // Catálogo de puestos
+                Route::prefix('puestos')->group(function(){
+                    Route::get('/',          'PuestoController@index');
+                    Route::post('post-data', 'PuestoController@postDataTable');
+                    Route::post('nuevo',     'PuestoController@formNuevoPuesto');
+                    Route::post('editar',    'PuestoController@formEditarPuesto');
+                    Route::post('manager',   'PuestoController@manager');
+                });
+
+                // Catálogo de estados de documentos
+                // Route::prefix('estados-documentos')->middleware('canAtLeast:SIS.ADMIN.CATALOGOS,SIS.ADMIN.ESTA.DOC')->group(function(){
+                Route::prefix('estados-documentos')->middleware('canAtLeast:SIS.ADMIN.CATALOGOS,SIS.ADMIN.ESTA.DOC')->group(function(){
+                    Route::get('/',          'EstadoDocumentoController@index');
+                    Route::post('post-data', 'EstadoDocumentoController@postDataTable');
+                    Route::post('nuevo',     'EstadoDocumentoController@formNuevoEstadoDocumento');
+                    Route::post('editar',    'EstadoDocumentoController@formEditarEstadoDocumento');
+                    Route::post('manager',   'EstadoDocumentoController@manager');
+                });
+
+            });
+
+            // Administración de usuarios, sus permisos y asignaciones
+            Route::prefix('usuarios')->namespace('Usuario')->group(function(){
+                Route::get('/',           'UsuarioController@index');
+                Route::post('post-data',  'UsuarioController@postDataTable');
+                Route::post('nuevo',      'UsuarioController@formNuevoUsuario');
+                Route::post('editar',     'UsuarioController@formEditarUsuario');
+                Route::post('password',   'UsuarioController@formPassword');
+                Route::post('manager',    'UsuarioController@manager');
+                
+                Route::prefix('permisos-asignaciones')->middleware('can:USU.ADMIN.PERMISOS.ASIG')->group(function(){
+                    Route::get('/',           'PermisoAsignacionController@index');
+                    Route::post('post-data',  'PermisoAsignacionController@postDataTable');
+                    Route::get('nuevo',       'PermisoAsignacionController@formUsuario');
+                    Route::get('editar',      'PermisoAsignacionController@editarUsuario');
+                    Route::post('manager',    'PermisoAsignacionController@manager');
+                });
+
+            });
+
+
+
 
 
         // Rutas libres de permiso para visualizar los documentos, sus anexos y sus escaneos
@@ -153,79 +242,7 @@ Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
         // Configuración de catálogos, usuarios y sistema
         Route::redirect('configuracion','configuracion/catalogos');
 
-        Route::prefix('configuracion')->namespace('Configuracion')->group(function(){
-            
-            Route::prefix('catalogos')->namespace('Catalogo')->group(function(){
-                
-                Route::get('/', 'CatalogoManagerController@index');
-
-                // Catálogo de anexos
-                Route::prefix('anexos')->group(function(){
-                    Route::get('/',                'AnexoController@index');
-                    Route::post('post-data',       'AnexoController@postDataTable');
-                    Route::post('nuevo',           'AnexoController@formNuevoAnexo');
-                    Route::post('editar',          'AnexoController@formEditarAnexo');
-                    Route::post('manager',         'AnexoController@manager');
-                });
-                
-                // Catálogo de departamentos
-                Route::prefix('departamentos')->group(function(){
-                    Route::get('/',          'DepartamentoController@index');
-                    Route::post('post-data', 'DepartamentoController@postDataTable');
-                    Route::post('nuevo',     'DepartamentoController@formNuevoDepartamento');
-                    Route::post('editar',    'DepartamentoController@formEditarDepartamento');
-                    Route::post('manager',   'DepartamentoController@manager');
-                });
-                
-                // Catálogo de direcciones
-                Route::prefix('direcciones')->group(function(){
-                    Route::get('/',          'DireccionController@index');
-                    Route::post('post-data', 'DireccionController@postDataTable');
-                    Route::post('nuevo',     'DireccionController@formNuevaDireccion');
-                    Route::post('editar',    'DireccionController@formEditarDireccion');
-                    Route::post('manager',   'DireccionController@manager');
-                });
-
-                // Catálogo de puestos
-                Route::prefix('puestos')->group(function(){
-                    Route::get('/',          'PuestoController@index');
-                    Route::post('post-data', 'PuestoController@postDataTable');
-                    Route::post('nuevo',     'PuestoController@formNuevoPuesto');
-                    Route::post('editar',    'PuestoController@formEditarPuesto');
-                    Route::post('manager',   'PuestoController@manager');
-                });
-
-                // Catálogo de estados de documentos
-                // Route::prefix('estados-documentos')->middleware('canAtLeast:SIS.ADMIN.CATALOGOS,SIS.ADMIN.ESTA.DOC')->group(function(){
-                Route::prefix('estados-documentos')->middleware('canAtLeast:SIS.ADMIN.CATALOGOS,SIS.ADMIN.ESTA.DOC')->group(function(){
-                    Route::get('/',          'EstadoDocumentoController@index');
-                    Route::post('post-data', 'EstadoDocumentoController@postDataTable');
-                    Route::post('nuevo',     'EstadoDocumentoController@formNuevoEstadoDocumento');
-                    Route::post('editar',    'EstadoDocumentoController@formEditarEstadoDocumento');
-                    Route::post('manager',   'EstadoDocumentoController@manager');
-                });
-
-            });
-
-            // Administración de usuarios, sus permisos y asignaciones
-            Route::prefix('usuarios')->namespace('Usuario')->group(function(){
-                Route::get('/',           'UsuarioController@index');
-                Route::post('post-data',  'UsuarioController@postDataTable');
-                Route::post('nuevo',      'UsuarioController@formNuevoUsuario');
-                Route::post('editar',     'UsuarioController@formEditarUsuario');
-                Route::post('password',   'UsuarioController@formPassword');
-                Route::post('manager',    'UsuarioController@manager');
-                
-                Route::prefix('permisos-asignaciones')->middleware('can:USU.ADMIN.PERMISOS.ASIG')->group(function(){
-                    Route::get('/',           'PermisoAsignacionController@index');
-                    Route::post('post-data',  'PermisoAsignacionController@postDataTable');
-                    Route::get('nuevo',       'PermisoAsignacionController@formUsuario');
-                    Route::get('editar',      'PermisoAsignacionController@editarUsuario');
-                    Route::post('manager',    'PermisoAsignacionController@manager');
-                });
-
-            });
-
+        
 
             // Administración de las configuraciones del sistema
             Route::prefix('sistema')->namespace('System')->group(function(){
