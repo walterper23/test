@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\imjuve\Afiliacion;
 
 use Illuminate\Http\Request;
-use App\Http\Requests\ManagerUsuarioRequest;
+use App\Http\Requests\AfiliacionRequest;
 use DB;
 use Exception;
 
@@ -21,6 +21,8 @@ use App\Model\imjuve\IMEstadoCivil;
 use App\Model\imjuve\IMOcupacion;
 use App\Model\imjuve\IMNacionalidad;
 use App\Model\imjuve\IMEntidad;
+use App\Model\imjuve\IMVialidades;
+use App\Model\imjuve\IMDireccion;
 /**
  * Controlador para la gestión de los usuarios del sistema
  */
@@ -52,11 +54,11 @@ class AfiliacionController extends BaseController
     /**
      * Método para administrar las peticiones que recibe el controlador
      */
-    public function manager(ManagerUsuarioRequest $request)
+    public function manager(AfiliacionRequest $request)
     {
         switch ($request->action) {
             case 1: // Nuevo
-                $response = $this->nuevoUsuario( $request );
+                $response = $this->nuevoAfiliado( $request );
                 break;
             case 2: // Editar
                 $response = $this->editarUsuario( $request );
@@ -104,6 +106,7 @@ class AfiliacionController extends BaseController
         $data['ocupaciones']        = IMOcupacion::getSelect();
         $data['nacionalidades']     = IMNacionalidad::getSelect();
         $data['entidades']          = IMEntidad::getSelect();
+        $data['vialidades']          = IMVialidades::getSelect();
 
         return view('imjuve.Afiliacion.formNuevaAfiliacion')->with($data);
     }
@@ -111,23 +114,27 @@ class AfiliacionController extends BaseController
     /**
      * Método para guardar un nuevo usuario
      */
-    public function nuevoUsuario( $request )
+    public function nuevoAfiliado( $request )
     {
         try {
 
             DB::beginTransaction();
-            
-            $usuario = new MUsuario;
-            $usuario->USUA_USERNAME     = $request->usuario;
-            $usuario->USUA_PASSWORD     = bcrypt($request->password);
-            $usuario->USUA_DESCRIPCION  = $request->descripcion;
-            $usuario->USUA_AVATAR_SMALL = $usuario->getAvatarDefault($request->genero);
-            $usuario->USUA_AVATAR_FULL  = $usuario->getAvatarSmall();
+            dd($request->all());
 
-            $detalle = new MUsuarioDetalle;
-            /* esta clase llama MusaruiDetalle esa en un tercer nivel, cuando tengas un error en el modelo 
-            probablemente laravel te diga que ese modelo no lo encuentra, pero no es que no lo encuentre
-            es que si lo hace pero no puede llegar hasta el tercer nivel y te arroja el primer error* */
+            $afil = new IMAfiliacion();
+            $afil->AFIL_NOMBRES     = $request->usuario;
+            $afil->AFIL_PATERNO     = $request->usuario;
+            $afil->AFIL_MATERNO     = $request->usuario;
+            $afil->AFIL_FECHA_NACIMIENTO     = $request->usuario;
+            $afil->AFIL_GENERO_ID     = $request->usuario;
+            $afil->AFIL_ESCO_ID     = $request->usuario;
+            $afil->AFIL_ESCI_ID     = $request->usuario;
+            $afil->AFIL_OCUP_ID     = $request->usuario;
+            $afil->AFIL_CORREO     = $request->usuario;
+            $afil->AFIL_TELEFONO     = $request->usuario;
+            $afil->save();
+
+            $detalle = new IMDireccion();
             $detalle->USDE_NO_TRABAJADOR = $request->notrabajador;
             $detalle->USDE_NOMBRES       = $request->nombres;
             $detalle->USDE_APELLIDOS     = $request->apellidos;
@@ -136,9 +143,9 @@ class AfiliacionController extends BaseController
             $detalle->USDE_TELEFONO      = $request->telefono;
             $detalle->save();
 
-            $usuario->USUA_DETALLE = $detalle->getKey();
-            
-            $usuario->save();
+            $afil->USUA_DETALLE = $detalle->getKey();
+
+            $detalle->save();
 
             DB::commit();
 
