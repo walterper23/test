@@ -69,7 +69,7 @@ Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
 
             Route::prefix('utils')->namespace('imjuve\Utils')->group(function(){
                 Route::post('municipios',    'UtilController@getMunicipios');
-                Route::post('manager',  'AfiliacionController@manager');
+                Route::post('localidades',  'UtilController@getLocalidades');
 
             });
         });
