@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\imjuve\Afiliacion;
+namespace App\Http\Controllers\imjuve\Utils;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\ManagerUsuarioRequest;
@@ -15,16 +15,14 @@ use App\Model\imjuve\IMAfiliacion;
 use App\Model\MUsuarioDetalle;
 
 /* Catalogos */
-use App\Model\imjuve\IMGenero;
-use App\Model\imjuve\IMEscolaridad;
-use App\Model\imjuve\IMEstadoCivil;
-use App\Model\imjuve\IMOcupacion;
 use App\Model\imjuve\IMNacionalidad;
 use App\Model\imjuve\IMEntidad;
+use App\Model\imjuve\IMMunicipio;
+use App\Model\imjuve\IMLocalidad;
 /**
  * Controlador para la gestión de los usuarios del sistema
  */
-class AfiliacionController extends BaseController
+class UtilController extends BaseController
 {
     private $form_id = 'form-afiliacion';
     
@@ -38,6 +36,18 @@ class AfiliacionController extends BaseController
     }
 
     /**
+     * @autor cp
+     * @descrip Retorna un array para utilizar en un select de municipios
+     * @date 27/02/2020
+     * @version 1.0
+     * @param Request $request
+     * @return mixed
+     */
+    public function getMunicipios(Request $request){
+        $entidad = ($request->exists('entidad')?$request->entidad:null);
+        return IMMunicipio::getSelectDepend($entidad)->pluck('MUNI_ENTI_KEY','MUNI_NOMBRE');
+    }
+    /**
      * Método para retornar la página principal de la administración de usuarios
      */
     public function index(AfiliacionDataTable $dataTables)
@@ -48,6 +58,7 @@ class AfiliacionController extends BaseController
 
         return view('imjuve.Afiliacion.IndexAfiliacion')->with($data);
     }
+
 
     /**
      * Método para administrar las peticiones que recibe el controlador

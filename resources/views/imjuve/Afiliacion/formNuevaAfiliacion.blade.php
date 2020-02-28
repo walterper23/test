@@ -3,6 +3,11 @@
 @section('title')<i class="fa fa-fw fa-user-plus"></i> {!! $title !!}@endsection
 
 @section('content')
+<style>
+    .maxwidth{
+        width: 100%!important;
+    }
+</style>
 {{ Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id,'files'=>true]) }}
     {{ Form::hidden('action',$action) }}
     <div class="row">
@@ -18,13 +23,15 @@
                     {!! Field::select('genero','',['label'=>'Género','required'],$generos) !!}
                     {!! Field::datepicker('nacimiento',date('Y-m-d'),['label'=>'F. Nacimiento','required','placeholder'=>date('Y-m-d'),'popover'=>['F. Nacimiento','Introduzca la fecha de nacimiento del afiliado']]) !!}
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-7">
+                    {!! Field::select('escolaridad','',['label'=>'Escolaridad','class'=>'js-select2 maxwidth',],$escolaridades) !!}
+                    {!! Field::select('nacionalidad','',['label'=>'Nacionalidad','class'=>'js-select2 maxwidth'],$nacionalidades) !!}
+                </div>
+                <div class="col-md-5">
+                    {!! Field::select('ecivil','',['label'=>'E. Civil','class'=>'js-select2 maxwidth'],$estados_civiles) !!}
+                    {!! Field::select('ocupacion','',['label'=>'Ocupación','class'=>'js-select2 maxwidth'],$ocupaciones) !!}
                 </div>
                 <div class="col-md-12">
-                    {!! Field::select('escolaridad','',['label'=>'Escolaridad'],$escolaridades) !!}
-                    {!! Field::select('ecivil','',['label'=>'Estado Civil'],$estados_civiles) !!}
-                    {!! Field::select('ocupacion','',['label'=>'Ocupación'],$ocupaciones) !!}
-                    {!! Field::select('nacionalidad','',['label'=>'Nacionalidad'],$nacionalidades) !!}
                 </div>
             </div>
         </div>
@@ -33,6 +40,29 @@
                 <h3 class="block-title">Dirección y contacto</h3>
             </div>
             <div class="block-content row">
+                <div class="col-md-6 form-group row">
+                    <label for="cp" class="col-md-5 col-form-label" required="">Código Postal</label>
+                    <div class="col-md-7">
+                        <div class="input-group">
+                            <input required="" maxlength="5" id="cp" class="form-control" name="cp" type="text" value="">
+                            <div class="input-group-appen">
+                                <button type="button" class="btn btn-secondary">
+                                    <i class="si si-refresh"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    {!! Field::select('entidad','',['label'=>'Entidad','class'=>'js-select2 maxwidth',],$entidades) !!}
+                </div>
+                <div class="col-md-6">
+                    {!! Field::select('municipio','',['label'=>'Municipio','class'=>'js-select2 maxwidth',],[]) !!}
+                </div>
+                <div class="col-md-6">
+                    {!! Field::select('localidad','',['label'=>'Localidad','class'=>'js-select2 maxwidth',],[]) !!}
+                </div>
+
             
             </div>
         </div>
@@ -40,7 +70,7 @@
 {{ Form::close() }}
 @endsection
 @push('js-script')
-    {{ Html::script('js/helpers/recepcion.helper.js') }}
+    {{ Html::script('js/helpers/imjuve/afiliado.helper.js') }}
     {{ Html::script('js/app-form.js') }}
 @endpush
 @push('js-custom')
@@ -64,6 +94,47 @@
                     e.preventDefault();
                     return false;
                 }
+            });
+            var changeEntidad = this.form.find('#entidad').on('change',function(e){
+                 App.ajaxRequest({
+                    url   : '/imjuve/utils/municipios',
+                    type  : 'POST',
+                    data  : {'entidad':e.currentTarget.value},
+                    success : function(result){
+                        console.log(result);
+                        /*
+                        inputEscaneos = $('input[type="file"][name="escaneo"]');
+
+                        if( inputEscaneos.length > 0 )
+                        {
+                            formRecepcion.subirEscaneo(resolve, reject, form, result.documento, 0, result);
+                        }
+                        else
+                        {
+                            resolve(result);
+                        }*/
+                    },
+                    error : function(result){
+                        resolve(result)
+                    }
+                });
+
+                /*
+                let label = $(this).find('option:selected').data('label');
+
+                selectDenuncia.closest('div.form-group.row').hide();
+
+                if( label && label.length ){
+                    labelNumero.text(label).append(iconNumero)
+                    labelNumero.closest('div.form-group.row').show();
+                }else{
+                    labelNumero.closest('div.form-group.row').hide();
+                }
+
+                if( this.value == 2 ){
+                    selectDenuncia.closest('div.form-group.row').show();
+                }*/
+
             });
 
         };

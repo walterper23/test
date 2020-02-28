@@ -51,6 +51,12 @@ Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
                     Route::post('anexos-escaneos',  'DocumentoController@localAnexosEscaneos');
                 });
             });
+
+            Route::prefix('utils')->namespace('imjuve\Utils')->group(function(){
+                Route::post('municipios',    'UtilController@getMunicipios');
+                Route::post('manager',  'AfiliacionController@manager');
+
+            });
         });
         /*************************** END IMJUVE ROUTES *********************************************/
 
