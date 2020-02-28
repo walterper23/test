@@ -117,48 +117,48 @@ class AfiliacionController extends BaseController
     public function nuevoAfiliado( $request )
     {
         try {
-
             DB::beginTransaction();
-            dd($request->all());
 
             $afil = new IMAfiliacion();
-            $afil->AFIL_NOMBRES     = $request->usuario;
-            $afil->AFIL_PATERNO     = $request->usuario;
-            $afil->AFIL_MATERNO     = $request->usuario;
-            $afil->AFIL_FECHA_NACIMIENTO     = $request->usuario;
-            $afil->AFIL_GENERO_ID     = $request->usuario;
-            $afil->AFIL_ESCO_ID     = $request->usuario;
-            $afil->AFIL_ESCI_ID     = $request->usuario;
-            $afil->AFIL_OCUP_ID     = $request->usuario;
-            $afil->AFIL_CORREO     = $request->usuario;
-            $afil->AFIL_TELEFONO     = $request->usuario;
+            $afil->AFIL_NOMBRES     = $request->nombres;
+            $afil->AFIL_PATERNO     = $request->paterno;
+            $afil->AFIL_MATERNO     = $request->materno;
+            $afil->AFIL_FECHA_NACIMIENTO     = $request->nacimiento;
+            $afil->AFIL_GENERO_ID       = $request->genero;
+            $afil->AFIL_ESCO_ID         = $request->escolaridad;
+            $afil->AFIL_ESCI_ID         = $request->ecivil;
+            $afil->AFIL_OCUP_ID         = $request->ocupacion;
+            $afil->AFIL_CORREO          = null;
+            $afil->AFIL_TELEFONO        = null;
             $afil->save();
 
-            $detalle = new IMDireccion();
-            $detalle->USDE_NO_TRABAJADOR = $request->notrabajador;
-            $detalle->USDE_NOMBRES       = $request->nombres;
-            $detalle->USDE_APELLIDOS     = $request->apellidos;
-            $detalle->USDE_GENERO        = $request->genero;
-            $detalle->USDE_EMAIL         = $request->email;
-            $detalle->USDE_TELEFONO      = $request->telefono;
-            $detalle->save();
+            $dire = new IMDireccion();
+            $dire->DIRE_CP          = $request->cp;
+            $dire->DIRE_RESIDENCIA  = $request->nacionalidad;
+            $dire->DIRE_ENTI_ID     = $request->entidad;
+            $dire->DIRE_MUNI_ID     = $request->municipio;
+            $dire->DIRE_LOCA_ID     = $request->localidad;
+            $dire->DIRE_TASE_ID     = null;
+            $dire->DIRE_ASENTAMIENTO    = null;
+            $dire->DIRE_ASEN_ID         = $request->asentamiento;
+            $dire->DIRE_TVIA_ID         = $request->tvialidad;
+            $dire->DIRE_VIALIDAD        = $request->vialidad;
+            $dire->DIRE_NUM_EXTERIOR    = $request->next;
+            $dire->DIRE_NUM_INTERIOR    = $request->nint;
+            $dire->save();
+            $afil->AFIL_DIRE_ID = $dire->getKey();
+            $afil->save();
 
-            $afil->USUA_DETALLE = $detalle->getKey();
-
-            $detalle->save();
-
-            DB::commit();
-
+            if($afil && $dire){
+                DB::commit();
+            }
             $tables = ['dataTableBuilder',null,true];
-
-            $message = sprintf('<i class="fa fa-fw fa-user"></i> Usuario <b>%s : %s</b> creado',$usuario->getCodigo(), $usuario->getAuthUsername());
-
+            $message = "Afiliado registrado con éxito.";
             return $this->responseSuccessJSON($message, $tables);
         } catch(Exception $error) {
             DB::rollback();
             return $this->responseErrorJSON('Ocurrió un error al guardar los cambios. Error ' . $error->getMessage() );
         }
-
     }
 
     /**

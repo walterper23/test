@@ -13,4 +13,8 @@ class IMDireccion extends BaseModel
 
     /* Methods */
 
+    public function getCp()
+    {
+        return $this->getAttribute('DIRE_CP');
+    }
 }
