@@ -96,17 +96,14 @@ class AfiliacionController extends BaseController
     {
         $data['title']         = 'Nueva afiliación';
         $data['form_id']       = $this->form_id;
-        $data['url_send_form'] = url('imjuve/afiliacion/manager');/*
-        esta madre da error, por eso no te permitia mostrar tu metodo, nunca llegaba a tu metodo porque mi clase
-        interceptaba el try catch interno de lara
-
+        $data['url_send_form'] = url('imjuve/afiliacion/manager');
         $data['action']        = 1;
         $data['generos']            = IMGenero::getSelect();
         $data['escolaridades']      = IMEscolaridad::getSelect();
         $data['estados_civiles']    = IMEstadoCivil::getSelect();
         $data['ocupaciones']        = IMOcupacion::getSelect();
         $data['nacionalidades']     = IMNacionalidad::getSelect();
-        $data['entidades']          = IMEntidad::getSelect();*/
+        $data['entidades']          = IMEntidad::getSelect();
 
         return view('imjuve.Afiliacion.formNuevaAfiliacion')->with($data);
     }
