@@ -9,9 +9,9 @@ class InstitutoDataTable extends CustomDataTable
 {    
     public function setSourceData()
     {
-        $this->sourceData = IMInstituto::all();
+        $this->sourceData = IMInstituto::with('Direccion');
 
-      
+  
     }
     
 
@@ -19,7 +19,6 @@ class InstitutoDataTable extends CustomDataTable
     {
        
         return [
-          
           
             [
                 'title'  => 'Institucion',
@@ -42,6 +41,16 @@ class InstitutoDataTable extends CustomDataTable
                     return sprintf('<span class="text-primary">%s</span>',$instituto->getTelefono());
                 },
             ],
+            [
+                'title' => 'Calle(s)',
+                'width'  => '20%',
+                'render' => function($instituto){
+                    return  sprintf('<span class="text-primary">%s</span>',$instituto->Direccion->getDireccionCompleta());
+                }
+            ],
+         
+       
+         
             [
                 'title'  => 'Opciones',
                 'config' => 'options',

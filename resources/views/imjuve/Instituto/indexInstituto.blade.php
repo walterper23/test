@@ -3,6 +3,8 @@
 @section('title', title('Registro de institutos') )
 
 @include('vendor.plugins.datatables')
+@include('vendor.plugins.datepicker')
+@include('vendor.plugins.select2')
 
 @section('breadcrumb')
 	<nav class="breadcrumb bg-body-light mb-0">

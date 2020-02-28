@@ -13,6 +13,10 @@ use App\DataTables\imjuve\InstitutoDataTable;
 
 /* Models */
 use App\Model\imjuve\IMInstituto;
+use App\Model\imjuve\IMEntidad;
+use App\Model\imjuve\IMVialidades;
+
+
 use App\Model\imjuve\IMDirecciones;
 
 
@@ -45,7 +49,7 @@ class InstitutoController extends BaseController
     }
 
     /**
-     * Método para administrar las peticiones que recibe el controlador
+     * Da
      */
     public function manager(InstitutoRequest $request)
     {
@@ -97,6 +101,9 @@ class InstitutoController extends BaseController
         $data['form_id']       = $this->form_id;
         $data['url_send_form'] = url('imjuve/instituto/manager');
         $data['action']        = 1;
+        $data['entidades']          = IMEntidad::getSelect();
+        $data['vialidades']          = IMVialidades::getSelect();
+
         
         return view('imjuve.Instituto.formNuevoInstituto')->with($data);
     }
@@ -115,22 +122,27 @@ class InstitutoController extends BaseController
             $institucion->ORGA_ALIAS         = $request->organismo;
             $institucion->ORGA_RAZON_SOCIAL  = $request->razon;
             $institucion->ORGA_TELEFONO      = $request->telefono;
-
-             
-           /* $direccion = new IMDirecciones();
-            $direccion->DIRE_CP            = $request->codigo_postal;
-            $direccion->DIRE_RESIDENCIA    = $request->calle;
-            $direccion->DIRE_ASENTAMIENTO     = $request->Asentamiento;
-            $direccion->DIRE_VIALIDAD        = $request->vialidad;
-            $direccion->DIRE_NUM_EXTERIOR         = $request->noext;
-            $direccion->DIRE_NUM_INTERIOR      = $request->noint;
-
-            $direccion->save();
-
-            */
             $institucion->save();
+             
+           $dire = new IMDirecciones();
+           $dire->DIRE_CP          = $request->cp;
+           $dire->DIRE_ENTI_ID     = $request->entidad;
+           $dire->DIRE_MUNI_ID     = $request->municipio;
+           $dire->DIRE_LOCA_ID     = $request->localidad;
+           $dire->DIRE_TASE_ID     = null;
+           $dire->DIRE_ASENTAMIENTO    = null;
+           $dire->DIRE_ASEN_ID         = $request->asentamiento;
+           $dire->DIRE_TVIA_ID         = $request->tvialidad;
+           $dire->DIRE_VIALIDAD        = $request->vialidad;
+           $dire->DIRE_NUM_EXTERIOR    = $request->next;
+           $dire->DIRE_NUM_INTERIOR    = $request->nint;
+           $dire->save();
+           $institucion->ORGA_DIRE_ID = $dire->getKey();
+           $institucion->save();
 
+           if($institucion && $dire){
             DB::commit();
+        }
 
             $tables = ['dataTableBuilder',null,true];
 
@@ -156,7 +168,7 @@ class InstitutoController extends BaseController
         
         try {
             $modelo                = IMInstituto::find( $request->id );
-            $data['title']         = 'Editar institutpo ' . $modelo->getCodigoHash();
+            $data['title']         = 'Editar instituto ' . $modelo->getCodigoHash();
             $data['form_id']       = 'form-editar-instituto';
             $data['url_send_form'] = url('imjuve/instituto/manager');
             $data['modelo']        = $modelo;

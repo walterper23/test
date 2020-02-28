@@ -39,5 +39,15 @@ class IMInstituto extends Model
         return $this->getAttribute('ORGA_FOTO_FULL ');
     }
 
+    
+    /* Relationships */
+
+    public function Direccion()
+    {
+     
+        return $this->belongsTo('App\Model\imjuve\IMDireccion','ORGA_DIRE_ID','DIRE_ID');
+    }
+
+
 
 }
