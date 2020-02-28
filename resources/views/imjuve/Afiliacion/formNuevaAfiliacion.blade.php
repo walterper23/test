@@ -95,47 +95,41 @@
                     return false;
                 }
             });
+            var entidadSelect   = $("#entidad");
+            var municipioSelect = $("#municipio");
+            var localidadSelect = $("#localidad");
             var changeEntidad = this.form.find('#entidad').on('change',function(e){
                  App.ajaxRequest({
                     url   : '/imjuve/utils/municipios',
                     type  : 'POST',
                     data  : {'entidad':e.currentTarget.value},
                     success : function(result){
-                        console.log(result);
-                        /*
-                        inputEscaneos = $('input[type="file"][name="escaneo"]');
-
-                        if( inputEscaneos.length > 0 )
-                        {
-                            formRecepcion.subirEscaneo(resolve, reject, form, result.documento, 0, result);
-                        }
-                        else
-                        {
-                            resolve(result);
-                        }*/
+                        $.each(result, function(i, item) {
+                            var option = new Option(i,item, true, true);
+                            municipioSelect.append(option);
+                        });
                     },
                     error : function(result){
                         resolve(result)
                     }
                 });
-
-                /*
-                let label = $(this).find('option:selected').data('label');
-
-                selectDenuncia.closest('div.form-group.row').hide();
-
-                if( label && label.length ){
-                    labelNumero.text(label).append(iconNumero)
-                    labelNumero.closest('div.form-group.row').show();
-                }else{
-                    labelNumero.closest('div.form-group.row').hide();
-                }
-
-                if( this.value == 2 ){
-                    selectDenuncia.closest('div.form-group.row').show();
-                }*/
-
             });
+             var changeMunicipio = this.form.find('#municipio').on('change',function(e){
+                 App.ajaxRequest({
+                    url   : '/imjuve/utils/localidades',
+                    type  : 'POST',
+                    data  : {'entidad':entidadSelect.val(),'municipio':e.currentTarget.value},
+                    success : function(result){
+                        $.each(result, function(i, item) {
+                            var option = new Option(i,item, true, true);
+                            localidadSelect.append(option);
+                        });
+                    },
+                    error : function(result){
+                        resolve(result)
+                    }
+                });
+             });
 
         };
 	
