@@ -2,67 +2,30 @@
 
 namespace App\DataTables\imjuve;
 
-use App\Model\MUsuario;
+use App\Model\imjuve\IMAfiliacion;
 use App\DataTables\CustomDataTable;
 
 class AfiliacionDataTable extends CustomDataTable
 {    
     public function setSourceData()
     {
-        $this->sourceData = MUsuario::with('UsuarioDetalle')->siExistente();
+        $this->sourceData = IMAfiliacion::with('Direccion','Genero');
     }
 
     public function columnsTable()
     {
         return [
             [
-                'title' => '',
+                'title' => 'NOMBRES',
                 'config' => 'options',
-                'render' => function($usuario){
-                    return $usuario->presenter()->imgAvatarSmall('img-avatar img-avatar48');
+                'render' => function($afil){
+                    return $afil->getNombres();
                 }
             ],
             [
-                'title' => 'NO.',
-                'render' => function($usuario){
-                    return $usuario->UsuarioDetalle->getNoTrabajador();
-                }
-            ],
-            [
-                'title'  => 'Usuario',
-                'width'  => '18%',
-                'render' => function($usuario){
-                    return sprintf('<span class="text-primary">%s</span>',$usuario->getAuthUsername());
-                },
-            ],
-            [
-                'title' => 'Nombre',
-                'width'  => '20%',
-                'render' => function($usuario){
-                    return $usuario->UsuarioDetalle->presenter()->getNombreCompleto();
-                },
-            ],
-            [
-                'title' => 'Descripción',
-                'width' => '20%',
-                'data'  => 'USUA_DESCRIPCION'
-            ],
-            [
-                'title' => 'Último acceso',
-                'class' => 'text-center',
-                'width' => '12%',
-                'data'  => 'USUA_RECENT_LOGIN'
-            ],
-            [
-                'title'  => 'Activo',
-                'config' => 'options',
-                'render' => function($usuario){
-                    $checked = ($usuario->disponible()) ? ' checked=""' : '';
-                    $enabled = $usuario->getKey() != userKey() ? '' : ' disabled' ;
-
-                    return sprintf('<label class="css-control css-control-sm css-control-primary css-switch%s">
-                                    <input type="checkbox" class="css-control-input"%s onclick="hUsuario.active({id:%d})" %s>
-                                    <span class="css-control-indicator"></span></label>', $enabled, $checked, $usuario->getKey(), $enabled);
+                'title' => 'C.P',
+                'render' => function($afil){
+                    return $afil->Direccion->getCp();
                 }
             ],
             [
@@ -70,9 +33,7 @@ class AfiliacionDataTable extends CustomDataTable
                 'config' => 'options',
                 'render' => function($usuario){
 
-                    $buttons = '';
-
-                    /*$buttons = sprintf('<button type="button" class="btn btn-sm btn-circle btn-alt-primary" onclick="hUsuario.view(%d)" title="Ver usuario"><i class="fa fa-fw fa-eye"></i></button>',$usuario->getKey());*/
+                    $buttons = '';/*
 
                     $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-success" onclick="hUsuario.edit_(%d)" title="Modificar usuario"><i class="fa fa-fw fa-pencil"></i></button>',$usuario->getKey());
 
@@ -87,7 +48,7 @@ class AfiliacionDataTable extends CustomDataTable
                     if ( $usuario->getKey() != userKey() )
                     {
                         $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hUsuario.delete_(%d)" title="Eliminar"><i class="fa fa-trash"></i></button>',$usuario->getKey());
-                    }
+                    }*/
                     
                     return $buttons;
                 }
@@ -97,7 +58,7 @@ class AfiliacionDataTable extends CustomDataTable
 
     public function getUrlAjax()
     {
-        return url('configuracion/usuarios/post-data');
+        return url('imjuve/afiliacion/post-data');
     }
 
     public function getCustomOptionsParameters()

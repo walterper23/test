@@ -48,6 +48,8 @@ Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
                 Route::get('/',        'AfiliacionController@index');
                 Route::post('nuevo',    'AfiliacionController@formNuevaAfiliacion');
                 Route::post('manager',  'AfiliacionController@manager');
+                Route::post('post-data',       'AfiliacionController@postDataTable');
+
 
             });
 

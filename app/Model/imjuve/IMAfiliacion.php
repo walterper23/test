@@ -13,37 +13,40 @@ class IMAfiliacion extends BaseModel
     protected $primaryKey   = 'AFIL_ID';
     protected $prefix       = 'AFIL';
 
-    public function getNombre()
+    public function getNombres()
     {
-        return $this->getAttribute('DEPA_NOMBRE');
+        return $this->getAttribute('AFIL_NOMBRES');
+    }
+    public function getPaterno()
+    {
+        return $this->getAttribute('AFIL_PATERNO');
+    }
+    public function getMaterno()
+    {
+        return $this->getAttribute('AFIL_MATERNO');
     }
 
-    public function getDireccion()
+    public function getFechaNacimiento()
     {
-        return $this->getAttribute('DEPA_DIRECCION');
+        return $this->getAttribute('AFIL_FECHA_NACIMIENTO');
     }
 
     /* Relationships */
 
     public function Direccion()
     {
-        return $this->belongsTo('App\Model\Catalogo\MDireccion','DEPA_DIRECCION','DIRE_DIRECCION');
+        return $this->belongsTo('App\Model\imjuve\IMDireccion','AFIL_DIRE_ID','DIRE_ID');
     }
 
-    public function Seguimientos()
+    public function Genero()
     {
-        return $this->hasMany('App\Model\MSeguimiento','SEGU_DEPARTAMENTO',$this->getKeyName());
+        return $this->hasOne('App\Model\imjuve\IMGenero','GENE_ID','AFIL_GENE_ID');
     }
-
+    /*
     public function Puestos()
     {
         return $this->hasMany('App\Model\Catalogo\MPuesto','PUES_DEPARTAMENTO',$this->getKeyName());
-    }
-
-    /* Presenter */
-    /*public function presenter()
-    {
-    	return new MDepartamentoPresenter($this);
     }*/
+
 
 }
