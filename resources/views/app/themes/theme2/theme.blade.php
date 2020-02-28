@@ -132,6 +132,21 @@
                                     
                                 </ul>
                             </li>
+
+                            <li>
+                                <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-badge"></i><span class="sidebar-mini-hide">Instituciones</span></a>
+                                <ul>
+                                    <li>
+                                        <a href="/imjuve/instituto/">Agregar Institucion</a>
+                                    
+                                    </li>
+                                    
+                                </ul>
+                            </li>
+
+
+
+
                             <li class="nav-main-heading"><span class="sidebar-mini-visible">UI</span><span class="sidebar-mini-hidden">Configuración</span></li>
                             <li>
                                 <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-puzzle"></i><span class="sidebar-mini-hide">Catalogos</span></a>

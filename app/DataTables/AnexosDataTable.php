@@ -59,6 +59,7 @@ class AnexosDataTable extends CustomDataTable
     public function getUrlAjax()
     {
         return '/configuracion/catalogos/anexos/post-data';
+        //michim
     }
 
 }
