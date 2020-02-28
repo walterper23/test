@@ -6,7 +6,7 @@ App.loadScript('/js/helpers/helper.js', function(){
 	hInstituto = $.extend({}, Helper, function(){
 		return {
 			manager : function(){
-				return '/configuracion/usuarios/manager'
+				return '/imjuve/instituto/manager'
 			},
 
 			new_ : function(id, url){
@@ -17,8 +17,8 @@ App.loadScript('/js/helpers/helper.js', function(){
 
 			edit_ : function(id){
 				this.edit({
-					modal : 'form-editar-usuario',
-					url   : '/configuracion/usuarios/editar',
+					modal : 'form-editar-instituto',
+					url   : '/imjuve/instituto/editar',
 					id
 				})
 			},
@@ -27,15 +27,9 @@ App.loadScript('/js/helpers/helper.js', function(){
 				this.delete({
 					id, title : 'Eliminar usuario'
 				})
-			},
-
-			password : function(id){
-				this.edit({
-					modal : 'form-password',
-					url   : '/configuracion/usuarios/password',
-					id
-				})
 			}
+
+		
 
 		}
 	}())
