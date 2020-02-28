@@ -16,40 +16,37 @@ class AfiliacionDataTable extends CustomDataTable
     {
         return [
             [
-                'title' => 'NOMBRES',
+                'title' => 'NOMBRE COMPLETO',
                 'config' => 'options',
                 'render' => function($afil){
-                    return $afil->getNombres();
+                    return $afil->Genero->presenter()->getIcon().' '.$afil->getNombreCompleto();
                 }
             ],
             [
-                'title' => 'C.P',
+                'title' => 'F. N.',
                 'render' => function($afil){
-                    return $afil->Direccion->getCp();
+                    return $afil->presenter()->getFnFormat();
+                }
+            ],
+            [
+                'title' => 'Contacto',
+                'render' => function($afil){
+                    return $afil->presenter()->getContacto();
+                }
+            ],
+            [
+                'title' => 'Dirección',
+                'render' => function($afil){
+                    return $afil->Direccion->getCp().' Librado E Rivera #487, Adolfo Lopez Mateos, Chetumal.';
                 }
             ],
             [
                 'title'  => 'Opciones',
                 'config' => 'options',
-                'render' => function($usuario){
-
-                    $buttons = '';/*
-
-                    $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-success" onclick="hUsuario.edit_(%d)" title="Modificar usuario"><i class="fa fa-fw fa-pencil"></i></button>',$usuario->getKey());
-
-                    $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-warning" onclick="hUsuario.password(%d)" title="Cambiar contraseña"><i class="fa fa-key"></i></button>',$usuario->getKey());
-
-                    if (user()->can('USU.ADMIN.PERMISOS.ASIG'))
-                    {
-                        $url = sprintf('configuracion/usuarios/permisos-asignaciones?user=%d', $usuario->getKey());
-                        $buttons .= sprintf(' <a class="btn btn-sm btn-circle btn-alt-success" href="%s" title="Permisos y Asignaciones"><i class="fa fa-lock"></i></a>',url($url));
-                    }
-
-                    if ( $usuario->getKey() != userKey() )
-                    {
-                        $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hUsuario.delete_(%d)" title="Eliminar"><i class="fa fa-trash"></i></button>',$usuario->getKey());
-                    }*/
-                    
+                'render' => function($afil){
+                    $buttons = '';
+                    $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-success" onclick="hAfiliado.edit_(%d)" title="Editar afiliado"><i class="fa fa-fw fa-pencil"></i></button>',$afil->getKey());
+                    $buttons .= sprintf(' <button type="button" class="btn btn-sm btn-circle btn-alt-danger" onclick="hAfiliado.delete_(%d)" title="Eliminar afiliado"><i class="fa fa-trash"></i></button>',$afil->getKey());
                     return $buttons;
                 }
             ]

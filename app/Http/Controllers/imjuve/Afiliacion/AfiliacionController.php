@@ -96,17 +96,18 @@ class AfiliacionController extends BaseController
      */
     public function formNuevaAfiliacion()
     {
-        $data['title']         = 'Nueva afiliación';
-        $data['form_id']       = $this->form_id;
-        $data['url_send_form'] = url('imjuve/afiliacion/manager');
-        $data['action']        = 1;
+        $data['title']          = 'Nueva afiliación';
+        $data['form_id']        = $this->form_id;
+        $data['url_send_form']  = url('imjuve/afiliacion/manager');
+        $data['action']         = 1;
+        $data['modelo']          = new IMAfiliacion();
         $data['generos']            = IMGenero::getSelect();
         $data['escolaridades']      = IMEscolaridad::getSelect();
         $data['estados_civiles']    = IMEstadoCivil::getSelect();
         $data['ocupaciones']        = IMOcupacion::getSelect();
         $data['nacionalidades']     = IMNacionalidad::getSelect();
         $data['entidades']          = IMEntidad::getSelect();
-        $data['vialidades']          = IMVialidades::getSelect();
+        $data['vialidades']         = IMVialidades::getSelect();
 
         return view('imjuve.Afiliacion.formNuevaAfiliacion')->with($data);
     }
@@ -124,7 +125,7 @@ class AfiliacionController extends BaseController
             $afil->AFIL_PATERNO     = $request->paterno;
             $afil->AFIL_MATERNO     = $request->materno;
             $afil->AFIL_FECHA_NACIMIENTO     = $request->nacimiento;
-            $afil->AFIL_GENERO_ID       = $request->genero;
+            $afil->AFIL_GENE_ID       = $request->genero;
             $afil->AFIL_ESCO_ID         = $request->escolaridad;
             $afil->AFIL_ESCI_ID         = $request->ecivil;
             $afil->AFIL_OCUP_ID         = $request->ocupacion;
@@ -164,22 +165,25 @@ class AfiliacionController extends BaseController
     /**
      * Método para retornar el formulario para editar el usuario especificado
      */
-    public function formEditarUsuario(Request $request)
+    public function formEditarAfiliacion(Request $request)
     {
-        if ( $request->id == 1 ) {
-            abort(403);
-        }
-        
         try {
-            $modelo                = MUsuario::find( $request->id );
-            $data['title']         = 'Editar usuario ' . $modelo->getCodigoHash();
-            $data['form_id']       = 'form-editar-usuario';
-            $data['url_send_form'] = url('configuracion/usuarios/manager');
+            $modelo                = IMAfiliacion::find( $request->id );
+            $data['title']         = 'Editar afiliado ' . $modelo->getNombreCompleto();
+            $data['form_id']       = 'form-editar-afiliado';
+            $data['url_send_form'] = url('configuracion/afiliacion/manager');
             $data['modelo']        = $modelo;
             $data['action']        = 2;
             $data['id']            = $request->id;
+            $data['generos']            = IMGenero::getSelect();
+            $data['escolaridades']      = IMEscolaridad::getSelect();
+            $data['estados_civiles']    = IMEstadoCivil::getSelect();
+            $data['ocupaciones']        = IMOcupacion::getSelect();
+            $data['nacionalidades']     = IMNacionalidad::getSelect();
+            $data['entidades']          = IMEntidad::getSelect();
+            $data['vialidades']          = IMVialidades::getSelect();
 
-            return view('Configuracion.Usuario.formEditarUsuario')->with($data);
+            return view('imjuve.Afiliacion.formNuevaAfiliacion')->with($data);
         } catch(Exception $error) {
             return $this->responseErrorJSON('Ocurrió un error: ' . $error->getMessage() );
         }

@@ -31,26 +31,5 @@ class AuthServiceProvider extends ServiceProvider
             return new EloquentCustomUserProvider($app['hash'], $config['model']);
         });
 
-        GateContract::before(function($user, $ability){
-            if( $user->isSuperAdmin() ){
-                return true;
-            }
-        });
-
-        // Recuperamos todos los permisos disponibles en el sistema
-        $permisosSistema = cache()->rememberForever('Permisos.Sistema',function(){
-            return \App\Model\MPermiso::with('Recurso')->get();
-        });
-        
-        foreach ($permisosSistema as $permiso) {
-            GateContract::define($permiso->getCodigo(), function($user) use ($permiso){
-                return permisoUsuario( $permiso->getCodigo() );
-            });
-        }
-
-        \App\Model\System\MSystemConfig::setAllVariables();
-        \App\Model\System\MSystemPreferencia::setAllPreferencias();
-        \App\Model\System\MSystemNotificacion::setAllNotificaciones();
-
     }
 }

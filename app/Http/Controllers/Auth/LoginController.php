@@ -95,11 +95,7 @@ class LoginController extends Controller
         $user->USUA_RECENT_LOGIN = \Carbon\Carbon::now();
         $user->save();
 
-        session(['Direcciones'=>$user->Direcciones]);
-        session(['DireccionesKeys'=>$user->Direcciones->pluck('DIRE_DIRECCION')->toArray()]);
-
-        session(['Departamentos'=>$user->Departamentos]);
-        session(['DepartamentosKeys'=>$user->Departamentos->pluck('DEPA_DEPARTAMENTO')->toArray()]);
+        //session(['Direcciones'=>$user->Direcciones]);
 
     }
 }
