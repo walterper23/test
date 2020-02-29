@@ -10,6 +10,8 @@ class IMDireccion extends BaseModel
     protected $table       = 'm_direcciones';
     protected $primaryKey  = 'DIRE_ID';
     protected $prefix      = 'DIRE';
+        public $timestamps = false;
+
 
     /* Methods */
 
@@ -17,7 +19,6 @@ class IMDireccion extends BaseModel
     {
         return $this->getAttribute('DIRE_CP');
     }
-
     public function getEntidad()
     {
         return $this->getAttribute('DIRE_ENTI_ID');
@@ -51,5 +52,10 @@ class IMDireccion extends BaseModel
     public function getNint()
     {
         return $this->getAttribute('DIRE_NUM_INTERIOR');
+    }
+
+    public function getDireccionCompleta()
+    {
+        return $this->getValidad().'  '.'#Ext '.$this->getNext().'  '.'#Int'.'  '.$this->getNint(). ' ' . $this->getCp();
     }
 }

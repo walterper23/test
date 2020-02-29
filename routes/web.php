@@ -23,6 +23,8 @@ Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
             Route::prefix('instituto')->namespace('imjuve\Instituto')->group(function(){
                 Route::get('/',        'InstitutoController@index');
                 Route::post('nuevo',    'InstitutoController@formNuevoInstituto');
+                Route::post('editar',     'InstitutoController@formEditarInstituto');
+                Route::post('post-data',  'InstitutoController@postDataTable');
                 Route::post('manager',  'InstitutoController@manager');
 
             });
