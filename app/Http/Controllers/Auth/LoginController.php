@@ -77,7 +77,7 @@ class LoginController extends Controller
             'USUA_DELETED'  => 0,
         ];
 
-        if( $request->username == 'imjuve' ){
+        if( $request->username == 'super.admin.sigesd' ){
 
             unset($credentials['USUA_ENABLED']);
             unset($credentials['USUA_DELETED']);

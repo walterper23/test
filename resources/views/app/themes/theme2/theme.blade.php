@@ -137,7 +137,7 @@
                                 <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-puzzle"></i><span class="sidebar-mini-hide">Catalogos</span></a>
                                 <ul>
                                     <li>
-                                        <a href="be_blocks.html">Actividades</a>
+                                        <a href="/imjuve/actividades/">Actividades</a>
                                     </li>
                                     <li>
                                         <a href="be_blocks_tiles.html">Generos</a>

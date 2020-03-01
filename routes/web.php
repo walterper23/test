@@ -44,13 +44,13 @@ Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
                 Route::prefix('actividades')->namespace('imjuve\Actividades')->group(function(){
                     Route::get('/',        'actividadController@index');
                     Route::post('/crear', 'actividadController@nuevoUsuario');
-                    Route::prefix('local')->group(function(){
-                        Route::get('/',                 'DocumentoController@local');
-                        Route::post('anexos',           'DocumentoController@localAnexos');
-                        Route::post('escaneos',         'DocumentoController@localEscaneos');
-                        Route::get('escaneos',          'DocumentoController@localArchivoEscaneo');
-                        Route::post('anexos-escaneos',  'DocumentoController@localAnexosEscaneos');
-                    });   
+                    Route::post('post-data',  'actividadController@postDataTable');
+                    Route::post('nuevo',      'actividadController@formNuevoActividad');
+                    Route::post('editar',     'actividadController@formEditarActividad');
+                    Route::post('manager',    'actividadController@manager');
+
+
+                     
                 });     
 
             Route::prefix('catalogos')->namespace('imjuve\Afiliacion')->group(function(){
