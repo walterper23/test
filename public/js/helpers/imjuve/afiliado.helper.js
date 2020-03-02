@@ -32,7 +32,7 @@ App.loadScript('/js/helpers/helper.js', function(){
 
 			delete_ : function(id){
 				this.delete({
-					id, title : 'Eliminar usuario'
+					id, title : 'Eliminar afiliado'
 				})
 			},
 		}

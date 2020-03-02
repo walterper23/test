@@ -9,7 +9,7 @@ class AfiliacionDataTable extends CustomDataTable
 {    
     public function setSourceData()
     {
-        $this->sourceData = IMAfiliacion::with('Direccion','Genero');
+        $this->sourceData = IMAfiliacion::where('AFIL_ENABLED',1)->where('AFIL_DELETED',0)->with('Direccion','Genero');
     }
 
     public function columnsTable()
