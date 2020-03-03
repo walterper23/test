@@ -19,7 +19,6 @@ Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
 
         /*************************** IMJUVE ROUTES *************************************************/
         Route::prefix('imjuve')->group(function(){
-
             Route::prefix('instituto')->namespace('imjuve\Instituto')->group(function(){
                 Route::get('/',        'InstitutoController@index');
                 Route::post('nuevo',    'InstitutoController@formNuevoInstituto');
@@ -28,8 +27,6 @@ Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
                 Route::post('manager',  'InstitutoController@manager');
 
             });
-
-
             Route::prefix('afiliacion')->namespace('imjuve\Afiliacion')->group(function(){
                 Route::get('/',        'AfiliacionController@index');
                 Route::post('nuevo',    'AfiliacionController@formNuevaAfiliacion');
@@ -37,23 +34,15 @@ Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
                 Route::post('manager',  'AfiliacionController@manager');
                 Route::post('post-data',       'AfiliacionController@postDataTable');
 
-
             });
-
-
-            
-
-            Route::prefix('catalogos')->namespace('imjuve\Afiliacion')->group(function(){
-                Route::get('/',        'AfiliacionController@index');
-                Route::prefix('local')->group(function(){
-                    Route::get('/',                 'DocumentoController@local');
-                    Route::post('anexos',           'DocumentoController@localAnexos');
-                    Route::post('escaneos',         'DocumentoController@localEscaneos');
-                    Route::get('escaneos',          'DocumentoController@localArchivoEscaneo');
-                    Route::post('anexos-escaneos',  'DocumentoController@localAnexosEscaneos');
-                });
-            });
-
+            Route::prefix('actividades')->namespace('imjuve\Actividades')->group(function(){
+                Route::get('/',        'actividadController@index');
+                Route::post('/crear', 'actividadController@nuevoUsuario');
+                Route::post('post-data',  'actividadController@postDataTable');
+                Route::post('nuevo',      'actividadController@formNuevoActividad');
+                Route::post('editar',     'actividadController@formEditarActividad');
+                Route::post('manager',    'actividadController@manager');
+            });   
             Route::prefix('utils')->namespace('imjuve\Utils')->group(function(){
                 Route::post('municipios',    'UtilController@getMunicipios');
                 Route::post('localidades',  'UtilController@getLocalidades');

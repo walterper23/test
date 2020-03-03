@@ -58,11 +58,15 @@ If your sidebar menu includes icons and you would like to hide them, you can add
                 <a href="/recepcion/documentos/en-captura">En captura</a>
             </li-->
             <li>
+                        <a href="/imjuve/actividades">Actividades</a>
+                    </li>
+            <li>
                 <a class="nav-submenu" data-toggle="nav-submenu" href="/recepcion/documentos/recepcionados?view=denuncias">Recepcionados</a>
                 <ul>
                     <li>
                         <a href="/recepcion/documentos/recepcionados?view=denuncias">Denuncias</a>
                     </li>
+                    
                     <li>
                         <a href="/recepcion/documentos/recepcionados?view=documentos-denuncias">Documentos de denuncias</a>
                     </li>

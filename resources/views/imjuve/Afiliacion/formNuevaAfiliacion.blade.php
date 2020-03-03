@@ -15,6 +15,9 @@
             <div class="block-header block-header-default">
                 <h3 class="block-title">Datos personales</h3>
             </div>
+            @if($action==2)
+                <input type="hidden" value="{{$id}}" name="id">
+            @endif
             <div class="block-content row">
                 <div class="col-md-8">
                     {!! Field::text('nombres',$modelo->getNombres(),['label'=>'Nombre(s)','required','maxlength'=>255]) !!}
@@ -135,11 +138,6 @@
                             municipioSelect.append(option);
                         });
                         municipioSelect.trigger('change');
-                        @if($action==2)
-                            if('{{$modelo->Direccion->getEntidad()}}'==e.currentTarget.value){
-                                municipioSelect.val('').val({{$modelo->Direccion->getMunicipio()}}).change();
-                            }
-                        @endif
                     },
                     error : function(result){
                         resolve(result)
@@ -157,12 +155,6 @@
                                 var option = new Option(i,item, true, true);
                                 localidadSelect.append(option);
                             });
-                            @if($action==2)
-                            if('{{$modelo->Direccion->getEntidad()}}'==entidadSelect.val()
-                                && '{{$modelo->Direccion->getMunicipio()}}'==e.currentTarget.value){
-                                localidadSelect.val('').val({{$modelo->Direccion->getLocalidad()}}).change();
-                            }
-                            @endif
                         },
                         error : function(result){
                             resolve(result)
@@ -180,24 +172,12 @@
                             var option = new Option(i,item, true, true);
                             asentamientoSelect.append(option);
                         });
-                        @if($action==2)
-                        if('{{$modelo->Direccion->getEntidad()}}'==entidadSelect.val()
-                            && '{{$modelo->Direccion->getMunicipio()}}'==municipioSelect.val()
-                            && '{{$modelo->Direccion->getLocalidad()}}'==e.currentTarget.value){
-                            asentamientoSelect.val('').val({{$modelo->Direccion->getAsentamiento()}}).change();
-                        }
-                        @endif
-
                     },
                     error : function(result){
                         resolve(result)
                     }
                 });
             });
-            @if($action==2)
-                entidadSelect.val('{{$modelo->Direccion->getEntidad()}}').change();
-            @endif
-
         };
 	
 		this.rules = function(){

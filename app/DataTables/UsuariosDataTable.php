@@ -3,6 +3,8 @@
 namespace App\DataTables;
 
 use App\Model\MUsuario;
+use App\Model\imjuve\IMActividad;
+
 
 class UsuariosDataTable extends CustomDataTable
 {    
@@ -14,6 +16,7 @@ class UsuariosDataTable extends CustomDataTable
     public function columnsTable()
     {
         return [
+            
             [
                 'title' => '',
                 'config' => 'options',

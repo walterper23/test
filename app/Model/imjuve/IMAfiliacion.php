@@ -29,7 +29,10 @@ class IMAfiliacion extends BaseModel
     {
         return $this->getAttribute('AFIL_GENE_ID');
     }
-
+    public function getDireccion()
+    {
+        return $this->getAttribute('AFIL_DIRE_ID');
+    }
     public function getFechaNacimiento()
     {
         return $this->getAttribute('AFIL_FECHA_NACIMIENTO');
