@@ -8,8 +8,8 @@ use App\Model\BaseModel;
 class IMEntidad extends BaseModel
 {
     protected $table       = 'c_entidades';
-    protected $primaryKey  = 'ENTI_NOMBRE';
-    protected $prefix      = 'ENTI_ID';
+    protected $primaryKey  = 'ENTI_ID';
+    protected $prefix      = 'ENTI';
 
     /* Methods */
     public function getNombre()

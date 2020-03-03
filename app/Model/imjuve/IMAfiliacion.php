@@ -5,7 +5,7 @@ namespace App\Model\imjuve;
 use App\Model\BaseModel;
 
 /* Presenter */
-//use App\Presenters\MDepartamentoPresenter;
+use App\Presenters\IMAfiliacionPresenter;
 
 class IMAfiliacion extends BaseModel
 {
@@ -13,37 +13,73 @@ class IMAfiliacion extends BaseModel
     protected $primaryKey   = 'AFIL_ID';
     protected $prefix       = 'AFIL';
 
-    public function getNombre()
+    public function getNombres()
     {
-        return $this->getAttribute('DEPA_NOMBRE');
+        return $this->getAttribute('AFIL_NOMBRES');
     }
-
+    public function getPaterno()
+    {
+        return $this->getAttribute('AFIL_PATERNO');
+    }
+    public function getMaterno()
+    {
+        return $this->getAttribute('AFIL_MATERNO');
+    }
+    public function getGenero()
+    {
+        return $this->getAttribute('AFIL_GENE_ID');
+    }
     public function getDireccion()
     {
-        return $this->getAttribute('DEPA_DIRECCION');
+        return $this->getAttribute('AFIL_DIRE_ID');
+    }
+    public function getFechaNacimiento()
+    {
+        return $this->getAttribute('AFIL_FECHA_NACIMIENTO');
+    }
+    public function getNacionalidad()
+    {
+        return $this->getAttribute('AFIL_FECHA_NACIMIENTO');
+    }
+    public function getEscolaridad()
+    {
+        return $this->getAttribute('AFIL_ESCO_ID');
+    }
+    public function getEcivil()
+    {
+        return $this->getAttribute('AFIL_ESCI_ID');
+    }
+    public function getOcupacion()
+    {
+        return $this->getAttribute('AFIL_OCUP_ID');
     }
 
-    /* Relationships */
+    public function getNombreCompleto(){
+        return $this->getNombres().' '.$this->getPaterno().' '.$this->getMaterno();
+    }
 
+    public function getTelefono(){
+        return $this->getAttribute('AFIL_TELEFONO');
+    }
+
+    public function getCorreo(){
+        return $this->getAttribute('AFIL_CORREO');
+    }
+    /* Relationships */
     public function Direccion()
     {
-        return $this->belongsTo('App\Model\Catalogo\MDireccion','DEPA_DIRECCION','DIRE_DIRECCION');
+        return $this->belongsTo('App\Model\imjuve\IMDireccion','AFIL_DIRE_ID','DIRE_ID');
     }
-
-    public function Seguimientos()
+    public function Genero()
     {
-        return $this->hasMany('App\Model\MSeguimiento','SEGU_DEPARTAMENTO',$this->getKeyName());
+        return $this->hasOne('App\Model\imjuve\IMGenero','GENE_ID','AFIL_GENE_ID');
     }
-
-    public function Puestos()
-    {
-        return $this->hasMany('App\Model\Catalogo\MPuesto','PUES_DEPARTAMENTO',$this->getKeyName());
-    }
-
     /* Presenter */
-    /*public function presenter()
+
+    public function presenter()
     {
-    	return new MDepartamentoPresenter($this);
-    }*/
+        return new IMAfiliacionPresenter($this);
+    }
+
 
 }

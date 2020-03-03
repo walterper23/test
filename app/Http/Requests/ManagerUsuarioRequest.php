@@ -44,37 +44,5 @@ class ManagerUsuarioRequest extends FormRequest
         ];
     }
 
-    public function messages(){
-        return [
-            'action.required'         => 'Petición no especificada',
-            'action.in'               => 'Petición no válida',
-            'id.required_if'          => 'Especifique el identificador del recurso',
-            'usuario.unique'          => 'Ya existe el usuario <b>:input</b>',
-            'usuario.required_if'     => 'Introduzca el nombre de usuario',
-            'usuario.min'             => 'Mínimo :min caracter',
-            'usuario.max'             => 'Máximo :max caracteres',
-            'password.required_if'    => 'Introduzca una contraseña',
-            'password.min'            => 'Mínimo :min caracteres',
-            'password.max'            => 'Máximo :max caracteres',
-            'password.confirmed'      => 'Las contraseñas no coinciden',
-            'notrabajador.max'        => 'Máximo :max caracteres',
-            'descripcion.required_if' => 'Introduzca una descripción',
-            'descripcion.min'         => 'Mínimo :min caracteres',
-            'descripcion.max'         => 'Máximo :max caracteres',
-            'nombres.required_if'     => 'Introduzca el nombre(s) del usuario',
-            'nombres.min'             => 'Mínimo :min caracter',
-            'nombres.max'             => 'Máximo :max caracteres',
-            'apellidos.required_if'   => 'Introduzca el apellido(s) del usuario',
-            'apellidos.min'           => 'Mínimo :min caracter',
-            'apellidos.max'           => 'Máximo :max caracteres',
-            'genero.required_if'      => 'Seleccione un género',
-            'genero.in'               => 'Género no válido',
-            'email.required_if'       => 'Introduzca el correo electrónico del usuario',
-            'email.min'               => 'Mínimo :min caracteres',
-            'email.max'               => 'Máximo :max caracteres',
-            'email.email'             => 'Introduzca un correo electrónico válido',
-            'telefono.min'            => 'Mínimo :min caracteres',
-            'telefono.max'            => 'Máximo :max caracteres',
-        ];
-    }
+   
 }

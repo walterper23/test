@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\imjuve\Afiliacion;
 
 use Illuminate\Http\Request;
-use App\Http\Requests\ManagerUsuarioRequest;
+use App\Http\Requests\AfiliacionRequest;
 use DB;
 use Exception;
 
@@ -21,6 +21,8 @@ use App\Model\imjuve\IMEstadoCivil;
 use App\Model\imjuve\IMOcupacion;
 use App\Model\imjuve\IMNacionalidad;
 use App\Model\imjuve\IMEntidad;
+use App\Model\imjuve\IMVialidades;
+use App\Model\imjuve\IMDireccion;
 /**
  * Controlador para la gestión de los usuarios del sistema
  */
@@ -47,29 +49,28 @@ class AfiliacionController extends BaseController
         $data['form_url'] = url('imjuve/afiliacion/nuevo');
 
         return view('imjuve.Afiliacion.IndexAfiliacion')->with($data);
-
     }
 
     /**
      * Método para administrar las peticiones que recibe el controlador
      */
-    public function manager(ManagerUsuarioRequest $request)
+    public function manager(AfiliacionRequest $request)
     {
         switch ($request->action) {
             case 1: // Nuevo
-                $response = $this->nuevoUsuario( $request );
+                $response = $this->nuevoAfiliado( $request );
                 break;
             case 2: // Editar
-                $response = $this->editarUsuario( $request );
+                $response = $this->editarAfiliado( $request );
                 break;
             case 3: // Ver
                 $response = $this->verUsuario( $request );
                 break;
             case 4: // Activar / Desactivar
-                $response = $this->activarUsuario( $request );
+                $response = $this->activarAfiliado( $request );
                 break;
             case 5: // Eliminar
-                $response = $this->eliminarUsuario( $request );
+                $response = $this->eliminarAfiliado( $request );
                 break;
             case 6: // Cambiar contraseña
                 $response = $this->modificarPassword( $request );
@@ -95,16 +96,18 @@ class AfiliacionController extends BaseController
      */
     public function formNuevaAfiliacion()
     {
-        $data['title']         = 'Nueva afiliación';
-        $data['form_id']       = $this->form_id;
-        $data['url_send_form'] = url('imjuve/afiliacion/manager');
-        $data['action']        = 1;
+        $data['title']          = 'Nueva afiliación';
+        $data['form_id']        = $this->form_id;
+        $data['url_send_form']  = url('imjuve/afiliacion/manager');
+        $data['action']         = 1;
+        $data['modelo']          = new IMAfiliacion();
         $data['generos']            = IMGenero::getSelect();
         $data['escolaridades']      = IMEscolaridad::getSelect();
         $data['estados_civiles']    = IMEstadoCivil::getSelect();
         $data['ocupaciones']        = IMOcupacion::getSelect();
         $data['nacionalidades']     = IMNacionalidad::getSelect();
         $data['entidades']          = IMEntidad::getSelect();
+        $data['vialidades']         = IMVialidades::getSelect();
 
         return view('imjuve.Afiliacion.formNuevaAfiliacion')->with($data);
     }
@@ -112,65 +115,75 @@ class AfiliacionController extends BaseController
     /**
      * Método para guardar un nuevo usuario
      */
-    public function nuevoUsuario( $request )
+    public function nuevoAfiliado( $request )
     {
         try {
-
             DB::beginTransaction();
-            
-            $usuario = new MUsuario;
-            $usuario->USUA_USERNAME     = $request->usuario;
-            $usuario->USUA_PASSWORD     = bcrypt($request->password);
-            $usuario->USUA_DESCRIPCION  = $request->descripcion;
-            $usuario->USUA_AVATAR_SMALL = $usuario->getAvatarDefault($request->genero);
-            $usuario->USUA_AVATAR_FULL  = $usuario->getAvatarSmall();
 
-            $detalle = new MUsuarioDetalle;
-            $detalle->USDE_NO_TRABAJADOR = $request->notrabajador;
-            $detalle->USDE_NOMBRES       = $request->nombres;
-            $detalle->USDE_APELLIDOS     = $request->apellidos;
-            $detalle->USDE_GENERO        = $request->genero;
-            $detalle->USDE_EMAIL         = $request->email;
-            $detalle->USDE_TELEFONO      = $request->telefono;
-            $detalle->save();
+            $afil = new IMAfiliacion();
+            $afil->AFIL_NOMBRES     = $request->nombres;
+            $afil->AFIL_PATERNO     = $request->paterno;
+            $afil->AFIL_MATERNO     = $request->materno;
+            $afil->AFIL_FECHA_NACIMIENTO     = $request->nacimiento;
+            $afil->AFIL_GENE_ID       = $request->genero;
+            $afil->AFIL_ESCO_ID         = $request->escolaridad;
+            $afil->AFIL_ESCI_ID         = $request->ecivil;
+            $afil->AFIL_OCUP_ID         = $request->ocupacion;
+            $afil->AFIL_CORREO          = $request->correo;
+            $afil->AFIL_TELEFONO        = $request->telefono;
+            $afil->save();
 
-            $usuario->USUA_DETALLE = $detalle->getKey();
-            
-            $usuario->save();
+            $dire = new IMDireccion();
+            $dire->DIRE_CP          = $request->cp;
+            $dire->DIRE_RESIDENCIA  = $request->nacionalidad;
+            $dire->DIRE_ENTI_ID     = $request->entidad;
+            $dire->DIRE_MUNI_ID     = $request->municipio;
+            $dire->DIRE_LOCA_ID     = $request->localidad;
+            $dire->DIRE_TASE_ID     = null;
+            $dire->DIRE_ASENTAMIENTO    = null;
+            $dire->DIRE_ASEN_ID         = $request->asentamiento;
+            $dire->DIRE_TVIA_ID         = $request->tvialidad;
+            $dire->DIRE_VIALIDAD        = $request->vialidad;
+            $dire->DIRE_NUM_EXTERIOR    = $request->next;
+            $dire->DIRE_NUM_INTERIOR    = $request->nint;
+            $dire->save();
+            $afil->AFIL_DIRE_ID = $dire->getKey();
+            $afil->save();
 
-            DB::commit();
-
+            if($afil && $dire){
+                DB::commit();
+            }
             $tables = ['dataTableBuilder',null,true];
-
-            $message = sprintf('<i class="fa fa-fw fa-user"></i> Usuario <b>%s : %s</b> creado',$usuario->getCodigo(), $usuario->getAuthUsername());
-
+            $message = "Afiliado registrado con éxito.";
             return $this->responseSuccessJSON($message, $tables);
         } catch(Exception $error) {
             DB::rollback();
             return $this->responseErrorJSON('Ocurrió un error al guardar los cambios. Error ' . $error->getMessage() );
         }
-
     }
 
     /**
      * Método para retornar el formulario para editar el usuario especificado
      */
-    public function formEditarUsuario(Request $request)
+    public function formEditarAfiliacion(Request $request)
     {
-        if ( $request->id == 1 ) {
-            abort(403);
-        }
-        
         try {
-            $modelo                = MUsuario::find( $request->id );
-            $data['title']         = 'Editar usuario ' . $modelo->getCodigoHash();
-            $data['form_id']       = 'form-editar-usuario';
-            $data['url_send_form'] = url('configuracion/usuarios/manager');
+            $modelo                = IMAfiliacion::find( $request->id );
+            $data['title']         = 'Editar afiliado ' . $modelo->getNombreCompleto();
+            $data['form_id']       = 'form-editar-afiliado';
+            $data['url_send_form'] = url('imjuve/afiliacion/manager');
             $data['modelo']        = $modelo;
             $data['action']        = 2;
             $data['id']            = $request->id;
+            $data['generos']            = IMGenero::getSelect();
+            $data['escolaridades']      = IMEscolaridad::getSelect();
+            $data['estados_civiles']    = IMEstadoCivil::getSelect();
+            $data['ocupaciones']        = IMOcupacion::getSelect();
+            $data['nacionalidades']     = IMNacionalidad::getSelect();
+            $data['entidades']          = IMEntidad::getSelect();
+            $data['vialidades']          = IMVialidades::getSelect();
 
-            return view('Configuracion.Usuario.formEditarUsuario')->with($data);
+            return view('imjuve.Afiliacion.formEditarAfiliacion')->with($data);
         } catch(Exception $error) {
             return $this->responseErrorJSON('Ocurrió un error: ' . $error->getMessage() );
         }
@@ -179,32 +192,44 @@ class AfiliacionController extends BaseController
     /**
      * Método para guardar los cambios realizados a un usuario
      */
-    public function editarUsuario( $request )
+    public function editarAfiliado( $request )
     {
         try {
-
-            $usuario = MUsuario::find( $request->id );
-            $usuario->USUA_DESCRIPCION = $request->descripcion;
-            
-            if ($request->password) {
-                $usuario->USUA_PASSWORD = bcrypt($request->password);
+            $afil = null; $dire = null;
+            $afil = IMAfiliacion::find($request->id);
+            if($afil){
+                $afil->AFIL_NOMBRES     = $request->nombres;
+                $afil->AFIL_PATERNO     = $request->paterno;
+                $afil->AFIL_MATERNO     = $request->materno;
+                $afil->AFIL_FECHA_NACIMIENTO     = $request->nacimiento;
+                $afil->AFIL_GENE_ID       = $request->genero;
+                $afil->AFIL_ESCO_ID         = $request->escolaridad;
+                $afil->AFIL_ESCI_ID         = $request->ecivil;
+                $afil->AFIL_OCUP_ID         = $request->ocupacion;
+                $afil->AFIL_CORREO          = $request->correo;
+                $afil->AFIL_TELEFONO        = $request->telefono;
+                $afil->save();
+                $dire = IMDireccion::find($afil->getDireccion());
+                if($dire){
+                    $dire->DIRE_CP          = $request->cp;
+                    $dire->DIRE_RESIDENCIA  = $request->nacionalidad;
+                    $dire->DIRE_ENTI_ID     = $request->entidad;
+                    $dire->DIRE_MUNI_ID     = $request->municipio;
+                    $dire->DIRE_LOCA_ID     = $request->localidad;
+                    $dire->DIRE_TASE_ID     = null;
+                    $dire->DIRE_ASENTAMIENTO    = null;
+                    $dire->DIRE_ASEN_ID         = $request->asentamiento;
+                    $dire->DIRE_TVIA_ID         = $request->tvialidad;
+                    $dire->DIRE_VIALIDAD        = $request->vialidad;
+                    $dire->DIRE_NUM_EXTERIOR    = $request->next;
+                    $dire->DIRE_NUM_INTERIOR    = $request->nint;
+                    $dire->save();
+                }
             }
-
-            $detalle = $usuario->UsuarioDetalle;
-            $detalle->USDE_NO_TRABAJADOR = $request->notrabajador;
-            $detalle->USDE_NOMBRES       = $request->nombres;
-            $detalle->USDE_APELLIDOS     = $request->apellidos;
-            $detalle->USDE_GENERO        = $request->genero;
-            $detalle->USDE_EMAIL         = $request->email;
-            $detalle->USDE_TELEFONO      = $request->telefono;
-            $detalle->save();
-
-            $usuario->save();
-
-            DB::commit();
-
-            $message = sprintf('<i class="fa fa-fw fa-check"></i> Usuario <b>%s</b> modificado',$usuario->getCodigo());
-
+            if($afil && $dire){
+                DB::commit();
+            }
+            $message = 'El afiliado fue editado con éxito.';
             $tables = 'dataTableBuilder';
 
             return $this->responseSuccessJSON($message,$tables);
@@ -249,7 +274,7 @@ class AfiliacionController extends BaseController
     /**
      * Método para activar o desactivar a un usuario indicado
      */
-    public function activarUsuario( $request )
+    public function activarAfiliado( $request )
     {
         try {
             // Validar que el usuario en sesión no pueda activar/desactivar su usuario
@@ -282,19 +307,20 @@ class AfiliacionController extends BaseController
     /**
      * Método para realizar la eliminación de un usuario
      */
-    public function eliminarUsuario( $request )
+    public function eliminarAfiliado( $request )
     {
         try {
-            $usuario = MUsuario::find( $request->id );
-            $usuario->eliminar()->save();
 
+            $afiliacion = IMAfiliacion::find( $request->id );
+            $afiliacion->AFIL_ENABLED = 0;
+            $afiliacion->AFIL_DELETED = 1;
+            $afiliacion->save();
             $tables = 'dataTableBuilder';
-
-            $message = sprintf('<i class="fa fa-fw fa-warning"></i> Usuario <b>%s</b> eliminado',$usuario->getCodigo());
+            $message = 'El afiliado fue eliminado con éxito.';
 
             return $this->responseDangerJSON($message,$tables);
         } catch(Exception $error) {
-            return $this->responseErrorJSON('Ocurrió un error al eliminar al usuario. Error ' . $error->getCode() );
+            return $this->responseErrorJSON('Ocurrió un error al eliminar el afiliado. Error ' . $error->getCode() );
         }
 
     }

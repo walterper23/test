@@ -3,6 +3,7 @@ namespace App\Model\imjuve;
 
 /* Models */
 use App\Model\BaseModel;
+use App\Presenters\IMGeneroPresenter;
 
 
 class IMGenero extends BaseModel
@@ -17,6 +18,10 @@ class IMGenero extends BaseModel
     	return $this->getAttribute('GENE_NOMBRE');
     }
 
+    public function getIcon(){
+        return $this->getAttribute('GENE_ICON');
+    }
+
     public static function getAll($estatus=1)
     {
         $all = self::where('GENE_ENABLED',$estatus);
@@ -27,5 +32,11 @@ class IMGenero extends BaseModel
     {
         $estatus = 1;
         return self::getAll($estatus)->pluck('GENE_NOMBRE','GENE_ID')->toArray();
+    }
+
+    /* Presenter */
+    public function presenter()
+    {
+        return new IMGeneroPresenter($this);
     }
 }
