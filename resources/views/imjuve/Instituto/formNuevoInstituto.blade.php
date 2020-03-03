@@ -10,9 +10,7 @@
 </style>
 {{ Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id,'files'=>true]) }}
     {{ Form::hidden('action',$action) }}
-    @if($action==2)
-    {{ Form::hidden('id',$modelo->ORGA_ID) }}
-    @endif
+   
     <div class="row">
         <div class="block col-lg-12">
         <div class="block-header block-header-default">
@@ -52,7 +50,7 @@
             </div>
          
             <div class="col-md-6">
-                {!! Field::select('entidad',((!is_null($modelo->Direccion))?($modelo->Direccion->getEntidad()):''),['label'=>'Entidad','class'=>'js-select2 maxwidth',],$entidades) !!}
+                {!! Field::select('entidad','',['label'=>'Entidad','class'=>'js-select2 maxwidth',],$entidades) !!}
             </div>
             <div class="col-md-6">
                 {!! Field::select('municipio','',['label'=>'Municipio','class'=>'js-select2 maxwidth',],[]) !!}
@@ -65,16 +63,17 @@
             </div>
 
             <div class="col-md-6">
-                {!! Field::select('tvialidad',((!is_null($modelo->Direccion))?($modelo->Direccion->getTvialidad()):''),['label'=>'Vialidad','class'=>'js-select2 maxwidth',],$vialidades) !!}
+                {!! Field::select('tvialidad','',['label'=>'Vialidad','class'=>'js-select2 maxwidth',],$vialidades) !!}
             </div>
 
             <div class="col-md-6">
-                {!! Field::text('vialidad',(!is_null($modelo->Direccion))?$modelo->Direccion->getVialidad():'',['label'=>'Nombre','maxlength'=>255]) !!}
+                {!! Field::text('vialidad','',['label'=>'Nombre','maxlength'=>255]) !!}
             </div>
             <div class="col-md-6">
-                {!! Field::text('next',(!is_null($modelo->Direccion))?$modelo->Direccion->getNext():'',['label'=>'Num Ext./Mza','maxlength'=>20]) !!}
-            </div><div class="col-md-6">
-                {!! Field::text('nint',(!is_null($modelo->Direccion))?$modelo->Direccion->getNint():'',['label'=>'Num Int./Lt','maxlength'=>20]) !!}
+                {!! Field::text('next','',['label'=>'Num Ext./Mza','maxlength'=>20]) !!}
+            </div>
+            <div class="col-md-6">
+                {!! Field::text('nint','',['label'=>'Num Int./Lt','maxlength'=>20]) !!}
             </div>
         
         </div>

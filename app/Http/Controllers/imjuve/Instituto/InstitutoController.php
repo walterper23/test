@@ -111,7 +111,7 @@ class InstitutoController extends BaseController
         $data['vialidades']          = IMVialidades::getSelect();
 
         
-        return view('imjuve.Instituto.formEditarInstituto')->with($data);
+        return view('imjuve.Instituto.formNuevoInstituto')->with($data);
     }
 
     /**
@@ -157,7 +157,7 @@ class InstitutoController extends BaseController
 
             $tables = ['dataTableBuilder',null,true];
 
-            $message = sprintf('<i class="fa fa-fw fa-check"></i> Instituto <b>%s</b>',' Creado');
+            $message = "Instituto registrado con éxito.";
 
             return $this->responseSuccessJSON($message, $tables);
         } catch(Exception $error) {
@@ -191,7 +191,7 @@ class InstitutoController extends BaseController
             $data['entidades']     = IMEntidad::getSelect();
             $data['vialidades']    = IMVialidades::getSelect();
 
-            return view('imjuve.Instituto.formNuevoInstituto')->with($data);
+            return view('imjuve.Instituto.formEditarInstituto')->with($data);
         } catch(Exception $error) {
             return $this->responseErrorJSON('Ocurrió un error: ' . $error->getMessage() );
         }
@@ -270,7 +270,7 @@ class InstitutoController extends BaseController
 
             $tables = 'dataTableBuilder';
 
-            $message = sprintf('<i class="fa fa-fw fa-warning"></i> Instituto <b>%s</b> eliminado');
+            $message = "Instituto Eliminado con éxito.";
 
             return $this->responseDangerJSON($message,$tables);
         } catch(Exception $error) {
