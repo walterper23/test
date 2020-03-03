@@ -11,16 +11,24 @@ App.loadScript('/js/helpers/helper.js', function(){
 
 			new_ : function(id, url){
 				App.openModal({
-					id, url, size : 'modal-lg'
+					id    : 'form-nuevo-instituto',
+					size  : 'modal-lg',
+					url   : '/imjuve/instituto/nuevo',
+					data  : { id },
+					btnCancel : true,
+					btnOkText : 'Agregar'
 				});
 			},
 
 			edit_ : function(id){
-				this.edit({
-					modal : 'form-editar-instituto',
+				App.openModal({
+					id    : 'form-editar-instituto',
+					size  : 'modal-lg',
 					url   : '/imjuve/instituto/editar',
-					id
-				})
+					data  : { id },
+					btnCancel : true,
+					btnOkText : 'Editar'
+				});
 			},
 
 			delete_ : function(id){

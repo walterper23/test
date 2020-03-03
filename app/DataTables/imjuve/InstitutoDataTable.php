@@ -9,7 +9,7 @@ class InstitutoDataTable extends CustomDataTable
 {    
     public function setSourceData()
     {
-        $this->sourceData = IMInstituto::with('Direccion');
+        $this->sourceData = IMInstituto::where('ORGA_ENABLED',1)->with('Direccion');
 
   
     }

@@ -9,6 +9,8 @@
         {!! Field::text('organismo',$modelo->getAlias(),['label'=>'Nombre del organismo','placeholder'=>'Opcional','maxlength'=>10]) !!}
         {!! Field::text('razon',$modelo->getRazonSocial(),['label'=>'Razon social','placeholder'=>'Ej. Director de Operaciones','required','maxlength'=>255]) !!}
         {!! Field::text('telefono',$modelo->getTelefono(),['label'=>'Teléfono','placeholder'=>'Opcional','maxlength'=>25]) !!}
+        {!! Field::text('cp',$modelo->Direccion->getCp(),['label'=>'cp','placeholder'=>'Opcional','maxlength'=>25]) !!}
+
     {{ Form::close() }}
 @endsection
 

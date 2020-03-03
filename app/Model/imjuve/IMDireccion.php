@@ -56,6 +56,6 @@ class IMDireccion extends BaseModel
 
     public function getDireccionCompleta()
     {
-        return $this->getValidad().'  '.'#Ext '.$this->getNext().'  '.'#Int'.'  '.$this->getNint(). ' ' . $this->getCp();
+        return $this->getVialidad().'  '.'#Ext '.$this->getNext().'  '.'#Int'.'  '.$this->getNint(). ' ' . $this->getCp();
     }
 }
