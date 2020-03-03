@@ -261,7 +261,6 @@ class InstitutoController extends BaseController
 
     public function eliminarInstituto( $request )
     {
-      
         try {
             $institucion = IMInstituto::find( $request->id );
             $institucion->ORGA_ENABLED = 0;
