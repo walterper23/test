@@ -111,7 +111,7 @@ class InstitutoController extends BaseController
         $data['vialidades']          = IMVialidades::getSelect();
 
         
-        return view('imjuve.Instituto.formNuevoInstituto')->with($data);
+        return view('imjuve.Instituto.formEditarInstituto')->with($data);
     }
 
     /**
