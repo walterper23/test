@@ -21,6 +21,9 @@
                 {!! Field::text('organismo',$modelo->getAlias(),['label'=>'Nombre del organismo','required','maxlength'=>255]) !!}
                 {!! Field::text('razon',$modelo->getRazonSocial(),['label'=>'Razon Social','required','maxlength'=>255]) !!}
                 {!! Field::text('telefono',$modelo->getTelefono(),['label'=>'Telefono','required','maxlength'=>255]) !!}
+                <input type="file" name="img" id="img">
+                <img id="image" src="https://avatars0.githubusercontent.com/u/3456749">
+
             </div>
            
          
@@ -89,8 +92,30 @@
 @endpush
 
 @push('js-custom')
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.js" integrity="sha256-CgvH7sz3tHhkiVKh05kSUgG97YtzYNnWt6OXcmYzqHY=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.css" integrity="sha256-jKV9n9bkk/CTP8zbtEtnKaKf+ehRovOYeKoyfthwbC8=" crossorigin="anonymous" />
+
 <script type="text/javascript">
-	'use strict';
+        $(function($){
+        $("input[name='img']").on("change",function(){
+            var image =document.getElementById("image")
+            var files = $(this)[0].files
+            var file = files[0]
+            $("#image").attr("src",window.URL.createObjectURL(file))
+            var cropper = new Cropper(image,{
+                aspectRatio: 4/3
+            })
+            cropper.crop()
+            cropper.getCropperCanvas().toBlob(function)
+            
+        })
+    })
+
+
+
+
+    'use strict';
     var formInstituto = new AppForm;
 	$.extend(formInstituto, new function(){
 

@@ -8,14 +8,14 @@
         <title>@yield('title')</title>
 
         <meta name="description" content="{{ config_var('Sistema.Nombre') }}">
-        <meta name="author" content="Instituto Tecnológico de Chetumal 2017 - 2018">
+        <meta name="author" content="Instituto Tecnológico de Chetumal 2020 - 2021">
         <meta name="robots" content="noindex, nofollow">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <!-- Open Graph Meta -->
         <!-- Open Graph Meta -->
         <meta property="og:site_name" content="{{ config_var('Sistema.Nombre') }}">
-        <meta property="og:description" content="Instituto Tecnológico de Chetumal 2017 - 2018">
+        <meta property="og:description" content="Instituto Tecnológico de Chetumal 2020 - 2021">
         <meta property="og:type" content="webapp">
 
         <!-- Icons -->
