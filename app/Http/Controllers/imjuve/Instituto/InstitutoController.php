@@ -173,6 +173,14 @@ class InstitutoController extends BaseController
     }
 
 
+    /**
+     * @autor Daniel Medina
+     * @descrip  Método para guardar la ruta y la imagen del instituto
+     * @date 14/03/2020
+     * @version 1.0
+     * @param Request $request
+     * @return mixed
+     */
     public function guardarImagen(Request $request)
     {
        $file = $request->file('imagen');
