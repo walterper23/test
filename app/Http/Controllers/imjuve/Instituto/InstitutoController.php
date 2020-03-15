@@ -151,9 +151,14 @@ class InstitutoController extends BaseController
            $institucion->ORGA_DIRE_ID = $dire->getKey();
            $institucion->save();
 
+           $ruta_imagen = $this->guardarImagen($request);
+
+           $institucion->ORGA_FOTO_FULL = $ruta_imagen;
+           $institucion->save();
+
            if($institucion && $dire){
-            DB::commit();
-        }
+                DB::commit();
+            }
 
             $tables = ['dataTableBuilder',null,true];
 
@@ -165,6 +170,36 @@ class InstitutoController extends BaseController
             return $this->responseErrorJSON('Ocurrió un error al guardar los cambios. Error ' . $error->getMessage() );
         }
 
+    }
+
+
+    public function guardarImagen(Request $request)
+    {
+       $file = $request->file('imagen');
+
+       //obtener la exension de la imagen
+       $extension = $file->extension();
+
+       //crear un nombre personalizado para la imagen y añadir la extension original
+       $name_file = 'nombre_imagen.'.$extension;
+
+       //definir carpeta donde se guardara la imagen
+       $folder = 'imagenes/institutos';
+
+        $path = $folder . '/' . $name_file;
+    
+        $file->move(public_path($folder),$name_file);
+
+        $img = \Intervention\Image\Facades\Image::make(public_path($path));
+
+        $img->crop(
+            $request->get('dataWidth'),
+            $request->get('dataHeight'),
+            $request->get('dataX'),
+            $request->get('dataY')
+        )->save();
+
+        return $path;
     }
 
 

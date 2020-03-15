@@ -17,18 +17,26 @@
             <h3 class="block-title">Datos del organismo</h3>
         </div>
         <div class="block-content row">
+
+
             <div class="col-md-8">
                 {!! Field::text('organismo',$modelo->getAlias(),['label'=>'Nombre del organismo','required','maxlength'=>255]) !!}
                 {!! Field::text('razon',$modelo->getRazonSocial(),['label'=>'Razon Social','required','maxlength'=>255]) !!}
                 {!! Field::text('telefono',$modelo->getTelefono(),['label'=>'Telefono','required','maxlength'=>255]) !!}
-                <input type="file" name="img" id="img">
-                <img id="image" src="https://avatars0.githubusercontent.com/u/3456749">
-
             </div>
-           
-         
-          
+            <div class="col-md-4">
+                <img src="/img/avatars/no-instituto.jpg" width="210" height="210" id="image-cropper-img">
+                <button type="button" class="btn btn-success crop_image" name="button" id="crop-button">Seleccionar imagen</button>
+                
+                <input type="file" name="imagen" id="imagen" accept="image/x-png,image/jpeg,image/jpg" style="display:none;">
+                <input type="hidden" name="dataX" id="dataX" value="">
+                <input type="hidden" name="datawidth" id="datawidth" value="">
+                <input type="hidden" name="dataY" id="dataY" value="">
+                <input type="hidden" name="dataheight" id="dataheight" value="">
+            </div>
         </div>
+    </div>
+</div>
 
        </div>
 
@@ -78,6 +86,8 @@
             <div class="col-md-6">
                 {!! Field::text('nint','',['label'=>'Num Int./Lt','maxlength'=>20]) !!}
             </div>
+
+            
         
         </div>
     </div>
@@ -92,137 +102,149 @@
 @endpush
 
 @push('js-custom')
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.js" integrity="sha256-CgvH7sz3tHhkiVKh05kSUgG97YtzYNnWt6OXcmYzqHY=" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.css" integrity="sha256-jKV9n9bkk/CTP8zbtEtnKaKf+ehRovOYeKoyfthwbC8=" crossorigin="anonymous" />
-
 <script type="text/javascript">
-        $(function($){
-        $("input[name='img']").on("change",function(){
-            var image =document.getElementById("image")
-            var files = $(this)[0].files
-            var file = files[0]
-            $("#image").attr("src",window.URL.createObjectURL(file))
-            var cropper = new Cropper(image,{
-                aspectRatio: 4/3
-            })
-            cropper.crop()
-            cropper.getCropperCanvas().toBlob(function)
-            
-        })
-    })
-
-
-
-
     'use strict';
+
     var formInstituto = new AppForm;
 	$.extend(formInstituto, new function(){
 
-this.context_ = '#modal-{{ $form_id }}';
-this.form_    = '#{{ $form_id }}';
+        this.context_ = '#modal-{{ $form_id }}';
+        this.form_    = '#{{ $form_id }}';
 
-this.start = function(){
+        this.start = function(){
 
-    var self = this;
-    Codebase.helpers(['datepicker','select2']);
+            var self = this;
+            Codebase.helpers(['datepicker','select2']);
 
-    self.form.on('keyup keypress', function (e) {
-        var code = e.keyCode || e.which;
+            self.form.on('keyup keypress', function (e) {
+                var code = e.keyCode || e.which;
 
-        if (code === 13) {
-            e.preventDefault();
-            return false;
-        }
-    });
-    var entidadSelect   = $("#entidad");
-    var municipioSelect = $("#municipio");
-    var localidadSelect = $("#localidad");
-    var asentamientoSelect = $("#asentamiento");
-
-    var changeEntidad = this.form.find('#entidad').on('change',function(e){
-        municipioSelect.val(null).trigger('change');
-         App.ajaxRequest({
-            url   : '/imjuve/utils/municipios',
-            type  : 'POST',
-            data  : {'entidad':e.currentTarget.value},
-            success : function(result){
-                //municipioSelect.select2('destroy');
-                municipioSelect.select2('destroy').off('select2:select');
-                municipioSelect.select2();
-                console.log('hola');
-                $.each(result, function(i, item) {
-                    var option = new Option(i,item, true, true);
-                    municipioSelect.append(option);
-                });
-                municipioSelect.trigger('change');
-                @if($action==2)
-                    if('{{$modelo->Direccion->getEntidad()}}'==e.currentTarget.value){
-                        municipioSelect.val('').val({{$modelo->Direccion->getMunicipio()}}).change();
-                    }
-                @endif
-            },
-            error : function(result){
-                resolve(result)
-            }
-        });
-    });
-    var changeMunicipio = this.form.find('#municipio').on('change',function(e){
-        if(e.currentTarget.value > 0 && entidadSelect.val() > 0){
-             App.ajaxRequest({
-                url   : '/imjuve/utils/localidades',
-                type  : 'POST',
-                data  : {'entidad':entidadSelect.val(),'municipio':e.currentTarget.value},
-                success : function(result){
-                    $.each(result, function(i, item) {
-                        var option = new Option(i,item, true, true);
-                        localidadSelect.append(option);
-                    });
-                    @if($action==2)
-                    if('{{$modelo->Direccion->getEntidad()}}'==entidadSelect.val()
-                        && '{{$modelo->Direccion->getMunicipio()}}'==e.currentTarget.value){
-                        localidadSelect.val('').val({{$modelo->Direccion->getLocalidad()}}).change();
-                    }
-                    @endif
-                },
-                error : function(result){
-                    resolve(result)
+                if (code === 13) {
+                    e.preventDefault();
+                    return false;
                 }
             });
-        }
-    });
-    var changeLocalidad = this.form.find('#localidad').on('change',function(e){
-         App.ajaxRequest({
-            url   : '/imjuve/utils/asentamientos',
-            type  : 'POST',
-            data  : {'entidad':entidadSelect.val(),'municipio':municipioSelect.val(),'localidad':e.currentTarget.value},
-            success : function(result){
-                $.each(result, function(i, item) {
-                    var option = new Option(i,item, true, true);
-                    asentamientoSelect.append(option);
+            var entidadSelect   = $("#entidad");
+            var municipioSelect = $("#municipio");
+            var localidadSelect = $("#localidad");
+            var asentamientoSelect = $("#asentamiento");
+
+            var changeEntidad = this.form.find('#entidad').on('change',function(e){
+                municipioSelect.val(null).trigger('change');
+                App.ajaxRequest({
+                    url   : '/imjuve/utils/municipios',
+                    type  : 'POST',
+                    data  : {'entidad':e.currentTarget.value},
+                    success : function(result){
+                        //municipioSelect.select2('destroy');
+                        municipioSelect.select2('destroy').off('select2:select');
+                        municipioSelect.select2();
+                        console.log('hola');
+                        $.each(result, function(i, item) {
+                            var option = new Option(i,item, true, true);
+                            municipioSelect.append(option);
+                        });
+                        municipioSelect.trigger('change');
+                        @if($action==2)
+                            if('{{$modelo->Direccion->getEntidad()}}'==e.currentTarget.value){
+                                municipioSelect.val('').val({{$modelo->Direccion->getMunicipio()}}).change();
+                            }
+                        @endif
+                    },
+                    error : function(result){
+                        resolve(result)
+                    }
                 });
-                @if($action==2)
-                if('{{$modelo->Direccion->getEntidad()}}'==entidadSelect.val()
-                    && '{{$modelo->Direccion->getMunicipio()}}'==municipioSelect.val()
-                    && '{{$modelo->Direccion->getLocalidad()}}'==e.currentTarget.value){
-                    asentamientoSelect.val('').val({{$modelo->Direccion->getAsentamiento()}}).change();
+            });
+            var changeMunicipio = this.form.find('#municipio').on('change',function(e){
+                if(e.currentTarget.value > 0 && entidadSelect.val() > 0){
+                    App.ajaxRequest({
+                        url   : '/imjuve/utils/localidades',
+                        type  : 'POST',
+                        data  : {'entidad':entidadSelect.val(),'municipio':e.currentTarget.value},
+                        success : function(result){
+                            $.each(result, function(i, item) {
+                                var option = new Option(i,item, true, true);
+                                localidadSelect.append(option);
+                            });
+                            @if($action==2)
+                            if('{{$modelo->Direccion->getEntidad()}}'==entidadSelect.val()
+                                && '{{$modelo->Direccion->getMunicipio()}}'==e.currentTarget.value){
+                                localidadSelect.val('').val({{$modelo->Direccion->getLocalidad()}}).change();
+                            }
+                            @endif
+                        },
+                        error : function(result){
+                            resolve(result)
+                        }
+                    });
                 }
-                @endif
+            });
+            var changeLocalidad = this.form.find('#localidad').on('change',function(e){
+                App.ajaxRequest({
+                    url   : '/imjuve/utils/asentamientos',
+                    type  : 'POST',
+                    data  : {'entidad':entidadSelect.val(),'municipio':municipioSelect.val(),'localidad':e.currentTarget.value},
+                    success : function(result){
+                        $.each(result, function(i, item) {
+                            var option = new Option(i,item, true, true);
+                            asentamientoSelect.append(option);
+                        });
+                        @if($action==2)
+                        if('{{$modelo->Direccion->getEntidad()}}'==entidadSelect.val()
+                            && '{{$modelo->Direccion->getMunicipio()}}'==municipioSelect.val()
+                            && '{{$modelo->Direccion->getLocalidad()}}'==e.currentTarget.value){
+                            asentamientoSelect.val('').val({{$modelo->Direccion->getAsentamiento()}}).change();
+                        }
+                        @endif
 
-            },
-            error : function(result){
-                resolve(result)
-            }
-        });
-    });
-    @if($action==2)
-        entidadSelect.val('{{$modelo->Direccion->getEntidad()}}').change();
-    @endif
+                    },
+                    error : function(result){
+                        resolve(result)
+                    }
+                });
+            });
+            @if($action==2)
+                entidadSelect.val('{{$modelo->Direccion->getEntidad()}}').change();
+            @endif
 
-};
+            var $cropper =  $('#image-cropper-img'),
+                $image = $('#image-cropper-img'),
+                $dataX = $('#dataX'),
+                $dataY = $('#dataY'),
+                $dataHeight = $('#dataheight'),
+                $dataWidth = $('#datawidth'),
+                options = {
+                    aspectRatio: 1,
+                    preview: '.preview',
+                    crop: function(e) {
+                        $dataX.val(Math.round(e.x));
+                        $dataY.val(Math.round(e.y));
+                        $dataHeight.val(Math.round(e.height));
+                        $dataWidth.val(Math.round(e.width));
+                    }
+                };
 
+                $('#imagen').on('change',function(e){
+                    if(this.files && this.files[0]){
+                        var reader = new FileReader();
+                        reader.onload = function (e){
+                            $cropper.cropper(options);
+                            $cropper.cropper('replace', e.target.result);
+                        };
+                        reader.readAsDataURL(this.files[0]);
+                    }
+                });
 
-	
+                $('#crop-button').click(function(){
+                    $('#imagen').click();
+                });
+
+        };
+
+        this.getDataForm = function( form ){
+            return new FormData(form[0]);
+        }; 
 
         this.displayError = function( index, value ){
             AppAlert.notify({
