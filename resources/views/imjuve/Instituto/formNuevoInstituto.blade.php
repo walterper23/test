@@ -30,9 +30,9 @@
                 
                 <input type="file" name="imagen" id="imagen" accept="image/x-png,image/jpeg,image/jpg" style="display:none;">
                 <input type="hidden" name="dataX" id="dataX" value="">
-                <input type="hidden" name="datawidth" id="datawidth" value="">
+                <input type="hidden" name="dataWidth" id="dataWidth" value="">
                 <input type="hidden" name="dataY" id="dataY" value="">
-                <input type="hidden" name="dataheight" id="dataheight" value="">
+                <input type="hidden" name="dataHeight" id="dataHeight" value="">
             </div>
         </div>
     </div>
@@ -208,12 +208,13 @@
                 entidadSelect.val('{{$modelo->Direccion->getEntidad()}}').change();
             @endif
 
+            //funcion del cropper js
             var $cropper =  $('#image-cropper-img'),
                 $image = $('#image-cropper-img'),
                 $dataX = $('#dataX'),
                 $dataY = $('#dataY'),
-                $dataHeight = $('#dataheight'),
-                $dataWidth = $('#datawidth'),
+                $dataHeight = $('#dataHeight'),
+                $dataWidth = $('#dataWidth'),
                 options = {
                     aspectRatio: 1,
                     preview: '.preview',
@@ -242,9 +243,21 @@
 
         };
 
-        this.getDataForm = function( form ){
-            return new FormData(form[0]);
-        }; 
+        this.submitHandler = function( form ){
+            if(!$(form).valid()) return false;
+
+            App.ajaxRequest({
+                url         : $(form).attr('action'),
+                data        : new FormData($(form)[0]),
+                cache       : false,
+                processData : false,
+                contentType : false,
+                beforeSend  : formInstituto.beforeSubmitHandler,
+                success     : formInstituto.successSubmitHandler,
+                code422     : formInstituto.displayErrors
+            });
+        };
+            // funcion del cropper js
 
         this.displayError = function( index, value ){
             AppAlert.notify({

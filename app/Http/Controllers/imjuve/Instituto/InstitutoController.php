@@ -151,7 +151,7 @@ class InstitutoController extends BaseController
            $institucion->ORGA_DIRE_ID = $dire->getKey();
            $institucion->save();
 
-           $ruta_imagen = $this->guardarImagen($request);
+           $ruta_imagen = $this->guardarImagen($request, $institucion);
 
            $institucion->ORGA_FOTO_FULL = $ruta_imagen;
            $institucion->save();
@@ -181,33 +181,40 @@ class InstitutoController extends BaseController
      * @param Request $request
      * @return mixed
      */
-    public function guardarImagen(Request $request)
+    public function guardarImagen(Request $request, $institucion)
     {
-       $file = $request->file('imagen');
+        $file = $request->file('imagen');
 
-       //obtener la exension de la imagen
-       $extension = $file->extension();
+        if ( $file ) { // Si usuario subió una imagen
+            
+            //obtener la extension de la imagen
+            $extension = $file->extension();
 
-       //crear un nombre personalizado para la imagen y añadir la extension original
-       $name_file = 'nombre_imagen.'.$extension;
+            //crear un nombre personalizado para la imagen y añadir la extension original
+            // añadir el ID del instituto y la extensión
+            $name_file = sprintf('instituto_img_%s.%s',$institucion->getKey(),$extension);
 
-       //definir carpeta donde se guardara la imagen
-       $folder = 'imagenes/institutos';
+            //definir carpeta donde se guardara la imagen
+            $folder = 'imagenes/institutos';
 
-        $path = $folder . '/' . $name_file;
-    
-        $file->move(public_path($folder),$name_file);
+            $path = $folder . '/' . $name_file;
+        
+            $file->move(public_path($folder),$name_file);
 
-        $img = \Intervention\Image\Facades\Image::make(public_path($path));
+            $img = \Intervention\Image\Facades\Image::make(public_path($path));
 
-        $img->crop(
-            $request->get('dataWidth'),
-            $request->get('dataHeight'),
-            $request->get('dataX'),
-            $request->get('dataY')
-        )->save();
+            $img->crop(
+                $request->get('dataWidth'),
+                $request->get('dataHeight'),
+                $request->get('dataX'),
+                $request->get('dataY')
+            )->save();
 
-        return $path;
+            return $path;
+        }
+
+        // Retornar la imagen por default
+        return 'imagenes/institutos/no-instituto.jpg';
     }
 
 
