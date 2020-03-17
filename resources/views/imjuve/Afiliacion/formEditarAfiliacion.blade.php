@@ -49,6 +49,11 @@
                 <div class="col-md-6">
                     {!! Field::text('correo',$modelo->getCorreo(),['label'=>'Correo','maxlength'=>255]) !!}
                 </div>
+                <div class="col-md-6">
+                    {!! Field::text('facebook',$modelo->getFacebook(),['label'=>'Facebook','maxlength'=>255]) !!}
+                </div>
+                <div class="col-md-12">
+                </div>
                 <div class="col-md-6 form-group row">
                     <label for="cp" class="col-md-5 col-form-label">Código Postal</label>
                     <div class="col-md-7">
@@ -124,31 +129,33 @@
                 var asentamientoSelect = $("#asentamientoEdit");
                 var changeEntidad = this.form.find('#entidadEdit').on('change',function(e){
                     municipioSelect.val(null).trigger('change');
-                    App.ajaxRequest({
-                        url   : '/imjuve/utils/municipios',
-                        type  : 'POST',
-                        data  : {'entidad':e.currentTarget.value},
-                        success : function(result){
-                            //municipioSelect.select2('destroy');
-                            municipioSelect.select2('destroy').off('select2:select');
-                            municipioSelect.select2();
-                            console.log('holadssxd');
-                            $.each(result, function(i, item) {
-                                var option = new Option(i,item, true, true);
-                                municipioSelect.select2().append(option);
-                                console.log('heyt');
-                            });
-                            //municipioSelect.trigger('change');
-                            @if($action==2)
-                            if('{{$modelo->Direccion->getEntidad()}}'==e.currentTarget.value){
-                                municipioSelect.val('').val({{$modelo->Direccion->getMunicipio()}}).change();
+                    if(e.currentTarget.value>0){
+                        App.ajaxRequest({
+                            url   : '/imjuve/utils/municipios',
+                            type  : 'POST',
+                            data  : {'entidad':e.currentTarget.value},
+                            success : function(result){
+                                //municipioSelect.select2('destroy');
+                                municipioSelect.select2('destroy').off('select2:select');
+                                municipioSelect.select2();
+                                console.log('holadssxd');
+                                $.each(result, function(i, item) {
+                                    var option = new Option(i,item, true, true);
+                                    municipioSelect.select2().append(option);
+                                    console.log('heyt');
+                                });
+                                //municipioSelect.trigger('change');
+                                @if($action==2)
+                                if('{{$modelo->Direccion->getEntidad()}}'==e.currentTarget.value){
+                                    municipioSelect.val('').val({{$modelo->Direccion->getMunicipio()}}).change();
+                                }
+                                @endif
+                            },
+                            error : function(result){
+                                resolve(result)
                             }
-                            @endif
-                        },
-                        error : function(result){
-                            resolve(result)
-                        }
-                    });
+                        });
+                    }
                 });
                 var changeMunicipio = this.form.find('#municipioEdit').on('change',function(e){
                     if(e.currentTarget.value > 0 && e.currentTarget.value!=999 && entidadSelect.val() > 0){

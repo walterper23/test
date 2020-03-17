@@ -131,6 +131,7 @@ class AfiliacionController extends BaseController
             $afil->AFIL_OCUP_ID         = $request->ocupacion;
             $afil->AFIL_CORREO          = $request->correo;
             $afil->AFIL_TELEFONO        = $request->telefono;
+            $afil->AFIL_FACEBOOK        = $request->facebook;
             $afil->save();
 
             $dire = new IMDireccion();
@@ -208,6 +209,7 @@ class AfiliacionController extends BaseController
                 $afil->AFIL_OCUP_ID         = $request->ocupacion;
                 $afil->AFIL_CORREO          = $request->correo;
                 $afil->AFIL_TELEFONO        = $request->telefono;
+                $afil->AFIL_FACEBOOK        = $request->facebook;
                 $afil->save();
                 $dire = IMDireccion::find($afil->getDireccion());
                 if($dire){

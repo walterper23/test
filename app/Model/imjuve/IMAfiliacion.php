@@ -13,6 +13,10 @@ class IMAfiliacion extends BaseModel
     protected $primaryKey   = 'AFIL_ID';
     protected $prefix       = 'AFIL';
 
+    public function getFacebook()
+    {
+        return $this->getAttribute('AFIL_FACEBOOK');
+    }
     public function getNombres()
     {
         return $this->getAttribute('AFIL_NOMBRES');
