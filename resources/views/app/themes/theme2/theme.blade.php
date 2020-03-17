@@ -8,14 +8,14 @@
         <title>@yield('title')</title>
 
         <meta name="description" content="{{ config_var('Sistema.Nombre') }}">
-        <meta name="author" content="Instituto Tecnológico de Chetumal 2017 - 2018">
+        <meta name="author" content="Instituto Tecnológico de Chetumal 2020 - 2021">
         <meta name="robots" content="noindex, nofollow">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <!-- Open Graph Meta -->
         <!-- Open Graph Meta -->
         <meta property="og:site_name" content="{{ config_var('Sistema.Nombre') }}">
-        <meta property="og:description" content="Instituto Tecnológico de Chetumal 2017 - 2018">
+        <meta property="og:description" content="Instituto Tecnológico de Chetumal 2020 - 2021">
         <meta property="og:type" content="webapp">
 
         <!-- Icons -->
@@ -134,7 +134,7 @@
                             </li>
 
                             <li>
-                                <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-badge"></i><span class="sidebar-mini-hide">Instituciones</span></a>
+                                <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-vector"></i><span class="sidebar-mini-hide">Instituciones</span></a>
                                 <ul>
                                     <li>
                                         <a href="/imjuve/instituto/">Agregar Institucion</a>
@@ -699,10 +699,10 @@
             <footer id="page-footer" class="opacity-0" style="opacity: 1;">
                 <div class="content p-10 font-size-xs clearfix">
                     <div class="float-left">
-                        <span class="font-w600 text-primary">{{ config_var('Sistema.Siglas') . ' ' . config_var('Sistema.Version') }}</span> &copy; <span class="js-year-copy">2020</span>
+                        <span class="font-w600 text-primary">{{ 'IMJUVE'. ' ' . config_var('Sistema.Version') }}</span> &copy; <span class="js-year-copy">2020</span>
                     </div>
                     <div class="float-right">
-                        Powered by <span class="font-w600 text-danger">Cpjbugg</span>
+                        Powered by <span class="font-w600 text-danger">Daniel Medina y Walter Gomez</span>
                     </div>
                 </div>
             </footer>

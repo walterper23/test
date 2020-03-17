@@ -31,12 +31,12 @@ class IMInstituto extends Model
     }
     public function getAvatarSmall()
     {
-        return $this->getAttribute('ORGA_FOTO_SMALL ');
+        return $this->getAttribute('ORGA_FOTO_SMALL');
     }
 
     public function getAvatarFull()
     {
-        return $this->getAttribute('ORGA_FOTO_FULL ');
+        return $this->getAttribute('ORGA_FOTO_FULL');
     }
     
   

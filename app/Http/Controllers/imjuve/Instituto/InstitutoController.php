@@ -111,7 +111,7 @@ class InstitutoController extends BaseController
         $data['vialidades']          = IMVialidades::getSelect();
 
         
-        return view('imjuve.Instituto.formEditarInstituto')->with($data);
+        return view('imjuve.Instituto.formNuevoInstituto')->with($data);
     }
 
     /**
@@ -151,13 +151,18 @@ class InstitutoController extends BaseController
            $institucion->ORGA_DIRE_ID = $dire->getKey();
            $institucion->save();
 
+           $ruta_imagen = $this->guardarImagen($request, $institucion);
+
+           $institucion->ORGA_FOTO_FULL = $ruta_imagen;
+           $institucion->save();
+
            if($institucion && $dire){
-            DB::commit();
-        }
+                DB::commit();
+            }
 
             $tables = ['dataTableBuilder',null,true];
 
-            $message = sprintf('<i class="fa fa-fw fa-check"></i> Instituto <b>%s</b>',' Creado');
+            $message = "Instituto registrado con éxito.";
 
             return $this->responseSuccessJSON($message, $tables);
         } catch(Exception $error) {
@@ -165,6 +170,51 @@ class InstitutoController extends BaseController
             return $this->responseErrorJSON('Ocurrió un error al guardar los cambios. Error ' . $error->getMessage() );
         }
 
+    }
+
+
+    /**
+     * @autor Daniel Medina
+     * @descrip  Método para guardar la ruta y la imagen del instituto
+     * @date 14/03/2020
+     * @version 1.0
+     * @param Request $request
+     * @return mixed
+     */
+    public function guardarImagen(Request $request, $institucion)
+    {
+        $file = $request->file('imagen');
+
+        if ( $file ) { // Si usuario subió una imagen
+            
+            //obtener la extension de la imagen
+            $extension = $file->extension();
+
+            //crear un nombre personalizado para la imagen y añadir la extension original
+            // añadir el ID del instituto y la extensión
+            $name_file = sprintf('instituto_img_%s.%s',$institucion->getKey(),$extension);
+
+            //definir carpeta donde se guardara la imagen
+            $folder = 'imagenes/institutos';
+
+            $path = $folder . '/' . $name_file;
+        
+            $file->move(public_path($folder),$name_file);
+
+            $img = \Intervention\Image\Facades\Image::make(public_path($path));
+
+            $img->crop(
+                $request->get('dataWidth'),
+                $request->get('dataHeight'),
+                $request->get('dataX'),
+                $request->get('dataY')
+            )->save();
+
+            return $path;
+        }
+
+        // Retornar la imagen por default
+        return 'imagenes/institutos/no-instituto.jpg';
     }
 
 
@@ -191,7 +241,7 @@ class InstitutoController extends BaseController
             $data['entidades']     = IMEntidad::getSelect();
             $data['vialidades']    = IMVialidades::getSelect();
 
-            return view('imjuve.Instituto.formNuevoInstituto')->with($data);
+            return view('imjuve.Instituto.formEditarInstituto')->with($data);
         } catch(Exception $error) {
             return $this->responseErrorJSON('Ocurrió un error: ' . $error->getMessage() );
         }
@@ -270,7 +320,7 @@ class InstitutoController extends BaseController
 
             $tables = 'dataTableBuilder';
 
-            $message = sprintf('<i class="fa fa-fw fa-warning"></i> Instituto <b>%s</b> eliminado');
+            $message = "Instituto Eliminado con éxito.";
 
             return $this->responseDangerJSON($message,$tables);
         } catch(Exception $error) {

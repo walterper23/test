@@ -11,12 +11,7 @@ App.loadScript('/js/helpers/helper.js', function(){
 
 			new_ : function(id, url){
 				App.openModal({
-					id    : 'form-nuevo-instituto',
-					size  : 'modal-lg',
-					url   : '/imjuve/instituto/nuevo',
-					data  : { id },
-					btnCancel : true,
-					btnOkText : 'Agregar'
+					id, url, size : 'modal-lg'
 				});
 			},
 
