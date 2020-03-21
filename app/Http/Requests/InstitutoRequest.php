@@ -24,20 +24,17 @@ class InstitutoRequest extends FormRequest
     public function rules()
     {
        return [
-            'action' => 'required|in:1,2,3,4,5',
-            'id'     => 'required_if:action:2,3,4,5',
+           /*
             'nombre' => 'required_if:action,1,2|min:1,max:255',
             'organismo'    => 'required_if:action,1,2|min:1,max:255',
             'razon'    => 'required_if:action,1,2|min:1,max:255',
             'telefono'    => 'required_if:action,1,2|min:1,max:255',
-           ];
+         */  ];
     }
 
     public function messages(){
         return [
-            'action.required' => 'Petición no especificada',
-            'action.in'       => 'Petición no válida',
-            'id.required_if'  => 'Especifique el identificador del recurso',
+            /*
             'organismo.required_if' => 'Introduzca un nombre de organismo',
             'organismo.min'      => 'Mínimo :min caracter',
             'organismo.max'      => 'Máximo :max caracteres',
@@ -47,6 +44,6 @@ class InstitutoRequest extends FormRequest
             'telefono.required_if' => 'Introduzca un numero telefonico',
             'telefono.min'      => 'Mínimo :min caracter',
             'telefono.max'      => 'Máximo :max caracteres',
-        ];
+       */  ];
     }
 }
