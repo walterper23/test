@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\AfiliacionRequest;
 use DB;
 use Exception;
+use Maatwebsite\Excel\Excel;
 
 /* Controllers */
 use App\Http\Controllers\BaseController;
