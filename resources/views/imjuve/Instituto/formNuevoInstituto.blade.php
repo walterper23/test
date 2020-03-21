@@ -134,6 +134,7 @@
     });
     Webcam.attach( '#my_camera' );
 
+    
     function take_snapshot() {
     
     // take snapshot and get image data
@@ -143,6 +144,8 @@
     document.getElementById('results').innerHTML = '<img src="'+data_uri+'"/>';
     });
     }
+    
+    
 
 
     var formInstituto = new AppForm;
