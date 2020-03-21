@@ -11,13 +11,6 @@
     }
 </style>
 
-<style>
-    #my_camera{
-     width: 20px;
-     height: 20px;
-     border: 1px solid black;
-    }
-    </style>
 
 {{ Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id,'files'=>true]) }}
     {{ Form::hidden('action',$action) }}
@@ -45,10 +38,6 @@
                 <input type="hidden" name="dataY" id="dataY" value="">
                 <input type="hidden" name="dataHeight" id="dataHeight" value="">
 
-                <div id="my_camera"></div>
-                <input type="button"  class="btn btn-success crop_image" value="Tomar Foto" onClick="take_snapshot()">
-                 
-                <div id="results" ></div>
     
                 
             </div>
@@ -68,7 +57,7 @@
                 <label for="cp" class="col-md-5 col-form-label" required="">Código Postal</label>
                 <div class="col-md-7">
                     <div class="input-group">
-                        <input required="" maxlength="5" id="cp" class="form-control" name="cp" type="text" value="{{(!is_null($modelo->Direccion))?$modelo->Direccion->getCp():''}}">
+                        <input maxlength="5" id="cp" class="form-control" name="cp" type="text" value="{{(!is_null($modelo->Direccion))?$modelo->Direccion->getCp():''}}">
                         <div class="input-group-appen">
                             <button type="button" class="btn btn-secondary">
                                 <i class="si si-refresh"></i>
@@ -123,30 +112,6 @@
 @push('js-custom')
 <script type="text/javascript">
     'use strict';
-
-    Webcam.set({
-        force_flash: true,
-
-    width: 210,
-    height: 210,
-    image_format: 'jpeg',
-    jpeg_quality: 90
-    });
-    Webcam.attach( '#my_camera' );
-
-    
-    function take_snapshot() {
-    
-    // take snapshot and get image data
-    Webcam.snap( function(data_uri) {
-        
-    // display results in page
-    document.getElementById('results').innerHTML = '<img src="'+data_uri+'"/>';
-    });
-    }
-    
-    
-
 
     var formInstituto = new AppForm;
 	$.extend(formInstituto, new function(){
@@ -247,9 +212,19 @@
                     }
                 });
             });
+
+
+          
+
+
+
+
+
             @if($action==2)
                 entidadSelect.val('{{$modelo->Direccion->getEntidad()}}').change();
             @endif
+
+          
 
             //funcion del cropper js
             var $cropper =  $('#image-cropper-img'),
@@ -301,6 +276,40 @@
             });
         };
             // fin de la funcion del cropper js
+
+            this.rules = function(){
+			return {
+                organismo : { required : true, minlength : 1, maxlength : 255 },
+                razon : { required : true, minlength : 1, maxlength : 255 },
+                telefono : { required : true, minlength : 1, maxlength : 255 },
+              
+
+			}
+		}
+
+		this.messages = function(){
+			return {
+                organismo : {
+                    required : 'Introduzca el Nombre del Instituto',
+                    minlength : 'Mínimo {0} caracteres',
+                    maxlength : 'Máximo {0} caracteres'
+                },
+                razon : {
+                    required : 'Introduzca la Razon Social del Instituto',
+                    minlength : 'Mínimo {0} caracteres',
+                    maxlength : 'Máximo {0} caracteres'
+                },
+                telefono : {
+                    required : 'Introduzca el Telefono del Instituto',
+                    minlength : 'Mínimo {0} caracteres',
+                    maxlength : 'Máximo {0} caracteres'
+                },
+             
+
+			}
+		};
+
+
 
         this.displayError = function( index, value ){
             AppAlert.notify({

@@ -26,7 +26,7 @@
             </div>
             <div class="col-md-4">
             <img src="{{asset($modelo->getAvatarFull())}}" width="210" height="210" id="image-cropper-img">
-                <button type="button" class="btn btn-success crop_image" name="button" id="crop-button">Seleccionar imagen</button>
+                <button type="button" class="btn btn-success crop_image" name="button" id="crop-button">Subir nueva foto</button>
                 
                 <input type="file" name="imagen" id="imagen" accept="image/x-png,image/jpeg,image/jpg" style="display:none;">
                 <input type="hidden" name="dataX" id="dataX" value="">
@@ -102,49 +102,74 @@
 @push('js-custom')
 <script type="text/javascript">
 	'use strict';
+
+
     var formInstituto = new AppForm;
 	$.extend(formInstituto, new function(){
 
-this.context_ = '#modal-{{ $form_id }}';
-this.form_    = '#{{ $form_id }}';
+        this.context_ = '#modal-{{ $form_id }}';
+        this.form_    = '#{{ $form_id }}';
 
-this.start = function(){
+        this.start = function(){
 
-    var self = this;
-    Codebase.helpers(['datepicker','select2']);
+            var self = this;
+            Codebase.helpers(['datepicker','select2']);
 
-    self.form.on('keyup keypress', function (e) {
-        var code = e.keyCode || e.which;
+            self.form.on('keyup keypress', function (e) {
+                var code = e.keyCode || e.which;
 
-        if (code === 13) {
-            e.preventDefault();
-            return false;
-        }
-    });
-    var entidadSelect   = $("#entidadEdit");
-                var municipioSelect = $("#municipioEdit");
-                var localidadSelect = $("#localidadEdit");
-                var asentamientoSelect = $("#asentamientoEdit");
-                var changeEntidad = this.form.find('#entidadEdit').on('change',function(e){
-                    municipioSelect.val(null).trigger('change');
-                    App.ajaxRequest({
-                        url   : '/imjuve/utils/municipios',
-                        type  : 'POST',
-                        data  : {'entidad':e.currentTarget.value},
-                        success : function(result){
-                            //municipioSelect.select2('destroy');
-                            municipioSelect.select2('destroy').off('select2:select');
-                            municipioSelect.select2();
-                            console.log('holadssxd');
-                            $.each(result, function(i, item) {
-                                var option = new Option(i,item, true, true);
-                                municipioSelect.select2().append(option);
-                                console.log('heyt');
-                            });
-                            //municipioSelect.trigger('change');
-                            @if($action==2)
+                if (code === 13) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+            var entidadSelect   = $("#entidad");
+            var municipioSelect = $("#municipio");
+            var localidadSelect = $("#localidad");
+            var asentamientoSelect = $("#asentamiento");
+
+            var changeEntidad = this.form.find('#entidad').on('change',function(e){
+                municipioSelect.val(null).trigger('change');
+                App.ajaxRequest({
+                    url   : '/imjuve/utils/municipios',
+                    type  : 'POST',
+                    data  : {'entidad':e.currentTarget.value},
+                    success : function(result){
+                        //municipioSelect.select2('destroy');
+                        municipioSelect.select2('destroy').off('select2:select');
+                        municipioSelect.select2();
+                        console.log('hola');
+                        $.each(result, function(i, item) {
+                            var option = new Option(i,item, true, true);
+                            municipioSelect.append(option);
+                        });
+                        municipioSelect.trigger('change');
+                        @if($action==2)
                             if('{{$modelo->Direccion->getEntidad()}}'==e.currentTarget.value){
                                 municipioSelect.val('').val({{$modelo->Direccion->getMunicipio()}}).change();
+                            }
+                        @endif
+                    },
+                    error : function(result){
+                        resolve(result)
+                    }
+                });
+            });
+            var changeMunicipio = this.form.find('#municipio').on('change',function(e){
+                if(e.currentTarget.value > 0 && entidadSelect.val() > 0){
+                    App.ajaxRequest({
+                        url   : '/imjuve/utils/localidades',
+                        type  : 'POST',
+                        data  : {'entidad':entidadSelect.val(),'municipio':e.currentTarget.value},
+                        success : function(result){
+                            $.each(result, function(i, item) {
+                                var option = new Option(i,item, true, true);
+                                localidadSelect.append(option);
+                            });
+                            @if($action==2)
+                            if('{{$modelo->Direccion->getEntidad()}}'==entidadSelect.val()
+                                && '{{$modelo->Direccion->getMunicipio()}}'==e.currentTarget.value){
+                                localidadSelect.val('').val({{$modelo->Direccion->getLocalidad()}}).change();
                             }
                             @endif
                         },
@@ -152,67 +177,38 @@ this.start = function(){
                             resolve(result)
                         }
                     });
-                });
-                var changeMunicipio = this.form.find('#municipioEdit').on('change',function(e){
-                    if(e.currentTarget.value > 0 && e.currentTarget.value!=999 && entidadSelect.val() > 0){
-                        App.ajaxRequest({
-                            url   : '/imjuve/utils/localidades',
-                            type  : 'POST',
-                            data  : {'entidad':entidadSelect.val(),'municipio':e.currentTarget.value},
-                            success : function(result){
-                                $.each(result, function(i, item) {
-                                    var option = new Option(i,item, true, true);
-                                    localidadSelect.append(option);
-                                });
-                                @if($action==2)
-                                if('{{$modelo->Direccion->getEntidad()}}'==entidadSelect.val()
-                                    && '{{$modelo->Direccion->getMunicipio()}}'==e.currentTarget.value){
-                                    localidadSelect.val('').val({{$modelo->Direccion->getLocalidad()}}).change();
-                                }
-                                @endif
-                            },
-                            error : function(result){
-                                resolve(result)
-                            }
+                }
+            });
+            var changeLocalidad = this.form.find('#localidad').on('change',function(e){
+                App.ajaxRequest({
+                    url   : '/imjuve/utils/asentamientos',
+                    type  : 'POST',
+                    data  : {'entidad':entidadSelect.val(),'municipio':municipioSelect.val(),'localidad':e.currentTarget.value},
+                    success : function(result){
+                        $.each(result, function(i, item) {
+                            var option = new Option(i,item, true, true);
+                            asentamientoSelect.append(option);
                         });
+                        @if($action==2)
+                        if('{{$modelo->Direccion->getEntidad()}}'==entidadSelect.val()
+                            && '{{$modelo->Direccion->getMunicipio()}}'==municipioSelect.val()
+                            && '{{$modelo->Direccion->getLocalidad()}}'==e.currentTarget.value){
+                            asentamientoSelect.val('').val({{$modelo->Direccion->getAsentamiento()}}).change();
+                        }
+                        @endif
+
+                    },
+                    error : function(result){
+                        resolve(result)
                     }
                 });
-                var changeLocalidad = this.form.find('#localidadEdit').on('change',function(e){
-                    let entidad     = entidadSelect.val();
-                    let municipio   = municipioSelect.val();
-                    let localidad   = e.currentTarget.value;
-                    if(entidad>0 && municipio>0 && localidad>0){
-                        App.ajaxRequest({
-                            url   : '/imjuve/utils/asentamientos',
-                            type  : 'POST',
-                            data  : {'entidad':entidad,'municipio':municipio,'localidad':localidad},
-                            success : function(result){
-                                $.each(result, function(i, item) {
-                                    var option = new Option(i,item, true, true);
-                                    asentamientoSelect.append(option);
-                                });
-                                @if($action==2)
-                                if('{{$modelo->Direccion->getEntidad()}}'==entidad
-                                    && '{{$modelo->Direccion->getMunicipio()}}'==municipio
-                                    && '{{$modelo->Direccion->getLocalidad()}}'==localidad){
-                                    asentamientoSelect.val('').val({{$modelo->Direccion->getAsentamiento()}}).change();
-                                }
-                                @endif
+            });
+            @if($action==2)
+                entidadSelect.val('{{$modelo->Direccion->getEntidad()}}').change();
+            @endif
 
-                            },
-                            error : function(result){
-                                resolve(result)
-                            }
-                        });
-                    }
-                });
-    @if($action==2)
-        entidadSelect.val('{{$modelo->Direccion->getEntidad()}}').change();
-    @endif
-
-
-     //funcion del cropper js
-     var $cropper =  $('#image-cropper-img'),
+            //funcion del cropper js
+            var $cropper =  $('#image-cropper-img'),
                 $image = $('#image-cropper-img'),
                 $dataX = $('#dataX'),
                 $dataY = $('#dataY'),
@@ -262,6 +258,37 @@ this.start = function(){
         };
             // fin de la funcion del cropper js
 
+            this.rules = function(){
+			return {
+                organismo : { required : true, minlength : 1, maxlength : 255 },
+                razon : { required : true, minlength : 1, maxlength : 255 },
+                telefono : { required : true, minlength : 1, maxlength : 255 },
+              
+
+			}
+		}
+
+		this.messages = function(){
+			return {
+                organismo : {
+                    required : 'Introduzca el Nombre del Instituto',
+                    minlength : 'Mínimo {0} caracteres',
+                    maxlength : 'Máximo {0} caracteres'
+                },
+                razon : {
+                    required : 'Introduzca la Razon Social del Instituto',
+                    minlength : 'Mínimo {0} caracteres',
+                    maxlength : 'Máximo {0} caracteres'
+                },
+                telefono : {
+                    required : 'Introduzca el Telefono del Instituto',
+                    minlength : 'Mínimo {0} caracteres',
+                    maxlength : 'Máximo {0} caracteres'
+                },
+             
+
+			}
+		};
 
         this.displayError = function( index, value ){
             AppAlert.notify({
@@ -273,6 +300,7 @@ this.start = function(){
         };
 
 	}).init().start();
+
 
 </script>
 @endpush

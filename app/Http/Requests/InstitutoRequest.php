@@ -23,21 +23,30 @@ class InstitutoRequest extends FormRequest
      */
     public function rules()
     {
-       return [/* 
+       return [
             'action' => 'required|in:1,2,3,4,5',
             'id'     => 'required_if:action:2,3,4,5',
-            'nombre' => 'required_if:action,1,2|min:1,max:255'
-           ;*/];
+            'nombre' => 'required_if:action,1,2|min:1,max:255',
+            'organismo'    => 'required_if:action,1,2|min:1,max:255',
+            'razon'    => 'required_if:action,1,2|min:1,max:255',
+            'telefono'    => 'required_if:action,1,2|min:1,max:255',
+           ];
     }
 
     public function messages(){
         return [
-            /*'action.required' => 'Petición no especificada',
+            'action.required' => 'Petición no especificada',
             'action.in'       => 'Petición no válida',
             'id.required_if'  => 'Especifique el identificador del recurso',
-            'nombre.required' => 'Introduzca un nombre',
-            'nombre.min'      => 'Mínimo :min caracter',
-            'nombre.max'      => 'Máximo :max caracteres'*/
+            'organismo.required_if' => 'Introduzca un nombre de organismo',
+            'organismo.min'      => 'Mínimo :min caracter',
+            'organismo.max'      => 'Máximo :max caracteres',
+            'razon.required_if' => 'Introduzca una razon social',
+            'razon.min'      => 'Mínimo :min caracter',
+            'razon.max'      => 'Máximo :max caracteres',
+            'telefono.required_if' => 'Introduzca un numero telefonico',
+            'telefono.min'      => 'Mínimo :min caracter',
+            'telefono.max'      => 'Máximo :max caracteres',
         ];
     }
 }
