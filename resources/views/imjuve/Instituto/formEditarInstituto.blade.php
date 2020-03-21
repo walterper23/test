@@ -24,6 +24,16 @@
                 {!! Field::text('razon',$modelo->getRazonSocial(),['label'=>'Razon Social','required','maxlength'=>255]) !!}
                 {!! Field::text('telefono',$modelo->getTelefono(),['label'=>'Telefono','required','maxlength'=>255]) !!}
             </div>
+            <div class="col-md-4">
+            <img src="{{asset($modelo->getAvatarFull())}}" width="210" height="210" id="image-cropper-img">
+                <button type="button" class="btn btn-success crop_image" name="button" id="crop-button">Seleccionar imagen</button>
+                
+                <input type="file" name="imagen" id="imagen" accept="image/x-png,image/jpeg,image/jpg" style="display:none;">
+                <input type="hidden" name="dataX" id="dataX" value="">
+                <input type="hidden" name="dataWidth" id="dataWidth" value="">
+                <input type="hidden" name="dataY" id="dataY" value="">
+                <input type="hidden" name="dataHeight" id="dataHeight" value="">
+            </div>
            
          
           
@@ -200,10 +210,58 @@ this.start = function(){
         entidadSelect.val('{{$modelo->Direccion->getEntidad()}}').change();
     @endif
 
-};
 
+     //funcion del cropper js
+     var $cropper =  $('#image-cropper-img'),
+                $image = $('#image-cropper-img'),
+                $dataX = $('#dataX'),
+                $dataY = $('#dataY'),
+                $dataHeight = $('#dataHeight'),
+                $dataWidth = $('#dataWidth'),
+                options = {
+                    aspectRatio: 1,
+                    preview: '.preview',
+                    crop: function(e) {
+                        $dataX.val(Math.round(e.x));
+                        $dataY.val(Math.round(e.y));
+                        $dataHeight.val(Math.round(e.height));
+                        $dataWidth.val(Math.round(e.width));
+                    }
+                };
 
-	
+                $('#imagen').on('change',function(e){
+                    if(this.files && this.files[0]){
+                        var reader = new FileReader();
+                        reader.onload = function (e){
+                            $cropper.cropper(options);
+                            $cropper.cropper('replace', e.target.result);
+                        };
+                        reader.readAsDataURL(this.files[0]);
+                    }
+                });
+
+                $('#crop-button').click(function(){
+                    $('#imagen').click();
+                });
+
+        };
+        //metodo para poder mandar el objeto imagen
+        this.submitHandler = function( form ){
+            if(!$(form).valid()) return false;
+
+            App.ajaxRequest({
+                url         : $(form).attr('action'),
+                data        : new FormData($(form)[0]),
+                cache       : false,
+                processData : false,
+                contentType : false,
+                beforeSend  : formInstituto.beforeSubmitHandler,
+                success     : formInstituto.successSubmitHandler,
+                code422     : formInstituto.displayErrors
+            });
+        };
+            // fin de la funcion del cropper js
+
 
         this.displayError = function( index, value ){
             AppAlert.notify({

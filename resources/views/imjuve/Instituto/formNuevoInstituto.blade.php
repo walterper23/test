@@ -3,11 +3,22 @@
 @section('title')<i class="fa fa-fw fa-user-plus"></i> {!! $title !!}@endsection
 
 @section('content')
+
+
 <style>
     .maxwidth{
         width: 100%!important;
     }
 </style>
+
+<style>
+    #my_camera{
+     width: 20px;
+     height: 20px;
+     border: 1px solid black;
+    }
+    </style>
+
 {{ Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id,'files'=>true]) }}
     {{ Form::hidden('action',$action) }}
    
@@ -33,6 +44,13 @@
                 <input type="hidden" name="dataWidth" id="dataWidth" value="">
                 <input type="hidden" name="dataY" id="dataY" value="">
                 <input type="hidden" name="dataHeight" id="dataHeight" value="">
+
+                <div id="my_camera"></div>
+                <input type="button"  class="btn btn-success crop_image" value="Tomar Foto" onClick="take_snapshot()">
+                 
+                <div id="results" ></div>
+    
+                
             </div>
         </div>
     </div>
@@ -93,6 +111,7 @@
     </div>
 
     </div>
+
 {{ Form::close() }}
 @endsection
 
@@ -104,6 +123,27 @@
 @push('js-custom')
 <script type="text/javascript">
     'use strict';
+
+    Webcam.set({
+        force_flash: true,
+
+    width: 210,
+    height: 210,
+    image_format: 'jpeg',
+    jpeg_quality: 90
+    });
+    Webcam.attach( '#my_camera' );
+
+    function take_snapshot() {
+    
+    // take snapshot and get image data
+    Webcam.snap( function(data_uri) {
+        
+    // display results in page
+    document.getElementById('results').innerHTML = '<img src="'+data_uri+'"/>';
+    });
+    }
+
 
     var formInstituto = new AppForm;
 	$.extend(formInstituto, new function(){
@@ -242,7 +282,7 @@
                 });
 
         };
-
+        //metodo para poder mandar el objeto imagen
         this.submitHandler = function( form ){
             if(!$(form).valid()) return false;
 
@@ -257,7 +297,7 @@
                 code422     : formInstituto.displayErrors
             });
         };
-            // funcion del cropper js
+            // fin de la funcion del cropper js
 
         this.displayError = function( index, value ){
             AppAlert.notify({

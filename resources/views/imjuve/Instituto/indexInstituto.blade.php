@@ -53,6 +53,8 @@
 
 @push('js-script')
     <script src="/js/plugins/cropperjs/cropper.min.js"></script>
+    <script src="/js/plugins/webcamjs/webcam.min.js"></script>
+
 
     {{ Html::script('js/helpers/imjuve/instituto.helper.js') }}
     {{ Html::script('js/app-form.js') }}
