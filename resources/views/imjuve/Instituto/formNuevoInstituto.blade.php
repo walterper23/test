@@ -3,11 +3,15 @@
 @section('title')<i class="fa fa-fw fa-user-plus"></i> {!! $title !!}@endsection
 
 @section('content')
+
+
 <style>
     .maxwidth{
         width: 100%!important;
     }
 </style>
+
+
 {{ Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id,'files'=>true]) }}
     {{ Form::hidden('action',$action) }}
    
@@ -33,6 +37,9 @@
                 <input type="hidden" name="dataWidth" id="dataWidth" value="">
                 <input type="hidden" name="dataY" id="dataY" value="">
                 <input type="hidden" name="dataHeight" id="dataHeight" value="">
+
+    
+                
             </div>
         </div>
     </div>
@@ -50,7 +57,7 @@
                 <label for="cp" class="col-md-5 col-form-label" required="">Código Postal</label>
                 <div class="col-md-7">
                     <div class="input-group">
-                        <input required="" maxlength="5" id="cp" class="form-control" name="cp" type="text" value="{{(!is_null($modelo->Direccion))?$modelo->Direccion->getCp():''}}">
+                        <input maxlength="5" id="cp" class="form-control" name="cp" type="text" value="{{(!is_null($modelo->Direccion))?$modelo->Direccion->getCp():''}}">
                         <div class="input-group-appen">
                             <button type="button" class="btn btn-secondary">
                                 <i class="si si-refresh"></i>
@@ -93,6 +100,7 @@
     </div>
 
     </div>
+
 {{ Form::close() }}
 @endsection
 
@@ -204,9 +212,19 @@
                     }
                 });
             });
+
+
+          
+
+
+
+
+
             @if($action==2)
                 entidadSelect.val('{{$modelo->Direccion->getEntidad()}}').change();
             @endif
+
+          
 
             //funcion del cropper js
             var $cropper =  $('#image-cropper-img'),
@@ -242,7 +260,7 @@
                 });
 
         };
-
+        //metodo para poder mandar el objeto imagen
         this.submitHandler = function( form ){
             if(!$(form).valid()) return false;
 
@@ -257,7 +275,41 @@
                 code422     : formInstituto.displayErrors
             });
         };
-            // funcion del cropper js
+            // fin de la funcion del cropper js
+
+            this.rules = function(){
+			return {
+                organismo : { required : true, minlength : 1, maxlength : 255 },
+                razon : { required : true, minlength : 1, maxlength : 255 },
+                telefono : { required : true, minlength : 1, maxlength : 255 },
+              
+
+			}
+		}
+
+		this.messages = function(){
+			return {
+                organismo : {
+                    required : 'Introduzca el Nombre del Instituto',
+                    minlength : 'Mínimo {0} caracteres',
+                    maxlength : 'Máximo {0} caracteres'
+                },
+                razon : {
+                    required : 'Introduzca la Razon Social del Instituto',
+                    minlength : 'Mínimo {0} caracteres',
+                    maxlength : 'Máximo {0} caracteres'
+                },
+                telefono : {
+                    required : 'Introduzca el Telefono del Instituto',
+                    minlength : 'Mínimo {0} caracteres',
+                    maxlength : 'Máximo {0} caracteres'
+                },
+             
+
+			}
+		};
+
+
 
         this.displayError = function( index, value ){
             AppAlert.notify({

@@ -186,7 +186,7 @@ class InstitutoController extends BaseController
         $file = $request->file('imagen');
 
         if ( $file ) { // Si usuario subió una imagen
-            
+
             //obtener la extension de la imagen
             $extension = $file->extension();
 
@@ -282,6 +282,12 @@ class InstitutoController extends BaseController
 
     
             $institucion->save();
+
+            $ruta_imagen = $this->guardarImagen($request, $institucion);
+
+            $institucion->ORGA_FOTO_FULL = $ruta_imagen;
+            $institucion->save();
+
 
             if($institucion && $direccion){
                 DB::commit();

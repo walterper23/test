@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e41e7f154f0f9feb9d331f4bef3b37d9",
+    "content-hash": "90e6232456563c36f586b68ed43d7ff3",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -261,6 +261,33 @@
                 "parser"
             ],
             "time": "2017-11-14T20:44:03+00:00"
+        },
+        {
+            "name": "eusebiu/laravel-spark-camera",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cretueusebiu/laravel-spark-camera.git",
+                "reference": "7de6af13f5a2ebcc6e45dd8ecea0ba0351a81bc9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cretueusebiu/laravel-spark-camera/zipball/7de6af13f5a2ebcc6e45dd8ecea0ba0351a81bc9",
+                "reference": "7de6af13f5a2ebcc6e45dd8ecea0ba0351a81bc9",
+                "shasum": ""
+            },
+            "type": "package",
+            "autoload": {
+                "psr-4": {
+                    "Eusebiu\\LaravelSparkCamera\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Profile photo camera support for Laravel Spark.",
+            "time": "2016-10-29T15:15:00+00:00"
         },
         {
             "name": "guzzlehttp/psr7",
