@@ -20,7 +20,7 @@ use App\Model\imjuve\IMActividad;
 use App\Model\MUsuarioDetalle;
 
 /**
- * Controlador para la gestión de las actividades del sistema
+ * Controlador para la gestión de las actividades del sistema a
  */
 class actividadController extends BaseController
 {
