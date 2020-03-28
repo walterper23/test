@@ -6,7 +6,7 @@
 {{ Form::open(['url'=>$url_send_form,'method'=>'POST','id'=>$form_id]) }}
     {{ Form::hidden('action',$action) }}
     {{ Form::hidden('id',$id) }}      
-    {!! Field::select('tipoActividad',$modelo->getTipo(),['label'=>'Tipo de Actividad','required'],['1'=>'CULTURAL','2'=>'DEPORTIVO']) !!}
+    {!! Field::select('tipoActividad','',['label'=>'Tipo de Actividad','required'],$tiposActividades) !!}
     {!! Field::text('nombre',$modelo->getNombre(),['label'=>'Nombre','placeholder'=>'','required','maxlength'=>255]) !!}
     {!! Field::text('descripcion',$modelo->getDescripcion(),['label'=>'Descripción','placeholder'=>'','required','maxlength'=>255]) !!}         
     

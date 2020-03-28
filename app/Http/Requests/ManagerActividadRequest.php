@@ -24,11 +24,11 @@ class ManagerActividadRequest extends FormRequest
     public function rules()
     {
         return [
-            'action'      => 'required|in:1,2,3,4,5,6',
-            'id'          => 'required_if:action:2,3,4,5,6',                      
+            'action'      => 'required|in:1,2,3,4,5,6,7,8,9,10,11,12',
+            'id'          => 'required_if:action:2,3,4,5,6,7,8,9,10,11,12',                      
             'descripcion'   => 'required_if:action,1,2|min:3,max:255',
             'nombre'       => 'required_if:action,1,2|min:1,max:255',           
-            'tipoActividad'        => 'required_if:action,1,2,3,4|in:1,2,3,4',           
+            'tipoActividad'        => 'required_if:action,1,2,3,4,5,6,7,8,9,10,11,12|in:1,2,3,4,5,6,7,8,9,10,11,12',           
         ];
     }
 

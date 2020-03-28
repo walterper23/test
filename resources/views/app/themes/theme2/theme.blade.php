@@ -165,6 +165,14 @@
                                     </li>
                                 </ul>
                             </li>
+                            <li>
+                                <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-puzzle"></i><span class="sidebar-mini-hide">Eventos</span></a>
+                                <ul>
+                                    <li>
+                                        <a href="/imjuve/eventos/">Nuevo</a>
+                                    </li>
+                                </ul>
+                            </li>
                           }
                             <li>
                                 <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-moustache"></i><span class="sidebar-mini-hide">Usuarios</span></a>
@@ -702,7 +710,7 @@
                         <span class="font-w600 text-primary">{{ config_var('Sistema.Siglas') . ' ' . config_var('Sistema.Version') }}</span> &copy; <span class="js-year-copy">2020</span>
                     </div>
                     <div class="float-right">
-                        Powered by <span class="font-w600 text-danger">Cpjbugg</span>
+                        Powered by <span class="font-w600 text-danger">ITCH</span>
                     </div>
                 </div>
             </footer>

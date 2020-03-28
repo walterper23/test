@@ -148,6 +148,7 @@ class actividadController extends BaseController
             $data['modelo']        = $modelo;
             $data['action']        = 2;
             $data['id']            = $request->id;
+            $data['tiposActividades'] = IMTipoActividad::getSelect();
 
             return view('imjuve.Actividad.formEditarActividad')->with($data);
         } catch(Exception $error) {
@@ -199,7 +200,7 @@ class actividadController extends BaseController
 
             return $this->responseDangerJSON($message,$tables);
         } catch(Exception $error) {
-            return $this->responseErrorJSON('Ocurrió un error al eliminar al actividad. Error ' . $error->getCode() );
+            return $this->responseErrorJSON('Ocurrió un error al eliminar la actividad. Error ' . $error->getCode() );
         }
 
     }

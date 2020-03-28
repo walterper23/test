@@ -49,6 +49,13 @@ Route::middleware(['preventBackHistory','queryListenLog'])->group(function(){
                 Route::post('asentamientos',  'UtilController@getAsentamientos');
 
             });
+           // Route::prefix('eventos')->namespace('imjuve\Eventos')->group(function(){
+             //   Route::get('/',        'eventoController@index');
+               // Route::post('/crear', 'eventoController@nuevoEvento');
+                //Route::post('post-data',  'eventoController@postDataTable');
+            //});
+
+            Route::resource('eventos', 'EventController');
         });
         /*************************** END IMJUVE ROUTES *********************************************/
     });
