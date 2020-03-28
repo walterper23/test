@@ -185,6 +185,7 @@ return [
         Yajra\DataTables\HtmlServiceProvider::class,
         Yajra\DataTables\ButtonsServiceProvider::class,
         App\Providers\FieldServiceProvider::class,
+        Eusebiu\LaravelSparkCamera\CameraServiceProvider::class,
         niklasravnsborg\LaravelPdf\PdfServiceProvider::class
 
     ],

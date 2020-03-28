@@ -19,6 +19,12 @@
             <h3 class="block-title"><i class="fa fa-fw fa-users mr-5"></i> Afiliados</h3>
             <div class="block-options">
                 <button type="button" class="btn-block-option d-none d-sm-inline" onclick="hUsuario.new_('{{$form_id}}','{{$form_url}}')">
+                    <i class="fa fa-user-plus"></i> Importar
+                </button>
+                <button type="button" class="btn-block-option d-none d-sm-inline" onclick="hUsuario.new_('{{$form_id}}','{{$form_url}}')">
+                    <i class="fa fa-user-plus"></i> Exportar
+                </button>
+                <button type="button" class="btn-block-option d-none d-sm-inline" onclick="hUsuario.new_('{{$form_id}}','{{$form_url}}')">
                     <i class="fa fa-user-plus"></i> Nueva afiliación
                 </button>
                 <button type="button" class="btn-block-option d-none d-sm-inline" onclick="hUsuario.reload('dataTableBuilder')">

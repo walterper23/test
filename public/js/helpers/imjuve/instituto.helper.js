@@ -16,11 +16,14 @@ App.loadScript('/js/helpers/helper.js', function(){
 			},
 
 			edit_ : function(id){
-				this.edit({
-					modal : 'form-editar-instituto',
+				App.openModal({
+					id    : 'form-editar-instituto',
+					size  : 'modal-lg',
 					url   : '/imjuve/instituto/editar',
-					id
-				})
+					data  : { id },
+					btnCancel : true,
+					btnOkText : 'Editar'
+				});
 			},
 
 			delete_ : function(id){

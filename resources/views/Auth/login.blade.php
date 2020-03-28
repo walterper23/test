@@ -19,7 +19,7 @@
         <!-- END Icons -->
 
         <!-- Stylesheets -->
-        <!-- Codebase framework -->
+        <!-- Codebase framework all -->
         {{ Html::style('css/codebase.min.css',['id'=>'css-main']) }}
         {{ Html::style('css/custom.codebase.css') }}
 

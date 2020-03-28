@@ -9,7 +9,7 @@ class InstitutoDataTable extends CustomDataTable
 {    
     public function setSourceData()
     {
-        $this->sourceData = IMInstituto::with('Direccion');
+        $this->sourceData = IMInstituto::where('ORGA_ENABLED',1)->with('Direccion');
 
   
     }
@@ -20,6 +20,17 @@ class InstitutoDataTable extends CustomDataTable
        
         return [
           
+
+            [
+                'title'  => 'Logotipo',
+                'width'  => '20%',
+                'render' => function($instituto){
+                    return sprintf('
+                    <p class="text-center">
+                        <img src="%s" class="img-avatar" />
+                    </p>',asset($instituto->getAvatarFull()));
+                },
+            ],
             [
                 'title'  => 'Institucion',
                 'width'  => '20%',

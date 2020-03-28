@@ -17,27 +17,28 @@ use App\Model\imjuve\IMEntidad;
 use App\Model\imjuve\IMVialidades;
 
 
-use App\Model\imjuve\IMDirecciones;
+use App\Model\imjuve\IMDireccion;
 
 
-/**
- * Controlador para la gestión de los usuarios del sistema
- */
 class InstitutoController extends BaseController
 {
     private $form_id = 'form-instituto';
     
-    /**
-     * Crear nueva instancia del controlador
-     */
+   
     public function __construct()
     {
         parent::__construct();
         $this->setLog('InstitutoController.log');
     }
 
-    /**
-     * Método para retornar la página principal de la administración de usuarios
+  
+  /**
+     * @autor Daniel Medina
+     * @descrip Método para retornar la página principal de la administración de institutos
+     * @date 27/02/2020
+     * @version 1.0
+     * @param Response $dataTables
+     * @return mixed
      */
     public function index(InstitutoDataTable $dataTables)
     {
@@ -48,8 +49,13 @@ class InstitutoController extends BaseController
         return view('imjuve.Instituto.indexinstituto')->with($data);
     }
 
-    /**
-     * Da
+   /**
+     * @autor Daniel Medina
+     * @descrip Método para controlar las acciones del instituto
+     * @date 27/02/2020
+     * @version 1.0
+     * @param Request $request
+     * @return mixed
      */
     public function manager(InstitutoRequest $request)
     {
@@ -64,18 +70,6 @@ class InstitutoController extends BaseController
           case 5:  //Eliminar
                 $response = $this->eliminarInstituto( $request );
                 break;
-         /** 
-            case 3:  Ver
-                $response = $this->verUsuario( $request );
-                break;
-            case 4:  Activar / Desactivar
-                $response = $this->activarUsuario( $request );
-                break;
-           
-            case 6: Cambiar contraseña
-                $response = $this->modificarPassword( $request );
-                break;
-                  **/
             default:
                 return response()->json(['message'=>'Petición no válida'],404);
                 break;
@@ -84,16 +78,27 @@ class InstitutoController extends BaseController
         return $response;
     }
 
+ 
     /**
-     * Método para devolver los registros que llenarán la tabla de la página principal
+     * @autor Daniel Medina
+     * @descrip Método para devolver los registros que llenarán la tabla de la página principal
+     * @date 27/02/2020
+     * @version 1.0
+     * @param Request $dataTables
+     * @return mixed
      */
     public function postDataTable(InstitutoDataTable $dataTables)
     {
         return $dataTables->getData();
     }
 
-    /**
-     * Método para retornar el formulario para la creación de un nuevo usuario
+  /**
+     * @autor Daniel Medina
+     * @descrip Método para retornar el formulario para la creación de un nuevo instituto
+     * @date 29/02/2020
+     * @version 1.0
+     * @param Request 
+     * @return mixed
      */
     public function formNuevoInstituto()
     {
@@ -101,6 +106,7 @@ class InstitutoController extends BaseController
         $data['form_id']       = $this->form_id;
         $data['url_send_form'] = url('imjuve/instituto/manager');
         $data['action']        = 1;
+        $data['modelo']        = new IMInstituto();
         $data['entidades']          = IMEntidad::getSelect();
         $data['vialidades']          = IMVialidades::getSelect();
 
@@ -109,7 +115,12 @@ class InstitutoController extends BaseController
     }
 
     /**
-     * Método para guardar un nuevo usuario
+     * @autor Daniel Medina
+     * @descrip  Método para guardar un nuevo instituto
+     * @date 29/02/2020
+     * @version 1.0
+     * @param Request $request
+     * @return mixed
      */
     public function nuevoInstituto($request )
     {
@@ -124,7 +135,7 @@ class InstitutoController extends BaseController
             $institucion->ORGA_TELEFONO      = $request->telefono;
             $institucion->save();
              
-           $dire = new IMDirecciones();
+           $dire = new IMDireccion();
            $dire->DIRE_CP          = $request->cp;
            $dire->DIRE_ENTI_ID     = $request->entidad;
            $dire->DIRE_MUNI_ID     = $request->municipio;
@@ -140,13 +151,18 @@ class InstitutoController extends BaseController
            $institucion->ORGA_DIRE_ID = $dire->getKey();
            $institucion->save();
 
+           $ruta_imagen = $this->guardarImagen($request, $institucion);
+
+           $institucion->ORGA_FOTO_FULL = $ruta_imagen;
+           $institucion->save();
+
            if($institucion && $dire){
-            DB::commit();
-        }
+                DB::commit();
+            }
 
             $tables = ['dataTableBuilder',null,true];
 
-            $message = sprintf('<i class="fa fa-fw fa-user"></i> Instituto <b>%s : %s</b> creado');
+            $message = "Instituto registrado con éxito.";
 
             return $this->responseSuccessJSON($message, $tables);
         } catch(Exception $error) {
@@ -157,14 +173,63 @@ class InstitutoController extends BaseController
     }
 
 
- /**
-     * Método para retornar el formulario para editar el usuario especificado
+    /**
+     * @autor Daniel Medina
+     * @descrip  Método para guardar la ruta y la imagen del instituto
+     * @date 14/03/2020
+     * @version 1.0
+     * @param Request $request
+     * @return mixed
+     */
+    public function guardarImagen(Request $request, $institucion)
+    {
+        $file = $request->file('imagen');
+
+        if ( $file ) { // Si usuario subió una imagen
+
+            //obtener la extension de la imagen
+            $extension = $file->extension();
+
+            //crear un nombre personalizado para la imagen y añadir la extension original
+            // añadir el ID del instituto y la extensión
+            $name_file = sprintf('instituto_img_%s.%s',$institucion->getKey(),$extension);
+
+            //definir carpeta donde se guardara la imagen
+            $folder = 'imagenes/institutos';
+
+            $path = $folder . '/' . $name_file;
+        
+            $file->move(public_path($folder),$name_file);
+
+            $img = \Intervention\Image\Facades\Image::make(public_path($path));
+
+            $img->crop(
+                $request->get('dataWidth'),
+                $request->get('dataHeight'),
+                $request->get('dataX'),
+                $request->get('dataY')
+            )->save();
+
+            return $path;
+        }
+
+        // Retornar la imagen por default
+        return 'imagenes/institutos/no-instituto.jpg';
+    }
+
+
+
+     /**
+     * @autor Daniel Medina
+     * @descrip Método para retornar el formulario para editar el instituto especificado
+     * @date 29/02/2020
+     * @version 1.0
+     * @param Request $request
+     * @return mixed
      */
     public function formEditarInstituto(Request $request)
     {
-        if ( $request->id == 1 ) {
-            abort(403);
-        }
+    
         
         try {
             $modelo                = IMInstituto::find( $request->id );
@@ -173,7 +238,8 @@ class InstitutoController extends BaseController
             $data['url_send_form'] = url('imjuve/instituto/manager');
             $data['modelo']        = $modelo;
             $data['action']        = 2;
-            $data['id']            = $request->id;
+            $data['entidades']     = IMEntidad::getSelect();
+            $data['vialidades']    = IMVialidades::getSelect();
 
             return view('imjuve.Instituto.formEditarInstituto')->with($data);
         } catch(Exception $error) {
@@ -181,23 +247,55 @@ class InstitutoController extends BaseController
         }
     }
 
+
+     /**
+     * @autor Daniel Medina
+     * @descrip Método para editar el instituto especificado
+     * @date 29/02/2020
+     * @version 1.0
+     * @param Request $request
+     * @return mixed
+     */
+
     public function editarInstituto( $request )
     {
         try {
-            //Te falto inicializar la transacción
+            DB::beginTransaction();
+            
             $institucion = IMInstituto::find( $request->id );
+           
 
             $institucion->ORGA_ALIAS	 = $request->organismo;
             $institucion->ORGA_RAZON_SOCIAL = $request->razon;
             $institucion->ORGA_TELEFONO       = $request->telefono;
-           
+
+            $direccion = IMDireccion::find($institucion->ORGA_DIRE_ID);
+            $direccion->DIRE_CP = $request->cp;
+            $direccion->DIRE_ENTI_ID = $request->entidad;
+            $direccion->DIRE_MUNI_ID = $request->municipio;
+            $direccion->DIRE_LOCA_ID = $request->localidad;
+            $direccion->DIRE_TVIA_ID = $request->tvialidad;
+            $direccion->DIRE_VIALIDAD = $request->vialidad;
+            $direccion->DIRE_NUM_EXTERIOR = $request->next;
+            $direccion->DIRE_NUM_INTERIOR = $request->nint;
+            $direccion->save();
+
+    
             $institucion->save();
 
+            $ruta_imagen = $this->guardarImagen($request, $institucion);
+
+            $institucion->ORGA_FOTO_FULL = $ruta_imagen;
+            $institucion->save();
+
+
+            if($institucion && $direccion){
+                DB::commit();
+            }
         
 
-            DB::commit();
 
-            $message = sprintf('<i class="fa fa-fw fa-check"></i> Instituto <b>%s</b> modificado');
+            $message = sprintf('<i class="fa fa-fw fa-check"></i> Instituto <b>%s</b>',' guardado con éxito');
 
             $tables = 'dataTableBuilder';
 
@@ -208,16 +306,27 @@ class InstitutoController extends BaseController
         }
     }
 
+ /**
+     * @autor Daniel Medina
+     * @descrip Método para eliminar el instituto especificado
+     * @date 29/02/2020
+     * @version 1.0
+     * @param Request $request
+     * @return mixed
+     */
+
     public function eliminarInstituto( $request )
     {
-      
         try {
             $institucion = IMInstituto::find( $request->id );
+            $institucion->ORGA_ENABLED = 0;
+            $institucion->ORGA_DELETED = 1;
+
             $institucion->eliminar()->save();
 
             $tables = 'dataTableBuilder';
 
-            $message = sprintf('<i class="fa fa-fw fa-warning"></i> Instituto <b>%s</b> eliminado');
+            $message = "Instituto Eliminado con éxito.";
 
             return $this->responseDangerJSON($message,$tables);
         } catch(Exception $error) {

@@ -6,6 +6,10 @@
 @include('vendor.plugins.datepicker')
 @include('vendor.plugins.select2')
 
+@push('css-style')
+    <link rel="stylesheet" href="/js/plugins/cropperjs/cropper.min.css">
+@endpush
+
 @section('breadcrumb')
 	<nav class="breadcrumb bg-body-light mb-0">
         <a class="breadcrumb-item" href="javascript:void(0)"><i class="fa fa-cogs"></i> Configuraci&oacute;n</a>
@@ -48,6 +52,10 @@
 @endsection
 
 @push('js-script')
+    <script src="/js/plugins/cropperjs/cropper.min.js"></script>
+    <script src="/js/plugins/webcamjs/webcam.min.js"></script>
+
+
     {{ Html::script('js/helpers/imjuve/instituto.helper.js') }}
     {{ Html::script('js/app-form.js') }}
 @endpush

@@ -49,6 +49,11 @@
                 <div class="col-md-6">
                     {!! Field::text('correo',$modelo->getCorreo(),['label'=>'Correo','maxlength'=>255]) !!}
                 </div>
+                <div class="col-md-6">
+                    {!! Field::text('facebook',$modelo->getFacebook(),['label'=>'Facebook','maxlength'=>255]) !!}
+                </div>
+                <div class="col-md-12">
+                </div>
                 <div class="col-md-6 form-group row">
                     <label for="cp" class="col-md-5 col-form-label">Código Postal</label>
                     <div class="col-md-7">
